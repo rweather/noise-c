@@ -123,6 +123,8 @@ static int noise_chachapoly_decrypt
 NoiseCipherState *noise_chachapoly_new(void)
 {
     NoiseChaChaPolyState *state = noise_new(NoiseChaChaPolyState);
+    if (!state)
+        return 0;
     state->parent.size = sizeof(NoiseChaChaPolyState);
     state->parent.cipher_id = NOISE_CIPHER_CHACHAPOLY;
     state->parent.key_len = 32;

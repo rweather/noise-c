@@ -11,12 +11,17 @@ CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
 
 MAIN_SOURCES = \
 	cipherstate.c \
+        hashstate.c \
 	symmetricstate.c \
 	util.c
 
 BACKEND_REF_SOURCES = \
 	backend/ref/cipher-aesgcm.c \
-	backend/ref/cipher-chachapoly.c
+	backend/ref/cipher-chachapoly.c \
+	backend/ref/hash-blake2s.c \
+	backend/ref/hash-blake2b.c \
+	backend/ref/hash-sha256.c \
+	backend/ref/hash-sha512.c
 
 CRYPTO_REF_SOURCES = \
 	crypto/donna/poly1305-donna.c \

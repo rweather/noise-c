@@ -61,6 +61,8 @@ static int noise_aesgcm_decrypt
 NoiseCipherState *noise_aesgcm_new(void)
 {
     NoiseAESGCMState *state = noise_new(NoiseAESGCMState);
+    if (!state)
+        return 0;
     state->parent.size = sizeof(NoiseAESGCMState);
     state->parent.cipher_id = NOISE_CIPHER_AESGCM;
     state->parent.key_len = 32;

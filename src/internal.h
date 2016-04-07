@@ -46,6 +46,27 @@ struct NoiseCipherState_s
                    uint8_t *data, size_t len);
 };
 
+struct NoiseHashState_s
+{
+    size_t size;
+    int hash_id;
+    size_t hash_len;
+    size_t block_len;
+
+    void (*reset)(NoiseHashState *state);
+    void (*update)(NoiseHashState *state, const uint8_t *data, size_t len);
+    void (*finalize)(NoiseHashState *state, uint8_t *hash);
+    void (*clean)(NoiseHashState *state);
+};
+
+typedef struct
+{
+    int id;
+    const char *name;
+    size_t name_len;
+
+} NoiseIdMapping;
+
 #define noise_new(type) ((type *)noise_calloc(sizeof(type)))
 void *noise_calloc(size_t size);
 void noise_free(void *ptr, size_t size);
@@ -55,8 +76,16 @@ int noise_secure_is_equal(const void *s1, const void *s2, size_t size);
 
 void noise_rand_bytes(void *bytes, size_t size);
 
+int noise_map_name(const char *name, size_t name_len,
+                   const NoiseIdMapping *mappings);
+
 NoiseCipherState *noise_chachapoly_new(void);
 NoiseCipherState *noise_aesgcm_new(void);
+
+NoiseHashState *noise_blake2s_new(void);
+NoiseHashState *noise_blake2b_new(void);
+NoiseHashState *noise_sha256_new(void);
+NoiseHashState *noise_sha512_new(void);
 
 #ifdef __cplusplus
 };

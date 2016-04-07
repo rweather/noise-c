@@ -20,12 +20,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_NOISE_H
-#define NOISE_NOISE_H
+#ifndef NOISE_HASHSTATE_H
+#define NOISE_HASHSTATE_H
 
-#include <noise/identifiers.h>
-#include <noise/cipherstate.h>
-#include <noise/hashstate.h>
-#include <noise/symmetricstate.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct NoiseHashState_s NoiseHashState;
+
+int noise_hashstate_new_by_id(NoiseHashState **state, int id);
+int noise_hashstate_new_by_name
+    (NoiseHashState **state, const char *name, size_t name_len);
+int noise_hashstate_free(NoiseHashState *state);
+int noise_hashstate_get_hash_id(const NoiseHashState *state);
+int noise_hashstate_get_hash_length(const NoiseHashState *state);
+int noise_hashstate_hash_one
+    (NoiseHashState *state, const uint8_t *data, size_t data_len,
+     uint8_t *hash);
+int noise_hashstate_hash_two
+    (NoiseHashState *state, const uint8_t *data1, size_t data1_len,
+     const uint8_t *data2, size_t data2_len, uint8_t *hash);
+int noise_hashstate_hkdf
+    (NoiseHashState *state, const uint8_t *key, size_t key_len,
+     const uint8_t *data, size_t data_len,
+     uint8_t *output1, size_t output1_len,
+     uint8_t *output2, size_t output2_len);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

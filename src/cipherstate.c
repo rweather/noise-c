@@ -86,6 +86,13 @@ int noise_cipherstate_new_by_id(NoiseCipherState **state, int id)
 int noise_cipherstate_new_by_name
     (NoiseCipherState **state, const char *name, size_t name_len)
 {
+    static NoiseIdMapping const cipher_names[] = {
+        {NOISE_CIPHER_CHACHAPOLY,   "ChaChaPoly",   10},
+        {NOISE_CIPHER_AESGCM,       "AESGCM",        6},
+        {NOISE_CIPHER_NONE,         0,               0}
+    };
+    int id;
+
     /* The "state" and "name" arguments must be non-NULL */
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
@@ -93,12 +100,10 @@ int noise_cipherstate_new_by_name
     if (!name)
         return NOISE_ERROR_INVALID_PARAM;
 
-    /* Recognize the standard names */
-    if (name_len == 10 && !memcmp(name, "ChaChaPoly", 10)) {
-        return noise_cipherstate_new_by_id(state, NOISE_CIPHER_CHACHAPOLY);
-    } else if (name_len == 6 && !memcmp(name, "AESGCM", 6)) {
-        return noise_cipherstate_new_by_id(state, NOISE_CIPHER_AESGCM);
-    }
+    /* Map the name and create the corresponding object */
+    id = noise_map_name(name, name_len, cipher_names);
+    if (id)
+        return noise_cipherstate_new_by_id(state, id);
 
     /* We don't know what this is */
     return NOISE_ERROR_UNKNOWN_NAME;

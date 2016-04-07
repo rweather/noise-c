@@ -1,0 +1,376 @@
+/*
+ * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+#include "internal.h"
+#include <alloca.h>
+#include <string.h>
+
+/**
+ * \brief Creates a new HashState object by its algorithm identifier.
+ *
+ * \param state Points to the variable where to store the pointer to
+ * the new HashState object.
+ * \param id The algorithm identifier; NOISE_HASH_BLAKE2s,
+ * NOISE_HASH_SHA256, etc.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
+ * \a state is NULL, NOISE_ERROR_UNKNOWN_ID if \a id is unknown,
+ * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * allocate the new HashState object.
+ *
+ * \sa noise_hashstate_free(), noise_hashstate_new_by_name()
+ */
+int noise_hashstate_new_by_id(NoiseHashState **state, int id)
+{
+    /* The "state" argument must be non-NULL */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Create the HashState object for the "id" */
+    *state = 0;
+    switch (id) {
+    case NOISE_HASH_BLAKE2s:
+        *state = noise_blake2s_new();
+        break;
+
+    case NOISE_HASH_BLAKE2b:
+        *state = noise_blake2b_new();
+        break;
+
+    case NOISE_HASH_SHA256:
+        *state = noise_sha256_new();
+        break;
+
+    case NOISE_HASH_SHA512:
+        *state = noise_sha512_new();
+        break;
+
+    default:
+        return NOISE_ERROR_UNKNOWN_ID;
+    }
+
+    /* Bail out if insufficient memory */
+    if (!(*state))
+        return NOISE_ERROR_NO_MEMORY;
+
+    /* Ready to go */
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Creates a new HashState object by its algorithm name.
+ *
+ * \param state Points to the variable where to store the pointer to
+ * the new HashState object.
+ * \param name The name of the cipher algorithm; e.g. "BLAKE2s", "SHA256", etc.
+ * Does not have to be NUL-terminated.
+ * \param name_len The length of the \a name in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
+ * \a state or \a name is NULL, NOISE_ERROR_UNKNOWN_NAME if \a name is
+ * unknown, or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * allocate the new HashState object.
+ *
+ * \sa noise_hashstate_free(), noise_hashstate_new_by_id()
+ */
+int noise_hashstate_new_by_name
+    (NoiseHashState **state, const char *name, size_t name_len)
+{
+    static NoiseIdMapping const hash_names[] = {
+        {NOISE_HASH_BLAKE2s,        "BLAKE2s",      7},
+        {NOISE_HASH_BLAKE2b,        "BLAKE2b",      7},
+        {NOISE_HASH_SHA256,         "SHA256",       6},
+        {NOISE_HASH_SHA512,         "SHA512",       6},
+        {NOISE_HASH_NONE,           0,              0}
+    };
+    int id;
+
+    /* The "state" and "name" arguments must be non-NULL */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    *state = 0;
+    if (!name)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Map the name and create the corresponding object */
+    id = noise_map_name(name, name_len, hash_names);
+    if (id)
+        return noise_hashstate_new_by_id(state, id);
+
+    /* We don't know what this is */
+    return NOISE_ERROR_UNKNOWN_NAME;
+}
+
+/**
+ * \brief Frees a HashState object after destroying all sensitive material.
+ *
+ * \param state The HashState object to free.
+ *
+ * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if
+ * \a state is NULL.
+ *
+ * \sa noise_hashstate_new_by_id(), noise_hashstate_new_by_name()
+ */
+int noise_hashstate_free(NoiseHashState *state)
+{
+    /* Bail out if no hash state */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Clean and free the memory */
+    noise_free(state, state->size);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Gets the algorithm identifier for a HashState object.
+ *
+ * \param state The HashState object.
+ *
+ * \return The algorithm identifier, or NOISE_HASH_NONE if \a state is NULL.
+ */
+int noise_hashstate_get_hash_id(const NoiseHashState *state)
+{
+    return state ? state->hash_id : NOISE_HASH_NONE;
+}
+
+/**
+ * \brief Gets the length of the hahs output for a HashState object.
+ *
+ * \param state The HashState object.
+ *
+ * \return The size of the hash in bytes, or 0 if \a state is NULL.
+ */
+int noise_hashstate_get_hash_length(const NoiseHashState *state)
+{
+    return state ? state->hash_len : 0;
+}
+
+/**
+ * \brief Hashes a single data buffer and returns the hash value.
+ *
+ * \param state The HashState object.
+ * \param data Points to the data to be hashed.
+ * \param data_len The length of the data in bytes.
+ * \param hash The return buffer for the hash value.  This must contain
+ * enough space for the hash length of the \a state object.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one
+ * of \a state, \a data, or \a hash is NULL.
+ *
+ * The \a data and \a hash buffers are allowed to overlap.
+ *
+ * \sa noise_hashstate_hash_two(), noise_hashstate_get_hash_length()
+ */
+int noise_hashstate_hash_one
+    (NoiseHashState *state, const uint8_t *data, size_t data_len,
+     uint8_t *hash)
+{
+    /* Validate the parameters */
+    if (!state || !data || !hash)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Hash the data */
+    (*(state->reset))(state);
+    (*(state->update))(state, data, data_len);
+    (*(state->finalize))(state, hash);
+    (*(state->clean))(state);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Hashes the concatenation of two data buffers and returns
+ * the combined hash value.
+ *
+ * \param state The HashState object.
+ * \param data1 Points to the first data buffer to be hashed.
+ * \param data1_len The length of the first data buffer in bytes.
+ * \param data2 Points to the second data buffer to be hashed.
+ * \param data2_len The length of the second data buffer in bytes.
+ * \param hash The return buffer for the hash value.  This must contain
+ * enough space for the hash length of the \a state object.
+ *
+ * The \a data1, \a data2, and \a hash buffers are allowed to overlap.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one
+ * of \a state, \a data1, \a data2, or \a hash is NULL.
+ *
+ * \sa noise_hashstate_hash_one(), noise_hashstate_get_hash_length()
+ */
+int noise_hashstate_hash_two
+    (NoiseHashState *state, const uint8_t *data1, size_t data1_len,
+     const uint8_t *data2, size_t data2_len, uint8_t *hash)
+{
+    /* Validate the parameters */
+    if (!state || !data1 || !data2 || !hash)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Hash the data */
+    (*(state->reset))(state);
+    (*(state->update))(state, data1, data1_len);
+    (*(state->update))(state, data2, data2_len);
+    (*(state->finalize))(state, hash);
+    (*(state->clean))(state);
+    return NOISE_ERROR_NONE;
+}
+
+#define HMAC_IPAD   0x36    /**< Padding value for the inner HMAC context */
+#define HMAC_OPAD   0x5C    /**< Padding value for the outer HMAC context */
+
+/**
+ * \brief XOR's a HMAC key value with a byte value.
+ *
+ * \param key Points to the key.
+ * \param key_len The length of the key in bytes.
+ * \param value The byte value to XOR into the \a key.
+ */
+static void noise_hashstate_xor_key(uint8_t *key, size_t key_len, uint8_t value)
+{
+    while (key_len > 0) {
+        *key++ ^= value;
+        --key_len;
+    }
+}
+
+/**
+ * \brief Computes a HMAC value from key and data.
+ *
+ * \param state The HashState object.
+ * \param key Points to the key.
+ * \param key_len The length of the key in bytes.
+ * \param data Points to the data.
+ * \param data_len The length of the data in bytes.
+ * \param hash The final output HMAC hash value.
+ *
+ * The \a data and \a hash buffers are allowed to overlap, but neither
+ * must overlap with \a key.
+ *
+ * Reference: <a href="http://tools.ietf.org/html/rfc2104">RFC 2104</a>
+ */
+static void noise_hashstate_hmac
+    (NoiseHashState *state, const uint8_t *key, size_t key_len,
+     const uint8_t *data, size_t data_len, uint8_t *hash)
+{
+    size_t hash_len = state->hash_len;
+    size_t block_len = state->block_len;
+    uint8_t *key_block;
+
+    /* Allocate temporary stack space for the key block */
+    key_block = alloca(block_len);
+
+    /* Format the key for the inner hashing context */
+    if (key_len <= block_len) {
+        memcpy(key_block, key, key_len);
+        memset(key_block + key_len, 0, block_len - key_len);
+    } else {
+        (*(state->reset))(state);
+        (*(state->update))(state, key, key_len);
+        (*(state->finalize))(state, key_block);
+        memset(key_block + hash_len, 0, block_len - hash_len);
+    }
+    noise_hashstate_xor_key(key_block, block_len, HMAC_IPAD);
+
+    /* Calculate the inner hash */
+    (*(state->reset))(state);
+    (*(state->update))(state, key_block, block_len);
+    (*(state->update))(state, data, data_len);
+    (*(state->finalize))(state, hash);
+
+    /* Format the key for the outer hashing context */
+    noise_hashstate_xor_key(key_block, block_len, HMAC_IPAD ^ HMAC_OPAD);
+
+    /* Calculate the outer hash */
+    (*(state->reset))(state);
+    (*(state->update))(state, key_block, block_len);
+    (*(state->update))(state, hash, hash_len);
+    (*(state->finalize))(state, hash);
+
+    /* Clean up and exit */
+    noise_clean(key_block, state->block_len);
+}
+
+/**
+ * \brief Hashes input data with a key to generate two output values.
+ *
+ * \param state The HashState object.
+ * \param key Points to the key.
+ * \param key_len The length of the \a key in bytes.
+ * \param data Points to the data.
+ * \param data_len The length of the \a data in bytes.
+ * \param output1 The first output buffer to fill.
+ * \param output1_len The length of the first output buffer, which may
+ * be shorter than the hash length of the HashState object.
+ * \param output2 The second output buffer to fill.
+ * \param output2_len The length of the second output buffer, which may
+ * be shorter than the hash length of the HashState object.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one
+ * of \a state, \a key, \a data, \a output1, or \a output2 is NULL,
+ * NOISE_ERROR_INVALID_LENGTH if \a output1_len or \a output2_len is
+ * greater than the hash length for the HashState object.
+ *
+ * Reference: <a href="http://tools.ietf.org/html/rfc5869">RFC 5868</a>
+ *
+ * \sa noise_hashstate_hash_one()
+ */
+int noise_hashstate_hkdf
+    (NoiseHashState *state, const uint8_t *key, size_t key_len,
+     const uint8_t *data, size_t data_len,
+     uint8_t *output1, size_t output1_len,
+     uint8_t *output2, size_t output2_len)
+{
+    size_t hash_len;
+    uint8_t *temp_key;
+    uint8_t *temp_hash;
+
+    /* Validate the parameters */
+    if (!state || !key || !data || !output1 || !output2)
+        return NOISE_ERROR_INVALID_PARAM;
+    hash_len = state->hash_len;
+    if (output1_len > hash_len || output2_len > hash_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Allocate local stack space for the temporary hash values */
+    temp_key = alloca(hash_len);
+    temp_hash = alloca(hash_len + 1);
+
+    /* Generate the temporary hashing key */
+    noise_hashstate_hmac(state, key, key_len, data, data_len, temp_key);
+
+    /* Generate the first output */
+    temp_hash[0] = 0x01;
+    noise_hashstate_hmac
+        (state, temp_key, hash_len, temp_hash, 1, temp_hash);
+    memcpy(output1, temp_hash, output1_len);
+
+    /* Generate the second output */
+    temp_hash[hash_len] = 0x02;
+    noise_hashstate_hmac
+        (state, temp_key, hash_len, temp_hash, hash_len + 1, temp_hash);
+    memcpy(output2, temp_hash, output2_len);
+
+    /* Clean up and exit */
+    (*(state->clean))(state);
+    noise_clean(temp_key, hash_len);
+    noise_clean(temp_hash, hash_len + 1);
+    return NOISE_ERROR_NONE;
+}
