@@ -22,3 +22,7 @@ BLAKE2:
 AES:
     http://web.cs.ucdavis.edu/~rogaway/ocb/ocb-ref/
     Public domain code from the original Rijndael authors.
+
+sha2:
+    Extracted the reference implementation from RFC 6234
+    https://tools.ietf.org/rfc/rfc6234.txt

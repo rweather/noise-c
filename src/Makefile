@@ -24,7 +24,9 @@ CRYPTO_REF_SOURCES = \
 	crypto/chacha/chacha.c \
 	crypto/aes/rijndael-alg-fst.c \
 	crypto/blake2/blake2s-ref.c \
-	crypto/blake2/blake2b-ref.c
+	crypto/blake2/blake2b-ref.c \
+	crypto/sha2/sha224-256.c \
+	crypto/sha2/sha384-512.c
 
 SOURCES = $(MAIN_SOURCES) $(BACKEND_REF_SOURCES) $(CRYPTO_REF_SOURCES)
 
