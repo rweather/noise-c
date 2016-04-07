@@ -1,0 +1,24 @@
+
+This directory contains reference implementations of various primitives.
+
+curve25519-donna:
+    https://github.com/agl/curve25519-donna.git
+    MIT license
+
+poly1305-donna:
+    https://github.com/floodyberry/poly1305-donna.git
+    MIT license / public domain
+
+chacha:
+    Based on the reference code from D.J. Bernstein with modifications to
+    use 20 rounds and to have a better API that is compatible with OpenBSD's:
+    https://cr.yp.to/streamciphers/timings/estreambench/submissions/salsa20/chacha8/merged/chacha.c
+    Public domain
+
+BLAKE2:
+    https://github.com/BLAKE2/BLAKE2.git
+    License: CC0, the OpenSSL, or the Apache Public License 2.0
+
+AES:
+    http://web.cs.ucdavis.edu/~rogaway/ocb/ocb-ref/
+    Public domain code from the original Rijndael authors.
