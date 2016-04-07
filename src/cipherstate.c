@@ -257,14 +257,14 @@ int noise_cipherstate_encrypt_with_ad
 
     /* If the key hasn't been set yet, return the plaintext as-is */
     if (!state->has_key) {
-        if (in_data_len > NOISE_MAX_PACKET_LEN)
+        if (in_data_len > NOISE_MAX_PAYLOAD_LEN)
             return NOISE_ERROR_INVALID_LENGTH;
         *out_data_len = in_data_len;
         return NOISE_ERROR_NONE;
     }
 
     /* Make sure that there is room for the MAC */
-    if (in_data_len > (NOISE_MAX_PACKET_LEN - state->mac_len))
+    if (in_data_len > (NOISE_MAX_PAYLOAD_LEN - state->mac_len))
         return NOISE_ERROR_INVALID_LENGTH;
 
     /* Check if the nonce is about to overflow */
@@ -321,7 +321,7 @@ int noise_cipherstate_decrypt_with_ad
     /* Validate the parameters */
     if (!state || (!ad && ad_len) || !data)
         return NOISE_ERROR_INVALID_PARAM;
-    if (in_data_len > NOISE_MAX_PACKET_LEN)
+    if (in_data_len > NOISE_MAX_PAYLOAD_LEN)
         return NOISE_ERROR_INVALID_LENGTH;
 
     /* If the key hasn't been set yet, return the ciphertext as-is */

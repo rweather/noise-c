@@ -20,14 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_IDENTIFIERS_H
-#define NOISE_IDENTIFIERS_H
+#ifndef NOISE_CONSTANTS_H
+#define NOISE_CONSTANTS_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define NOISE_ID(ch,num)    ((((int)(ch)) << 8) | ((int)(num)))
+#define NOISE_ID(ch,num)                ((((int)(ch)) << 8) | ((int)(num)))
 
 /* AEAD cipher algorithms */
 #define NOISE_CIPHER_NONE               0
@@ -56,6 +56,9 @@ extern "C" {
 #define NOISE_ERROR_INVALID_STATE       NOISE_ID('E', 6)
 #define NOISE_ERROR_NONCE_OVERFLOW      NOISE_ID('E', 7)
 #define NOISE_ERROR_MAC_FAILURE         NOISE_ID('E', 8)
+
+/* Maximum length of a packet payload */
+#define NOISE_MAX_PAYLOAD_LEN           65535
 
 #ifdef __cplusplus
 };

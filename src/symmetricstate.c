@@ -20,8 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <noise/symmetricstate.h>
-#include <noise/identifiers.h>
+#include "internal.h"
 
 int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol)
 {

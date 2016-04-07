@@ -30,8 +30,6 @@
 extern "C" {
 #endif
 
-#define NOISE_MAX_PACKET_LEN    65535
-
 typedef struct NoiseCipherState_s NoiseCipherState;
 
 int noise_cipherstate_new_by_id(NoiseCipherState **state, int id);

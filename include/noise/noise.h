@@ -23,7 +23,7 @@
 #ifndef NOISE_NOISE_H
 #define NOISE_NOISE_H
 
-#include <noise/identifiers.h>
+#include <noise/constants.h>
 #include <noise/cipherstate.h>
 #include <noise/hashstate.h>
 #include <noise/symmetricstate.h>
