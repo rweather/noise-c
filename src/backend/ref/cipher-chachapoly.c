@@ -41,6 +41,18 @@ static void noise_chachapoly_init_key
     chacha_keysetup(&(st->chacha), key, 256);
 }
 
+#define PUT_UINT64(buf, value) \
+    do { \
+        (buf)[0] = (uint8_t)(value); \
+        (buf)[1] = (uint8_t)((value) >> 8); \
+        (buf)[2] = (uint8_t)((value) >> 16); \
+        (buf)[3] = (uint8_t)((value) >> 24); \
+        (buf)[4] = (uint8_t)((value) >> 32); \
+        (buf)[5] = (uint8_t)((value) >> 40); \
+        (buf)[6] = (uint8_t)((value) >> 48); \
+        (buf)[7] = (uint8_t)((value) >> 56); \
+    } while (0)
+
 /**
  * \brief Sets up a ChaChaPoly context to encrypt/decrypt a block.
  *
@@ -50,14 +62,7 @@ static void noise_chachapoly_init_key
 static void noise_chachapoly_setup(NoiseChaChaPolyState *st, uint64_t n)
 {
     /* Set the initialization vector to the supplied nonce */
-    st->block[0] = (uint8_t)n;
-    st->block[1] = (uint8_t)(n >> 8);
-    st->block[2] = (uint8_t)(n >> 16);
-    st->block[3] = (uint8_t)(n >> 24);
-    st->block[4] = (uint8_t)(n >> 32);
-    st->block[5] = (uint8_t)(n >> 40);
-    st->block[6] = (uint8_t)(n >> 48);
-    st->block[7] = (uint8_t)(n >> 56);
+    PUT_UINT64(st->block, n);
     chacha_ivsetup(&(st->chacha), st->block, 0);
 
     /* Encrypt an initial block to create the Poly1305 key */
@@ -84,6 +89,21 @@ static void noise_chachapoly_pad_auth(NoiseChaChaPolyState *st, size_t len)
     }
 }
 
+/**
+ * \brief Finalize the Poly1305 hash by adding the lengths.
+ *
+ * \param st The encryption state for ChaChaPoly.
+ * \param ad_len The length of the associated data.
+ * \param data_len The length of the ciphertext.
+ */
+static void noise_chachapoly_auth_lengths
+    (NoiseChaChaPolyState *st, uint64_t ad_len, uint64_t data_len)
+{
+    PUT_UINT64(st->block, ad_len);
+    PUT_UINT64(st->block + 8, data_len);
+    poly1305_update(&(st->poly1305), st->block, 16);
+}
+
 static int noise_chachapoly_encrypt
     (NoiseCipherState *state, const uint8_t *ad, size_t ad_len,
      uint8_t *data, size_t len)
@@ -97,6 +117,7 @@ static int noise_chachapoly_encrypt
     chacha_encrypt_bytes(&(st->chacha), data, data, len);
     poly1305_update(&(st->poly1305), data, len);
     noise_chachapoly_pad_auth(st, len);
+    noise_chachapoly_auth_lengths(st, ad_len, len);
     poly1305_finish(&(st->poly1305), data + len);
     return NOISE_ERROR_NONE;
 }
@@ -113,6 +134,7 @@ static int noise_chachapoly_decrypt
     }
     poly1305_update(&(st->poly1305), data, len);
     noise_chachapoly_pad_auth(st, len);
+    noise_chachapoly_auth_lengths(st, ad_len, len);
     poly1305_finish(&(st->poly1305), st->block);
     if (!noise_secure_is_equal(st->block, data + len, 16))
         return NOISE_ERROR_MAC_FAILURE;
