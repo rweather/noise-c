@@ -30,6 +30,7 @@ CRYPTO_REF_SOURCES = \
 	crypto/aes/rijndael-alg-fst.c \
 	crypto/blake2/blake2s-ref.c \
 	crypto/blake2/blake2b-ref.c \
+	crypto/ghash/ghash.c \
 	crypto/sha2/sha224-256.c \
 	crypto/sha2/sha384-512.c
 

@@ -26,3 +26,8 @@ AES:
 sha2:
     Extracted the reference implementation from RFC 6234
     https://tools.ietf.org/rfc/rfc6234.txt
+
+ghash:
+    Implementation of GHASH from arduinolibs to support GCM.
+    https://github.com/rweather/arduinolibs
+    MIT license
