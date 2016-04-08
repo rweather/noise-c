@@ -24,6 +24,13 @@
 #include <stdlib.h>
 
 /**
+ * \file util.c
+ * \brief Internal utilities used to implement the library.
+ *
+ * \note The definitions in this module are not part of the public API.
+ */
+
+/**
  * \def noise_new(type)
  * \brief Allocates a structure from the system and zeroes it.
  *

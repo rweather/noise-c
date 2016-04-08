@@ -28,8 +28,16 @@
 #include <fcntl.h>
 #include <errno.h>
 
-/* This module will require heavy modification when porting to new systems
-   to access the random number generator on the new system. */
+/**
+ * \file rand.c
+ * \brief Access to the system random number generator.
+ *
+ * This module provides access to the system random number generator for
+ * obtaining random data to generate ephemeral keys during a session
+ * and static keys for permanent storage.
+ *
+ * This module will require modification when porting to new systems.
+ */
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
 #define RANDOM_DEVICE   "/dev/urandom"
@@ -42,6 +50,8 @@
  * \param size The number of random bytes to obtain.
  *
  * This function should not block waiting for entropy.
+ *
+ * \note Not part of the public API.
  */
 void noise_rand_bytes(void *bytes, size_t size)
 {

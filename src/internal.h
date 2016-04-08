@@ -29,6 +29,13 @@
 extern "C" {
 #endif
 
+/**
+ * \file internal.h
+ * \brief Internal definitions for the library.
+ *
+ * \note This file and its definitions are not part of the public API.
+ */
+
 struct NoiseCipherState_s
 {
     size_t size;

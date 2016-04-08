@@ -1,0 +1,107 @@
+/*
+ * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file mainpage.dox
+\mainpage
+
+Noise-C is a plain C implementation of the
+<a href="http://noiseprotocol.org/">Noise Protocol</a>, intended as a
+reference implementation.  It can also be referred to as "Noisy",
+which is what you get when you say "Noise-C" too fast.  The code is
+distributed under the terms of the MIT license, with the code available from
+<a href="https://github.com/rweather/noise-c">github</a>.
+
+\note This project is still a work in progress.  It doesn't work yet, but soon.
+
+The initial target is Linux systems, because that's what I have,
+but contributions are definitely welcome to make the code work
+on other platforms.  Desktop systems will be targeted first and
+then embedded systems.  "Make It Work And Then Make It Work Better"
+is my motto.
+
+\section apis Major API's
+
+\li \ref handshakestate "HandshakeState"
+\li \ref symmetricstate "SymmetricState"
+\li \ref cipherstate "CipherState"
+\li \ref hashstate "HashState"
+\li \ref dhstate "DHState"
+
+\section dir_structure Directory structure
+
+\li <tt>include/noise/</tt> - Public API definitions for inclusion
+    into applications.
+\li <tt>src/</tt> - Source code for the core library.
+\li <tt>src/crypto/</tt> - Public domain and open source reference
+    implementations of the cryptographic primitives.
+\li <tt>src/backend/ref/</tt> - Backends for \ref cipherstate "CipherState",
+    \ref hashstate "HashState", and \ref dhstate "DHState"
+    that use the reference cryptographic primitives.
+\li <tt>src/backend/xyz/</tt> - Recommended location for alternative backends.
+\li <tt>tests/unit/</tt> - Unit tests to exercise the library's functionality.
+\li <tt>tests/vector/</tt> - Public test vectors for the Noise protocol.
+\li <tt>doc/</tt> - Overview and example documentation.
+
+\section building Building
+
+The library currently uses a very simple Makefile structure, designed for
+use with gcc and gmake.  It may or may not work with other make systems.
+The plan is to shift to autoconf/automake eventually, but for now I have
+decided to keep the build system simple while getting the basics working.
+
+To build the library under Linux and run the tests, type the following:
+
+\code
+$ make
+$ make check
+\endcode
+
+\section todo TODO
+
+Things that need to be done to complete the API so that it actually works:
+
+\li \ref symmetricstate "SymmetricState" and
+    \ref handshakestate "HandshakeState" API implementations.
+\li Unit tests and vector tests for all public API's.
+\li Examples and overview documentation.
+\li Convert the build system to standard autoconf/automake conventions.
+
+Things that need to be done to make the library useful in other contexts
+(contributions welcome):
+
+\li Port to other platforms (rand.c is a particular place that needs work).
+\li Back ends for other cryptography libraries: OpenSSL, libsodium, ...
+\li Compile-time subsetting of the library for applications that only
+    need a subset of the algorithms, and for platforms with limited memory.
+
+\section contact Contact
+
+For more information on this library, to report bugs, to contribute,
+or to suggest improvements, please contact the author Rhys Weatherley via
+<a href="mailto:rhys.weatherley@gmail.com">e-mail</a>.
+*/
+
+/**
+\file noise.h
+\brief Main header file to include the library definitions
+*/

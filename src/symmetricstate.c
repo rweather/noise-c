@@ -22,6 +22,21 @@
 
 #include "internal.h"
 
+/**
+ * \file symmetricstate.h
+ * \brief SymmetricState interface
+ */
+
+/**
+ * \file symmetricstate.c
+ * \brief SymmetricState implementation
+ */
+
+/**
+ * \defgroup symmetricstate SymmetricState API
+ */
+/**@{*/
+
 int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol)
 {
     // TODO
@@ -88,3 +103,5 @@ int noise_symmetricstate_split
     // TODO
     return NOISE_ERROR_NONE;
 }
+
+/**@}*/

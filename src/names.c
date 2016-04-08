@@ -23,6 +23,21 @@
 #include "internal.h"
 #include <string.h>
 
+/**
+ * \file names.h
+ * \brief Mapping algorithm names to/from identifiers
+ */
+
+/**
+ * \file names.c
+ * \brief Implementation of algorithm name mapping
+ */
+
+/**
+ * \defgroup names Algorithm name lookup API
+ */
+/**@{*/
+
 /* List of all known algorithm names and the corresponding identifiers */
 typedef struct
 {
@@ -143,3 +158,5 @@ const char *noise_id_to_name(int category, int id)
     }
     return 0;
 }
+
+/**@}*/

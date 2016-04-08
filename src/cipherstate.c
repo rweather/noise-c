@@ -23,6 +23,21 @@
 #include "internal.h"
 
 /**
+ * \file cipherstate.h
+ * \brief CipherState interface
+ */
+
+/**
+ * \file cipherstate.c
+ * \brief CipherState implementation
+ */
+
+/**
+ * \defgroup cipherstate CipherState API
+ */
+/**@{*/
+
+/**
  * \brief Creates a new CipherState object by its algorithm identifier.
  *
  * \param state Points to the variable where to store the pointer to
@@ -437,3 +452,5 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
     state->n = nonce;
     return NOISE_ERROR_NONE;
 }
+
+/**@}*/

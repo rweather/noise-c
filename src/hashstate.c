@@ -25,6 +25,21 @@
 #include <string.h>
 
 /**
+ * \file hashstate.h
+ * \brief HashState interface
+ */
+
+/**
+ * \file hashstate.c
+ * \brief HashState implementation
+ */
+
+/**
+ * \defgroup hashstate HashState API
+ */
+/**@{*/
+
+/**
  * \brief Creates a new HashState object by its algorithm identifier.
  *
  * \param state Points to the variable where to store the pointer to
@@ -371,3 +386,5 @@ int noise_hashstate_hkdf
     noise_clean(temp_hash, hash_len + 1);
     return NOISE_ERROR_NONE;
 }
+
+/**@}*/

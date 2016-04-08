@@ -1,0 +1,378 @@
+/*
+ * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file constants.h
+\brief Constants for algorithm identifiers, limit values, etc
+*/
+
+/**
+ * \def NOISE_ID(ch, num)
+ * \brief Builds an algorithm identifier for the library.
+ *
+ * \param ch ASCII character that names the algorithm category;
+ * e.g. 'C' for ciphers, 'P' for handshake patterns, 'E' for errors, etc.
+ * \param num Code for the specific identifier, 0 to 255.  The value 0 is
+ * reserved for category values.
+ *
+ * \return 16-bit integer value for the algorithm identifier.
+ *
+ * This macro was deliberately designed to output a 16-bit identifier
+ * so that identifiers would fit in an "int" on 8-bit and 16-bit
+ * embedded systems.
+ */
+
+/**
+ * \defgroup cipher_id Cipher algorithm identifiers
+ */
+/**@{*/
+
+/**
+ * \def NOISE_CIPHER_NONE
+ * \brief Cipher identifier that indicates "no cipher".
+ */
+
+/**
+ * \def NOISE_CIPHER_CATEGORY
+ * \brief Category for cipher algorithms.
+ *
+ * Intended for use with noise_name_to_id() and noise_id_to_name().
+ */
+
+/**
+ * \def NOISE_CIPHER_CHACHAPOLY
+ * \brief Cipher identifier for "ChaChaPoly".
+ */
+
+/**
+ * \def NOISE_CIPHER_AESGCM
+ * \brief Cipher identifier for "AESGCM".
+ */
+
+/**@}*/
+
+/**
+ * \defgroup hash_id Hash algorithm identifiers
+ */
+/**@{*/
+
+/**
+ * \def NOISE_HASH_NONE
+ * \brief Hash identifier that indicates "no hash".
+ */
+
+/**
+ * \def NOISE_HASH_CATEGORY
+ * \brief Category for hash algorithms.
+ *
+ * Intended for use with noise_name_to_id() and noise_id_to_name().
+ */
+
+/**
+ * \def NOISE_HASH_BLAKE2s
+ * \brief Hash identifier for "BLAKE2s".
+ */
+
+/**
+ * \def NOISE_HASH_BLAKE2b
+ * \brief Hash identifier for "BLAKE2b".
+ */
+
+/**
+ * \def NOISE_HASH_SHA256
+ * \brief Hash identifier for "SHA256".
+ */
+
+/**
+ * \def NOISE_HASH_SHA512
+ * \brief Hash identifier for "SHA512".
+ */
+
+/**@}*/
+
+/**
+ * \defgroup dh_id Diffie-Hellman algorithm identifiers
+ */
+/**@{*/
+
+/**
+ * \def NOISE_DH_NONE
+ * \brief Diffie-Hellman identifier that indicates "no DH".
+ */
+
+/**
+ * \def NOISE_DH_CATEGORY
+ * \brief Category for Diffie-Hellman algorithms.
+ *
+ * Intended for use with noise_name_to_id() and noise_id_to_name().
+ */
+
+/**
+ * \def NOISE_DH_CURVE25519
+ * \brief Diffie-Hellman identifier for "25519".
+ */
+
+/**
+ * \def NOISE_DH_CURVE448
+ * \brief Diffie-Hellman identifier for "448".
+ */
+
+/**@}*/
+
+/**
+ * \defgroup pattern_id Handshake pattern identifiers
+ */
+/**@{*/
+
+/**
+ * \def NOISE_PATTERN_NONE
+ * \brief Handshake pattern identifier that indicates "no pattern".
+ */
+
+/**
+ * \def NOISE_PATTERN_CATEGORY
+ * \brief Category for handshake patterns.
+ *
+ * Intended for use with noise_name_to_id() and noise_id_to_name().
+ */
+
+/**
+ * \def NOISE_PATTERN_N
+ * \brief Handshake pattern identifier for "N".
+ */
+
+/**
+ * \def NOISE_PATTERN_X
+ * \brief Handshake pattern identifier for "X".
+ */
+
+/**
+ * \def NOISE_PATTERN_K
+ * \brief Handshake pattern identifier for "K".
+ */
+
+/**
+ * \def NOISE_PATTERN_NN
+ * \brief Handshake pattern identifier for "NN".
+ */
+
+/**
+ * \def NOISE_PATTERN_NK
+ * \brief Handshake pattern identifier for "NK".
+ */
+
+/**
+ * \def NOISE_PATTERN_NX
+ * \brief Handshake pattern identifier for "NX".
+ */
+
+/**
+ * \def NOISE_PATTERN_XN
+ * \brief Handshake pattern identifier for "XN".
+ */
+
+/**
+ * \def NOISE_PATTERN_XK
+ * \brief Handshake pattern identifier for "XK".
+ */
+
+/**
+ * \def NOISE_PATTERN_XX
+ * \brief Handshake pattern identifier for "XX".
+ */
+
+/**
+ * \def NOISE_PATTERN_XR
+ * \brief Handshake pattern identifier for "XR".
+ */
+
+/**
+ * \def NOISE_PATTERN_KN
+ * \brief Handshake pattern identifier for "KN".
+ */
+
+/**
+ * \def NOISE_PATTERN_KK
+ * \brief Handshake pattern identifier for "KK".
+ */
+
+/**
+ * \def NOISE_PATTERN_KX
+ * \brief Handshake pattern identifier for "KX".
+ */
+
+/**
+ * \def NOISE_PATTERN_IN
+ * \brief Handshake pattern identifier for "IN".
+ */
+
+/**
+ * \def NOISE_PATTERN_IK
+ * \brief Handshake pattern identifier for "IK".
+ */
+
+/**
+ * \def NOISE_PATTERN_IX
+ * \brief Handshake pattern identifier for "IX".
+ */
+
+/**
+ * \def NOISE_PATTERN_XX_FALLBACK
+ * \brief Handshake pattern identifier for "XXfallback".
+ */
+
+/**@}*/
+
+/**
+ * \defgroup prefix_id Protocol prefix identifiers
+ */
+/**@{*/
+
+/**
+ * \def NOISE_PREFIX_NONE
+ * \brief Protocol prefix identifier that indicates "no prefix".
+ */
+
+/**
+ * \def NOISE_PREFIX_CATEGORY
+ * \brief Category for protocol prefixes.
+ *
+ * Intended for use with noise_name_to_id() and noise_id_to_name().
+ */
+
+/**
+ * \def NOISE_PREFIX_STANDARD
+ * \brief Protocol prefix identifier for "Noise".
+ */
+
+/**
+ * \def NOISE_PREFIX_PSK
+ * \brief Protocol prefix identifier for "NoisePSK".
+ */
+
+/**@}*/
+
+/**
+ * \defgroup token_id Handshake message pattern token identifiers
+ */
+/**@{*/
+
+/**
+ * \def NOISE_TOKEN_END
+ * \brief Message pattern token that indicates the end of a pattern.
+ */
+
+/**
+ * \def NOISE_TOKEN_S
+ * \brief Message pattern token "s".
+ */
+
+/**
+ * \def NOISE_TOKEN_E
+ * \brief Message pattern token "e".
+ */
+
+/**
+ * \def NOISE_TOKEN_DHEE
+ * \brief Message pattern token "dhee".
+ */
+
+/**
+ * \def NOISE_TOKEN_DHES
+ * \brief Message pattern token "dhes".
+ */
+
+/**
+ * \def NOISE_TOKEN_DHSE
+ * \brief Message pattern token "dhse".
+ */
+
+/**
+ * \def NOISE_TOKEN_DHSS
+ * \brief Message pattern token "dhss".
+ */
+
+/**@}*/
+
+/**
+ * \defgroup errors Error codes
+ */
+/**@{*/
+
+/**
+ * \def NOISE_ERROR_NONE
+ * \brief Success, no error.
+ */
+
+/**
+ * \def NOISE_ERROR_NO_MEMORY
+ * \brief Insufficient memory to complete the operation.
+ */
+
+/**
+ * \def NOISE_ERROR_UNKNOWN_ID
+ * \brief Algorithm identifier is unknown.
+ */
+
+/**
+ * \def NOISE_ERROR_UNKNOWN_NAME
+ * \brief Algorithm name is unknown.
+ */
+
+/**
+ * \def NOISE_ERROR_INVALID_LENGTH
+ * \brief Invalid length specified for a key, packet, etc.
+ */
+
+/**
+ * \def NOISE_ERROR_INVALID_PARAM
+ * \brief Invalid parameter to function; e.g. a NULL value.
+ */
+
+/**
+ * \def NOISE_ERROR_INVALID_STATE
+ * \brief Operation cannot be performed in the current state.
+ *
+ * For example, attempting to encrypt or decrypt with a CipherState
+ * before setting the key.
+ */
+
+/**
+ * \def NOISE_ERROR_INVALID_NONCE
+ * \brief Invalid nonce value.
+ *
+ * Typically this is reported when the 64-bit nonce value wraps around.
+ */
+
+/**
+ * \def NOISE_ERROR_MAC_FAILURE
+ * \brief MAC check failed on an incoming packet.
+ */
+
+/**@}*/
+
+/**
+ * \def NOISE_MAX_PAYLOAD_LEN
+ * \brief Maximum payload length for Noise packets.
+ *
+ * \note Specific protocol instantiations may enforce a smaller limit.
+ */
