@@ -31,11 +31,13 @@ extern "C" {
 
 /* AEAD cipher algorithms */
 #define NOISE_CIPHER_NONE               0
+#define NOISE_CIPHER_CATEGORY           NOISE_ID('C', 0)
 #define NOISE_CIPHER_CHACHAPOLY         NOISE_ID('C', 1)
 #define NOISE_CIPHER_AESGCM             NOISE_ID('C', 2)
 
 /* Hash algorithms */
 #define NOISE_HASH_NONE                 0
+#define NOISE_HASH_CATEGORY             NOISE_ID('H', 0)
 #define NOISE_HASH_BLAKE2s              NOISE_ID('H', 1)
 #define NOISE_HASH_BLAKE2b              NOISE_ID('H', 2)
 #define NOISE_HASH_SHA256               NOISE_ID('H', 3)
@@ -43,6 +45,7 @@ extern "C" {
 
 /* Diffie-Hellman algorithms */
 #define NOISE_DH_NONE                   0
+#define NOISE_DH_CATEGORY               NOISE_ID('D', 0)
 #define NOISE_DH_CURVE25519             NOISE_ID('D', 1)
 #define NOISE_DH_CURVE448               NOISE_ID('D', 2)
 

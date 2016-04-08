@@ -20,13 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_NOISE_H
-#define NOISE_NOISE_H
+#ifndef NOISE_NAMES_H
+#define NOISE_NAMES_H
 
 #include <noise/constants.h>
-#include <noise/names.h>
-#include <noise/cipherstate.h>
-#include <noise/hashstate.h>
-#include <noise/symmetricstate.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int noise_name_to_id(int category, const char *name, size_t name_len);
+const char *noise_id_to_name(int category, int id);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

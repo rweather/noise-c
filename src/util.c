@@ -146,26 +146,3 @@ void noise_rand_bytes(void *bytes, size_t size)
     fprintf(stderr, "Don't know how to generate random numbers!  Abort!\n");
     exit(1);
 }
-
-/**
- * \brief Maps an algorithm name to the corresponding identifier.
- *
- * \param name The name to be mapped.
- * \param name_len The length of the name in bytes.
- * \param mappings The name mapping table, which must be terminated by an
- * entry with the name field set to NULL.
- *
- * \return Returns the algorithm identifier, or 0 if the \a name is unknown.
- */
-int noise_map_name(const char *name, size_t name_len,
-                   const NoiseIdMapping *mappings)
-{
-    while (mappings->name) {
-        if (mappings->name_len == name_len &&
-                !memcmp(mappings->name, name, name_len)) {
-            return mappings->id;
-        }
-        ++mappings;
-    }
-    return 0;
-}

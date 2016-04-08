@@ -12,6 +12,7 @@ CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
 MAIN_SOURCES = \
 	cipherstate.c \
         hashstate.c \
+        names.c \
 	symmetricstate.c \
 	util.c
 

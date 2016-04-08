@@ -62,14 +62,6 @@ struct NoiseHashState_s
     void (*destroy)(NoiseHashState *state); /* Optional, can be NULL */
 };
 
-typedef struct
-{
-    int id;
-    const char *name;
-    size_t name_len;
-
-} NoiseIdMapping;
-
 #define noise_new(type) ((type *)noise_calloc(sizeof(type)))
 void *noise_calloc(size_t size);
 void noise_free(void *ptr, size_t size);
@@ -78,9 +70,6 @@ void noise_clean(void *data, size_t size);
 int noise_secure_is_equal(const void *s1, const void *s2, size_t size);
 
 void noise_rand_bytes(void *bytes, size_t size);
-
-int noise_map_name(const char *name, size_t name_len,
-                   const NoiseIdMapping *mappings);
 
 NoiseCipherState *noise_chachapoly_new(void);
 NoiseCipherState *noise_aesgcm_new(void);

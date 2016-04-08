@@ -21,7 +21,6 @@
  */
 
 #include "internal.h"
-#include <string.h>
 
 /**
  * \brief Creates a new CipherState object by its algorithm identifier.
@@ -86,11 +85,6 @@ int noise_cipherstate_new_by_id(NoiseCipherState **state, int id)
 int noise_cipherstate_new_by_name
     (NoiseCipherState **state, const char *name, size_t name_len)
 {
-    static NoiseIdMapping const cipher_names[] = {
-        {NOISE_CIPHER_CHACHAPOLY,   "ChaChaPoly",   10},
-        {NOISE_CIPHER_AESGCM,       "AESGCM",        6},
-        {NOISE_CIPHER_NONE,         0,               0}
-    };
     int id;
 
     /* The "state" and "name" arguments must be non-NULL */
@@ -101,7 +95,7 @@ int noise_cipherstate_new_by_name
         return NOISE_ERROR_INVALID_PARAM;
 
     /* Map the name and create the corresponding object */
-    id = noise_map_name(name, name_len, cipher_names);
+    id = noise_name_to_id(NOISE_CIPHER_CATEGORY, name, name_len);
     if (id)
         return noise_cipherstate_new_by_id(state, id);
 

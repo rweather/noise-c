@@ -95,13 +95,6 @@ int noise_hashstate_new_by_id(NoiseHashState **state, int id)
 int noise_hashstate_new_by_name
     (NoiseHashState **state, const char *name, size_t name_len)
 {
-    static NoiseIdMapping const hash_names[] = {
-        {NOISE_HASH_BLAKE2s,        "BLAKE2s",      7},
-        {NOISE_HASH_BLAKE2b,        "BLAKE2b",      7},
-        {NOISE_HASH_SHA256,         "SHA256",       6},
-        {NOISE_HASH_SHA512,         "SHA512",       6},
-        {NOISE_HASH_NONE,           0,              0}
-    };
     int id;
 
     /* The "state" and "name" arguments must be non-NULL */
@@ -112,7 +105,7 @@ int noise_hashstate_new_by_name
         return NOISE_ERROR_INVALID_PARAM;
 
     /* Map the name and create the corresponding object */
-    id = noise_map_name(name, name_len, hash_names);
+    id = noise_name_to_id(NOISE_HASH_CATEGORY, name, name_len);
     if (id)
         return noise_hashstate_new_by_id(state, id);
 
