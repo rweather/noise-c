@@ -46,6 +46,29 @@ static NoiseIdMapping const algorithm_names[] = {
     {NOISE_DH_CURVE25519,       "25519",         5},
     {NOISE_DH_CURVE448,         "448",           3},
 
+    /* Handshake patterns */
+    {NOISE_PATTERN_N,           "N",             1},
+    {NOISE_PATTERN_X,           "X",             1},
+    {NOISE_PATTERN_K,           "K",             1},
+    {NOISE_PATTERN_NN,          "NN",            2},
+    {NOISE_PATTERN_NK,          "NK",            2},
+    {NOISE_PATTERN_NX,          "NX",            2},
+    {NOISE_PATTERN_XN,          "XN",            2},
+    {NOISE_PATTERN_XK,          "XK",            2},
+    {NOISE_PATTERN_XX,          "XX",            2},
+    {NOISE_PATTERN_XR,          "XR",            2},
+    {NOISE_PATTERN_KN,          "KN",            2},
+    {NOISE_PATTERN_KK,          "KK",            2},
+    {NOISE_PATTERN_KX,          "KX",            2},
+    {NOISE_PATTERN_IN,          "IN",            2},
+    {NOISE_PATTERN_IK,          "IK",            2},
+    {NOISE_PATTERN_IX,          "IX",            2},
+    {NOISE_PATTERN_XX_FALLBACK, "XXfallback",   10},
+
+    /* Protocol name prefixes */
+    {NOISE_PREFIX_STANDARD,     "Noise",         5},
+    {NOISE_PREFIX_PSK,          "NoisePSK",      8},
+
     /* Terminator for the list */
     {0,                         0,               0}
 };
@@ -54,7 +77,8 @@ static NoiseIdMapping const algorithm_names[] = {
  * \brief Maps an algorithm name to the corresponding identifier.
  *
  * \param category The category of identifier to look for; one of
- * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY, or zero.
+ * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
+ * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, or zero.
  * Zero indicates "any category".
  * \param name Points to the name to map.
  * \param name_len Length of the \a name in bytes.
@@ -90,7 +114,8 @@ int noise_name_to_id(int category, const char *name, size_t name_len)
  * \brief Maps an algorithm identifier to the corresponding name.
  *
  * \param category The category of identifier to look for; one of
- * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY, or zero.
+ * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
+ * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, or zero.
  * Zero indicates "any category".
  * \param id The algorithm identifier to map.
  *

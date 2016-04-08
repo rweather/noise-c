@@ -27,6 +27,8 @@
 extern "C" {
 #endif
 
+/* Build an identifier.  Deliberately designed to fit into a 16-bit
+   integer on 8-bit and 16-bit embedded systems */
 #define NOISE_ID(ch,num)                ((((int)(ch)) << 8) | ((int)(num)))
 
 /* AEAD cipher algorithms */
@@ -49,14 +51,41 @@ extern "C" {
 #define NOISE_DH_CURVE25519             NOISE_ID('D', 1)
 #define NOISE_DH_CURVE448               NOISE_ID('D', 2)
 
+/* Handshake patterns */
+#define NOISE_PATTERN_NONE              0
+#define NOISE_PATTERN_CATEGORY          NOISE_ID('P', 0)
+#define NOISE_PATTERN_N                 NOISE_ID('P', 1)
+#define NOISE_PATTERN_X                 NOISE_ID('P', 2)
+#define NOISE_PATTERN_K                 NOISE_ID('P', 3)
+#define NOISE_PATTERN_NN                NOISE_ID('P', 4)
+#define NOISE_PATTERN_NK                NOISE_ID('P', 5)
+#define NOISE_PATTERN_NX                NOISE_ID('P', 6)
+#define NOISE_PATTERN_XN                NOISE_ID('P', 7)
+#define NOISE_PATTERN_XK                NOISE_ID('P', 8)
+#define NOISE_PATTERN_XX                NOISE_ID('P', 9)
+#define NOISE_PATTERN_XR                NOISE_ID('P', 10)
+#define NOISE_PATTERN_KN                NOISE_ID('P', 11)
+#define NOISE_PATTERN_KK                NOISE_ID('P', 12)
+#define NOISE_PATTERN_KX                NOISE_ID('P', 13)
+#define NOISE_PATTERN_IN                NOISE_ID('P', 14)
+#define NOISE_PATTERN_IK                NOISE_ID('P', 15)
+#define NOISE_PATTERN_IX                NOISE_ID('P', 16)
+#define NOISE_PATTERN_XX_FALLBACK       NOISE_ID('P', 17)
+
+/* Protocol name prefixes */
+#define NOISE_PREFIX_NONE               0
+#define NOISE_PREFIX_CATEGORY           NOISE_ID('N', 0)
+#define NOISE_PREFIX_STANDARD           NOISE_ID('N', 1)
+#define NOISE_PREFIX_PSK                NOISE_ID('N', 2)
+
 /* Handshake message pattern tokens */
-#define NOISE_PATTERN_TOKEN_END         0
-#define NOISE_PATTERN_TOKEN_S           NOISE_ID('T', 1)
-#define NOISE_PATTERN_TOKEN_E           NOISE_ID('T', 2)
-#define NOISE_PATTERN_TOKEN_DHEE        NOISE_ID('T', 3)
-#define NOISE_PATTERN_TOKEN_DHES        NOISE_ID('T', 4)
-#define NOISE_PATTERN_TOKEN_DHSE        NOISE_ID('T', 5)
-#define NOISE_PATTERN_TOKEN_DHSS        NOISE_ID('T', 6)
+#define NOISE_TOKEN_END                 0
+#define NOISE_TOKEN_S                   NOISE_ID('T', 1)
+#define NOISE_TOKEN_E                   NOISE_ID('T', 2)
+#define NOISE_TOKEN_DHEE                NOISE_ID('T', 3)
+#define NOISE_TOKEN_DHES                NOISE_ID('T', 4)
+#define NOISE_TOKEN_DHSE                NOISE_ID('T', 5)
+#define NOISE_TOKEN_DHSS                NOISE_ID('T', 6)
 
 /* Error codes */
 #define NOISE_ERROR_NONE                0
