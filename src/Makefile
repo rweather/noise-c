@@ -51,7 +51,7 @@ clean:
 	$(RM) $(OBJECTS) $(LIBRARY)
 	$(RM) -r .depend
 
-check:
+check:  all
 
 .depend/%.d: %.c
 	@set -e; rm -f $@; mkdir -p `dirname $@`; \
