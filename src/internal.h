@@ -44,6 +44,7 @@ struct NoiseCipherState_s
                    uint8_t *data, size_t len);
     int (*decrypt)(NoiseCipherState *state, const uint8_t *ad, size_t ad_len,
                    uint8_t *data, size_t len);
+    void (*destroy)(NoiseCipherState *state); /* Optional, can be NULL */
 };
 
 struct NoiseHashState_s
@@ -57,6 +58,7 @@ struct NoiseHashState_s
     void (*update)(NoiseHashState *state, const uint8_t *data, size_t len);
     void (*finalize)(NoiseHashState *state, uint8_t *hash);
     void (*clean)(NoiseHashState *state);
+    void (*destroy)(NoiseHashState *state); /* Optional, can be NULL */
 };
 
 typedef struct

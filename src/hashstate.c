@@ -136,6 +136,10 @@ int noise_hashstate_free(NoiseHashState *state)
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
 
+    /* Call the backend-specific destroy function if necessary */
+    if (state->destroy)
+        (*(state->destroy))(state);
+
     /* Clean and free the memory */
     noise_free(state, state->size);
     return NOISE_ERROR_NONE;
