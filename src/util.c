@@ -21,13 +21,7 @@
  */
 
 #include "internal.h"
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-
-#if defined(linux) || defined(__linux) || defined(__linux__)
-#define RANDOM_DEVICE   "/dev/urandom"
-#endif
 
 /**
  * \def noise_new(type)
@@ -116,33 +110,4 @@ int noise_secure_is_equal(const void *s1, const void *s2, size_t size)
         --size;
     }
     return (0x0100 - (int)temp) >> 8;
-}
-
-/**
- * \brief Gets cryptographically-strong random bytes from the system.
- *
- * \param bytes The buffer to fill with random bytes.
- * \param size The number of random bytes to obtain.
- *
- * This function should not block waiting for entropy.
- */
-void noise_rand_bytes(void *bytes, size_t size)
-{
-#if defined(RANDOM_DEVICE)
-    /* Probably should use system calls for this to avoid leaving
-     * random data lying around in stdio buffers.  FIXME */
-    FILE *file = fopen(RANDOM_DEVICE, "r");
-    if (file) {
-        if (fread(bytes, 1, size, file) == (int)size) {
-            fclose(file);
-            return;
-        }
-        perror(RANDOM_DEVICE);
-        fclose(file);
-    } else {
-        perror(RANDOM_DEVICE);
-    }
-#endif
-    fprintf(stderr, "Don't know how to generate random numbers!  Abort!\n");
-    exit(1);
 }

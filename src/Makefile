@@ -13,6 +13,7 @@ MAIN_SOURCES = \
 	cipherstate.c \
         hashstate.c \
         names.c \
+        rand.c \
 	symmetricstate.c \
 	util.c
 
