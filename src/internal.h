@@ -33,9 +33,10 @@ struct NoiseCipherState_s
 {
     size_t size;
     int cipher_id;
-    int has_key;
-    size_t key_len;
-    size_t mac_len;
+    uint8_t has_key;
+    uint8_t nonce_overflow;
+    uint8_t key_len;
+    uint8_t mac_len;
     uint64_t n;
 
     NoiseCipherState *(*create)(void);

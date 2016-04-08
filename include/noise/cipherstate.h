@@ -51,6 +51,7 @@ int noise_cipherstate_decrypt_with_ad
 int noise_cipherstate_split
     (const NoiseCipherState *state, const uint8_t *key, size_t key_len,
      NoiseCipherState **new_state);
+int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce);
 
 #ifdef __cplusplus
 };

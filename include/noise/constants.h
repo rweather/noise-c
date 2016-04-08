@@ -63,7 +63,7 @@ extern "C" {
 #define NOISE_ERROR_INVALID_LENGTH      NOISE_ID('E', 4)
 #define NOISE_ERROR_INVALID_PARAM       NOISE_ID('E', 5)
 #define NOISE_ERROR_INVALID_STATE       NOISE_ID('E', 6)
-#define NOISE_ERROR_NONCE_OVERFLOW      NOISE_ID('E', 7)
+#define NOISE_ERROR_INVALID_NONCE       NOISE_ID('E', 7)
 #define NOISE_ERROR_MAC_FAILURE         NOISE_ID('E', 8)
 
 /* Maximum length of a packet payload */

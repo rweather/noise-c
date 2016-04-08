@@ -199,6 +199,8 @@ int noise_cipherstate_init_key
     /* Set the key */
     (*(state->init_key))(state, key);
     state->has_key = 1;
+    state->n = 0;
+    state->nonce_overflow = 0;
     return NOISE_ERROR_NONE;
 }
 
@@ -231,7 +233,8 @@ int noise_cipherstate_has_key(const NoiseCipherState *state)
  * in \a data on exit.
  *
  * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * the parameters are invalid, or NOISE_ERROR_INVALID_LENGTH if
+ * the parameters are invalid, NOISE_ERROR_INVALID_NONCE if the nonce
+ * previously overflowed, or NOISE_ERROR_INVALID_LENGTH if
  * \a in_data_len is too large to contain the ciphertext plus MAC
  * and still remain within 65535 bytes.
  *
@@ -271,12 +274,14 @@ int noise_cipherstate_encrypt_with_ad
     if (in_data_len > (NOISE_MAX_PAYLOAD_LEN - state->mac_len))
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* Check if the nonce is about to overflow */
-    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
-        return NOISE_ERROR_NONCE_OVERFLOW;
+    /* If the nonce has overflowed, then further encryption is impossible */
+    if (state->nonce_overflow)
+        return NOISE_ERROR_INVALID_NONCE;
 
     /* Encrypt the plaintext */
     err = (*(state->encrypt))(state, ad, ad_len, data, in_data_len);
+    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
+        state->nonce_overflow = 1;
     ++(state->n);
     if (err != NOISE_ERROR_NONE)
         return err;
@@ -301,7 +306,8 @@ int noise_cipherstate_encrypt_with_ad
  *
  * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
  * the parameters are invalid, NOISE_ERROR_MAC_FAILURE if the MAC
- * check failed, or NOISE_ERROR_INVALID_LENGTH if \a in_data_len is
+ * check failed, NOISE_ERROR_INVALID_NONCE if the nonce previously
+ * overflowed, or NOISE_ERROR_INVALID_LENGTH if \a in_data_len is
  * larger than 65535 bytes or too small to contain the MAC value.
  *
  * The ciphertext is decrypted in-place with the plaintext also written
@@ -338,13 +344,15 @@ int noise_cipherstate_decrypt_with_ad
     if (in_data_len < state->mac_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* Check if the nonce is about to overflow */
-    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
-        return NOISE_ERROR_NONCE_OVERFLOW;
+    /* If the nonce has overflowed, then further encryption is impossible */
+    if (state->nonce_overflow)
+        return NOISE_ERROR_INVALID_NONCE;
 
     /* Decrypt the ciphertext and check the MAC */
     err = (*(state->decrypt))
         (state, ad, ad_len, data, in_data_len - state->mac_len);
+    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
+        state->nonce_overflow = 1;
     ++(state->n);
     if (err != NOISE_ERROR_NONE)
         return err;
@@ -395,7 +403,43 @@ int noise_cipherstate_split
         return NOISE_ERROR_NO_MEMORY;
 
     /* Initialize the key in the new state object */
-    (*((*new_state)->init_key))(*new_state, key);
-    (*new_state)->has_key = 1;
+    noise_cipherstate_init_key(*new_state, key, key_len);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Sets the nonce value for this cipherstate object.
+ *
+ * \param state The CipherState object.
+ * \param nonce The new nonce value to set.  This must be greater than
+ * or equal to the current nonce value in the state.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
+ * \a state is NULL, NOISE_ERROR_INVALID_STATE if the key has not been
+ * set yet, or NOISE_ERROR_INVALID_NONCE if \a nonce is smaller than
+ * the current value.
+ *
+ * \warning This function is intended for testing purposes only.  It is
+ * dangerous to set the nonce back to a previously-used value so this
+ * function will actively prevent that from happening.
+ *
+ * \sa noise_cipherstate_init_key()
+ */
+int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
+{
+    /* Bail out if the state is NULL */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* If the key hasn't been set yet, we cannot do this */
+    if (!state->has_key)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Reject the value if the nonce would go backwards */
+    if (state->n > nonce)
+        return NOISE_ERROR_INVALID_NONCE;
+
+    /* Set the nonce and return */
+    state->n = nonce;
     return NOISE_ERROR_NONE;
 }
