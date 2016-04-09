@@ -33,8 +33,7 @@ extern "C" {
 typedef struct NoiseDHState_s NoiseDHState;
 
 int noise_dhstate_new_by_id(NoiseDHState **state, int id);
-int noise_dhstate_new_by_name
-    (NoiseDHState **state, const char *name, size_t name_len);
+int noise_dhstate_new_by_name(NoiseDHState **state, const char *name);
 int noise_dhstate_free(NoiseDHState *state);
 int noise_dhstate_get_dh_id(const NoiseDHState *state);
 size_t noise_dhstate_get_public_key_length(const NoiseDHState *state);

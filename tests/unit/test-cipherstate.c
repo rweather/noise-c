@@ -247,8 +247,7 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
 
     /* Re-create the object by name and check its properties again */
     compare(noise_cipherstate_free(state), NOISE_ERROR_NONE);
-    compare(noise_cipherstate_new_by_name(&state, name, strlen(name)),
-            NOISE_ERROR_NONE);
+    compare(noise_cipherstate_new_by_name(&state, name), NOISE_ERROR_NONE);
     compare(noise_cipherstate_new_by_id(&state, id), NOISE_ERROR_NONE);
     compare(noise_cipherstate_get_cipher_id(state), id);
     compare(noise_cipherstate_get_key_length(state), key_len);
@@ -329,7 +328,7 @@ static void cipherstate_check_errors(void)
     compare(noise_cipherstate_get_mac_length(0), 0);
     compare(noise_cipherstate_new_by_id(0, NOISE_HASH_BLAKE2s),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_cipherstate_new_by_name(0, "ChaChaPoly", 10),
+    compare(noise_cipherstate_new_by_name(0, "ChaChaPoly"),
             NOISE_ERROR_INVALID_PARAM);
 
     /* If the id/name is unknown, the state parameter should be set to NULL */
@@ -338,11 +337,11 @@ static void cipherstate_check_errors(void)
             NOISE_ERROR_UNKNOWN_ID);
     verify(state == NULL);
     state = (NoiseCipherState *)8;
-    compare(noise_cipherstate_new_by_name(&state, 0, 10),
+    compare(noise_cipherstate_new_by_name(&state, 0),
             NOISE_ERROR_INVALID_PARAM);
     verify(state == NULL);
     state = (NoiseCipherState *)8;
-    compare(noise_cipherstate_new_by_name(&state, "ChaChaPony", 10),
+    compare(noise_cipherstate_new_by_name(&state, "ChaChaPony"),
             NOISE_ERROR_UNKNOWN_NAME);
     verify(state == NULL);
 }

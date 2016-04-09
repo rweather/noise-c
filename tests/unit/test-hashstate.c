@@ -80,8 +80,7 @@ static void check_hash(int id, size_t hash_len, size_t block_len,
 
     /* Re-create the object by name and check its properties again */
     compare(noise_hashstate_free(state), NOISE_ERROR_NONE);
-    compare(noise_hashstate_new_by_name(&state, name, strlen(name)),
-            NOISE_ERROR_NONE);
+    compare(noise_hashstate_new_by_name(&state, name), NOISE_ERROR_NONE);
     compare(noise_hashstate_get_hash_id(state), id);
     compare(noise_hashstate_get_hash_length(state), hash_len);
     compare(noise_hashstate_get_block_length(state), block_len);
@@ -317,7 +316,7 @@ static void hashstate_check_errors(void)
     compare(noise_hashstate_get_block_length(0), 0);
     compare(noise_hashstate_new_by_id(0, NOISE_HASH_BLAKE2s),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_hashstate_new_by_name(0, "BLAKE2s", 7),
+    compare(noise_hashstate_new_by_name(0, "BLAKE2s"),
             NOISE_ERROR_INVALID_PARAM);
 
     /* If the id/name is unknown, the state parameter should be set to NULL */
@@ -326,11 +325,11 @@ static void hashstate_check_errors(void)
             NOISE_ERROR_UNKNOWN_ID);
     verify(state == NULL);
     state = (NoiseHashState *)8;
-    compare(noise_hashstate_new_by_name(&state, 0, 7),
+    compare(noise_hashstate_new_by_name(&state, 0),
             NOISE_ERROR_INVALID_PARAM);
     verify(state == NULL);
     state = (NoiseHashState *)8;
-    compare(noise_hashstate_new_by_name(&state, "BLAKE3s", 7),
+    compare(noise_hashstate_new_by_name(&state, "BLAKE3s"),
             NOISE_ERROR_UNKNOWN_NAME);
     verify(state == NULL);
 }

@@ -33,8 +33,7 @@ extern "C" {
 typedef struct NoiseCipherState_s NoiseCipherState;
 
 int noise_cipherstate_new_by_id(NoiseCipherState **state, int id);
-int noise_cipherstate_new_by_name
-    (NoiseCipherState **state, const char *name, size_t name_len);
+int noise_cipherstate_new_by_name(NoiseCipherState **state, const char *name);
 int noise_cipherstate_free(NoiseCipherState *state);
 int noise_cipherstate_get_cipher_id(const NoiseCipherState *state);
 size_t noise_cipherstate_get_key_length(const NoiseCipherState *state);

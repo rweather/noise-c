@@ -108,8 +108,7 @@ int noise_hashstate_new_by_id(NoiseHashState **state, int id)
  * \param state Points to the variable where to store the pointer to
  * the new HashState object.
  * \param name The name of the cipher algorithm; e.g. "BLAKE2s", "SHA256", etc.
- * Does not have to be NUL-terminated.
- * \param name_len The length of the \a name in bytes.
+ * This string must be NUL-terminated.
  *
  * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
  * \a state or \a name is NULL, NOISE_ERROR_UNKNOWN_NAME if \a name is
@@ -118,8 +117,7 @@ int noise_hashstate_new_by_id(NoiseHashState **state, int id)
  *
  * \sa noise_hashstate_free(), noise_hashstate_new_by_id()
  */
-int noise_hashstate_new_by_name
-    (NoiseHashState **state, const char *name, size_t name_len)
+int noise_hashstate_new_by_name(NoiseHashState **state, const char *name)
 {
     int id;
 
@@ -131,7 +129,7 @@ int noise_hashstate_new_by_name
         return NOISE_ERROR_INVALID_PARAM;
 
     /* Map the name and create the corresponding object */
-    id = noise_name_to_id(NOISE_HASH_CATEGORY, name, name_len);
+    id = noise_name_to_id(NOISE_HASH_CATEGORY, name, strlen(name));
     if (id)
         return noise_hashstate_new_by_id(state, id);
 
