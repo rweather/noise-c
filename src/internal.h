@@ -36,6 +36,11 @@ extern "C" {
  * \note This file and its definitions are not part of the public API.
  */
 
+/**
+ * \brief Maximum hash length over all supported hash algorithms.
+ */
+#define NOISE_MAX_HASHLEN 64
+
 struct NoiseCipherState_s
 {
     size_t size;
@@ -67,6 +72,16 @@ struct NoiseHashState_s
     void (*finalize)(NoiseHashState *state, uint8_t *hash);
     void (*clean)(NoiseHashState *state);
     void (*destroy)(NoiseHashState *state); /* Optional, can be NULL */
+};
+
+struct NoiseSymmetricState_s
+{
+    size_t size;
+    NoiseProtocolId id;
+    NoiseCipherState *cipher;
+    NoiseHashState *hash;
+    uint8_t ck[NOISE_MAX_HASHLEN];
+    uint8_t h[NOISE_MAX_HASHLEN];
 };
 
 #define noise_new(type) ((type *)noise_calloc(sizeof(type)))

@@ -24,6 +24,7 @@
 #define NOISE_SYMMETRICSTATE_H
 
 #include <noise/cipherstate.h>
+#include <noise/names.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,23 +34,19 @@ typedef struct NoiseSymmetricState_s NoiseSymmetricState;
 
 int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol);
 int noise_symmetricstate_free(NoiseSymmetricState *state);
-
-int noise_symmetricstate_get_cipher_id(const NoiseSymmetricState *state);
-int noise_symmetricstate_get_hash_id(const NoiseSymmetricState *state);
-int noise_symmetricstate_get_dh_id(const NoiseSymmetricState *state);
-
+int noise_symmetricstate_get_protocol_id
+    (const NoiseSymmetricState *state, NoiseProtocolId *id);
 int noise_symmetricstate_mix_key
     (NoiseSymmetricState *state, const uint8_t *input, size_t size);
 int noise_symmetricstate_mix_hash
     (NoiseSymmetricState *state, const uint8_t *input, size_t size);
-
 int noise_symmetricstate_encrypt_and_hash
     (NoiseSymmetricState *state, uint8_t *data,
      size_t in_data_len, size_t *out_data_len);
 int noise_symmetricstate_decrypt_and_hash
     (NoiseSymmetricState *state, uint8_t *data,
      size_t in_data_len, size_t *out_data_len);
-
+size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state);
 int noise_symmetricstate_split
     (NoiseSymmetricState *state, NoiseCipherState **c1, NoiseCipherState **c2);
 

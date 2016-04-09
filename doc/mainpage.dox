@@ -33,7 +33,7 @@ distributed under the terms of the MIT license, with the code available from
 
 \note This project is still a work in progress.  It doesn't work yet, but soon.
 
-The initial target is Linux systems, because that's what I have,
+The initial target is GNU/Linux systems, because that's what I have,
 but contributions are definitely welcome to make the code work
 on other platforms.  Desktop systems will be targeted first and
 then embedded systems.  "Make It Work And Then Make It Work Better"
@@ -69,7 +69,7 @@ use with gcc and gmake.  It may or may not work with other make systems.
 The plan is to shift to autoconf/automake eventually, but for now I have
 decided to keep the build system simple while getting the basics working.
 
-To build the library under Linux and run the tests, type the following:
+To build the library under GNU/Linux and run the tests, type the following:
 
 \code
 $ make
@@ -80,8 +80,7 @@ $ make check
 
 Things that need to be done to complete the API so that it actually works:
 
-\li \ref symmetricstate "SymmetricState" and
-    \ref handshakestate "HandshakeState" API implementations.
+\li \ref handshakestate "HandshakeState" API implementation.
 \li Unit tests and vector tests for all public API's.
 \li Examples and overview documentation.
 \li Convert the build system to standard autoconf/automake conventions.
