@@ -29,6 +29,7 @@ jmp_buf test_jump_back;
 int main(int argc, char *argv[])
 {
     /* Run all tests */
+    test(cipherstate);
     test(hashstate);
     test(names);
 

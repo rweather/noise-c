@@ -34,6 +34,11 @@
 
 /**
  * \defgroup cipherstate CipherState API
+ *
+ * CipherState objects are used to encrypt or decrypt data during a
+ * session.  Once the handshake has completed, noise_symmetricstate_split()
+ * will create two CipherState objects for encrypting packets sent to
+ * the other party, and decrypting packets received from the other party.
  */
 /**@{*/
 

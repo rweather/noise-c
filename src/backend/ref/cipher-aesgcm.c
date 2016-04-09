@@ -49,6 +49,19 @@ static void noise_aesgcm_init_key
     ghash_reset(&(st->ghash), st->hash);
 }
 
+#define PUT_UINT64(buf, value) \
+    do { \
+        uint64_t _value = (value); \
+        (buf)[0] = (uint8_t)(_value >> 56); \
+        (buf)[1] = (uint8_t)(_value >> 48); \
+        (buf)[2] = (uint8_t)(_value >> 40); \
+        (buf)[3] = (uint8_t)(_value >> 32); \
+        (buf)[4] = (uint8_t)(_value >> 24); \
+        (buf)[5] = (uint8_t)(_value >> 16); \
+        (buf)[6] = (uint8_t)(_value >> 8); \
+        (buf)[7] = (uint8_t)_value; \
+    } while (0)
+
 /**
  * \brief Sets up the IV to start encrypting or decrypting a block.
  *
@@ -63,14 +76,7 @@ static void noise_aesgcm_setup_iv(NoiseAESGCMState *st)
     st->counter[1] = 0;
     st->counter[2] = 0;
     st->counter[3] = 0;
-    st->counter[4] = (uint8_t)(n >> 56);
-    st->counter[5] = (uint8_t)(n >> 48);
-    st->counter[6] = (uint8_t)(n >> 40);
-    st->counter[7] = (uint8_t)(n >> 32);
-    st->counter[8] = (uint8_t)(n >> 24);
-    st->counter[9] = (uint8_t)(n >> 16);
-    st->counter[10] = (uint8_t)(n >> 8);
-    st->counter[11] = (uint8_t)n;
+    PUT_UINT64(st->counter + 4, n);
     st->counter[12] = 0;
     st->counter[13] = 0;
     st->counter[14] = 0;
@@ -103,7 +109,7 @@ static void noise_aesgcm_encrypt_or_decrypt
         uint16_t counter = (((uint16_t)(st->counter[15])) |
                            (((uint16_t)(st->counter[14])) << 8)) + 1;
         st->counter[15] = (uint8_t)counter;
-        st->counter[16] = (uint8_t)(counter >> 8);
+        st->counter[14] = (uint8_t)(counter >> 8);
         rijndaelEncrypt(st->aes, MAXNR, st->counter, keystream);
 
         /* XOR the input with the keystream block to generate the output */
@@ -123,14 +129,23 @@ static void noise_aesgcm_encrypt_or_decrypt
  *
  * \param st The cipher state for AESGCM.
  * \param hash The buffer where to place the final hash value.
+ * \param ad_len The length of the associated data.
+ * \param data_len The length of the plaintext data.
  */
-static void noise_aesgcm_finalize_hash(NoiseAESGCMState *st, uint8_t *hash)
+static void noise_aesgcm_finalize_hash
+    (NoiseAESGCMState *st, uint8_t *hash, size_t ad_len, size_t data_len)
 {
     uint8_t *value;
     uint8_t index;
+    uint8_t block[16];
 
     /* Pad the GHASH data to a 16-byte boundary */
     ghash_pad(&(st->ghash));
+
+    /* Add the sizes (in bits, not bytes) in a final block */
+    PUT_UINT64(block, ((uint64_t)ad_len) * 8);
+    PUT_UINT64(block + 8, ((uint64_t)data_len) * 8);
+    ghash_update(&(st->ghash), block, 16);
 
     /* Read the result directly out of ghash.Y and XOR with the hash nonce */
     value = (uint8_t *)(st->ghash.Y);
@@ -150,7 +165,7 @@ static int noise_aesgcm_encrypt
     }
     noise_aesgcm_encrypt_or_decrypt(st, data, len);
     ghash_update(&(st->ghash), data, len);
-    noise_aesgcm_finalize_hash(st, data + len);
+    noise_aesgcm_finalize_hash(st, data + len, ad_len, len);
     return NOISE_ERROR_NONE;
 }
 
@@ -165,7 +180,7 @@ static int noise_aesgcm_decrypt
         ghash_pad(&(st->ghash));
     }
     ghash_update(&(st->ghash), data, len);
-    noise_aesgcm_finalize_hash(st, st->hash);
+    noise_aesgcm_finalize_hash(st, st->hash, ad_len, len);
     if (!noise_secure_is_equal(data + len, st->hash, 16))
         return NOISE_ERROR_MAC_FAILURE;
     noise_aesgcm_encrypt_or_decrypt(st, data, len);
