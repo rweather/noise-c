@@ -92,11 +92,12 @@ extern "C" {
 #define NOISE_ERROR_NO_MEMORY           NOISE_ID('E', 1)
 #define NOISE_ERROR_UNKNOWN_ID          NOISE_ID('E', 2)
 #define NOISE_ERROR_UNKNOWN_NAME        NOISE_ID('E', 3)
-#define NOISE_ERROR_INVALID_LENGTH      NOISE_ID('E', 4)
-#define NOISE_ERROR_INVALID_PARAM       NOISE_ID('E', 5)
-#define NOISE_ERROR_INVALID_STATE       NOISE_ID('E', 6)
-#define NOISE_ERROR_INVALID_NONCE       NOISE_ID('E', 7)
-#define NOISE_ERROR_MAC_FAILURE         NOISE_ID('E', 8)
+#define NOISE_ERROR_MAC_FAILURE         NOISE_ID('E', 4)
+#define NOISE_ERROR_INVALID_LENGTH      NOISE_ID('E', 5)
+#define NOISE_ERROR_INVALID_PARAM       NOISE_ID('E', 6)
+#define NOISE_ERROR_INVALID_STATE       NOISE_ID('E', 7)
+#define NOISE_ERROR_INVALID_NONCE       NOISE_ID('E', 8)
+#define NOISE_ERROR_INVALID_DH_KEY      NOISE_ID('E', 9)
 
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535

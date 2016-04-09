@@ -88,7 +88,7 @@ struct NoiseCipherState_s
     void (*init_key)(NoiseCipherState *state, const uint8_t *key);
 
     /**
-     * \brief Encrypts data with this CipherSuite.
+     * \brief Encrypts data with this CipherState.
      *
      * \param state Points to the CipherState.
      * \param ad Points to the associated data to include in the
@@ -107,7 +107,7 @@ struct NoiseCipherState_s
                    uint8_t *data, size_t len);
 
     /**
-     * \brief Decrypts data with this CipherSuite.
+     * \brief Decrypts data with this CipherState.
      *
      * \param state Points to the CipherState.
      * \param ad Points to the associated data to include in the
@@ -124,11 +124,11 @@ struct NoiseCipherState_s
                    uint8_t *data, size_t len);
 
     /**
-     * \brief Destroys this CipherSuite prior to the memory being freed.
+     * \brief Destroys this CipherState prior to the memory being freed.
      *
      * \param state Points to the CipherState.
      *
-     * This function is called just before the memory for the CipherSuite
+     * This function is called just before the memory for the CipherState
      * is deallocated.  It gives the back end an opportunity to clean up
      * linked objects.
      *
@@ -203,6 +203,76 @@ struct NoiseHashState_s
 };
 
 /**
+ * \brief Internal structure of the NoiseDHState type.
+ */
+struct NoiseDHState_s
+{
+    /** \brief Total size of the structure including subclass state */
+    size_t size;
+
+    /** \brief Algorithm identifier for the Diffie-Hellman operation */
+    int dh_id;
+
+    /** \brief Length of the private key for this algorithm in bytes */
+    uint16_t private_key_len;
+
+    /** \brief Length of the public key for this algorithm in bytes */
+    uint16_t public_key_len;
+
+    /** \brief Length of the shared key for this algorithm in bytes */
+    uint16_t shared_key_len;
+
+    /**
+     * \brief Generates a key pair for this Diffie-Hellman algorithm.
+     *
+     * \param state Points to the DHState.
+     * \param private_key Points to the private key on exit.  Must be at
+     * least \ref private_key_len bytes in length.
+     * \param public_key Points to the public key on exit.  Must be at
+     * least \ref public_key_len bytes in length.
+     *
+     * \return NOISE_ERROR_NONE on success.
+     */
+    int (*generate_keypair)
+        (const NoiseDHState *state, uint8_t *private_key, uint8_t *public_key);
+
+    /**
+     * \brief Performs a Diffie-Hellman calculation.
+     *
+     * \param state Points to the DHState.
+     * \param shared_key Points to the shared key on exit.  Must be at
+     * least \ref shared_key_len bytes in length.
+     * \param private_key Points to the private key.  Must be at least
+     * \ref private_key_len bytes in length.
+     * \param public_key Points to the public key.  Must be at least
+     * \ref public_key_len bytes in length.
+     *
+     * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_DH_KEY if
+     * either \a public_key or \a private_key are invalid for the algorithm.
+     *
+     * This function must always operate in the same amount of time, even
+     * if the \a public_key or \a private_key is invalid.
+     */
+    int (*calculate)
+        (const NoiseDHState *state, uint8_t *shared_key,
+         const uint8_t *private_key, const uint8_t *public_key);
+
+    /**
+     * \brief Destroys this DHState prior to the memory being freed.
+     *
+     * \param state Points to the DHState.
+     *
+     * This function is called just before the memory for the DHState
+     * is deallocated.  It gives the back end an opportunity to clean up
+     * linked objects.
+     *
+     * This pointer can be NULL if the back end does not need any special
+     * clean up logic.
+     */
+    void (*destroy)(NoiseDHState *state);
+};
+
+/**
  * \brief Internal structure of the NoiseSymmetricState type.
  */
 struct NoiseSymmetricState_s
@@ -238,7 +308,11 @@ void *noise_new_object(size_t size);
 void noise_free(void *ptr, size_t size);
 
 void noise_clean(void *data, size_t size);
-int noise_secure_is_equal(const void *s1, const void *s2, size_t size);
+
+int noise_is_equal(const void *s1, const void *s2, size_t size);
+int noise_is_zero(const void *data, size_t size);
+
+void noise_cmove_zero(uint8_t *data, size_t len, int condition);
 
 void noise_rand_bytes(void *bytes, size_t size);
 
@@ -249,6 +323,9 @@ NoiseHashState *noise_blake2s_new(void);
 NoiseHashState *noise_blake2b_new(void);
 NoiseHashState *noise_sha256_new(void);
 NoiseHashState *noise_sha512_new(void);
+
+NoiseDHState *noise_curve25519_new(void);
+NoiseDHState *noise_curve448_new(void);
 
 #ifdef __cplusplus
 };

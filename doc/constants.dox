@@ -339,6 +339,11 @@
  */
 
 /**
+ * \def NOISE_ERROR_MAC_FAILURE
+ * \brief MAC check failed on an incoming packet.
+ */
+
+/**
  * \def NOISE_ERROR_INVALID_LENGTH
  * \brief Invalid length specified for a key, packet, etc.
  */
@@ -364,8 +369,8 @@
  */
 
 /**
- * \def NOISE_ERROR_MAC_FAILURE
- * \brief MAC check failed on an incoming packet.
+ * \def NOISE_ERROR_INVALID_DH_KEY
+ * \brief Invalid Diffie-Hellman key value.
  */
 
 /**@}*/

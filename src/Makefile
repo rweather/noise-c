@@ -7,10 +7,11 @@ SRCDIR = .
 LIBRARY = libnoiseprotocol.a
 
 CPPFLAGS = -I$(TOPDIR)/include -I$(SRCDIR)
-CFLAGS = -std=c99 -g -Wall -Wextra $(CPPFLAGS)
+CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
 
 MAIN_SOURCES = \
 	cipherstate.c \
+        dhstate.c \
         errors.c \
         hashstate.c \
         names.c \
@@ -21,6 +22,7 @@ MAIN_SOURCES = \
 BACKEND_REF_SOURCES = \
 	backend/ref/cipher-aesgcm.c \
 	backend/ref/cipher-chachapoly.c \
+	backend/ref/dh-curve25519.c \
 	backend/ref/hash-blake2s.c \
 	backend/ref/hash-blake2b.c \
 	backend/ref/hash-sha256.c \

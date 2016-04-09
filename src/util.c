@@ -119,7 +119,7 @@ void noise_clean(void *data, size_t size)
  *
  * \return Returns 1 if the blocks are equal, 0 if they are not.
  */
-int noise_secure_is_equal(const void *s1, const void *s2, size_t size)
+int noise_is_equal(const void *s1, const void *s2, size_t size)
 {
     const uint8_t *str1 = (const unsigned char *)s1;
     const uint8_t *str2 = (const unsigned char *)s2;
@@ -131,4 +131,46 @@ int noise_secure_is_equal(const void *s1, const void *s2, size_t size)
         --size;
     }
     return (0x0100 - (int)temp) >> 8;
+}
+
+/**
+ * \brief Determine if a block of memory consists of all zero bytes.
+ *
+ * \param data Points to the block of memory.
+ * \param size The length of the \a data in bytes.
+ *
+ * \return Returns 1 if all bytes of \a data are zero, or 0 if any of the
+ * bytes are non-zero.
+ */
+int noise_is_zero(const void *data, size_t size)
+{
+    const uint8_t *d = (const uint8_t *)data;
+    uint8_t temp = 0;
+    while (size > 0) {
+        temp |= *d++;
+        --size;
+    }
+    return (0x0100 - (int)temp) >> 8;
+}
+
+/**
+ * \brief Conditional move of zero into a buffer in constant time.
+ *
+ * \param data The data buffer to fill with zeroes if the condition is true.
+ * \param len The length of the \a data buffer in bytes.
+ * \param condition Condition that is 1 to move zero into \a data, or
+ * zero to leave the contents of \a data as-is.
+ */
+void noise_cmove_zero(uint8_t *data, size_t len, int condition)
+{
+    /* Turn the condition into an all-zeroes or all-ones mask.
+       If the condition is set, then we want all-zeroes in the mask.
+       If the condition is not set, then we want all-ones in the mask. */
+    uint8_t mask = ~((uint8_t)(-condition));
+
+    /* AND the contents of the data buffer with the mask */
+    while (len > 0) {
+        *data++ &= mask;
+        --len;
+    }
 }

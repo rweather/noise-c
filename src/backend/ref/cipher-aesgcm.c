@@ -181,7 +181,7 @@ static int noise_aesgcm_decrypt
     }
     ghash_update(&(st->ghash), data, len);
     noise_aesgcm_finalize_hash(st, st->hash, ad_len, len);
-    if (!noise_secure_is_equal(data + len, st->hash, 16))
+    if (!noise_is_equal(data + len, st->hash, 16))
         return NOISE_ERROR_MAC_FAILURE;
     noise_aesgcm_encrypt_or_decrypt(st, data, len);
     return NOISE_ERROR_NONE;

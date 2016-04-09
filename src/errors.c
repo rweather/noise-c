@@ -45,11 +45,12 @@ static const char * const error_strings[] = {
     "Out of memory",
     "Unknown algorithm identifier",
     "Unknown algorithm name",
+    "MAC failure",
     "Invalid length",
     "Invalid parameter",
     "Invalid state",
     "Invalid nonce",
-    "MAC failure"
+    "Invalid Diffie-Hellman key"
 };
 #define num_error_strings (sizeof(error_strings) / sizeof(error_strings[0]))
 

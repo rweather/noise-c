@@ -136,7 +136,7 @@ static int noise_chachapoly_decrypt
     noise_chachapoly_pad_auth(st, len);
     noise_chachapoly_auth_lengths(st, ad_len, len);
     poly1305_finish(&(st->poly1305), st->block);
-    if (!noise_secure_is_equal(st->block, data + len, 16))
+    if (!noise_is_equal(st->block, data + len, 16))
         return NOISE_ERROR_MAC_FAILURE;
     chacha_encrypt_bytes(&(st->chacha), data, data, len);
     return NOISE_ERROR_NONE;

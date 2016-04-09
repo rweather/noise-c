@@ -28,6 +28,7 @@
 #include <noise/names.h>
 #include <noise/cipherstate.h>
 #include <noise/hashstate.h>
+#include <noise/dhstate.h>
 #include <noise/symmetricstate.h>
 
 #endif
