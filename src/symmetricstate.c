@@ -43,50 +43,32 @@
  *
  * \param state Points to the variable where to store the pointer to
  * the new SymmetricState object.
- * \param protocol The name of the Noise protocol to use.  This string
+ * \param name The name of the Noise protocol to use.  This string
  * must be NUL-terminated.
+ * \param id The protocol identifier as a set of algorithm identifiers.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a protocol is NULL, NOISE_ERROR_UNKNOWN_NAME if the
- * \a protocol name is unknown, NOISE_ERROR_INVALID_LENGTH if the
- * lengths of the hash output or the cipher key are incompatible,
- * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
- * allocate the new SymmetricState object.
- *
- * \sa noise_symmetricstate_free()
+ * This is the internal implementation of noise_symmetricstate_new_by_id()
+ * and noise_symmetricstate_new_by_name().
  */
-int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol)
+static int noise_symmetricstate_new
+    (NoiseSymmetricState **state, const char *name, const NoiseProtocolId *id)
 {
     NoiseSymmetricState *new_state;
-    NoiseProtocolId id;
-    size_t protocol_len;
+    size_t name_len;
     size_t hash_len;
     int err;
-
-    /* Validate the parameters */
-    if (!state)
-        return NOISE_ERROR_INVALID_PARAM;
-    *state = 0;
-    if (!protocol)
-        return NOISE_ERROR_INVALID_PARAM;
-
-    /* Parse the protocol identifier and validate the names */
-    protocol_len = strlen(protocol);
-    err = noise_protocol_name_to_id(&id, protocol, protocol_len);
-    if (err != NOISE_ERROR_NONE)
-        return err;
 
     /* Construct a state object and initialize it */
     new_state = noise_new(NoiseSymmetricState);
     if (!new_state)
         return NOISE_ERROR_NO_MEMORY;
-    new_state->id = id;
-    err = noise_cipherstate_new_by_id(&(new_state->cipher), id.cipher_id);
+    new_state->id = *id;
+    err = noise_cipherstate_new_by_id(&(new_state->cipher), id->cipher_id);
     if (err != NOISE_ERROR_NONE) {
         noise_symmetricstate_free(new_state);
         return err;
     }
-    err = noise_hashstate_new_by_id(&(new_state->hash), id.hash_id);
+    err = noise_hashstate_new_by_id(&(new_state->hash), id->hash_id);
     if (err != NOISE_ERROR_NONE) {
         noise_symmetricstate_free(new_state);
         return err;
@@ -109,19 +91,100 @@ int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol)
 
     /* Initialize the chaining key "ck" and the handshake hash "h" from
        the protocol name.  If the name is too long, hash it down first */
-    if (protocol_len <= hash_len) {
-        memcpy(new_state->h, protocol, protocol_len);
-        memset(new_state->h + protocol_len, 0, hash_len - protocol_len);
+    name_len = strlen(name);
+    if (name_len <= hash_len) {
+        memcpy(new_state->h, name, name_len);
+        memset(new_state->h + name_len, 0, hash_len - name_len);
     } else {
         noise_hashstate_hash_one
-            (new_state->hash, (const uint8_t *)protocol,
-             protocol_len, new_state->h);
+            (new_state->hash, (const uint8_t *)name, name_len, new_state->h);
     }
     memcpy(new_state->ck, new_state->h, hash_len);
 
     /* Ready to go */
     *state = new_state;
     return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Creates a new SymmetricState object from a protocol identifier.
+ *
+ * \param state Points to the variable where to store the pointer to
+ * the new SymmetricState object.
+ * \param id The protocol identifier as a set of algorithm identifiers.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
+ * \a state or \a id is NULL, NOISE_ERROR_UNKNOWN_ID if the
+ * protocol \a id is unknown, NOISE_ERROR_INVALID_LENGTH if the
+ * full name corresponding to \a id is too long, NOISE_ERROR_INVALID_LENGTH
+ * if the lengths of the hash output or the cipher key are incompatible,
+ * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * allocate the new SymmetricState object.
+ *
+ * \sa noise_symmetricstate_free(), noise_symmetricstate_new_by_name()
+ */
+int noise_symmetricstate_new_by_id
+    (NoiseSymmetricState **state, const NoiseProtocolId *id)
+{
+    char name[NOISE_MAX_PROTOCOL_NAME];
+    int err;
+
+    /* Validate the parameters */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    *state = 0;
+    if (!id)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Format the full protocol name from the identifiers.  We need the
+       full name because the handshake hash is initialized from the name */
+    err = noise_protocol_id_to_name(name, sizeof(name), id);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    /* Create the SymmetricState object */
+    return noise_symmetricstate_new(state, name, id);
+}
+
+/**
+ * \brief Creates a new SymmetricState object from a protocol name.
+ *
+ * \param state Points to the variable where to store the pointer to
+ * the new SymmetricState object.
+ * \param name The name of the Noise protocol to use.  This string
+ * must be NUL-terminated.
+ *
+ * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
+ * \a state or \a name is NULL, NOISE_ERROR_UNKNOWN_NAME if the
+ * protocol \a name is unknown, NOISE_ERROR_INVALID_LENGTH if the
+ * lengths of the hash output or the cipher key are incompatible,
+ * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * allocate the new SymmetricState object.
+ *
+ * \sa noise_symmetricstate_free(), noise_symmetricstate_new_by_id()
+ */
+int noise_symmetricstate_new_by_name
+    (NoiseSymmetricState **state, const char *name)
+{
+    NoiseProtocolId id;
+    size_t name_len;
+    int err;
+
+    /* Validate the parameters */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    *state = 0;
+    if (!name)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Parse the protocol identifier and validate the names */
+    name_len = strlen(name);
+    err = noise_protocol_name_to_id(&id, name, name_len);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    /* Create the SymmetricState object */
+    return noise_symmetricstate_new(state, name, &id);
 }
 
 /**
@@ -132,7 +195,7 @@ int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol)
  * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if
  * \a state is NULL.
  *
- * \sa noise_symmetricstate_new()
+ * \sa noise_symmetricstate_new_by_id(), noise_symmetricstate_new_by_name()
  */
 int noise_symmetricstate_free(NoiseSymmetricState *state)
 {

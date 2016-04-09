@@ -32,7 +32,10 @@ extern "C" {
 
 typedef struct NoiseSymmetricState_s NoiseSymmetricState;
 
-int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol);
+int noise_symmetricstate_new_by_id
+    (NoiseSymmetricState **state, const NoiseProtocolId *id);
+int noise_symmetricstate_new_by_name
+    (NoiseSymmetricState **state, const char *name);
 int noise_symmetricstate_free(NoiseSymmetricState *state);
 int noise_symmetricstate_get_protocol_id
     (const NoiseSymmetricState *state, NoiseProtocolId *id);
