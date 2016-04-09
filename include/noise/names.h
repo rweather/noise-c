@@ -30,8 +30,24 @@
 extern "C" {
 #endif
 
+typedef struct
+{
+    int prefix_id;      /**< Protocol name prefix */
+    int pattern_id;     /**< Handshake pattern */
+    int dh_id;          /**< Diffie-Hellman algorithm identifier */
+    int cipher_id;      /**< Cipher algorithm identifier */
+    int hash_id;        /**< Hash algorithm identifier */
+    int reserved_id;    /**< Reserved for future use, must be zero */
+
+} NoiseProtocolId;
+
 int noise_name_to_id(int category, const char *name, size_t name_len);
 const char *noise_id_to_name(int category, int id);
+
+int noise_protocol_name_to_id
+    (NoiseProtocolId *id, const char *name, size_t name_len);
+int noise_protocol_id_to_name
+    (char *name, size_t name_len, const NoiseProtocolId *id);
 
 #ifdef __cplusplus
 };

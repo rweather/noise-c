@@ -376,3 +376,8 @@
  *
  * \note Specific protocol instantiations may enforce a smaller limit.
  */
+
+/**
+ * \def NOISE_MAX_PROTOCOL_NAME
+ * \brief Maximum length of a protocol name string.
+ */

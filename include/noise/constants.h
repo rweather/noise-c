@@ -101,6 +101,9 @@ extern "C" {
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535
 
+/* Maximum length of a protocol name string */
+#define NOISE_MAX_PROTOCOL_NAME         128
+
 #ifdef __cplusplus
 };
 #endif
