@@ -60,6 +60,7 @@ is my motto.
 \li <tt>src/backend/xyz/</tt> - Recommended location for alternative backends.
 \li <tt>tests/unit/</tt> - Unit tests to exercise the library's functionality.
 \li <tt>tests/vector/</tt> - Public test vectors for the Noise protocol.
+\li <tt>examples/</tt> - Source code for examples.
 \li <tt>doc/</tt> - Overview and example documentation.
 
 \section building Building
@@ -78,20 +79,21 @@ $ make check
 
 \section todo TODO
 
-Things that need to be done to complete the API so that it actually works:
+In no particular order:
 
 \li \ref handshakestate "HandshakeState" API implementation.
+\li Support for Curve448 using a reference implementation.
 \li Unit tests and vector tests for all public API's.
 \li Examples and overview documentation.
+\li Mechanism to encrypt static DH keypairs with a passphrase.
+\li Standalone key generation utility for static DH keypairs.
 \li Convert the build system to standard autoconf/automake conventions.
-
-Things that need to be done to make the library useful in other contexts
-(contributions welcome):
-
 \li Port to other platforms (rand.c is a particular place that needs work).
 \li Back ends for other cryptography libraries: OpenSSL, libsodium, ...
 \li Compile-time subsetting of the library for applications that only
     need a subset of the algorithms, and for platforms with limited memory.
+
+Contributions are welcome to help implement any of these.
 
 \section contact Contact
 
