@@ -11,6 +11,7 @@ CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
 
 MAIN_SOURCES = \
 	cipherstate.c \
+        errors.c \
         hashstate.c \
         names.c \
         rand.c \

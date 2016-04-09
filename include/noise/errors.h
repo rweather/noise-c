@@ -20,14 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_NOISE_H
-#define NOISE_NOISE_H
+#ifndef NOISE_ERRORS_H
+#define NOISE_ERRORS_H
 
-#include <noise/constants.h>
-#include <noise/errors.h>
-#include <noise/names.h>
-#include <noise/cipherstate.h>
-#include <noise/hashstate.h>
-#include <noise/symmetricstate.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void noise_perror(const char *s, int err);
+int noise_strerror(int err, char *buf, size_t size);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
