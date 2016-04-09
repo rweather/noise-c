@@ -285,7 +285,7 @@ int noise_cipherstate_encrypt_with_ad
     }
 
     /* Make sure that there is room for the MAC */
-    if (in_data_len > (NOISE_MAX_PAYLOAD_LEN - state->mac_len))
+    if (in_data_len > (size_t)(NOISE_MAX_PAYLOAD_LEN - state->mac_len))
         return NOISE_ERROR_INVALID_LENGTH;
 
     /* If the nonce has overflowed, then further encryption is impossible */

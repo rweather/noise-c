@@ -7,7 +7,7 @@ SRCDIR = .
 LIBRARY = libnoiseprotocol.a
 
 CPPFLAGS = -I$(TOPDIR)/include -I$(SRCDIR)
-CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
+CFLAGS = -std=c99 -g -Wall -Wextra $(CPPFLAGS)
 
 MAIN_SOURCES = \
 	cipherstate.c \
