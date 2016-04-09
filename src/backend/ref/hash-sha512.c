@@ -59,7 +59,6 @@ NoiseHashState *noise_sha512_new(void)
     NoiseSHA512State *state = noise_new(NoiseSHA512State);
     if (!state)
         return 0;
-    state->parent.size = sizeof(NoiseSHA512State);
     state->parent.hash_id = NOISE_HASH_SHA512;
     state->parent.hash_len = 64;
     state->parent.block_len = 128;

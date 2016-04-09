@@ -59,7 +59,6 @@ NoiseHashState *noise_blake2s_new(void)
     NoiseBLAKE2sState *state = noise_new(NoiseBLAKE2sState);
     if (!state)
         return 0;
-    state->parent.size = sizeof(NoiseBLAKE2sState);
     state->parent.hash_id = NOISE_HASH_BLAKE2s;
     state->parent.hash_len = 32;
     state->parent.block_len = 64;

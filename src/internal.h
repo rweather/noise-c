@@ -84,8 +84,8 @@ struct NoiseSymmetricState_s
     uint8_t h[NOISE_MAX_HASHLEN];
 };
 
-#define noise_new(type) ((type *)noise_calloc(sizeof(type)))
-void *noise_calloc(size_t size);
+#define noise_new(type) ((type *)noise_new_object(sizeof(type)))
+void *noise_new_object(size_t size);
 void noise_free(void *ptr, size_t size);
 
 void noise_clean(void *data, size_t size);

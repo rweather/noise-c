@@ -80,7 +80,6 @@ int noise_symmetricstate_new(NoiseSymmetricState **state, const char *protocol)
     new_state = noise_new(NoiseSymmetricState);
     if (!new_state)
         return NOISE_ERROR_NO_MEMORY;
-    new_state->size = sizeof(NoiseSymmetricState);
     new_state->id = id;
     err = noise_cipherstate_new_by_id(&(new_state->cipher), id.cipher_id);
     if (err != NOISE_ERROR_NONE) {

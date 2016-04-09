@@ -59,7 +59,6 @@ NoiseHashState *noise_sha256_new(void)
     NoiseSHA256State *state = noise_new(NoiseSHA256State);
     if (!state)
         return 0;
-    state->parent.size = sizeof(NoiseSHA256State);
     state->parent.hash_id = NOISE_HASH_SHA256;
     state->parent.hash_len = 32;
     state->parent.block_len = 64;

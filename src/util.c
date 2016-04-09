@@ -32,7 +32,7 @@
 
 /**
  * \def noise_new(type)
- * \brief Allocates a structure from the system and zeroes it.
+ * \brief Allocates an object from the system and initializes it.
  *
  * \param type The structure type, which determines the size of the
  * requested block, and the return type.
@@ -40,25 +40,39 @@
  * \return Pointer to the allocated memory or NULL if the system is
  * out of memory.
  *
- * \sa noise_calloc(), noise_free()
+ * The object is assumed to start with a size_t field, which will be
+ * initialized with the size of \a type.  This is intended for use
+ * with noise_free() to destroy the object's contents when it is
+ * deallocated.
+ *
+ * \sa noise_new_object(), noise_free()
  */
 
 /**
- * \brief Allocates memory from the system and zeroes it.
+ * \brief Allocates memory from the system for an object.
  *
- * \param size The number of bytes of memory to allocate.
+ * \param size The number of bytes of memory to allocate for the object.
  *
  * \return Pointer to the allocated memory or NULL if the system is
  * out of memory.
+ *
+ * If \a size is greater than or equal to sizeof(size_t), then the
+ * first few bytes in the returned memory will be set to \a size.
+ * That is, the object is assumed to start with a size field.
+ * All other bytes in the object are initialized to zero.
  *
  * \note If the caller is allocating a structure, then noise_new()
  * is a better option to ensure type-safety.
  *
  * \sa noise_new(), noise_free()
  */
-void *noise_calloc(size_t size)
+void *noise_new_object(size_t size)
 {
-    return calloc(1, size);
+    void *ptr = calloc(1, size);
+    if (!ptr || size < sizeof(size_t))
+        return ptr;
+    *((size_t *)ptr) = size;
+    return ptr;
 }
 
 /**
@@ -67,7 +81,7 @@ void *noise_calloc(size_t size)
  * \param ptr Points to the memory to be freed.
  * \param size The number of bytes at \a ptr.
  *
- * \sa noise_calloc()
+ * \sa noise_new()
  */
 void noise_free(void *ptr, size_t size)
 {
