@@ -88,6 +88,22 @@ extern jmp_buf test_jump_back;
         } \
     } while (0)
 
+/**
+ * \brief Converts a string from ASCII or hex into binary.
+ *
+ * \param data The data buffer to fill.
+ * \param max_len The maximum length of \a data in bytes.
+ * \param str The string to convert.  If the string starts with "0x", then
+ * the remaining characters are assumed to be in hex.  Otherwise the string
+ * is represented in ASCII.
+ *
+ * \return The actual length of the \a data in bytes.
+ *
+ * This function will fail the test case if the string is longer
+ * than \a max_len.
+ */
+size_t string_to_data(uint8_t *data, size_t max_len, const char *str);
+
 #ifdef __cplusplus
 };
 #endif

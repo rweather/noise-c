@@ -11,6 +11,7 @@ CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
 LDFLAGS = -L$(TOPDIR)/src -lnoiseprotocol
 
 SOURCES = \
+	test-hashstate.c \
 	test-main.c \
 	test-names.c
 

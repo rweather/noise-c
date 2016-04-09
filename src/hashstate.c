@@ -36,6 +36,17 @@
 
 /**
  * \defgroup hashstate HashState API
+ *
+ * The HashState API provides access to the hash algorithms within the
+ * library.  Normally applications won't need to use these functions
+ * directly because \ref symmetricstate "SymmetricState" takes care
+ * of hashing operations for the Noise protocol internally.
+ *
+ * These functions are provided mainly for testing purposes.  However,
+ * applications can use them if they need to hash values for some
+ * higher-level protocol purpose.  This may be preferable to the
+ * application having to source its own hash implementations
+ * for that purpose.
  */
 /**@{*/
 
@@ -166,15 +177,31 @@ int noise_hashstate_get_hash_id(const NoiseHashState *state)
 }
 
 /**
- * \brief Gets the length of the hahs output for a HashState object.
+ * \brief Gets the length of the hash output for a HashState object.
  *
  * \param state The HashState object.
  *
  * \return The size of the hash in bytes, or 0 if \a state is NULL.
+ *
+ * \sa noise_hashstate_get_block_length()
  */
-int noise_hashstate_get_hash_length(const NoiseHashState *state)
+size_t noise_hashstate_get_hash_length(const NoiseHashState *state)
 {
     return state ? state->hash_len : 0;
+}
+
+/**
+ * \brief Gets the length of the block for a HashState object.
+ *
+ * \param state The HashState object.
+ *
+ * \return The size of the block in bytes, or 0 if \a state is NULL.
+ *
+ * \sa noise_hashstate_get_hash_length()
+ */
+size_t noise_hashstate_get_block_length(const NoiseHashState *state)
+{
+    return state ? state->block_len : 0;
 }
 
 /**
@@ -245,8 +272,10 @@ int noise_hashstate_hash_two
     return NOISE_ERROR_NONE;
 }
 
+/** @cond */
 #define HMAC_IPAD   0x36    /**< Padding value for the inner HMAC context */
 #define HMAC_OPAD   0x5C    /**< Padding value for the outer HMAC context */
+/** @endcond */
 
 /**
  * \brief XOR's a HMAC key value with a byte value.
