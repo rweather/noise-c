@@ -1,0 +1,135 @@
+Important work items for Ed448-Goldilocks:
+
+* Better architecture detection / factoring of arch-related headers.
+    [PROGRESS]
+
+* Better factoring of high-level vs low-level library.
+
+* Factor out hash, crandom from core library?
+
+* Signed 32-bit NEON implementation to avoid bias/reduce after subtract
+
+
+
+* Documentation: write high-level API docs, and internal docs to help
+  other implementors.
+    * Partial progress on Doxygenating the code.
+
+* Documentation: write a spec or add to Watson's
+
+* Cleanup: rename everything consistently.
+    * namespace_op or op_namespace?  namespace_op_type?
+    * We don't have to be super-careful with the namespacing, because
+      symbols will be scrubbed by exported.sym.
+
+* Cleanup: hard-coded tables (probably?)
+    * This reduces the work required for goldilocks_init() at the expense
+      of library size.
+     
+    * Makes error-handling and thread safety easier.
+    
+    * Use the SAGE tool?
+
+* Cleanup: unify intrinsics code
+    * Word_t, mask_t, bigregister_t, etc.
+    * Generate asm intrinsics with a script?
+
+* [DONE] Bugfix: make sure that init() and randomization are thread-safe.
+
+* [DONE] Security: check on deserialization that points are < p.
+    * [NEEDS TESTING] Check also that they're nonzero or otherwise non-pathological?
+
+* Testing:
+    * Corner-case testing
+    * More bulk random testing
+    * Negative testing.
+    * SAGE-(auto?)-generated test vectors
+    * Test the Barrett fields
+
+* Safety: add static analysis attributes for compilers that support them
+    * Most functions now have warn on ignored return.
+
+* Safety:
+    * [DONE] Check for init() if it's still required once we've done the above
+    * Decide what to do about RNG failures
+        * abort
+        * return error and zeroize
+        * return error but continue if RNG is kind of mostly OK
+    
+* Flexibility: decide which API options are good.
+    * [DONE?] Eg, should functions take nbits and table sizes?
+    
+    * [DONE] Remove hardcoded adjustments from comb control.
+        * These adjustments make the output wrong when it's not 450 bits.
+        
+    * Other slow Barrett fields?  Montgomery fields?
+
+* Mid-level API
+    * Make it easier to work with untwisted Edwards objects.
+    * Probably use extended or projective, not extensible coordinates.
+    * Scalarmul with other cofactor modes.
+
+* High-level API:
+    * SHA512 Elligator Edition?  Maybe write a paper first.
+    
+    * Elligator.
+        * Need to write Elligator inverse.  Might not be Elligator-2S.
+    
+    * FHMQV? Is this patented?
+    
+    * What low-level APIs to expose?
+        * Edwards points with add, sub, scalarmul, =, ==, ser/deser?
+
+* Portability: test and make clean with other compilers
+    * Using a fair amount of __attribute__ code.
+    * [DONE] Should work for GCC now.
+
+* Portability: try to make the vector code as portable as possible
+    * Currently using clang ext_vector_length.
+    * I can't get a simple for-loop to autovectorize :-/
+    * SAGE tool?
+
+* Portability: make the inner layers of the code 32-bit clean.
+    * Write new versions of the field code.
+        * [DONE] 28-bit limbs give less headroom for carries.
+        * [DONE] Now have a vectorless ARM version; need NEON.
+        * Improve speed of 32-bit field code.
+    
+    * [DONE] Run through the SAGE tool to generate new bias & bound.
+
+* [DONE] Portability: make the outer layers of the code 32-bit clean.
+
+* [DONE] Performance/flexibility: decide which parameters should be hard-coded.
+    * Perhaps useful for comb precomputation.
+
+* Performance: Improve SHA512.
+    * [DONE?] Improve portability.
+    * Improve speed.
+        * Except not, because this adds too much code size.
+        * Link OpenSSL if a fast SHA is desired.
+
+* Protocol:
+    * Decide what things to stir into hashes for various functions.
+    
+* Performance: improve the Barrett field code.
+    * Support other primes?
+    * Capture prime shape into a struct instead of passing 3 params.
+    * [DONE] Make 32-bit clean.
+
+* Automation:
+    * Improve the SAGE tool to cover more cases
+        * Real SSA classes to cover branching and looping
+        * Constant-time selection
+        * Intrinsics code
+        * Field code?
+    
+    * SAGE tool is impossibly slow on 32-bit
+         * Currently stuck on Elligator after 19 hours.
+         * [FIXED] at least for now.
+        
+    * Vector-mul-chains
+    * Negation "bubble pushing" optimization
+
+* Clear other TODO/FIXME/HACK/PERF items in the code
+
+* [DONE?] Submit to SUPERCOP
