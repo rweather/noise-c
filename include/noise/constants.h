@@ -78,15 +78,6 @@ extern "C" {
 #define NOISE_PREFIX_STANDARD           NOISE_ID('N', 1)
 #define NOISE_PREFIX_PSK                NOISE_ID('N', 2)
 
-/* Handshake message pattern tokens */
-#define NOISE_TOKEN_END                 0
-#define NOISE_TOKEN_S                   NOISE_ID('T', 1)
-#define NOISE_TOKEN_E                   NOISE_ID('T', 2)
-#define NOISE_TOKEN_DHEE                NOISE_ID('T', 3)
-#define NOISE_TOKEN_DHES                NOISE_ID('T', 4)
-#define NOISE_TOKEN_DHSE                NOISE_ID('T', 5)
-#define NOISE_TOKEN_DHSS                NOISE_ID('T', 6)
-
 /* Error codes */
 #define NOISE_ERROR_NONE                0
 #define NOISE_ERROR_NO_MEMORY           NOISE_ID('E', 1)

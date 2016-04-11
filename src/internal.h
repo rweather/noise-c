@@ -303,6 +303,19 @@ struct NoiseSymmetricState_s
     uint8_t h[NOISE_MAX_HASHLEN];
 };
 
+/* Handshake message pattern tokens (must be single-byte values) */
+#define NOISE_TOKEN_END         0   /**< End of pattern, start data session */
+#define NOISE_TOKEN_S           1   /**< "s" token */
+#define NOISE_TOKEN_E           2   /**< "e" token */
+#define NOISE_TOKEN_DHEE        3   /**< "dhee" token */
+#define NOISE_TOKEN_DHES        4   /**< "dhes" token */
+#define NOISE_TOKEN_DHSE        5   /**< "dhse" token */
+#define NOISE_TOKEN_DHSS        6   /**< "dhss" token */
+#define NOISE_TOKEN_REQ_IKEY    128 /**< Requires the initiator's static key */
+#define NOISE_TOKEN_REQ_RKEY    129 /**< Requires the responder's static key */
+#define NOISE_TOKEN_FALLBACK    254 /**< Continue with the fallback protocol */
+#define NOISE_TOKEN_FLIP_DIR    255 /**< Flip the handshake direction */
+
 #define noise_new(type) ((type *)noise_new_object(sizeof(type)))
 void *noise_new_object(size_t size);
 void noise_free(void *ptr, size_t size);
@@ -326,6 +339,8 @@ NoiseHashState *noise_sha512_new(void);
 
 NoiseDHState *noise_curve25519_new(void);
 NoiseDHState *noise_curve448_new(void);
+
+const uint8_t *noise_lookup_pattern(int id);
 
 #ifdef __cplusplus
 };

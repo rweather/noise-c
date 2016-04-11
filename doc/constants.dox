@@ -272,48 +272,6 @@
 /**@}*/
 
 /**
- * \defgroup token_id Handshake message pattern token identifiers
- */
-/**@{*/
-
-/**
- * \def NOISE_TOKEN_END
- * \brief Message pattern token that indicates the end of a pattern.
- */
-
-/**
- * \def NOISE_TOKEN_S
- * \brief Message pattern token "s".
- */
-
-/**
- * \def NOISE_TOKEN_E
- * \brief Message pattern token "e".
- */
-
-/**
- * \def NOISE_TOKEN_DHEE
- * \brief Message pattern token "dhee".
- */
-
-/**
- * \def NOISE_TOKEN_DHES
- * \brief Message pattern token "dhes".
- */
-
-/**
- * \def NOISE_TOKEN_DHSE
- * \brief Message pattern token "dhse".
- */
-
-/**
- * \def NOISE_TOKEN_DHSS
- * \brief Message pattern token "dhss".
- */
-
-/**@}*/
-
-/**
  * \defgroup errors Error codes
  */
 /**@{*/

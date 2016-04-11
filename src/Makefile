@@ -23,6 +23,7 @@ MAIN_SOURCES = \
         errors.c \
         hashstate.c \
         names.c \
+	patterns.c \
         rand.c \
 	symmetricstate.c \
 	util.c
