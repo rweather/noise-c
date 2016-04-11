@@ -31,3 +31,15 @@ ghash:
     Implementation of GHASH from arduinolibs to support GCM.
     https://github.com/rweather/arduinolibs
     MIT license
+
+goldilocks:
+    Ed448-Goldilocks reference implementation of p448 curves.  We only use
+    the p448 field arithmetic from this library because the public API
+    for goldilocks doesn't quite do what we want (RFC 7748 compatibility).
+    git://git.code.sf.net/p/ed448goldilocks/code
+    MIT license
+
+curve448:
+    Simple implementation of curve448 built on top of the p448 arithmetic
+    from goldilocks.  This can be exported and used in other projects.
+    MIT license

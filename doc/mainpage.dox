@@ -82,7 +82,6 @@ $ make check
 In no particular order:
 
 \li \ref handshakestate "HandshakeState" API implementation.
-\li Support for Curve448 using a reference implementation.
 \li Unit tests and vector tests for all public API's.
 \li Examples and overview documentation.
 \li Mechanism to encrypt static DH keypairs with a passphrase.

@@ -176,7 +176,6 @@ static void dhstate_check_test_vectors(void)
          /* Shared secret - also null */
          "0x0000000000000000000000000000000000000000000000000000000000000000");
 
-#if 0 /* TODO */
     /* Curve448 - From section 6.2 of RFC 7748 */
     check_dh
         (NOISE_DH_CURVE448, 56, 56, 56, "448", 0,
@@ -213,7 +212,6 @@ static void dhstate_check_test_vectors(void)
          /* Shared secret - also null */
          "0x00000000000000000000000000000000000000000000000000000000"
            "00000000000000000000000000000000000000000000000000000000");
-#endif
 }
 
 /* Check the generation and use of new key pairs */
@@ -292,7 +290,7 @@ static void check_dh_generate(int id)
 static void dhstate_check_generate_keypair(void)
 {
     check_dh_generate(NOISE_DH_CURVE25519);
-    /* TODO: check_dh_generate(NOISE_DH_CURVE448); */
+    check_dh_generate(NOISE_DH_CURVE448);
 }
 
 /* Check other error conditions that can be reported by the functions */
