@@ -89,8 +89,8 @@ static void test_id_mappings(void)
     /* Check for unknown names/identifiers */
     compare(noise_name_to_id(NOISE_CIPHER_CATEGORY, "AESGCM-128", 10), 0);
     compare(noise_name_to_id(0, "AESGCM-128", 10), 0);
-    compare(noise_id_to_name(NOISE_CIPHER_CATEGORY, NOISE_ID('C', 200)), 0);
-    compare(noise_id_to_name(0, NOISE_ID('C', 200)), 0);
+    verify(noise_id_to_name(NOISE_CIPHER_CATEGORY, NOISE_ID('C', 200)) == 0);
+    verify(noise_id_to_name(0, NOISE_ID('C', 200)) == 0);
 }
 
 /* Check the parsing and formatting of a specific protocol name */
