@@ -277,7 +277,7 @@ struct NoiseDHState_s
  */
 struct NoiseSymmetricState_s
 {
-    /** \brief Total size of the structure including subclass state */
+    /** \brief Total size of the structure */
     size_t size;
 
     /** \brief Algorithm identifiers for the components of the protocol */
@@ -303,6 +303,50 @@ struct NoiseSymmetricState_s
     uint8_t h[NOISE_MAX_HASHLEN];
 };
 
+/**
+ * \brief Internal structure of the NoiseHandshakeState type.
+ */
+struct NoiseHandshakeState_s
+{
+    /** \brief Total size of the structure, including DH key storage */
+    size_t size;
+
+    /** \brief The role of this object, initiator or responder */
+    int role;
+
+    /** \brief Requirements that are yet to be satisfied */
+    int requirements;
+
+    /** \brief Points to the next message pattern tokens to be processed */
+    const uint8_t *tokens;
+
+    /** \brief Points to the SymmetricState object for this HandshakeState */
+    NoiseSymmetricState *symmetric;
+
+    /** \brief Points to the DHState object for this HandshakeState */
+    NoiseDHState *dh;
+
+    /** \brief Points to the local static private key */
+    uint8_t *local_static_private_key;
+
+    /** \brief Points to the local static public key */
+    uint8_t *local_static_public_key;
+
+    /** \brief Points to the local ephemeral private key */
+    uint8_t *local_ephemeral_private_key;
+
+    /** \brief Points to the local ephemeral public key */
+    uint8_t *local_ephemeral_public_key;
+
+    /** \brief Points to the remote static public key */
+    uint8_t *remote_static_public_key;
+
+    /** \brief Points to the remote ephemeral public key */
+    uint8_t *remote_ephemeral_public_key;
+
+    /* Followed by pre-allocated memory for the above DH keys */
+};
+
 /* Handshake message pattern tokens (must be single-byte values) */
 #define NOISE_TOKEN_END         0   /**< End of pattern, start data session */
 #define NOISE_TOKEN_S           1   /**< "s" token */
@@ -311,10 +355,34 @@ struct NoiseSymmetricState_s
 #define NOISE_TOKEN_DHES        4   /**< "dhes" token */
 #define NOISE_TOKEN_DHSE        5   /**< "dhse" token */
 #define NOISE_TOKEN_DHSS        6   /**< "dhss" token */
-#define NOISE_TOKEN_REQ_IKEY    128 /**< Requires the initiator's static key */
-#define NOISE_TOKEN_REQ_RKEY    129 /**< Requires the responder's static key */
 #define NOISE_TOKEN_FALLBACK    254 /**< Continue with the fallback protocol */
 #define NOISE_TOKEN_FLIP_DIR    255 /**< Flip the handshake direction */
+
+/** Pattern requires a local static keypair */
+#define NOISE_PAT_FLAG_LOCAL_STATIC     (1 << 0)
+/** Pattern requires a local ephemeral keypair */
+#define NOISE_PAT_FLAG_LOCAL_EMPEMERAL  (1 << 1)
+/** Pattern requires that the local public key be provided
+    ahead of time to start the protocol.  That is, it is not
+    sent as part of the protocol but is assumed to already be
+    known to the other party. */
+#define NOISE_PAT_FLAG_LOCAL_REQUIRED   (1 << 2)
+/** Pattern requires a remote static public key */
+#define NOISE_PAT_FLAG_REMOTE_STATIC    (1 << 4)
+/** Pattern requires a remote ephemeral public key */
+#define NOISE_PAT_FLAG_REMOTE_EMPEMERAL (1 << 5)
+/** Pattern requires that the local public key be provided
+    ahead of time to start the protocol.  That is, it is not
+    sent as part of the protocol but is assumed to already be
+    known to the other party. */
+#define NOISE_PAT_FLAG_REMOTE_REQUIRED  (1 << 6)
+
+/** Local static keypair has not been provided yet */
+#define NOISE_REQ_LOCAL_REQUIRED        (1 << 0)
+/** Remote publie key has not been provided yet */
+#define NOISE_REQ_REMOTE_REQUIRED       (1 << 1)
+/** Pre-shared key has not been provided yet */
+#define NOISE_REQ_PSK                   (1 << 2)
 
 #define noise_new(type) ((type *)noise_new_object(sizeof(type)))
 void *noise_new_object(size_t size);
@@ -340,7 +408,8 @@ NoiseHashState *noise_sha512_new(void);
 NoiseDHState *noise_curve25519_new(void);
 NoiseDHState *noise_curve448_new(void);
 
-const uint8_t *noise_lookup_pattern(int id);
+const uint8_t *noise_pattern_lookup(int id);
+uint8_t noise_pattern_reverse_flags(uint8_t flags);
 
 #ifdef __cplusplus
 };

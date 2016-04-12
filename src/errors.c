@@ -50,7 +50,11 @@ static const char * const error_strings[] = {
     "Invalid parameter",
     "Invalid state",
     "Invalid nonce",
-    "Invalid Diffie-Hellman key"
+    "Invalid Diffie-Hellman key",
+    "Remote static public key required",
+    "Local keypair required",
+    "Pre shared key required",
+    "Option is not applicable"
 };
 #define num_error_strings (sizeof(error_strings) / sizeof(error_strings[0]))
 
@@ -58,13 +62,13 @@ static const char * const error_strings[] = {
  * \brief Gets the string for an error code from the internal table.
  *
  * \param err The error code.
- * \return A pointer to the string, or NULL if \a err is unknown.
+ * \return A pointer to the string, or NULL if there is no string for \a err.
  */
 static const char *noise_errstr(int err)
 {
     if (err == NOISE_ERROR_NONE)
         return error_strings[0];
-    if (err < NOISE_ID('E', 1) || err > NOISE_ID('E', num_error_strings))
+    if (err < NOISE_ID('E', 1) || err >= NOISE_ID('E', num_error_strings))
         return 0;
     return error_strings[err - NOISE_ID('E', 0)];
 }

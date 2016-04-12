@@ -472,9 +472,10 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  *
  * \param state The SymmetricState object.
  * \param c1 Points to the variable where to place the pointer to the
- * first CipherState object.
+ * first CipherState object.  Must not be NULL.
  * \param c2 Points to the variable where to place the pointer to the
- * second CipherState object.
+ * second CipherState object.  This can be NULL if the application is
+ * using a one-way handshake pattern.
  *
  * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one of
  * \a state, \a c1, or \a c2 is NULL, NOISE_ERROR_INVALID_STATE if the
@@ -485,6 +486,15 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  * cannot be used for future encryption or hashing operations.
  * If those operations are invoked, the relevant functions will return
  * NOISE_ERROR_INVALID_STATE.
+ *
+ * The \a c1 object should be used to protect messages from the initiator to
+ * the responder, and the \a c2 object should be used to protect messages
+ * from the responder to the initiator.
+ *
+ * If the handshake pattern is one-way, then the application should call
+ * noise_cipherstate_free() on \a c2 as it will not be needed.  Alternatively,
+ * the application can pass NULL to noise_symmetricstate_split() as the
+ * \a c2 argument and the second CipherState will not be created at all.
  */
 int noise_symmetricstate_split
     (NoiseSymmetricState *state, NoiseCipherState **c1, NoiseCipherState **c2)
@@ -493,13 +503,13 @@ int noise_symmetricstate_split
     uint8_t temp_k2[NOISE_MAX_HASHLEN];
     size_t hash_len;
     size_t key_len;
-    int err;
 
     /* Validate the parameters */
-    if (!state || !c1 || !c2)
+    if (!state || !c1)
         return NOISE_ERROR_INVALID_PARAM;
     *c1 = 0;
-    *c2 = 0;
+    if (c2)
+        *c2 = 0;
 
     /* If the state has already been split, then we cannot split again */
     if (!state->cipher)
@@ -512,17 +522,20 @@ int noise_symmetricstate_split
         (state->hash, state->ck, hash_len, state->ck, 0,
          temp_k1, key_len, temp_k2, key_len);
 
-    /* Split a copy out of the cipher and give it the first key */
-    err = noise_cipherstate_split(state->cipher, temp_k1, key_len, c1);
-    if (err != NOISE_ERROR_NONE) {
-        noise_clean(temp_k1, sizeof(temp_k1));
-        noise_clean(temp_k2, sizeof(temp_k2));
-        return err;
+    /* Split a copy out of the cipher and give it the second key.
+       We don't need to do this if the second CipherSuite is not required */
+    if (c2) {
+        int err = noise_cipherstate_split(state->cipher, temp_k2, key_len, c2);
+        if (err != NOISE_ERROR_NONE) {
+            noise_clean(temp_k1, sizeof(temp_k1));
+            noise_clean(temp_k2, sizeof(temp_k2));
+            return err;
+        }
     }
 
-    /* Re-initialize the key in the internal cipher and copy it to c2 */
-    noise_cipherstate_init_key(state->cipher, temp_k2, key_len);
-    *c2 = state->cipher;
+    /* Re-initialize the key in the internal cipher and copy it to c1 */
+    noise_cipherstate_init_key(state->cipher, temp_k1, key_len);
+    *c1 = state->cipher;
     state->cipher = 0;
     noise_clean(temp_k1, sizeof(temp_k1));
     noise_clean(temp_k2, sizeof(temp_k2));

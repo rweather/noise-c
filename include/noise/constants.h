@@ -78,6 +78,17 @@ extern "C" {
 #define NOISE_PREFIX_STANDARD           NOISE_ID('N', 1)
 #define NOISE_PREFIX_PSK                NOISE_ID('N', 2)
 
+/* Role for this end of the communications */
+#define NOISE_ROLE_INITIATOR            NOISE_ID('R', 1)
+#define NOISE_ROLE_RESPONDER            NOISE_ID('R', 2)
+
+/* Actions for the application to take, as directed by the HandshakeState */
+#define NOISE_ACTION_NONE               0
+#define NOISE_ACTION_WRITE_MESSAGE      NOISE_ID('A', 1)
+#define NOISE_ACTION_READ_MESSAGE       NOISE_ID('A', 2)
+#define NOISE_ACTION_SPLIT              NOISE_ID('A', 3)
+#define NOISE_ACTION_FAILED             NOISE_ID('A', 4)
+
 /* Error codes */
 #define NOISE_ERROR_NONE                0
 #define NOISE_ERROR_NO_MEMORY           NOISE_ID('E', 1)
@@ -89,6 +100,10 @@ extern "C" {
 #define NOISE_ERROR_INVALID_STATE       NOISE_ID('E', 7)
 #define NOISE_ERROR_INVALID_NONCE       NOISE_ID('E', 8)
 #define NOISE_ERROR_INVALID_DH_KEY      NOISE_ID('E', 9)
+#define NOISE_ERROR_REMOTE_KEY_REQUIRED NOISE_ID('E', 10)
+#define NOISE_ERROR_LOCAL_KEY_REQUIRED  NOISE_ID('E', 11)
+#define NOISE_ERROR_PSK_REQUIRED        NOISE_ID('E', 12)
+#define NOISE_ERROR_NOT_APPLICABLE      NOISE_ID('E', 13)
 
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535

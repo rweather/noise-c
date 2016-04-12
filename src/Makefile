@@ -21,6 +21,7 @@ MAIN_SOURCES = \
 	cipherstate.c \
         dhstate.c \
         errors.c \
+	handshakestate.c \
         hashstate.c \
         names.c \
 	patterns.c \

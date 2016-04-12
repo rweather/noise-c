@@ -23,7 +23,6 @@
 #ifndef NOISE_HANDSHAKESTATE_H
 #define NOISE_HANDSHAKESTATE_H
 
-#include <noise/cipherstate.h>
 #include <noise/symmetricstate.h>
 
 #ifdef __cplusplus
@@ -32,12 +31,47 @@ extern "C" {
 
 typedef struct NoiseHandshakeState_s NoiseHandshakeState;
 
-int noise_handshakestate_new(NoiseHandshakeState **state);
+int noise_handshakestate_new_by_id
+    (NoiseHandshakeState **state, const NoiseProtocolId *protocol_id, int role);
+int noise_handshakestate_new_by_name
+    (NoiseHandshakeState **state, const char *protocol_name, int role);
 int noise_handshakestate_free(NoiseHandshakeState *state);
-
-int noise_handshakestate_in_handshake(const NoiseHandshakeState *state);
-
-// TODO: API is incomplete
+int noise_handshakestate_get_role(const NoiseHandshakeState *state);
+int noise_handshakestate_get_protocol_id
+    (const NoiseHandshakeState *state, NoiseProtocolId *id);
+int noise_handshakestate_get_dh_id(const NoiseHandshakeState *state);
+int noise_handshakestate_get_private_key_length
+    (const NoiseHandshakeState *state);
+int noise_handshakestate_get_public_key_length
+    (const NoiseHandshakeState *state);
+int noise_handshakestate_set_pre_shared_key
+    (NoiseHandshakeState *state, const uint8_t *key, size_t key_len);
+int noise_handshakestate_set_prologue
+    (NoiseHandshakeState *state, const void *prologue, size_t prologue_len);
+int noise_handshakestate_needs_local_keypair(const NoiseHandshakeState *state);
+int noise_handshakestate_has_local_keypair(const NoiseHandshakeState *state);
+int noise_handshakestate_set_local_keypair
+    (NoiseHandshakeState *state,
+     const uint8_t *private_key, size_t private_key_len,
+     const uint8_t *public_key, size_t public_key_len);
+int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *state);
+int noise_handshakestate_has_remote_public_key(const NoiseHandshakeState *state);
+int noise_handshakestate_get_remote_public_key
+    (NoiseHandshakeState *state, uint8_t *public_key, size_t public_key_len);
+int noise_handshakestate_set_remote_public_key
+    (NoiseHandshakeState *state,
+     const uint8_t *public_key, size_t public_key_len);
+int noise_handshakestate_start(NoiseHandshakeState *state);
+int noise_handshakestate_fallback(NoiseHandshakeState *state);
+int noise_handshakestate_get_action(const NoiseHandshakeState *state);
+int noise_handshakestate_write_message
+    (NoiseHandshakeState *state, const void *payload, size_t payload_size,
+     uint8_t *message, size_t *message_size);
+int noise_handshakestate_read_message
+    (NoiseHandshakeState *state, const uint8_t *message, size_t message_size,
+     void *payload, size_t *payload_size);
+int noise_handshakestate_split
+    (NoiseHandshakeState *state, NoiseCipherState **c1, NoiseCipherState **c2);
 
 #ifdef __cplusplus
 };

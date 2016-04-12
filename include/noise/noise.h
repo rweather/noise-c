@@ -30,5 +30,6 @@
 #include <noise/hashstate.h>
 #include <noise/dhstate.h>
 #include <noise/symmetricstate.h>
+#include <noise/handshakestate.h>
 
 #endif

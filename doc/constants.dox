@@ -272,6 +272,61 @@
 /**@}*/
 
 /**
+ * \defgroup roles Initiator/responder role codes
+ */
+/**@{*/
+
+/**
+ * \def NOISE_ROLE_INITIATOR
+ * \brief This end of the communications is the initiator.
+ */
+
+/**
+ * \def NOISE_ROLE_RESPONDER
+ * \brief This end of the communications is the responder.
+ */
+
+/**@}*/
+
+/**
+ * \defgroup actions HandshakeState action codes
+ */
+/**@{*/
+
+/**
+ * \def NOISE_ACTION_NONE
+ * \brief No action is required of the application yet because the
+ * handshake has not started.
+ */
+
+/**
+ * \def NOISE_ACTION_WRITE_MESSAGE
+ * \brief The HandshakeState expects the application to write the
+ * next message payload for the handshake.
+ */
+
+/**
+ * \def NOISE_ACTION_READ_MESSAGE
+ * \brief The HandshakeState expects the application to read the
+ * next message payload from the handshake.
+ */
+
+/**
+ * \def NOISE_ACTION_SPLIT
+ * \brief The HandshakeState has flagged that the handshake is over and
+ * that the application is expected to call noise_handshake_split() and
+ * begin data session communications.
+ */
+
+/**
+ * \def NOISE_ACTION_FAILED
+ * \brief The HandshakeState has flagged that the handshake has failed
+ * with a MAC error.
+ */
+
+/**@}*/
+
+/**
  * \defgroup errors Error codes
  */
 /**@{*/
@@ -329,6 +384,33 @@
 /**
  * \def NOISE_ERROR_INVALID_DH_KEY
  * \brief Invalid Diffie-Hellman key value.
+ */
+
+/**
+ * \def NOISE_ERROR_REMOTE_KEY_REQUIRED
+ * \brief A remote static public key is required for the selected protocol,
+ * but one was not supplied.
+ */
+
+/**
+ * \def NOISE_ERROR_LOCAL_KEY_REQUIRED
+ * \brief A local keypair is required for the selected protocol, but one
+ * was not supplied.
+ */
+
+/**
+ * \def NOISE_ERROR_PSK_REQUIRED
+ * \brief A pre shared key is required for the selected protocol, but one
+ * was not supplied.
+ */
+
+/**
+ * \def NOISE_ERROR_NOT_APPLICABLE
+ * \brief An option was supplied that was not applicable to the
+ * selected protocol.
+ *
+ * For example, a pre shared key was supplied to a protocol that does not
+ * use pre shared keys.
  */
 
 /**@}*/
