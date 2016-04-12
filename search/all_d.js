@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['rand_2ec',['rand.c',['../rand_8c.html',1,'']]],
-  ['reserved_5fid',['reserved_id',['../group__names.html#a31df7887e75b88d0434aedb6f99a6245',1,'NoiseProtocolId']]],
-  ['reset',['reset',['../structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e',1,'NoiseHashState_s']]]
+  ['pattern_5fid',['pattern_id',['../group__names.html#a03585bc8d03a3f0cbc6dcc18f5feed02',1,'NoiseProtocolId']]],
+  ['patterns_2ec',['patterns.c',['../patterns_8c.html',1,'']]],
+  ['prefix_5fid',['prefix_id',['../group__names.html#a28ed86d8adce5c81d2a47fa1e93ec74d',1,'NoiseProtocolId::prefix_id()'],['../group__prefix__id.html',1,'(Global Namespace)']]],
+  ['private_5fkey_5flen',['private_key_len',['../structNoiseDHState__s.html#ad70fed9dc7645821fbf40bb89f4ab6df',1,'NoiseDHState_s']]],
+  ['public_5fkey_5flen',['public_key_len',['../structNoiseDHState__s.html#ab5a28a815c35396a971ee4ae533686fd',1,'NoiseDHState_s']]]
 ];

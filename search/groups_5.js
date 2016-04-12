@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['protocol_20prefix_20identifiers',['Protocol prefix identifiers',['../group__prefix__id.html',1,'']]]
+  ['initiator_2fresponder_20role_20codes',['Initiator/responder role codes',['../group__roles.html',1,'']]]
 ];
