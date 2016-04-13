@@ -23,7 +23,7 @@
 #include "test-helpers.h"
 
 #define NOISE_MIN_ERROR     NOISE_ID('E', 1)
-#define NOISE_MAX_ERROR     NOISE_ID('E', 13)
+#define NOISE_MAX_ERROR     NOISE_ID('E', 14)
 
 void test_errors(void)
 {

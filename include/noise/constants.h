@@ -107,7 +107,8 @@ extern "C" {
 #define NOISE_ERROR_REMOTE_KEY_REQUIRED NOISE_ID('E', 10)
 #define NOISE_ERROR_LOCAL_KEY_REQUIRED  NOISE_ID('E', 11)
 #define NOISE_ERROR_PSK_REQUIRED        NOISE_ID('E', 12)
-#define NOISE_ERROR_NOT_APPLICABLE      NOISE_ID('E', 13)
+#define NOISE_ERROR_EPHEM_KEY_REQUIRED  NOISE_ID('E', 13)
+#define NOISE_ERROR_NOT_APPLICABLE      NOISE_ID('E', 14)
 
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535

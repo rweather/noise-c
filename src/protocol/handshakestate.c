@@ -123,6 +123,10 @@ static int noise_handshakestate_new
         requirements |= NOISE_REQ_LOCAL_REQUIRED;
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED)
         requirements |= NOISE_REQ_REMOTE_REQUIRED;
+    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEM_REQ)
+        requirements |= NOISE_REQ_LOCAL_EPHEM_REQ;
+    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEM_REQ)
+        requirements |= NOISE_REQ_REMOTE_EPHEM_REQ;
     if (symmetric->id.prefix_id == NOISE_PREFIX_PSK)
         requirements |= NOISE_REQ_PSK;
 
@@ -607,6 +611,10 @@ int noise_handshakestate_set_remote_public_key
  * to start the protocol but one has not been provided yet.
  * \return NOISE_ERROR_PSK_REQUIRED if a pre shared key is required
  * to start the protocol but one has not been provided yet.
+ * \return NOISE_ERROR_EPHEM_KEY_REQUIRED if an ephemeral key is required
+ * to start the protocol but one has not been provided yet.  This usually
+ * indicates that the "XXfallback" protocol was not properly initiated
+ * with a call to noise_handshakestate_fallback().
  * \return NOISE_ERROR_INVALID_STATE if the protocol handshake
  * was already started.
  * \return NOISE_ERROR_NOT_APPLICABLE if an attempt was made to
@@ -644,10 +652,6 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  * converting it into an object with the handshake pattern "XXfallback".
  * Information from the previous session such as the local keypair and
  * the initiator's ephemeral key are passed to the new session.
- *
- * This function also reverses the roles of the communicating parties.
- * The previous initiator becomes the responder and the previous responder
- * becomes the initiator.
  *
  * Once the fallback has been initiated, the application must call
  * noise_handshakestate_set_prologue() and

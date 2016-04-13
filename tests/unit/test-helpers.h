@@ -36,6 +36,21 @@ extern "C" {
 extern int test_count;
 extern int test_failures;
 extern jmp_buf test_jump_back;
+extern const char *data_name;
+
+/**
+ * \brief Immediate fail of the test.
+ *
+ * \param message The failure message to print.
+ */
+#define _fail(message)   \
+    do { \
+        if (data_name) \
+            printf("%s: ", data_name); \
+        printf("%s, failed at " __FILE__ ":%d\n", (message), __LINE__); \
+        longjmp(test_jump_back, 1); \
+    } while (0)
+#define fail(message) _fail((message))
 
 /**
  * \brief Verifies that a condition is true, failing the test if not.
@@ -45,6 +60,8 @@ extern jmp_buf test_jump_back;
 #define _verify(condition)   \
     do { \
         if (!(condition)) { \
+            if (data_name) \
+                printf("%s: ", data_name); \
             printf(#condition " failed at " __FILE__ ":%d\n", __LINE__); \
             longjmp(test_jump_back, 1); \
         } \
@@ -62,6 +79,8 @@ extern jmp_buf test_jump_back;
         long long _actual = (long long)(actual); \
         long long _expected = (long long)(expected); \
         if (_actual != _expected) { \
+            if (data_name) \
+                printf("%s: ", data_name); \
             printf(#actual " != " #expected " at " __FILE__ ":%d\n", __LINE__); \
             printf("    actual  : %Ld (0x%Lx)\n", _actual, _actual); \
             printf("    expected: %Ld (0x%Lx)\n", _expected, _expected); \
@@ -77,6 +96,7 @@ extern jmp_buf test_jump_back;
 #define test(func)   \
     do { \
         extern void test_##func(void); \
+        data_name = 0; \
         if (!setjmp(test_jump_back)) { \
             ++test_count; \
             printf(#func " ... "); \

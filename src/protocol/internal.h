@@ -387,6 +387,9 @@ struct NoiseHandshakeState_s
     sent as part of the protocol but is assumed to already be
     known to the other party. */
 #define NOISE_PAT_FLAG_LOCAL_REQUIRED   (1 << 2)
+/** Pattern requires that the local ephemeral key be provided
+    ahead of time to start the protocol (for XXfallback) */
+#define NOISE_PAT_FLAG_LOCAL_EMPEM_REQ  (1 << 3)
 /** Pattern requires a remote static public key */
 #define NOISE_PAT_FLAG_REMOTE_STATIC    (1 << 4)
 /** Pattern requires a remote ephemeral public key */
@@ -396,13 +399,20 @@ struct NoiseHandshakeState_s
     sent as part of the protocol but is assumed to already be
     known to the other party. */
 #define NOISE_PAT_FLAG_REMOTE_REQUIRED  (1 << 6)
+/** Pattern requires that the remote ephemeral key be provided
+    ahead of time to start the protocol (for XXfallback) */
+#define NOISE_PAT_FLAG_REMOTE_EMPEM_REQ (1 << 7)
 
 /** Local static keypair has not been provided yet */
 #define NOISE_REQ_LOCAL_REQUIRED        (1 << 0)
 /** Remote publie key has not been provided yet */
 #define NOISE_REQ_REMOTE_REQUIRED       (1 << 1)
+/** Local ephemeral keypair has not been provided yet */
+#define NOISE_REQ_LOCAL_EPHEM_REQ       (1 << 2)
+/** Remote ephemeral public key has not been provided yet */
+#define NOISE_REQ_REMOTE_EPHEM_REQ      (1 << 3)
 /** Pre-shared key has not been provided yet */
-#define NOISE_REQ_PSK                   (1 << 2)
+#define NOISE_REQ_PSK                   (1 << 4)
 
 #define noise_new(type) ((type *)noise_new_object(sizeof(type)))
 void *noise_new_object(size_t size);

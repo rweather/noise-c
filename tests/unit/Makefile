@@ -6,7 +6,7 @@ SRCDIR = .
 
 TEST_APP = test-noise
 
-CPPFLAGS = -I$(TOPDIR)/include
+CPPFLAGS = -I$(TOPDIR)/include -I$(TOPDIR)/src
 CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
 LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 
@@ -16,7 +16,8 @@ SOURCES = \
 	test-errors.c \
 	test-hashstate.c \
 	test-main.c \
-	test-names.c
+	test-names.c \
+	test-patterns.c
 
 OBJECTS = $(patsubst %.c,%.o,$(SOURCES))
 DEPS    = $(patsubst %.c,.depend/%.d,$(SOURCES))

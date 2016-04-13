@@ -23,6 +23,11 @@
 #include "internal.h"
 
 /**
+ * \file patterns.c
+ * \brief Defines the handshake message patterns.
+ */
+
+/**
  * \brief Token sequence for handshake pattern "N".
  *
  * @code
@@ -79,7 +84,6 @@ static uint8_t const noise_pattern_K[] = {
 static uint8_t const noise_pattern_X[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
     NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
-    NOISE_PAT_FLAG_LOCAL_REQUIRED |
     NOISE_PAT_FLAG_REMOTE_STATIC |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
 
@@ -145,7 +149,6 @@ static uint8_t const noise_pattern_NK[] = {
  * @endcode
  */
 static uint8_t const noise_pattern_NX[] = {
-    NOISE_PAT_FLAG_LOCAL_STATIC |
     NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
     NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
@@ -341,9 +344,9 @@ static uint8_t const noise_pattern_KK[] = {
 static uint8_t const noise_pattern_KX[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
     NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_REQUIRED |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL |
-    NOISE_PAT_FLAG_REMOTE_REQUIRED,
+    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
@@ -436,15 +439,7 @@ static uint8_t const noise_pattern_IX[] = {
 /**
  * \brief Token sequence for handshake pattern "XXfallback".
  *
- * "IK" followed by "XXfallback" if the "IK" part fails.
- *
  * @code
- * Noise_IK(s, rs):
- *   <- s
- *   ...
- *   -> e, dhes, s, dhss
- *   <- e, dhee, dhes
- *
  * Noise_XXfallback(s, rs, re):
  *   <- e
  *   ...
@@ -456,7 +451,8 @@ static uint8_t const noise_pattern_XXfallback[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
     NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_REMOTE_EMPEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EMPEM_REQ,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_DHEE,
@@ -465,7 +461,6 @@ static uint8_t const noise_pattern_XXfallback[] = {
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
     NOISE_TOKEN_DHSE,
-    NOISE_TOKEN_DHES,
     NOISE_TOKEN_END
 };
 

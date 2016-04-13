@@ -25,6 +25,7 @@
 int test_count = 0;
 int test_failures = 0;
 jmp_buf test_jump_back;
+const char *data_name = 0;
 
 int main(int argc, char *argv[])
 {
@@ -34,6 +35,7 @@ int main(int argc, char *argv[])
     test(errors);
     test(hashstate);
     test(names);
+    test(patterns);
 
     /* Report the results */
     if (!test_failures) {
