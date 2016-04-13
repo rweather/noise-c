@@ -44,6 +44,11 @@
 /**@{*/
 
 /**
+ * \typedef NoiseCipherState
+ * \brief Opaque object that represents a CipherState.
+ */
+
+/**
  * \brief Creates a new CipherState object by its algorithm identifier.
  *
  * \param state Points to the variable where to store the pointer to

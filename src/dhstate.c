@@ -42,6 +42,11 @@
 /**@{*/
 
 /**
+ * \typedef NoiseDHState
+ * \brief Opaque object that represents a DHState.
+ */
+
+/**
  * \brief Creates a new DHState object by its algorithm identifier.
  *
  * \param state Points to the variable where to store the pointer to

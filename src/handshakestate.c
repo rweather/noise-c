@@ -47,6 +47,11 @@
 /**@{*/
 
 /**
+ * \typedef NoiseHandshakeState
+ * \brief Opaque object that represents a HandshakeState.
+ */
+
+/**
  * \brief Creates a new HandshakeState object.
  *
  * \param state Points to the variable where to store the pointer to

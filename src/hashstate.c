@@ -51,6 +51,11 @@
 /**@{*/
 
 /**
+ * \typedef NoiseHashState
+ * \brief Opaque object that represents a HashState.
+ */
+
+/**
  * \brief Creates a new HashState object by its algorithm identifier.
  *
  * \param state Points to the variable where to store the pointer to

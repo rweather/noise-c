@@ -39,6 +39,11 @@
 /**@{*/
 
 /**
+ * \typedef NoiseSymmetricState
+ * \brief Opaque object that represents a SymmetricState.
+ */
+
+/**
  * \brief Creates a new SymmetricState object.
  *
  * \param state Points to the variable where to store the pointer to
