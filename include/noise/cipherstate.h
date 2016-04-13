@@ -51,6 +51,11 @@ int noise_cipherstate_split
     (const NoiseCipherState *state, const uint8_t *key, size_t key_len,
      NoiseCipherState **new_state);
 int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce);
+int noise_cipherstate_rand_bytes
+    (NoiseCipherState *state, uint8_t *buffer, size_t len, int force_reseed);
+int noise_cipherstate_pad
+    (NoiseCipherState *state, uint8_t *payload, size_t orig_len,
+     size_t new_len, int padding_mode);
 
 #ifdef __cplusplus
 };

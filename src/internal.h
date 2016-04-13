@@ -24,6 +24,7 @@
 #define NOISE_INTERNAL_H
 
 #include <noise/noise.h>
+#include "crypto/chacha/chacha.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +42,22 @@ extern "C" {
  * \brief Maximum hash length over all supported hash algorithms.
  */
 #define NOISE_MAX_HASHLEN 64
+
+/**
+ * \brief State information for CipherState random number generators.
+ */
+typedef struct NoiseRandomState_s
+{
+    /** \brief Total size of the structure */
+    size_t size;
+
+    /** \brief Number of bytes left until the next reseed */
+    size_t left;
+
+    /** \brief ChaCha20 state for the random number generator */
+    chacha_ctx chacha;
+
+} NoiseRandomState;
 
 /**
  * \brief Internal structure of the NoiseCipherState type.
@@ -67,6 +84,9 @@ struct NoiseCipherState_s
 
     /** \brief The nonce value for the next packet */
     uint64_t n;
+
+    /** \brief Points to the random number generator for this CipherState */
+    NoiseRandomState *rand;
 
     /**
      * \brief Creates a new CipherState of the same type as this one.

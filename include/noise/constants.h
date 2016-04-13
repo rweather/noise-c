@@ -89,6 +89,10 @@ extern "C" {
 #define NOISE_ACTION_SPLIT              NOISE_ID('A', 3)
 #define NOISE_ACTION_FAILED             NOISE_ID('A', 4)
 
+/* Padding modes for noise_cipherstate_pad() */
+#define NOISE_PADDING_ZERO              NOISE_ID('G', 1)
+#define NOISE_PADDING_RANDOM            NOISE_ID('G', 2)
+
 /* Error codes */
 #define NOISE_ERROR_NONE                0
 #define NOISE_ERROR_NO_MEMORY           NOISE_ID('E', 1)

@@ -138,6 +138,12 @@ int noise_cipherstate_free(NoiseCipherState *state)
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
 
+    /* Destroy the random number generator, if one is in use */
+    if (state->rand) {
+        noise_free(state->rand, state->rand->size);
+        state->rand = 0;
+    }
+
     /* Call the backend-specific destroy function if necessary */
     if (state->destroy)
         (*(state->destroy))(state);
@@ -455,6 +461,200 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
     /* Set the nonce and return */
     state->n = nonce;
     return NOISE_ERROR_NONE;
+}
+
+/* The random number generator here is inspired by the
+ * ChaCha20 version of arc4random() from OpenBSD. */
+
+/** @cond */
+
+/** Number of bytes to generate before forcing a reseed */
+#define NOISE_RAND_RESEED_COUNT 1600000
+
+/** Force a rekey after this many blocks */
+#define NOISE_RAND_REKEY_COUNT  16
+
+/** @endcond */
+
+/**
+ * \brief Reseeds the random number generator from operating system entropy.
+ *
+ * \param rand The state of the random number generator.
+ */
+static void noise_cipherstate_rand_reseed(NoiseRandomState *rand)
+{
+    /* Get new random data from the operating system, encrypt it
+       with the previous key/IV, and then replace the key/IV */
+    uint8_t data[40];
+    noise_rand_bytes(data, sizeof(data));
+    chacha_encrypt_bytes(&(rand->chacha), data, data, sizeof(data));
+    chacha_keysetup(&(rand->chacha), data, 256);
+    chacha_ivsetup(&(rand->chacha), data + 32, 0);
+    noise_clean(data, sizeof(data));
+    rand->left = NOISE_RAND_RESEED_COUNT;
+}
+
+/**
+ * \brief Forces a rekey on the random number generator.
+ *
+ * \param rand The state of the random number generator.
+ */
+static void noise_cipherstate_rand_rekey(NoiseRandomState *rand)
+{
+    uint8_t data[40];
+    memset(data, 0, sizeof(data));
+    chacha_encrypt_bytes(&(rand->chacha), data, data, sizeof(data));
+    chacha_keysetup(&(rand->chacha), data, 256);
+    chacha_ivsetup(&(rand->chacha), data + 32, 0);
+    noise_clean(data, sizeof(data));
+}
+
+/**
+ * \brief Generates random bytes for use by the application.
+ *
+ * \param state The CipherState object.
+ * \param buffer The buffer to fill with random bytes.
+ * \param len The number of random bytes to generate.
+ * \param force_reseed Non-zero to force the random number generator
+ * to reseed entropy from the operating system, zero to let this function
+ * decide itself when to reseed (zero is recommended).
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
+ * \return NOISE_ERROR_NO_MEMORY if this is the first time this function
+ * has been called and there is insufficient memory to allocate the
+ * state for the random number generator.
+ *
+ * This function is provided as a convenience for applications that
+ * need to generate extra random data during the course of a
+ * higher-level protocol that runs over the Noise protocol.
+ *
+ * If the application wishes to pad message payloads with random data,
+ * then the noise_cipherstate_pad() function may be a better option.
+ *
+ * \sa noise_cipherstate_pad()
+ */
+int noise_cipherstate_rand_bytes
+    (NoiseCipherState *state, uint8_t *buffer, size_t len, int force_reseed)
+{
+    /* Starting key for the random state before the first reseed.
+       This is the SHA256 initialization vector, to introduce a
+       little chaos into the starting state. */
+    static uint8_t const starting_key[32] = {
+          0x6A, 0x09, 0xE6, 0x67, 0xBB, 0x67, 0xAE, 0x85,
+          0x3C, 0x6E, 0xF3, 0x72, 0xA5, 0x4F, 0xF5, 0x3A,
+          0x51, 0x0E, 0x52, 0x7F, 0x9B, 0x05, 0x68, 0x8C,
+          0x1F, 0x83, 0xD9, 0xAB, 0x5B, 0xE0, 0xCD, 0x19
+    };
+    size_t blocks;
+
+    /* Validate the parameters */
+    if (!state || !buffer)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Create the random state for the first time if necessary */
+    if (!state->rand) {
+        state->rand = noise_new(NoiseRandomState);
+        if (!state->rand) {
+            /* Out of memory.  Set the output to something just in case
+               the caller forgets to check the return value.  We don't want
+               to accidentally leak the previous contents in the buffer. */
+            memset(buffer, 0xAA, len);
+            return NOISE_ERROR_NO_MEMORY;
+        }
+        chacha_keysetup(&(state->rand->chacha), starting_key, 256);
+        force_reseed = 1;
+    }
+
+    /* Force a reseed if necessary */
+    if (force_reseed || state->rand->left < len)
+        noise_cipherstate_rand_reseed(state->rand);
+
+    /* Generate the random data in ChaCha20 block-sized chunks */
+    memset(buffer, 0, len);
+    blocks = 0;
+    while (len > 0) {
+        size_t temp_len = len;
+        if (temp_len > 64)
+            temp_len = 64;
+        if (state->rand->left >= 64) {
+            /* One less block before we need to force a reseed */
+            state->rand->left -= 64;
+        } else {
+            /* Too much random data generated.  Force a reseed now */
+            noise_cipherstate_rand_reseed(state->rand);
+            blocks = 0;
+        }
+        if (blocks++ >= NOISE_RAND_REKEY_COUNT) {
+            /* Too many blocks in the current request.  Force a rekey now */
+            noise_cipherstate_rand_rekey(state->rand);
+            blocks = 0;
+        }
+        chacha_encrypt_bytes(&(state->rand->chacha), buffer, buffer, temp_len);
+        buffer += temp_len;
+        len -= temp_len;
+    }
+
+    /* Force a rekey after every request to destroy the input that
+       was used to generate the random data for this request.
+       This prevents the state from being rolled backwards. */
+    noise_cipherstate_rand_rekey(state->rand);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Adds padding bytes to the end of a message payload.
+ *
+ * \param state The CipherState object.
+ * \param payload Points to the original message payload to be padded,
+ * which must be large enough to hold the maximum of \a orig_len
+ * or \a padded_len.
+ * \param orig_len The original length of the payload before padding.
+ * \param padded_len The new length of the payload, including the
+ * original data and padding.
+ * \param padding_mode The padding mode to use, NOISE_PADDING_ZERO or
+ * NOISE_PADDING_RANDOM.  If the padding mode is unknown, then
+ * NOISE_PADDING_RANDOM will be used instead.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a payload is NULL.
+ * \return NOISE_ERROR_NO_MEMORY if this is the first time this function
+ * has been used to generate random padding and there is insufficient memory
+ * to allocate the state for the random number generator.  Will not occur
+ * if the \a padding_mode is NOISE_PADDING_ZERO.
+ *
+ * This function is intended for padding message payloads prior to them
+ * being encrypted with noise_handshakestate_write_message().  If the
+ * \a padding_mode is NOISE_PADDING_RANDOM, then the random bytes are
+ * generated using noise_cipherstate_rand_bytes().
+ *
+ * The number of padding bytes added will be \a padded_len - \a orig_len.
+ * If \a padded_len is less than or equal to \a orig_len, then no padding
+ * bytes will be added.  Essentially, this function pads the payload to a
+ * minimum length.  Larger payloads are transmitted as-is.
+ *
+ * \sa noise_cipherstate_rand_bytes()
+ */
+int noise_cipherstate_pad
+    (NoiseCipherState *state, uint8_t *payload, size_t orig_len,
+     size_t padded_len, int padding_mode)
+{
+    /* Validate the parameters */
+    if (!state || !payload)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Nothing to do if the padded length is shorter than the original */
+    if (padded_len <= orig_len)
+        return NOISE_ERROR_NONE;
+
+    /* Pad the payload as requested */
+    if (padding_mode == NOISE_PADDING_ZERO) {
+        memset(payload + orig_len, 0, padded_len - orig_len);
+        return NOISE_ERROR_NONE;
+    } else {
+        return noise_cipherstate_rand_bytes
+            (state, payload + orig_len, padded_len - orig_len, 0);
+    }
 }
 
 /**@}*/
