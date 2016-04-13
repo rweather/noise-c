@@ -49,9 +49,10 @@
  * \param id The algorithm identifier; NOISE_DH_CURVE25519,
  * NOISE_DH_CURVE448, etc.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL, NOISE_ERROR_UNKNOWN_ID if \a id is unknown,
- * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_UNKNOWN_ID if \a id is unknown.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new DHState object.
  *
  * \sa noise_dhstate_free(), noise_dhstate_new_by_name()
@@ -93,9 +94,10 @@ int noise_dhstate_new_by_id(NoiseDHState **state, int id)
  * \param name The name of the Diffie-Hellman algorithm; e.g. "25519".
  * This string must be NUL-terminated.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a name is NULL, NOISE_ERROR_UNKNOWN_NAME if \a name is
- * unknown, or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a name is NULL.
+ * \return NOISE_ERROR_UNKNOWN_NAME if \a name is unknown.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new DHState object.
  *
  * \sa noise_dhstate_free(), noise_dhstate_new_by_id()
@@ -125,8 +127,8 @@ int noise_dhstate_new_by_name(NoiseDHState **state, const char *name)
  *
  * \param state The DHState object to free.
  *
- * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  *
  * \sa noise_dhstate_new_by_id(), noise_dhstate_new_by_name()
  */
@@ -209,9 +211,10 @@ size_t noise_dhstate_get_shared_key_length(const NoiseDHState *state)
  * \param key The buffer to fill with the null public key value.
  * \param len The length of the \a key buffer in bytes.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a key are NULL, or NOISE_ERROR_INVALID_LENGTH if \a len
- * is not a valid public key length for the algorithm.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a len is not a valid public key
+ * length for the algorithm.
  *
  * \sa noise_dhstate_get_null_public_key(), noise_dhstate_get_public_key_length()
  */
@@ -273,10 +276,11 @@ int noise_dhstate_is_null_public_key
  * \param public_key Points to the public key on exit.
  * \param public_key_len The length of the \a public_key buffer in bytes.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state, \a private_key or \a public_key is NULL, or
- * NOISE_ERROR_INVALID_LENGTH if \a private_key_len or \a public_key_len
- * is incorrect.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state, \a private_key or
+ * \a public_key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a private_key_len or
+ * \a public_key_len is incorrect.
  *
  * \note This function needs to generate random key material for the
  * \a private_key, so the system random number generator must be properly
@@ -312,9 +316,10 @@ int noise_dhstate_generate_keypair
  * \param public_key Points to the public key.
  * \param public_key_len The length of the \a public_key in bytes.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state, \a shared_key, \a private_key or \a public_key is NULL,
- * or NOISE_ERROR_INVALID_DH_KEY if either \a public_key or \a private_key
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state, \a shared_key,
+ * \a private_key or \a public_key is NULL.
+ * \return NOISE_ERROR_INVALID_DH_KEY if either \a public_key or \a private_key
  * are invalid for the algorithm.
  *
  * If the input \a public_key is the special null value, then the output

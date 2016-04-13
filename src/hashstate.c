@@ -58,9 +58,10 @@
  * \param id The algorithm identifier; NOISE_HASH_BLAKE2s,
  * NOISE_HASH_SHA256, etc.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL, NOISE_ERROR_UNKNOWN_ID if \a id is unknown,
- * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_UNKNOWN_ID if \a id is unknown.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new HashState object.
  *
  * \sa noise_hashstate_free(), noise_hashstate_new_by_name()
@@ -110,9 +111,10 @@ int noise_hashstate_new_by_id(NoiseHashState **state, int id)
  * \param name The name of the cipher algorithm; e.g. "BLAKE2s", "SHA256", etc.
  * This string must be NUL-terminated.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a name is NULL, NOISE_ERROR_UNKNOWN_NAME if \a name is
- * unknown, or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a name is NULL.
+ * \return NOISE_ERROR_UNKNOWN_NAME if \a name is unknown.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new HashState object.
  *
  * \sa noise_hashstate_free(), noise_hashstate_new_by_id()
@@ -142,8 +144,8 @@ int noise_hashstate_new_by_name(NoiseHashState **state, const char *name)
  *
  * \param state The HashState object to free.
  *
- * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  *
  * \sa noise_hashstate_new_by_id(), noise_hashstate_new_by_name()
  */
@@ -211,8 +213,9 @@ size_t noise_hashstate_get_block_length(const NoiseHashState *state)
  * \param hash The return buffer for the hash value.  This must contain
  * enough space for the hash length of the \a state object.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one
- * of \a state, \a data, or \a hash is NULL.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a data,
+ * or \a hash is NULL.
  *
  * The \a data and \a hash buffers are allowed to overlap.
  *
@@ -248,8 +251,9 @@ int noise_hashstate_hash_one
  *
  * The \a data1, \a data2, and \a hash buffers are allowed to overlap.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one
- * of \a state, \a data1, \a data2, or \a hash is NULL.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a data1,
+ * \a data2, or \a hash is NULL.
  *
  * \sa noise_hashstate_hash_one(), noise_hashstate_get_hash_length()
  */
@@ -362,9 +366,10 @@ static void noise_hashstate_hmac
  * \param output2_len The length of the second output buffer, which may
  * be shorter than the hash length of the HashState object.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one
- * of \a state, \a key, \a data, \a output1, or \a output2 is NULL,
- * NOISE_ERROR_INVALID_LENGTH if \a output1_len or \a output2_len is
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a key, \a data,
+ * \a output1, or \a output2 is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a output1_len or \a output2_len is
  * greater than the hash length for the HashState object.
  *
  * Reference: <a href="http://tools.ietf.org/html/rfc5869">RFC 5868</a>

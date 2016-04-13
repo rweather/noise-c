@@ -231,9 +231,9 @@ static int noise_protocol_parse_field
  * \param name Points to the start of the protocol name.
  * \param name_len The length of the protocol name in bytes.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * either \a id or \a name is NULL, or NOISE_ERROR_UNKNOWN_NAME if the
- * protocol name could not be parsed.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if either \a id or \a name is NULL.
+ * \return NOISE_ERROR_UNKNOWN_NAME if the protocol name could not be parsed.
  *
  * \sa noise_protocol_id_to_name()
  */
@@ -332,10 +332,11 @@ static void noise_protocol_format_field
  * \param name_len The number of bytes of space in the \a name buffer.
  * \param id The set of identifiers to format.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * either \a name or \a id are NULL, NOISE_ERROR_INVALID_LENGTH if
- * the \a name buffer is not large enough to contain the full name,
- * or NOISE_ERROR_UNKNOWN_ID if one of the identifiers in \a id does
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if either \a name or \a id is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if the \a name buffer is not large
+ * enough to contain the full name.
+ * \return NOISE_ERROR_UNKNOWN_ID if one of the identifiers in \a id does
  * not have a known mapping to a name.
  *
  * This function guarantees to NUL-terminate the \a name if

@@ -51,9 +51,10 @@
  * \param id The algorithm identifier; NOISE_CIPHER_CHACHAPOLY,
  * NOISE_CIPHER_AESGCM, etc.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL, NOISE_ERROR_UNKNOWN_ID if \a id is unknown,
- * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_UNKNOWN_ID if \a id is unknown.
+ * \return or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new CipherState object.
  *
  * \sa noise_cipherstate_free(), noise_cipherstate_new_by_name()
@@ -95,9 +96,10 @@ int noise_cipherstate_new_by_id(NoiseCipherState **state, int id)
  * \param name The name of the cipher algorithm; e.g. "ChaChaPoly".
  * This string must be NUL-terminated.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a name is NULL, NOISE_ERROR_UNKNOWN_NAME if \a name is
- * unknown, or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a name is NULL.
+ * \return NOISE_ERROR_UNKNOWN_NAME if \a name is unknown.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new CipherState object.
  *
  * \sa noise_cipherstate_free(), noise_cipherstate_new_by_id()
@@ -127,8 +129,8 @@ int noise_cipherstate_new_by_name(NoiseCipherState **state, const char *name)
  *
  * \param state The CipherState object to free.
  *
- * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  *
  * \sa noise_cipherstate_new_by_id(), noise_cipherstate_new_by_name()
  */
@@ -200,9 +202,10 @@ size_t noise_cipherstate_get_mac_length(const NoiseCipherState *state)
  * \param key Points to the key.
  * \param key_len The length of the key in bytes.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a key is NULL, or NOISE_ERROR_INVALID_LENGTH if
- * \a key_len is the wrong length for this cipher.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a key_len is the wrong length
+ * for this cipher.
  *
  * \sa noise_cipherstate_get_key_length(), noise_cipherstate_has_key()
  */
@@ -251,11 +254,11 @@ int noise_cipherstate_has_key(const NoiseCipherState *state)
  * \param out_data_len Set to the number of bytes of ciphertext plus MAC
  * in \a data on exit.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * the parameters are invalid, NOISE_ERROR_INVALID_NONCE if the nonce
- * previously overflowed, or NOISE_ERROR_INVALID_LENGTH if
- * \a in_data_len is too large to contain the ciphertext plus MAC
- * and still remain within 65535 bytes.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
+ * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
+ * \return or NOISE_ERROR_INVALID_LENGTH if \a in_data_len is too large to
+ * contain the ciphertext plus MAC and still remain within 65535 bytes.
  *
  * The plaintext is encrypted in-place with the ciphertext also written
  * to \a data.  There must be enough room on the end of \a data to hold
@@ -323,11 +326,12 @@ int noise_cipherstate_encrypt_with_ad
  * the ciphertext and the MAC.
  * \param out_data_len Set to the number of plaintext bytes in \a data on exit.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * the parameters are invalid, NOISE_ERROR_MAC_FAILURE if the MAC
- * check failed, NOISE_ERROR_INVALID_NONCE if the nonce previously
- * overflowed, or NOISE_ERROR_INVALID_LENGTH if \a in_data_len is
- * larger than 65535 bytes or too small to contain the MAC value.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
+ * \return NOISE_ERROR_MAC_FAILURE if the MAC check failed.
+ * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a in_data_len is larger than
+ * 65535 bytes or too small to contain the MAC value.
  *
  * The ciphertext is decrypted in-place with the plaintext also written
  * to \a data.  In other words, it is assumed that the ciphertext plus
@@ -390,10 +394,12 @@ int noise_cipherstate_decrypt_with_ad
  * \param new_state Points to a variable that should be set to a pointer
  * to the new CipherState object.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * one of \a state, \a key, or \a new_state are NULL,
- * NOISE_ERROR_INVALID_LENGTH if \a key_len is incorrect for the cipher,
- * or NOISE_ERROR_NO_MEMORY if the system is out of memory.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a key,
+ * or \a new_state is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a key_len is incorrect for
+ * the cipher.
+ * \return or NOISE_ERROR_NO_MEMORY if the system is out of memory.
  *
  * This function is intended to help implement noise_symmetricstate_split().
  * It clones the existing object, creating a new object with the same
@@ -433,9 +439,10 @@ int noise_cipherstate_split
  * \param nonce The new nonce value to set.  This must be greater than
  * or equal to the current nonce value in the state.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL, NOISE_ERROR_INVALID_STATE if the key has not been
- * set yet, or NOISE_ERROR_INVALID_NONCE if \a nonce is smaller than
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the key has not been set yet.
+ * \return NOISE_ERROR_INVALID_NONCE if \a nonce is smaller than
  * the current value.
  *
  * \warning This function is intended for testing purposes only.  It is

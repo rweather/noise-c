@@ -113,12 +113,14 @@ static int noise_symmetricstate_new
  * the new SymmetricState object.
  * \param id The protocol identifier as a set of algorithm identifiers.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a id is NULL, NOISE_ERROR_UNKNOWN_ID if the
- * protocol \a id is unknown, NOISE_ERROR_INVALID_LENGTH if the
- * full name corresponding to \a id is too long, NOISE_ERROR_INVALID_LENGTH
- * if the lengths of the hash output or the cipher key are incompatible,
- * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a id is NULL.
+ * \return NOISE_ERROR_UNKNOWN_ID if the protocol \a id is unknown.
+ * \return NOISE_ERROR_INVALID_LENGTH if the full name corresponding
+ * to \a id is too long.
+ * \return NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output
+ * or the cipher key are incompatible.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new SymmetricState object.
  *
  * \sa noise_symmetricstate_free(), noise_symmetricstate_new_by_name()
@@ -154,11 +156,12 @@ int noise_symmetricstate_new_by_id
  * \param name The name of the Noise protocol to use.  This string
  * must be NUL-terminated.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a name is NULL, NOISE_ERROR_UNKNOWN_NAME if the
- * protocol \a name is unknown, NOISE_ERROR_INVALID_LENGTH if the
- * lengths of the hash output or the cipher key are incompatible,
- * or NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a name is NULL.
+ * \return NOISE_ERROR_UNKNOWN_NAME if the protocol \a name is unknown.
+ * \return NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output
+ * or the cipher key are incompatible.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new SymmetricState object.
  *
  * \sa noise_symmetricstate_free(), noise_symmetricstate_new_by_id()
@@ -192,8 +195,8 @@ int noise_symmetricstate_new_by_name
  *
  * \param state The SymmetricState object to free.
  *
- * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if
- * \a state is NULL.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  *
  * \sa noise_symmetricstate_new_by_id(), noise_symmetricstate_new_by_name()
  */
@@ -222,8 +225,8 @@ int noise_symmetricstate_free(NoiseSymmetricState *state)
  * fields that identify the cipher algorithm, hash algorith, handshake
  * pattern, etc.
  *
- * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if
- * \a state or \a id is NULL.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a id is NULL.
  */
 int noise_symmetricstate_get_protocol_id
     (const NoiseSymmetricState *state, NoiseProtocolId *id)
@@ -244,9 +247,9 @@ int noise_symmetricstate_get_protocol_id
  * \param input Points to the input data to mix in.
  * \param size The size of the \a input data in bytes.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a input is NULL, or NOISE_ERROR_INVALID_STATE if the
- * \a state has already been split.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a input is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split.
  *
  * \sa noise_symmetricstate_mix_hash(), noise_symmetricstate_split()
  */
@@ -285,9 +288,9 @@ int noise_symmetricstate_mix_key
  * \param input Points to the input data to mix in.
  * \param size The size of the \a input data in bytes.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * \a state or \a input is NULL, or NOISE_ERROR_INVALID_STATE if the
- * \a state has already been split.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a input is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split.
  *
  * \sa noise_symmetricstate_mix_key(), noise_symmetricstate_split()
  */
@@ -322,12 +325,13 @@ int noise_symmetricstate_mix_hash
  * \param out_data_len Set to the number of bytes of ciphertext plus MAC
  * in \a data on exit.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * the parameters are invalid, NOISE_ERROR_INVALID_STATE if this
- * SymmetricState has already been split, NOISE_ERROR_INVALID_NONCE if
- * the nonce previously overflowed, or NOISE_ERROR_INVALID_LENGTH if
- * \a in_data_len is too large to contain the ciphertext plus MAC
- * and still remain within 65535 bytes.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
+ * \return NOISE_ERROR_INVALID_STATE if this SymmetricState has already
+ * been split.
+ * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed
+ * \return NOISE_ERROR_INVALID_LENGTH if \a in_data_len is too large to
+ * contain the ciphertext plus MAC and still remain within 65535 bytes.
  *
  * The plaintext is encrypted in-place with the ciphertext also written
  * to \a data.  There must be enough room on the end of \a data to hold
@@ -381,11 +385,13 @@ int noise_symmetricstate_encrypt_and_hash
  * the ciphertext and the MAC.
  * \param out_data_len Set to the number of plaintext bytes in \a data on exit.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if
- * the parameters are invalid, NOISE_ERROR_MAC_FAILURE if the MAC
- * check failed, NOISE_ERROR_INVALID_STATE if this SymmetricState has
- * already been split, NOISE_ERROR_INVALID_NONCE if the nonce previously
- * overflowed, or NOISE_ERROR_INVALID_LENGTH if \a in_data_len is
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
+ * \return NOISE_ERROR_MAC_FAILURE if the MAC check failed.
+ * \return NOISE_ERROR_INVALID_STATE if this SymmetricState has
+ * already been split.
+ * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a in_data_len is
  * larger than 65535 bytes or too small to contain the MAC value.
  *
  * The ciphertext is decrypted in-place with the plaintext also written
@@ -477,10 +483,11 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  * second CipherState object.  This can be NULL if the application is
  * using a one-way handshake pattern.
  *
- * \return NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one of
- * \a state, \a c1, or \a c2 is NULL, NOISE_ERROR_INVALID_STATE if the
- * \a state has already been split, or NOISE_ERROR_NO_MEMORY if there is
- * insufficient memory to create the new CipherState objects.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state or \a c1 is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to create
+ * the new CipherState objects.
  *
  * Once a SymmetricState has been split, it is effectively finished and
  * cannot be used for future encryption or hashing operations.
