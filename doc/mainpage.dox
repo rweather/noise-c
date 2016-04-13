@@ -51,7 +51,7 @@ is my motto.
 
 \li <tt>include/noise/</tt> - Public API definitions for inclusion
     into applications.
-\li <tt>src/</tt> - Source code for the core library.
+\li <tt>src/protocol/</tt> - Source code for the core Noise protocol library.
 \li <tt>src/crypto/</tt> - Public domain and open source reference
     implementations of the cryptographic primitives.
 \li <tt>src/backend/ref/</tt> - Backends for \ref cipherstate "CipherState",

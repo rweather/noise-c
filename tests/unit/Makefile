@@ -8,7 +8,7 @@ TEST_APP = test-noise
 
 CPPFLAGS = -I$(TOPDIR)/include
 CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
-LDFLAGS = -L$(TOPDIR)/src -lnoiseprotocol
+LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 
 SOURCES = \
 	test-cipherstate.c \
