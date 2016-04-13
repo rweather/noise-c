@@ -54,9 +54,10 @@ static const char * const error_strings[] = {
     "Remote static public key required",
     "Local keypair required",
     "Pre shared key required",
-    "Option is not applicable"
+    "Option is not applicable",
+    "END"
 };
-#define num_error_strings (sizeof(error_strings) / sizeof(error_strings[0]))
+#define num_error_strings (sizeof(error_strings) / sizeof(error_strings[0]) - 1)
 
 /**
  * \brief Gets the string for an error code from the internal table.

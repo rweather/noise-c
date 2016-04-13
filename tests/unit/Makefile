@@ -13,6 +13,7 @@ LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 SOURCES = \
 	test-cipherstate.c \
 	test-dhstate.c \
+	test-errors.c \
 	test-hashstate.c \
 	test-main.c \
 	test-names.c

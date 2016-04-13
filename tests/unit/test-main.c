@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     /* Run all tests */
     test(cipherstate);
     test(dhstate);
+    test(errors);
     test(hashstate);
     test(names);
 
