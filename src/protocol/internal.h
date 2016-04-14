@@ -201,13 +201,6 @@ struct NoiseHashState_s
     void (*finalize)(NoiseHashState *state, uint8_t *hash);
 
     /**
-     * \brief Cleans up sensitive data in the HashState.
-     *
-     * \param state Points to the HashState.
-     */
-    void (*clean)(NoiseHashState *state);
-
-    /**
      * \brief Destroys this HashState prior to the memory being freed.
      *
      * \param state Points to the HashState.

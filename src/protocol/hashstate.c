@@ -238,7 +238,6 @@ int noise_hashstate_hash_one
     (*(state->reset))(state);
     (*(state->update))(state, data, data_len);
     (*(state->finalize))(state, hash);
-    (*(state->clean))(state);
     return NOISE_ERROR_NONE;
 }
 
@@ -275,7 +274,6 @@ int noise_hashstate_hash_two
     (*(state->update))(state, data1, data1_len);
     (*(state->update))(state, data2, data2_len);
     (*(state->finalize))(state, hash);
-    (*(state->clean))(state);
     return NOISE_ERROR_NONE;
 }
 
@@ -418,7 +416,6 @@ int noise_hashstate_hkdf
     memcpy(output2, temp_hash, output2_len);
 
     /* Clean up and exit */
-    (*(state->clean))(state);
     noise_clean(temp_key, hash_len);
     noise_clean(temp_hash, hash_len + 1);
     return NOISE_ERROR_NONE;

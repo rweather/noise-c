@@ -48,12 +48,6 @@ static void noise_sha512_finalize(NoiseHashState *state, uint8_t *hash)
     sha512_finish(&(st->sha512), hash);
 }
 
-static void noise_sha512_clean(NoiseHashState *state)
-{
-    NoiseSHA512State *st = (NoiseSHA512State *)state;
-    noise_clean(&(st->sha512), sizeof(st->sha512));
-}
-
 NoiseHashState *noise_sha512_new(void)
 {
     NoiseSHA512State *state = noise_new(NoiseSHA512State);
@@ -65,6 +59,5 @@ NoiseHashState *noise_sha512_new(void)
     state->parent.reset = noise_sha512_reset;
     state->parent.update = noise_sha512_update;
     state->parent.finalize = noise_sha512_finalize;
-    state->parent.clean = noise_sha512_clean;
     return &(state->parent);
 }

@@ -48,12 +48,6 @@ static void noise_sha256_finalize(NoiseHashState *state, uint8_t *hash)
     sha256_finish(&(st->sha256), hash);
 }
 
-static void noise_sha256_clean(NoiseHashState *state)
-{
-    NoiseSHA256State *st = (NoiseSHA256State *)state;
-    noise_clean(&(st->sha256), sizeof(st->sha256));
-}
-
 NoiseHashState *noise_sha256_new(void)
 {
     NoiseSHA256State *state = noise_new(NoiseSHA256State);
@@ -65,6 +59,5 @@ NoiseHashState *noise_sha256_new(void)
     state->parent.reset = noise_sha256_reset;
     state->parent.update = noise_sha256_update;
     state->parent.finalize = noise_sha256_finalize;
-    state->parent.clean = noise_sha256_clean;
     return &(state->parent);
 }

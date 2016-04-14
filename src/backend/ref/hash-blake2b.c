@@ -48,12 +48,6 @@ static void noise_blake2b_finalize(NoiseHashState *state, uint8_t *hash)
     blake2b_final(&(st->blake2), hash, BLAKE2B_OUTBYTES);
 }
 
-static void noise_blake2b_clean(NoiseHashState *state)
-{
-    NoiseBLAKE2bState *st = (NoiseBLAKE2bState *)state;
-    noise_clean(&(st->blake2), sizeof(st->blake2));
-}
-
 NoiseHashState *noise_blake2b_new(void)
 {
     NoiseBLAKE2bState *state = noise_new(NoiseBLAKE2bState);
@@ -65,6 +59,5 @@ NoiseHashState *noise_blake2b_new(void)
     state->parent.reset = noise_blake2b_reset;
     state->parent.update = noise_blake2b_update;
     state->parent.finalize = noise_blake2b_finalize;
-    state->parent.clean = noise_blake2b_clean;
     return &(state->parent);
 }
