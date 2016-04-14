@@ -21,37 +21,37 @@
  */
 
 #include "internal.h"
-#include "crypto/sha2/sha.h"
+#include "crypto/sha2/sha512.h"
 
 typedef struct
 {
     struct NoiseHashState_s parent;
-    SHA512Context sha;
+    sha512_context_t sha512;
 
 } NoiseSHA512State;
 
 static void noise_sha512_reset(NoiseHashState *state)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
-    SHA512Reset(&(st->sha));
+    sha512_reset(&(st->sha512));
 }
 
 static void noise_sha512_update(NoiseHashState *state, const uint8_t *data, size_t len)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
-    SHA512Input(&(st->sha), data, len);
+    sha512_update(&(st->sha512), data, len);
 }
 
 static void noise_sha512_finalize(NoiseHashState *state, uint8_t *hash)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
-    SHA512Result(&(st->sha), hash);
+    sha512_finish(&(st->sha512), hash);
 }
 
 static void noise_sha512_clean(NoiseHashState *state)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
-    noise_clean(&(st->sha), sizeof(st->sha));
+    noise_clean(&(st->sha512), sizeof(st->sha512));
 }
 
 NoiseHashState *noise_sha512_new(void)

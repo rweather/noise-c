@@ -21,37 +21,37 @@
  */
 
 #include "internal.h"
-#include "crypto/sha2/sha.h"
+#include "crypto/sha2/sha256.h"
 
 typedef struct
 {
     struct NoiseHashState_s parent;
-    SHA256Context sha;
+    sha256_context_t sha256;
 
 } NoiseSHA256State;
 
 static void noise_sha256_reset(NoiseHashState *state)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
-    SHA256Reset(&(st->sha));
+    sha256_reset(&(st->sha256));
 }
 
 static void noise_sha256_update(NoiseHashState *state, const uint8_t *data, size_t len)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
-    SHA256Input(&(st->sha), data, len);
+    sha256_update(&(st->sha256), data, len);
 }
 
 static void noise_sha256_finalize(NoiseHashState *state, uint8_t *hash)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
-    SHA256Result(&(st->sha), hash);
+    sha256_finish(&(st->sha256), hash);
 }
 
 static void noise_sha256_clean(NoiseHashState *state)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
-    noise_clean(&(st->sha), sizeof(st->sha));
+    noise_clean(&(st->sha256), sizeof(st->sha256));
 }
 
 NoiseHashState *noise_sha256_new(void)
