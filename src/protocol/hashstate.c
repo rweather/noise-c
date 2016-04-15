@@ -21,7 +21,6 @@
  */
 
 #include "internal.h"
-#include <alloca.h>
 #include <string.h>
 
 /**

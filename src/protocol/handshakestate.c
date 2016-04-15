@@ -71,11 +71,9 @@ static int noise_handshakestate_new
     (NoiseHandshakeState **state, NoiseSymmetricState *symmetric, int role)
 {
     const uint8_t *pattern;
-    NoiseDHState *dh;
     int requirements;
+    int dh_id;
     uint8_t flags;
-    uint8_t *ptr;
-    size_t size;
     int err;
 
     /* Locate the information for the current handshake pattern */
@@ -90,30 +88,10 @@ static int noise_handshakestate_new
         flags = noise_pattern_reverse_flags(flags);
     }
 
-    /* Create the DHState object */
-    err = noise_dhstate_new_by_id(&dh, symmetric->id.dh_id);
-    if (err != NOISE_ERROR_NONE) {
-        noise_symmetricstate_free(symmetric);
-        return err;
-    }
-
-    /* Determine how much memory we need for the HandshakeState,
-       plus all of the private/public key values we'll need later. */
-    size = sizeof(NoiseHandshakeState);
-    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC)
-        size += dh->private_key_len + dh->public_key_len;
-    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL)
-        size += dh->private_key_len + dh->public_key_len;
-    if (flags & NOISE_PAT_FLAG_REMOTE_STATIC)
-        size += dh->public_key_len;
-    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL)
-        size += dh->public_key_len;
-
-    /* Allocate the HandshakeState */
-    *state = noise_new_object(size);
+    /* Create the HandshakeState object */
+    *state = noise_new(NoiseHandshakeState);
     if (!(*state)) {
         noise_symmetricstate_free(symmetric);
-        noise_dhstate_free(dh);
         return NOISE_ERROR_NO_MEMORY;
     }
 
@@ -137,25 +115,23 @@ static int noise_handshakestate_new
     (*state)->tokens = pattern + 1;
     (*state)->role = role;
     (*state)->symmetric = symmetric;
-    (*state)->dh = dh;
 
-    /* Set the pointers for all of the key values we'll need later */
-    #define alloc_key(name, type)   \
-        ((*state)->name##_##type = ptr, ptr += dh->type##_len)
-    ptr = ((uint8_t *)(*state)) + sizeof(NoiseHandshakeState);
-    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
-        alloc_key(local_static, private_key);
-        alloc_key(local_static, public_key);
-    }
-    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL) {
-        alloc_key(local_ephemeral, private_key);
-        alloc_key(local_ephemeral, public_key);
-    }
-    if (flags & NOISE_PAT_FLAG_REMOTE_STATIC) {
-        alloc_key(remote_static, public_key);
-    }
-    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL) {
-        alloc_key(remote_ephemeral, public_key);
+    /* Create DHState objects for all of the keys we will need later */
+    err = NOISE_ERROR_NONE;
+    dh_id = symmetric->id.dh_id;
+    if ((flags & NOISE_PAT_FLAG_LOCAL_STATIC) != 0)
+        err = noise_dhstate_new_by_id(&((*state)->dh_local_static), dh_id);
+    if ((flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL) != 0 && err == NOISE_ERROR_NONE)
+        err = noise_dhstate_new_by_id(&((*state)->dh_local_ephemeral), dh_id);
+    if ((flags & NOISE_PAT_FLAG_REMOTE_STATIC) != 0 && err == NOISE_ERROR_NONE)
+        err = noise_dhstate_new_by_id(&((*state)->dh_remote_static), dh_id);
+    if ((flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL) != 0 && err == NOISE_ERROR_NONE)
+        err = noise_dhstate_new_by_id(&((*state)->dh_remote_ephemeral), dh_id);
+
+    /* Bail out if we had an error trying to create the DHState objects */
+    if (err != NOISE_ERROR_NONE) {
+        noise_handshakestate_free(*state);
+        return err;
     }
 
     /* Ready to go */
@@ -274,8 +250,14 @@ int noise_handshakestate_free(NoiseHandshakeState *state)
     /* Free the sub objects that are hanging off the handshakestate */
     if (state->symmetric)
         noise_symmetricstate_free(state->symmetric);
-    if (state->dh)
-        noise_dhstate_free(state->dh);
+    if (state->dh_local_static)
+        noise_dhstate_free(state->dh_local_static);
+    if (state->dh_local_ephemeral)
+        noise_dhstate_free(state->dh_local_ephemeral);
+    if (state->dh_remote_static)
+        noise_dhstate_free(state->dh_remote_static);
+    if (state->dh_remote_ephemeral)
+        noise_dhstate_free(state->dh_remote_ephemeral);
 
     /* Clean and free the memory for "state" */
     noise_free(state, state->size);
@@ -305,8 +287,6 @@ int noise_handshakestate_get_role(const NoiseHandshakeState *state)
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a id is NULL.
- *
- * \sa noise_handshakestate_get_dh_id()
  */
 int noise_handshakestate_get_protocol_id
     (const NoiseHandshakeState *state, NoiseProtocolId *id)
@@ -321,55 +301,43 @@ int noise_handshakestate_get_protocol_id
 }
 
 /**
- * \brief Gets the Diffie-Hellman algorithm identifier for a
- * HandshakeState object.
+ * \brief Gets the DHStatic object that contains the local static keypair.
  *
  * \param state The HandshakeState object.
  *
- * \return The DH algorithm identifier, or NOISE_DH_NONE if \a state is NULL.
+ * \return Returns a pointer to the DHState object for the local static
+ * keypair, or NULL if the handshake does not require a local static keypair.
  *
- * This is a convenience function, which is more efficient than calling
- * noise_handshakestate_get_protocol_id() to obtain the DH identifier.
+ * The application uses the returned object to set the static keypair for
+ * the local end of the handshake if one is required.
  *
- * \sa noise_handshakestate_get_protocol_id()
+ * \sa noise_handshakestate_get_remote_public_key_dh()
  */
-int noise_handshakestate_get_dh_id(const NoiseHandshakeState *state)
+NoiseDHState *noise_handshakestate_get_local_keypair_dh
+    (const NoiseHandshakeState *state)
 {
-    return state ? state->dh->dh_id : NOISE_DH_NONE;
+    return state ? state->dh_local_static : 0;
 }
 
 /**
- * \brief Gets the length of the Diffie-Hellman private keys for a
- * HandshakeObject object.
+ * \brief Gets the DHStatic object that contains the remote static public key.
  *
  * \param state The HandshakeState object.
  *
- * \return The size of the private key in bytes, or 0 if \a state is NULL.
+ * \return Returns a pointer to the DHState object for the remote static
+ * public key, or NULL if the handshake does not require a remote public key.
  *
- * \sa noise_handshakestate_get_public_key_length(),
- * noise_handshakestate_get_dh_id()
+ * The application uses the returned object to set the public key for
+ * the remote end of the handshake if the key must be provided prior to
+ * the handshake.  The returned object can also be used to obtain the public
+ * key value that was transmitted by the remote party during the handshake.
+ *
+ * \sa noise_handshakestate_get_local_keypair_dh()
  */
-int noise_handshakestate_get_private_key_length
+NoiseDHState *noise_handshakestate_get_remote_public_key_dh
     (const NoiseHandshakeState *state)
 {
-    return state ? state->dh->private_key_len : 0;
-}
-
-/**
- * \brief Gets the length of the Diffie-Hellman public keys for a
- * HandshakeObject object.
- *
- * \param state The HandshakeState object.
- *
- * \return The size of the public key in bytes, or 0 if \a state is NULL.
- *
- * \sa noise_handshakestate_get_private_key_length(),
- * noise_handshakestate_get_dh_id()
- */
-int noise_handshakestate_get_public_key_length
-    (const NoiseHandshakeState *state)
-{
-    return state ? state->dh->public_key_len : 0;
+    return state ? state->dh_remote_static : 0;
 }
 
 /**
@@ -472,15 +440,19 @@ int noise_handshakestate_set_prologue
  * local keypair, or 0 if the keypair has been provided or is not required
  * at all.  Also returns zero if \a state is NULL.
  *
+ * The application configures the local keypair on the object returned by
+ * noise_handshakestate_get_local_keypair_dh().
+ *
  * \sa noise_handshakestate_has_local_keypair(),
- * noise_handshakestate_set_local_keypair()
+ * noise_handshakestate_get_local_keypair_dh()
  */
 int noise_handshakestate_needs_local_keypair(const NoiseHandshakeState *state)
 {
-    if (state)
-        return (state->requirements & NOISE_REQ_LOCAL_REQUIRED) != 0;
-    else
+    if (!state)
         return 0;
+    if ((state->requirements & NOISE_REQ_LOCAL_REQUIRED) == 0)
+        return 0;
+    return !noise_dhstate_has_keypair(state->dh_local_static);
 }
 
 /**
@@ -494,69 +466,13 @@ int noise_handshakestate_needs_local_keypair(const NoiseHandshakeState *state)
  * zero if \a state is NULL.
  *
  * \sa noise_handshakestate_needs_local_keypair(),
- * noise_handshakestate_set_local_keypair()
+ * noise_handshakestate_get_local_keypair_dh()
  */
 int noise_handshakestate_has_local_keypair(const NoiseHandshakeState *state)
 {
-    if (state)
-        return (state->requirements & NOISE_HAS_LOCAL_KEYPAIR) != 0;
-    else
+    if (!state || !state->dh_local_static)
         return 0;
-}
-
-/**
- * \brief Sets the local keypair for a HandshakeState.
- *
- * \param state The HandshakeState object.
- * \param private_key Points to the private key for the local keypair.
- * \param private_key_len The length of the private key in bytes.
- * \param public_key Points to the public key for the local keypair.
- * \param public_key_len The length of the public key in bytes.
- *
- * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a private_key,
- * or \a public_key is NULL.
- * \return NOISE_ERROR_NOT_APPLICABLE if the protocol name does not
- * require a local keypair.
- * \return NOISE_ERROR_INVALID_STATE if the protocol has already started.
- * \return NOISE_ERROR_INVALID_LENGTH if \a private_key_len or
- * \a public_key_len is incorrect for the Diffie-Hellman algorithm in
- * the protocol name.
- * \return NOISE_ERROR_INVALID_DH_KEY if the keypair is invalid.
- *
- * If noise_handshakestate_needs_local_keypair() returns a non-zero value,
- * then this function must be called before noise_handshakestate_start()
- * to specify the local keypair for the session.
- *
- * \sa noise_handshakestate_needs_local_keypair()
- */
-int noise_handshakestate_set_local_keypair
-    (NoiseHandshakeState *state,
-     const uint8_t *private_key, size_t private_key_len,
-     const uint8_t *public_key, size_t public_key_len)
-{
-    int err;
-
-    /* Validate the parameters */
-    if (!state || !private_key || !public_key)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (!state->local_static_private_key || !state->local_static_public_key)
-        return NOISE_ERROR_NOT_APPLICABLE;
-    if (state->action != NOISE_ACTION_NONE)
-        return NOISE_ERROR_INVALID_STATE;
-
-    /* Validate the keypair with the DHState */
-    err = noise_dhstate_validate_keypair
-        (state->dh, private_key, private_key_len, public_key, public_key_len);
-    if (err != NOISE_ERROR_NONE)
-        return err;
-
-    /* Set the local keypair */
-    memcpy(state->local_static_private_key, private_key, private_key_len);
-    memcpy(state->local_static_public_key, public_key, public_key_len);
-    state->requirements &= ~NOISE_REQ_LOCAL_REQUIRED;
-    state->requirements |= NOISE_HAS_LOCAL_KEYPAIR;
-    return NOISE_ERROR_NONE;
+    return noise_dhstate_has_keypair(state->dh_local_static);
 }
 
 /**
@@ -571,19 +487,20 @@ int noise_handshakestate_set_local_keypair
  *
  * This function indicates that a remote public key must be supplied
  * before the protocol starts.  If it is possible for the remote public key
- * to be provided by the remote party during the session, then
- * noise_handshakestate_get_remote_public_key() can be called at the
- * end of the handshake to get the remotely-provided value.
+ * to be provided by the remote party during the session, then the
+ * remote public key can be obtained at the end of the handshake using the
+ * noise_handshakestate_get_remote_public_key_dh() object.
  *
  * \sa noise_handshakestate_has_remote_public_key(),
- * noise_handshakestate_set_remote_public_key()
+ * noise_handshakestate_get_remote_public_key_dh()
  */
 int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *state)
 {
-    if (state)
-        return (state->requirements & NOISE_REQ_REMOTE_REQUIRED) != 0;
-    else
+    if (!state)
         return 0;
+    if ((state->requirements & NOISE_REQ_REMOTE_REQUIRED) == 0)
+        return 0;
+    return !noise_dhstate_has_keypair(state->dh_remote_static);
 }
 
 /**
@@ -594,110 +511,18 @@ int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *stat
  * \return Returns 1 if the \a state has a remote public key, or 0 if the
  * key is yet to be seen.  Also returns zero if \a state is NULL.
  *
- * A remote public key may either be provided ahead of time by
- * noise_handshakestate_set_remote_public_key(), or it may be provided
- * by the remote party during the handshake.
+ * A remote public key may either be provided ahead of time on the
+ * noise_handshakestate_get_remote_public_key_dh() object, or it may be
+ * provided by the remote party during the handshake.
  *
  * \sa noise_handshakestate_needs_remote_public_key(),
  * noise_handshakestate_set_remote_public_key()
  */
 int noise_handshakestate_has_remote_public_key(const NoiseHandshakeState *state)
 {
-    if (state)
-        return (state->requirements & NOISE_HAS_REMOTE_KEY) != 0;
-    else
+    if (!state || !state->dh_remote_static)
         return 0;
-}
-
-/**
- * \brief Gets the remote public key for a HandshakeState.
- *
- * \param state The HandshakeState object.
- * \param public_key Points to the buffer to fill with the public key.
- * \param public_key_len The length of the \a public_key buffer in bytes.
- *
- * \return NOISE_ERROR on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
- * for the Diffie-Hellman algorithm in the protocol name.
- * \return NOISE_ERROR_NOT_APPLICABLE if the protocol name does not
- * require a remote public key for operation.
- * \return NOISE_ERROR_INVALID_STATE if the remote public key is not
- * yet available.
- *
- * The remote public key may be provided by the local party with a call to
- * noise_handshakestate_set_remote_public_key(), or it may be provided by
- * the remote party itself during the handshake.
- *
- * \sa noise_handshakestate_set_remote_public_key(),
- * noise_handshakestate_has_remote_public_key()
- */
-int noise_handshakestate_get_remote_public_key
-    (NoiseHandshakeState *state, uint8_t *public_key, size_t public_key_len)
-{
-    /* Validate the parameters */
-    if (!state || !public_key)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (public_key_len != state->dh->public_key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
-    if (!state->remote_static_public_key)
-        return NOISE_ERROR_NOT_APPLICABLE;
-    if (state->action != NOISE_ACTION_NONE)
-        return NOISE_ERROR_INVALID_STATE;
-    if (!(state->requirements & NOISE_HAS_REMOTE_KEY))
-        return NOISE_ERROR_INVALID_STATE;
-
-    /* Copy the remote public key to the return buffer */
-    memcpy(public_key, state->remote_static_public_key, public_key_len);
-    return NOISE_ERROR_NONE;
-}
-
-/**
- * \brief Sets the remote public key for a HandshakeState.
- *
- * \param state The HandshakeState object.
- * \param public_key Points to the remote public key.
- * \param public_key_len The length of the \a public_key in bytes.
- *
- * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
- * for the Diffie-Hellman algorithm in the protocol name.
- * \return NOISE_ERROR_NOT_APPLICABLE if the protocol does not need a
- * remote public key.
- * \return NOISE_ERROR_INVALID_STATE if the protocol has already started.
- * \return NOISE_ERROR_INVALID_DH_KEY if \a public_key is the null
- * public key.
- *
- * If the remote party will provide the public key during the handshake,
- * then any value set by this function will be overwritten.
- *
- * \sa noise_handshakestate_get_remote_public_key(),
- * noise_handshakestate_needs_remote_public_key()
- */
-int noise_handshakestate_set_remote_public_key
-    (NoiseHandshakeState *state,
-     const uint8_t *public_key, size_t public_key_len)
-{
-    /* Validate the parameters */
-    if (!state || !public_key)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (public_key_len != state->dh->public_key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
-    if (!state->remote_static_public_key)
-        return NOISE_ERROR_NOT_APPLICABLE;
-    if (state->action != NOISE_ACTION_NONE)
-        return NOISE_ERROR_INVALID_STATE;
-
-    /* Check that the public key is not null */
-    if (noise_dhstate_is_null_public_key(state->dh, public_key, public_key_len))
-        return NOISE_ERROR_INVALID_DH_KEY;
-
-    /* Set the remote public key */
-    memcpy(state->remote_static_public_key, public_key, public_key_len);
-    state->requirements &= ~NOISE_REQ_REMOTE_REQUIRED;
-    state->requirements |= NOISE_HAS_REMOTE_KEY;
-    return NOISE_ERROR_NONE;
+    return noise_dhstate_has_public_key(state->dh_remote_static);
 }
 
 /**
@@ -804,12 +629,27 @@ int noise_handshakestate_get_action(const NoiseHandshakeState *state)
     return state ? state->action : NOISE_ACTION_NONE;
 }
 
+/**
+ * \brief Performs a Diffie-Hellman operation and mixes the result into
+ * the chaining key.
+ *
+ * \param state The HandshakeState object.
+ * \param private_key Points to the private key DHState object.
+ * \param public_key Points to the public key DHState object.
+ *
+ * \return NOISE_ERROR_NONE on success, or an error code from
+ * noise_dhstate_calculate() otherwise.
+ */
 static int noise_handshake_mix_dh
-    (NoiseHandshakeState *state, const uint8_t *private_key,
-     const uint8_t *public_key)
+    (NoiseHandshakeState *state, const NoiseDHState *private_key,
+     const NoiseDHState *public_key)
 {
-    // TODO
-    return NOISE_ERROR_NONE;
+    size_t len = private_key->shared_key_len;
+    uint8_t *shared = alloca(len);
+    int err = noise_dhstate_calculate(private_key, public_key, shared, len);
+    noise_symmetricstate_mix_key(state->symmetric, shared, len);
+    noise_clean(shared, len);
+    return err;
 }
 
 /**
@@ -887,32 +727,28 @@ int noise_handshakestate_write_message
         case NOISE_TOKEN_E:
             /* Generate a local ephemeral keypair and add the public
                key to the message */
-            if (!state->local_ephemeral_private_key ||
-                    !state->local_ephemeral_public_key)
+            if (!state->dh_local_ephemeral)
                 return NOISE_ERROR_INVALID_STATE;
-            len = state->dh->public_key_len;
-            err = noise_dhstate_generate_keypair
-                (state->dh, state->local_ephemeral_private_key,
-                 state->dh->private_key_len,
-                 state->local_ephemeral_public_key, len);
+            len = state->dh_local_ephemeral->public_key_len;
+            err = noise_dhstate_generate_keypair(state->dh_local_ephemeral);
             if (err != NOISE_ERROR_NONE)
                 break;
             if ((max_size - size) < len)
                 return NOISE_ERROR_INVALID_LENGTH;
-            memcpy(message + size, state->local_ephemeral_public_key, len);
+            memcpy(message + size, state->dh_local_ephemeral->public_key, len);
             noise_symmetricstate_mix_hash
-                (state->symmetric, state->local_ephemeral_public_key, len);
+                (state->symmetric, message + size, len);
             size += len;
             break;
         case NOISE_TOKEN_S:
             /* Encrypt the local static public key and add it to the message */
-            if (!state->local_static_public_key)
+            if (!state->dh_local_static)
                 return NOISE_ERROR_INVALID_STATE;
-            len = state->dh->public_key_len;
+            len = state->dh_local_static->public_key_len;
             mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
             if ((max_size - size) < (len + mac_len))
                 return NOISE_ERROR_INVALID_LENGTH;
-            memcpy(message + size, state->local_static_public_key, len);
+            memcpy(message + size, state->dh_local_static->public_key, len);
             err = noise_symmetricstate_encrypt_and_hash
                 (state->symmetric, message + size, len, &out_len);
             if (err != NOISE_ERROR_NONE)
@@ -922,26 +758,22 @@ int noise_handshakestate_write_message
         case NOISE_TOKEN_DHEE:
             /* DH operation with local and remote ephemeral keys */
             err = noise_handshake_mix_dh
-                (state, state->local_ephemeral_private_key,
-                 state->remote_ephemeral_public_key);
+                (state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
             break;
         case NOISE_TOKEN_DHES:
             /* DH operation with local ephemeral and remote static keys */
             err = noise_handshake_mix_dh
-                (state, state->local_ephemeral_private_key,
-                 state->remote_static_public_key);
+                (state, state->dh_local_ephemeral, state->dh_remote_static);
             break;
         case NOISE_TOKEN_DHSE:
             /* DH operation with local static and remote ephemeral keys */
             err = noise_handshake_mix_dh
-                (state, state->local_static_public_key,
-                 state->remote_ephemeral_public_key);
+                (state, state->dh_local_static, state->dh_remote_ephemeral);
             break;
         case NOISE_TOKEN_DHSS:
             /* DH operation with local and remote static keys */
             err = noise_handshake_mix_dh
-                (state, state->local_static_public_key,
-                 state->remote_ephemeral_public_key);
+                (state, state->dh_local_static, state->dh_remote_static);
             break;
         default:
             /* Unknown token code in the pattern.  This shouldn't happen.

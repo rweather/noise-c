@@ -24,6 +24,7 @@
 #define NOISE_HANDSHAKESTATE_H
 
 #include <noise/symmetricstate.h>
+#include <noise/dhstate.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,10 +40,9 @@ int noise_handshakestate_free(NoiseHandshakeState *state);
 int noise_handshakestate_get_role(const NoiseHandshakeState *state);
 int noise_handshakestate_get_protocol_id
     (const NoiseHandshakeState *state, NoiseProtocolId *id);
-int noise_handshakestate_get_dh_id(const NoiseHandshakeState *state);
-int noise_handshakestate_get_private_key_length
+NoiseDHState *noise_handshakestate_get_local_keypairdh
     (const NoiseHandshakeState *state);
-int noise_handshakestate_get_public_key_length
+NoiseDHState *noise_handshakestate_get_remote_public_key_dh
     (const NoiseHandshakeState *state);
 int noise_handshakestate_set_pre_shared_key
     (NoiseHandshakeState *state, const uint8_t *key, size_t key_len);
@@ -50,17 +50,8 @@ int noise_handshakestate_set_prologue
     (NoiseHandshakeState *state, const void *prologue, size_t prologue_len);
 int noise_handshakestate_needs_local_keypair(const NoiseHandshakeState *state);
 int noise_handshakestate_has_local_keypair(const NoiseHandshakeState *state);
-int noise_handshakestate_set_local_keypair
-    (NoiseHandshakeState *state,
-     const uint8_t *private_key, size_t private_key_len,
-     const uint8_t *public_key, size_t public_key_len);
 int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *state);
 int noise_handshakestate_has_remote_public_key(const NoiseHandshakeState *state);
-int noise_handshakestate_get_remote_public_key
-    (NoiseHandshakeState *state, uint8_t *public_key, size_t public_key_len);
-int noise_handshakestate_set_remote_public_key
-    (NoiseHandshakeState *state,
-     const uint8_t *public_key, size_t public_key_len);
 int noise_handshakestate_start(NoiseHandshakeState *state);
 int noise_handshakestate_fallback(NoiseHandshakeState *state);
 int noise_handshakestate_get_action(const NoiseHandshakeState *state);

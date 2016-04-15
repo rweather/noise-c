@@ -25,6 +25,7 @@
 
 #include <noise/noise.h>
 #include "crypto/chacha/chacha.h"
+#include <alloca.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -375,28 +376,17 @@ struct NoiseHandshakeState_s
     /** \brief Points to the SymmetricState object for this HandshakeState */
     NoiseSymmetricState *symmetric;
 
-    /** \brief Points to the DHState object for this HandshakeState */
-    NoiseDHState *dh;
+    /** \brief Points to the DHState object for local static key */
+    NoiseDHState *dh_local_static;
 
-    /** \brief Points to the local static private key */
-    uint8_t *local_static_private_key;
+    /** \brief Points to the DHState object for local ephemeral key */
+    NoiseDHState *dh_local_ephemeral;
 
-    /** \brief Points to the local static public key */
-    uint8_t *local_static_public_key;
+    /** \brief Points to the DHState object for remote static key */
+    NoiseDHState *dh_remote_static;
 
-    /** \brief Points to the local ephemeral private key */
-    uint8_t *local_ephemeral_private_key;
-
-    /** \brief Points to the local ephemeral public key */
-    uint8_t *local_ephemeral_public_key;
-
-    /** \brief Points to the remote static public key */
-    uint8_t *remote_static_public_key;
-
-    /** \brief Points to the remote ephemeral public key */
-    uint8_t *remote_ephemeral_public_key;
-
-    /* Followed by pre-allocated memory for the above DH keys */
+    /** \brief Points to the DHState object for remote ephemeral key */
+    NoiseDHState *dh_remote_ephemeral;
 };
 
 /* Handshake message pattern tokens (must be single-byte values) */
@@ -434,23 +424,18 @@ struct NoiseHandshakeState_s
     ahead of time to start the protocol (for XXfallback) */
 #define NOISE_PAT_FLAG_REMOTE_EMPEM_REQ (1 << 7)
 
-/** Local static keypair has not been provided yet */
+/** Local static keypair is required for the handshake */
 #define NOISE_REQ_LOCAL_REQUIRED        (1 << 0)
-/** Remote publie key has not been provided yet */
+/** Remote public key is required for the handshake */
 #define NOISE_REQ_REMOTE_REQUIRED       (1 << 1)
-/** Local ephemeral keypair has not been provided yet */
+/** Local ephemeral keypair is required for the handshake */
 #define NOISE_REQ_LOCAL_EPHEM_REQ       (1 << 2)
-/** Remote ephemeral public key has not been provided yet */
+/** Remote ephemeral public key is required for the handshake */
 #define NOISE_REQ_REMOTE_EPHEM_REQ      (1 << 3)
 /** Pre-shared key has not been provided yet */
 #define NOISE_REQ_PSK                   (1 << 4)
 /** Prologue has not been provided yet */
 #define NOISE_REQ_PROLOGUE              (1 << 5)
-/** Local static keypair has been provided */
-#define NOISE_HAS_LOCAL_KEYPAIR         (1 << 6)
-/** Remote static public key has been provided, or was
-    obtained from the remote pair during the protocol */
-#define NOISE_HAS_REMOTE_KEY            (1 << 7)
 
 #define noise_new(type) ((type *)noise_new_object(sizeof(type)))
 void *noise_new_object(size_t size);
