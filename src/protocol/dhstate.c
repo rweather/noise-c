@@ -364,4 +364,44 @@ int noise_dhstate_calculate
     return err;
 }
 
+/**
+ * \brief Validates a Diffie-Hellman keypair.
+ *
+ * \param state Points to the DHState.
+ * \param private_key Points to the private key for the keypair.
+ * \param private_key_len The length of the \a private_key in bytes.
+ * \param public_key Points to the public key for the keypair.
+ * \param public_key_len The length of the \a public_key in bytes.
+ *
+ * \return NOISE_ERROR_NONE if the keypair is valid.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a private_key,
+ * or \a public_key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if either \a private_key_len or
+ * \a public_key_len is invalid for the algorithm.
+ * \return NOISE_ERROR_INVALID_DH_KEY if the \a public_key does not
+ * match the \a private_key, or the values are otherwise invalid for
+ * the algorithm.
+ */
+int noise_dhstate_validate_keypair
+    (const NoiseDHState *state, const uint8_t *private_key,
+     size_t private_key_len, const uint8_t *public_key, size_t public_key_len)
+{
+    /* Validate the parameters */
+    if (!state || !private_key || !public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (private_key_len != state->private_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (public_key_len != state->public_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* If the public key is NULL, then the keypair is invalid */
+    if (noise_dhstate_is_null_public_key(state, public_key, public_key_len))
+        return NOISE_ERROR_INVALID_DH_KEY;
+
+    /* TODO: Use the backend to perform algorithm-specific validation */
+
+    /* The keypair is OK */
+    return NOISE_ERROR_NONE;
+}
+
 /**@}*/

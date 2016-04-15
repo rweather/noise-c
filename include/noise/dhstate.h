@@ -50,6 +50,9 @@ int noise_dhstate_calculate
     (const NoiseDHState *state, uint8_t *shared_key, size_t shared_key_len,
      const uint8_t *private_key, size_t private_key_len,
      const uint8_t *public_key, size_t public_key_len);
+int noise_dhstate_validate_keypair
+    (const NoiseDHState *state, const uint8_t *private_key,
+     size_t private_key_len, const uint8_t *public_key, size_t public_key_len);
 
 #ifdef __cplusplus
 };

@@ -636,9 +636,10 @@ int noise_cipherstate_rand_bytes
  * if the \a padding_mode is NOISE_PADDING_ZERO.
  *
  * This function is intended for padding message payloads prior to them
- * being encrypted with noise_handshakestate_write_message().  If the
- * \a padding_mode is NOISE_PADDING_RANDOM, then the random bytes are
- * generated using noise_cipherstate_rand_bytes().
+ * being encrypted with noise_handshakestate_write_message() or
+ * noise_cipherstate_encrypt_with_ad().  If the \a padding_mode is
+ * NOISE_PADDING_RANDOM, then the random bytes are generated using
+ * noise_cipherstate_rand_bytes().
  *
  * The number of padding bytes added will be \a padded_len - \a orig_len.
  * If \a padded_len is less than or equal to \a orig_len, then no padding

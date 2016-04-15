@@ -360,7 +360,10 @@ int noise_symmetricstate_encrypt_and_hash
     int err;
 
     /* Validate the parameters */
-    if (!state || !data || !out_data_len)
+    if (!out_data_len)
+        return NOISE_ERROR_INVALID_PARAM;
+    *out_data_len = 0;
+    if (!state || !data)
         return NOISE_ERROR_INVALID_PARAM;
 
     /* If the state has been split, then we cannot do this */
@@ -415,7 +418,10 @@ int noise_symmetricstate_decrypt_and_hash
     int err;
 
     /* Validate the parameters */
-    if (!state || !data || !out_data_len)
+    if (!out_data_len)
+        return NOISE_ERROR_INVALID_PARAM;
+    *out_data_len = 0;
+    if (!state || !data)
         return NOISE_ERROR_INVALID_PARAM;
 
     /* If the state has been split, then we cannot do this */

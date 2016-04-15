@@ -129,9 +129,11 @@ static int noise_handshakestate_new
         requirements |= NOISE_REQ_REMOTE_EPHEM_REQ;
     if (symmetric->id.prefix_id == NOISE_PREFIX_PSK)
         requirements |= NOISE_REQ_PSK;
+    requirements |= NOISE_REQ_PROLOGUE;
 
     /* Initialize the HandshakeState */
     (*state)->requirements = requirements;
+    (*state)->action = NOISE_ACTION_NONE;
     (*state)->tokens = pattern + 1;
     (*state)->role = role;
     (*state)->symmetric = symmetric;
@@ -200,9 +202,8 @@ int noise_handshakestate_new_by_id
 
     /* Create the SymmetricState object */
     err = noise_symmetricstate_new_by_id(&symmetric, protocol_id);
-    if (err != NOISE_ERROR_NONE) {
+    if (err != NOISE_ERROR_NONE)
         return err;
-    }
 
     /* Create the HandshakeState object */
     return noise_handshakestate_new(state, symmetric, role);
@@ -247,9 +248,8 @@ int noise_handshakestate_new_by_name
 
     /* Create the SymmetricState object */
     err = noise_symmetricstate_new_by_name(&symmetric, protocol_name);
-    if (err != NOISE_ERROR_NONE) {
+    if (err != NOISE_ERROR_NONE)
         return err;
-    }
 
     /* Create the HandshakeState object */
     return noise_handshakestate_new(state, symmetric, role);
@@ -384,7 +384,7 @@ int noise_handshakestate_get_public_key_length
  * \return NOISE_ERROR_NOT_APPLICABLE if the protocol name does not
  * begin with "NoisePSK".
  * \return NOISE_ERROR_INVALID_STATE if this function is called afer
- * the protocol has already started.
+ * the protocol has already started, or the pre shared key was already set.
  *
  * If the prologue has not been set yet, then calling this function will
  * implicitly set the prologue to the empty sequence and it will no longer
@@ -395,7 +395,33 @@ int noise_handshakestate_get_public_key_length
 int noise_handshakestate_set_pre_shared_key
     (NoiseHandshakeState *state, const uint8_t *key, size_t key_len)
 {
-    // TODO
+    uint8_t temp[NOISE_MAX_HASHLEN];
+    NoiseHashState *hash;
+
+    /* Validate the parameters and state */
+    if (!state || !key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->symmetric->id.prefix_id != NOISE_PREFIX_PSK)
+        return NOISE_ERROR_NOT_APPLICABLE;
+    if (state->action != NOISE_ACTION_NONE)
+        return NOISE_ERROR_INVALID_STATE;
+    if (!(state->requirements & NOISE_REQ_PSK))
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* If we haven't hashed the prologue yet, hash an empty one now */
+    if (state->requirements & NOISE_REQ_PROLOGUE)
+        noise_handshakestate_set_prologue(state, "", 0);
+
+    /* Mix the pre shared key into the chaining key and handshake hash */
+    hash = state->symmetric->hash;
+    noise_hashstate_hkdf
+        (hash, state->symmetric->ck, hash->hash_len, key, key_len,
+         state->symmetric->ck, hash->hash_len, temp, hash->hash_len);
+    noise_symmetricstate_mix_hash(state->symmetric, temp, hash->hash_len);
+    noise_clean(temp, sizeof(temp));
+
+    /* We have the pre shared key now */
+    state->requirements &= ~NOISE_REQ_PSK;
     return NOISE_ERROR_NONE;
 }
 
@@ -422,7 +448,17 @@ int noise_handshakestate_set_pre_shared_key
 int noise_handshakestate_set_prologue
     (NoiseHandshakeState *state, const void *prologue, size_t prologue_len)
 {
-    // TODO
+    /* Validate the parameters */
+    if (!state || !prologue)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->action != NOISE_ACTION_NONE)
+        return NOISE_ERROR_INVALID_STATE;
+    if (!(state->requirements & NOISE_REQ_PROLOGUE))
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Mix the prologue into the handshake hash */
+    noise_symmetricstate_mix_hash(state->symmetric, prologue, prologue_len);
+    state->requirements &= ~NOISE_REQ_PROLOGUE;
     return NOISE_ERROR_NONE;
 }
 
@@ -441,8 +477,10 @@ int noise_handshakestate_set_prologue
  */
 int noise_handshakestate_needs_local_keypair(const NoiseHandshakeState *state)
 {
-    // TODO
-    return 0;
+    if (state)
+        return (state->requirements & NOISE_REQ_LOCAL_REQUIRED) != 0;
+    else
+        return 0;
 }
 
 /**
@@ -460,8 +498,10 @@ int noise_handshakestate_needs_local_keypair(const NoiseHandshakeState *state)
  */
 int noise_handshakestate_has_local_keypair(const NoiseHandshakeState *state)
 {
-    // TODO
-    return 0;
+    if (state)
+        return (state->requirements & NOISE_HAS_LOCAL_KEYPAIR) != 0;
+    else
+        return 0;
 }
 
 /**
@@ -476,12 +516,13 @@ int noise_handshakestate_has_local_keypair(const NoiseHandshakeState *state)
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a private_key,
  * or \a public_key is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if \a private_key_len or
- * \a public_key_len is incorrect for the Diffie-Hellman algorithm in
- * the protocol name.
  * \return NOISE_ERROR_NOT_APPLICABLE if the protocol name does not
  * require a local keypair.
  * \return NOISE_ERROR_INVALID_STATE if the protocol has already started.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a private_key_len or
+ * \a public_key_len is incorrect for the Diffie-Hellman algorithm in
+ * the protocol name.
+ * \return NOISE_ERROR_INVALID_DH_KEY if the keypair is invalid.
  *
  * If noise_handshakestate_needs_local_keypair() returns a non-zero value,
  * then this function must be called before noise_handshakestate_start()
@@ -494,7 +535,27 @@ int noise_handshakestate_set_local_keypair
      const uint8_t *private_key, size_t private_key_len,
      const uint8_t *public_key, size_t public_key_len)
 {
-    // TODO
+    int err;
+
+    /* Validate the parameters */
+    if (!state || !private_key || !public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (!state->local_static_private_key || !state->local_static_public_key)
+        return NOISE_ERROR_NOT_APPLICABLE;
+    if (state->action != NOISE_ACTION_NONE)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Validate the keypair with the DHState */
+    err = noise_dhstate_validate_keypair
+        (state->dh, private_key, private_key_len, public_key, public_key_len);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    /* Set the local keypair */
+    memcpy(state->local_static_private_key, private_key, private_key_len);
+    memcpy(state->local_static_public_key, public_key, public_key_len);
+    state->requirements &= ~NOISE_REQ_LOCAL_REQUIRED;
+    state->requirements |= NOISE_HAS_LOCAL_KEYPAIR;
     return NOISE_ERROR_NONE;
 }
 
@@ -519,8 +580,10 @@ int noise_handshakestate_set_local_keypair
  */
 int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *state)
 {
-    // TODO
-    return 0;
+    if (state)
+        return (state->requirements & NOISE_REQ_REMOTE_REQUIRED) != 0;
+    else
+        return 0;
 }
 
 /**
@@ -540,8 +603,10 @@ int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *stat
  */
 int noise_handshakestate_has_remote_public_key(const NoiseHandshakeState *state)
 {
-    // TODO
-    return 0;
+    if (state)
+        return (state->requirements & NOISE_HAS_REMOTE_KEY) != 0;
+    else
+        return 0;
 }
 
 /**
@@ -555,7 +620,10 @@ int noise_handshakestate_has_remote_public_key(const NoiseHandshakeState *state)
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
  * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
  * for the Diffie-Hellman algorithm in the protocol name.
- * \return NOISE_ERROR_INVALID_STATE if the remote public key is not available.
+ * \return NOISE_ERROR_NOT_APPLICABLE if the protocol name does not
+ * require a remote public key for operation.
+ * \return NOISE_ERROR_INVALID_STATE if the remote public key is not
+ * yet available.
  *
  * The remote public key may be provided by the local party with a call to
  * noise_handshakestate_set_remote_public_key(), or it may be provided by
@@ -567,7 +635,20 @@ int noise_handshakestate_has_remote_public_key(const NoiseHandshakeState *state)
 int noise_handshakestate_get_remote_public_key
     (NoiseHandshakeState *state, uint8_t *public_key, size_t public_key_len)
 {
-    // TODO
+    /* Validate the parameters */
+    if (!state || !public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (public_key_len != state->dh->public_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (!state->remote_static_public_key)
+        return NOISE_ERROR_NOT_APPLICABLE;
+    if (state->action != NOISE_ACTION_NONE)
+        return NOISE_ERROR_INVALID_STATE;
+    if (!(state->requirements & NOISE_HAS_REMOTE_KEY))
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Copy the remote public key to the return buffer */
+    memcpy(public_key, state->remote_static_public_key, public_key_len);
     return NOISE_ERROR_NONE;
 }
 
@@ -582,10 +663,14 @@ int noise_handshakestate_get_remote_public_key
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
  * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
  * for the Diffie-Hellman algorithm in the protocol name.
- * \return NOISE_ERROR_NOT_APPLICABLE if the protocol does not need a remote
- * public key, or the remote public key is expected to be provided by the
- * remote party during the handshake.
+ * \return NOISE_ERROR_NOT_APPLICABLE if the protocol does not need a
+ * remote public key.
  * \return NOISE_ERROR_INVALID_STATE if the protocol has already started.
+ * \return NOISE_ERROR_INVALID_DH_KEY if \a public_key is the null
+ * public key.
+ *
+ * If the remote party will provide the public key during the handshake,
+ * then any value set by this function will be overwritten.
  *
  * \sa noise_handshakestate_get_remote_public_key(),
  * noise_handshakestate_needs_remote_public_key()
@@ -594,7 +679,24 @@ int noise_handshakestate_set_remote_public_key
     (NoiseHandshakeState *state,
      const uint8_t *public_key, size_t public_key_len)
 {
-    // TODO
+    /* Validate the parameters */
+    if (!state || !public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (public_key_len != state->dh->public_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (!state->remote_static_public_key)
+        return NOISE_ERROR_NOT_APPLICABLE;
+    if (state->action != NOISE_ACTION_NONE)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Check that the public key is not null */
+    if (noise_dhstate_is_null_public_key(state->dh, public_key, public_key_len))
+        return NOISE_ERROR_INVALID_DH_KEY;
+
+    /* Set the remote public key */
+    memcpy(state->remote_static_public_key, public_key, public_key_len);
+    state->requirements &= ~NOISE_REQ_REMOTE_REQUIRED;
+    state->requirements |= NOISE_HAS_REMOTE_KEY;
     return NOISE_ERROR_NONE;
 }
 
@@ -699,8 +801,15 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
  */
 int noise_handshakestate_get_action(const NoiseHandshakeState *state)
 {
+    return state ? state->action : NOISE_ACTION_NONE;
+}
+
+static int noise_handshake_mix_dh
+    (NoiseHandshakeState *state, const uint8_t *private_key,
+     const uint8_t *public_key)
+{
     // TODO
-    return 0;
+    return NOISE_ERROR_NONE;
 }
 
 /**
@@ -732,7 +841,134 @@ int noise_handshakestate_write_message
     (NoiseHandshakeState *state, const void *payload, size_t payload_size,
      uint8_t *message, size_t *message_size)
 {
-    // TODO
+    size_t size = 0;
+    size_t max_size;
+    size_t len;
+    size_t out_len;
+    size_t mac_len;
+    uint8_t token;
+    int err;
+
+    /* Validate the message size and extract it.  We set the return size
+       to zero here in case this function bails out with an error later.
+       This is in case the caller forgets to check the error return value,
+       and simply transmits the "message_size" bytes.  A zero return
+       size will hopefully prevent the caller from accidentally leaking
+       the previous contents of "message" onto the transport. */
+    if (!message_size)
+        return NOISE_ERROR_INVALID_PARAM;
+    max_size = *message_size;
+    *message_size = 0;
+
+    /* Validate the other parameters and state */
+    if (!state || !message)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (!payload && payload_size != 0)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->action != NOISE_ACTION_WRITE_MESSAGE)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Process tokens until the direction changes or the pattern ends */
+    for (;;) {
+        token = *(state->tokens);
+        if (token == NOISE_TOKEN_END) {
+            /* The pattern has finished, so the next action is "split" */
+            state->action = NOISE_ACTION_SPLIT;
+            break;
+        } else if (token == NOISE_TOKEN_FLIP_DIR) {
+            /* Changing directions, so this message is complete and
+               the next action is "read message". */
+            ++(state->tokens);
+            state->action = NOISE_ACTION_READ_MESSAGE;
+            break;
+        }
+        err = NOISE_ERROR_NONE;
+        switch (token) {
+        case NOISE_TOKEN_E:
+            /* Generate a local ephemeral keypair and add the public
+               key to the message */
+            if (!state->local_ephemeral_private_key ||
+                    !state->local_ephemeral_public_key)
+                return NOISE_ERROR_INVALID_STATE;
+            len = state->dh->public_key_len;
+            err = noise_dhstate_generate_keypair
+                (state->dh, state->local_ephemeral_private_key,
+                 state->dh->private_key_len,
+                 state->local_ephemeral_public_key, len);
+            if (err != NOISE_ERROR_NONE)
+                break;
+            if ((max_size - size) < len)
+                return NOISE_ERROR_INVALID_LENGTH;
+            memcpy(message + size, state->local_ephemeral_public_key, len);
+            noise_symmetricstate_mix_hash
+                (state->symmetric, state->local_ephemeral_public_key, len);
+            size += len;
+            break;
+        case NOISE_TOKEN_S:
+            /* Encrypt the local static public key and add it to the message */
+            if (!state->local_static_public_key)
+                return NOISE_ERROR_INVALID_STATE;
+            len = state->dh->public_key_len;
+            mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
+            if ((max_size - size) < (len + mac_len))
+                return NOISE_ERROR_INVALID_LENGTH;
+            memcpy(message + size, state->local_static_public_key, len);
+            err = noise_symmetricstate_encrypt_and_hash
+                (state->symmetric, message + size, len, &out_len);
+            if (err != NOISE_ERROR_NONE)
+                break;
+            size += out_len;
+            break;
+        case NOISE_TOKEN_DHEE:
+            /* DH operation with local and remote ephemeral keys */
+            err = noise_handshake_mix_dh
+                (state, state->local_ephemeral_private_key,
+                 state->remote_ephemeral_public_key);
+            break;
+        case NOISE_TOKEN_DHES:
+            /* DH operation with local ephemeral and remote static keys */
+            err = noise_handshake_mix_dh
+                (state, state->local_ephemeral_private_key,
+                 state->remote_static_public_key);
+            break;
+        case NOISE_TOKEN_DHSE:
+            /* DH operation with local static and remote ephemeral keys */
+            err = noise_handshake_mix_dh
+                (state, state->local_static_public_key,
+                 state->remote_ephemeral_public_key);
+            break;
+        case NOISE_TOKEN_DHSS:
+            /* DH operation with local and remote static keys */
+            err = noise_handshake_mix_dh
+                (state, state->local_static_public_key,
+                 state->remote_ephemeral_public_key);
+            break;
+        default:
+            /* Unknown token code in the pattern.  This shouldn't happen.
+               If it does, then abort immediately. */
+            return NOISE_ERROR_INVALID_STATE;
+        }
+        if (err != NOISE_ERROR_NONE)
+            return err;
+        ++(state->tokens);
+    }
+
+    /* Encrypt the payload and add it to the buffer */
+    mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
+    if ((max_size - size) < mac_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if ((max_size - size - mac_len) < payload_size)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (payload_size)
+        memcpy(message + size, payload, payload_size);
+    err = noise_symmetricstate_encrypt_and_hash
+        (state->symmetric, message + size, payload_size, &out_len);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+    size += out_len;
+
+    /* Return the final size to the caller */
+    *message_size = size;
     return NOISE_ERROR_NONE;
 }
 

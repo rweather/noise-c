@@ -330,6 +330,9 @@ struct NoiseHandshakeState_s
     /** \brief Requirements that are yet to be satisfied */
     int requirements;
 
+    /** \brief Next action to be taken by the application */
+    int action;
+
     /** \brief Points to the next message pattern tokens to be processed */
     const uint8_t *tokens;
 
@@ -368,7 +371,6 @@ struct NoiseHandshakeState_s
 #define NOISE_TOKEN_DHES        4   /**< "dhes" token */
 #define NOISE_TOKEN_DHSE        5   /**< "dhse" token */
 #define NOISE_TOKEN_DHSS        6   /**< "dhss" token */
-#define NOISE_TOKEN_FALLBACK    254 /**< Continue with the fallback protocol */
 #define NOISE_TOKEN_FLIP_DIR    255 /**< Flip the handshake direction */
 
 /** Pattern requires a local static keypair */
@@ -406,6 +408,13 @@ struct NoiseHandshakeState_s
 #define NOISE_REQ_REMOTE_EPHEM_REQ      (1 << 3)
 /** Pre-shared key has not been provided yet */
 #define NOISE_REQ_PSK                   (1 << 4)
+/** Prologue has not been provided yet */
+#define NOISE_REQ_PROLOGUE              (1 << 5)
+/** Local static keypair has been provided */
+#define NOISE_HAS_LOCAL_KEYPAIR         (1 << 6)
+/** Remote static public key has been provided, or was
+    obtained from the remote pair during the protocol */
+#define NOISE_HAS_REMOTE_KEY            (1 << 7)
 
 #define noise_new(type) ((type *)noise_new_object(sizeof(type)))
 void *noise_new_object(size_t size);
