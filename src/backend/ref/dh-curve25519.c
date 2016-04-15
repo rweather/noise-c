@@ -24,36 +24,70 @@
 
 int curve25519_donna(uint8_t *mypublic, const uint8_t *secret, const uint8_t *basepoint);
 
-static int noise_curve25519_generate_keypair
-    (const NoiseDHState *state, uint8_t *private_key, uint8_t *public_key)
+typedef struct
 {
-    static uint8_t const basepoint[32] = {9};
-    noise_rand_bytes(private_key, 32);
-    private_key[0] &= 0xF8;
-    private_key[31] = (private_key[31] & 0x7F) | 0x40;
-    curve25519_donna(public_key, private_key, basepoint);
+    struct NoiseDHState_s parent;
+    uint8_t private_key[32];
+    uint8_t public_key[32];
+
+} NoiseCurve25519State;
+
+/* Curve25519 base point from RFC 7748, 9 in little-endian order */
+static uint8_t const basepoint[32] = {9};
+
+static void noise_curve25519_generate_keypair(NoiseDHState *state)
+{
+    NoiseCurve25519State *st = (NoiseCurve25519State *)state;
+    noise_rand_bytes(st->private_key, 32);
+    st->private_key[0] &= 0xF8;
+    st->private_key[31] = (st->private_key[31] & 0x7F) | 0x40;
+    curve25519_donna(st->public_key, st->private_key, basepoint);
+}
+
+static int noise_curve25519_validate_keypair
+        (const NoiseDHState *state, const uint8_t *private_key,
+         const uint8_t *public_key)
+{
+    /* Check that the public key actually corresponds to the private key */
+    uint8_t temp[32];
+    int equal;
+    curve25519_donna(temp, private_key, basepoint);
+    equal = noise_is_equal(temp, public_key, 32);
+    return NOISE_ERROR_INVALID_PUBLIC_KEY & (equal - 1);
+}
+
+static int noise_curve25519_validate_public_key
+        (const NoiseDHState *state, const uint8_t *public_key)
+{
+    /* Nothing to do here yet */
     return NOISE_ERROR_NONE;
 }
 
 static int noise_curve25519_calculate
-    (const NoiseDHState *state, uint8_t *shared_key,
-     const uint8_t *private_key, const uint8_t *public_key)
+    (const NoiseDHState *private_key_state,
+     const NoiseDHState *public_key_state,
+     uint8_t *shared_key)
 {
     /* Do we need to check that the public key is less than 2^255 - 19? */
-    curve25519_donna(shared_key, private_key, public_key);
+    curve25519_donna(shared_key, private_key_state->private_key,
+                     public_key_state->public_key);
     return NOISE_ERROR_NONE;
 }
 
 NoiseDHState *noise_curve25519_new(void)
 {
-    NoiseDHState *state = noise_new(NoiseDHState);
+    NoiseCurve25519State *state = noise_new(NoiseCurve25519State);
     if (!state)
         return 0;
-    state->dh_id = NOISE_DH_CURVE25519;
-    state->private_key_len = 32;
-    state->public_key_len = 32;
-    state->shared_key_len = 32;
-    state->generate_keypair = noise_curve25519_generate_keypair;
-    state->calculate = noise_curve25519_calculate;
-    return state;
+    state->parent.dh_id = NOISE_DH_CURVE25519;
+    state->parent.private_key_len = 32;
+    state->parent.public_key_len = 32;
+    state->parent.shared_key_len = 32;
+    state->parent.private_key = state->private_key;
+    state->parent.public_key = state->public_key;
+    state->parent.generate_keypair = noise_curve25519_generate_keypair;
+    state->parent.validate_keypair = noise_curve25519_validate_keypair;
+    state->parent.validate_public_key = noise_curve25519_validate_public_key;
+    state->parent.calculate = noise_curve25519_calculate;
+    return &(state->parent);
 }

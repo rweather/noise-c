@@ -382,8 +382,13 @@
  */
 
 /**
- * \def NOISE_ERROR_INVALID_DH_KEY
- * \brief Invalid Diffie-Hellman key value.
+ * \def NOISE_ERROR_INVALID_PRIVATE_KEY
+ * \brief Invalid private key value.
+ */
+
+/**
+ * \def NOISE_ERROR_INVALID_PUBLIC_KEY
+ * \brief Invalid public key value.
  */
 
 /**

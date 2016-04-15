@@ -39,20 +39,26 @@ int noise_dhstate_get_dh_id(const NoiseDHState *state);
 size_t noise_dhstate_get_public_key_length(const NoiseDHState *state);
 size_t noise_dhstate_get_private_key_length(const NoiseDHState *state);
 size_t noise_dhstate_get_shared_key_length(const NoiseDHState *state);
-int noise_dhstate_get_null_public_key
-    (const NoiseDHState *state, uint8_t *key, size_t len);
-int noise_dhstate_is_null_public_key
-    (const NoiseDHState *state, const uint8_t *key, size_t len);
-int noise_dhstate_generate_keypair
+int noise_dhstate_has_keypair(const NoiseDHState *state);
+int noise_dhstate_has_public_key(const NoiseDHState *state);
+int noise_dhstate_generate_keypair(NoiseDHState *state);
+int noise_dhstate_set_keypair
+    (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len,
+     const uint8_t *public_key, size_t public_key_len);
+int noise_dhstate_get_keypair
     (const NoiseDHState *state, uint8_t *private_key, size_t private_key_len,
      uint8_t *public_key, size_t public_key_len);
+int noise_dhstate_set_public_key
+    (NoiseDHState *state, const uint8_t *public_key, size_t public_key_len);
+int noise_dhstate_get_public_key
+    (const NoiseDHState *state, uint8_t *public_key, size_t public_key_len);
+int noise_dhstate_set_null_public_key(NoiseDHState *state);
+int noise_dhstate_is_null_public_key(const NoiseDHState *state);
+int noise_dhstate_clear_key(NoiseDHState *state);
 int noise_dhstate_calculate
-    (const NoiseDHState *state, uint8_t *shared_key, size_t shared_key_len,
-     const uint8_t *private_key, size_t private_key_len,
-     const uint8_t *public_key, size_t public_key_len);
-int noise_dhstate_validate_keypair
-    (const NoiseDHState *state, const uint8_t *private_key,
-     size_t private_key_len, const uint8_t *public_key, size_t public_key_len);
+    (const NoiseDHState *private_key_state,
+     const NoiseDHState *public_key_state,
+     uint8_t *shared_key, size_t shared_key_len);
 
 #ifdef __cplusplus
 };

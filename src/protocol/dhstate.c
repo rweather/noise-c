@@ -36,8 +36,10 @@
 /**
  * \defgroup dhstate DHState API
  *
- * DHState objects are used to generate key pairs and perform
- * Diffie-Hellman calculations.
+ * DHState objects are used to store the keypairs for the local party or
+ * the public keys for remote parties.  Once the keys have been set,
+ * noise_dhstate_calculate() can be used to perform a Diffie-Hellman
+ * operation with two DHState objects.
  */
 /**@{*/
 
@@ -210,91 +212,139 @@ size_t noise_dhstate_get_shared_key_length(const NoiseDHState *state)
 }
 
 /**
- * \brief Gets the null public key value for this Diffie-Hellman algorithm.
+ * \brief Determine if a DHState object contains a keypair.
  *
  * \param state The DHState object.
- * \param key The buffer to fill with the null public key value.
- * \param len The length of the \a key buffer in bytes.
+ *
+ * \return Returns 1 if \a state contains both a private key and a
+ * public key.  Returns 0 if \a state is NULL or it only contains a
+ * public key.
+ *
+ * \sa noise_dhstate_set_keypair(), noise_dhstate_has_public_key(),
+ * noise_dhstate_clear_key()
+ */
+int noise_dhstate_has_keypair(const NoiseDHState *state)
+{
+    if (state)
+        return state->key_type == NOISE_DHSTATE_KEYPAIR;
+    else
+        return 0;
+}
+
+/**
+ * \brief Determine if a DHState object contains a public key.
+ *
+ * \param state The DHState object.
+ *
+ * \return Returns 1 if \a state contains a public key (and optionally a
+ * private key).  Returns 0 if \a state is NULL or it does not contain a
+ * public key.
+ *
+ * \sa noise_dhstate_set_keypair(), noise_dhstate_has_public_key(),
+ * noise_dhstate_clear_key()
+ */
+int noise_dhstate_has_public_key(const NoiseDHState *state)
+{
+    if (state)
+        return state->key_type != NOISE_DHSTATE_NO_KEY;
+    else
+        return 0;
+}
+
+/**
+ * \brief Generates a new key pair within a DHState object.
+ *
+ * \param state The DHState object.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state or \a key is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if \a len is not a valid public key
- * length for the algorithm.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  *
- * \sa noise_dhstate_get_null_public_key(), noise_dhstate_get_public_key_length()
+ * \note This function needs to generate random key material for the
+ * private key, so the system random number generator must be properly
+ * seeded before calling this function.
+ *
+ * \sa noise_dhstate_calculate(), noise_dhstate_set_keypair()
  */
-int noise_dhstate_get_null_public_key
-    (const NoiseDHState *state, uint8_t *key, size_t len)
+int noise_dhstate_generate_keypair(NoiseDHState *state)
 {
-    /* Validate the parameters */
-    if (!state || !key)
+    /* Validate the parameter */
+    if (!state)
         return NOISE_ERROR_INVALID_PARAM;
 
-    /* Check the key length.  We allow both the public and shared
-       key lengths because we also need to check the output of
-       noise_dhstate_calculate() for null values */
-    if (len != state->public_key_len && len != state->shared_key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
-
-    /* For now we assume that all DH algorithms use all-zeroes
-       as their null value.  If this changes in the future, then
-       we will add a new back end function to NoiseDHState_s */
-    memset(key, 0, len);
+    /* Generate the new keypair */
+    (*(state->generate_keypair))(state);
+    state->key_type = NOISE_DHSTATE_KEYPAIR;
     return NOISE_ERROR_NONE;
 }
 
 /**
- * \brief Determine if a public key has the special null value.
+ * \brief Sets the keypair within a DHState object.
  *
  * \param state The DHState object.
- * \param key Points to the public key value.
- * \param len The length of the public \a key in bytes.
+ * \param private_key Points to the private key.
+ * \param private_key_len The private key length in bytes.
+ * \param public_key Points to the public key.
+ * \param public_key_len The public key length in bytes.
  *
- * \return Returns non-zero if \a key is the null value or zero if
- * \a key is not the null value.
+ * \return NOISE_ERROR on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state, \a private_key, or
+ * \a public_key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if either \a private_key_len or
+ * \a public_key_len is incorrect for the algorithm.
+ * \return NOISE_ERROR_INVALID_PRIVATE_KEY if \a private_key is not valid.
+ * \return NOISE_ERROR_INVALID_PUBLIC_KEY if \a public_key is not valid.
  *
- * \sa noise_dhstate_get_null_public_key()
+ * The algorithm may decide to defer NOISE_ERROR_INVALID_PRIVATE_KEY or
+ * NOISE_ERROR_INVALID_PUBLIC_KEY to later when the keypair is actually
+ * used during noise_dhstate_calculate().
+ *
+ * \sa noise_dhstate_get_keypair(), noise_dhstate_set_public_key()
  */
-int noise_dhstate_is_null_public_key
-    (const NoiseDHState *state, const uint8_t *key, size_t len)
+int noise_dhstate_set_keypair
+    (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len,
+     const uint8_t *public_key, size_t public_key_len)
 {
+    int err;
+
     /* Validate the parameters */
-    if (!state || !key)
-        return 0;
+    if (!state || !private_key || !public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (private_key_len != state->private_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (public_key_len != state->public_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
 
-    /* Check the key length.  We allow both the public and shared
-       key lengths because we also need to check the output of
-       noise_dhstate_calculate() for null values */
-    if (len != state->public_key_len && len != state->shared_key_len)
-        return 0;
+    /* Validate the keypair */
+    err = (*(state->validate_keypair))(state, private_key, public_key);
+    if (err != NOISE_ERROR_NONE)
+        return err;
 
-    /* Determine if all bytes of the key are zero in constant time */
-    return noise_is_zero(key, len);
+    /* Copy the key into place */
+    memcpy(state->private_key, private_key, state->private_key_len);
+    memcpy(state->public_key, public_key, state->public_key_len);
+    state->key_type = NOISE_DHSTATE_KEYPAIR;
+    return NOISE_ERROR_NONE;
 }
 
 /**
- * \brief Generates a key pair for a Diffie-Hellman algorithm.
+ * \brief Gets the keypair from within a DHState object.
  *
  * \param state The DHState object.
- * \param private_key Points to the private key on exit.
- * \param private_key_len The length of the \a private_key buffer in bytes.
- * \param public_key Points to the public key on exit.
- * \param public_key_len The length of the \a public_key buffer in bytes.
+ * \param private_key Points to the buffer to receive the private key.
+ * \param private_key_len The private key buffer length in bytes.
+ * \param public_key Points to the buffer to receive the public key.
+ * \param public_key_len The public key buffer length in bytes.
  *
- * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state, \a private_key or
+ * \return NOISE_ERROR on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state, \a private_key, or
  * \a public_key is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if \a private_key_len or
- * \a public_key_len is incorrect.
+ * \return NOISE_ERROR_INVALID_LENGTH if either \a private_key_len or
+ * \a public_key_len is incorrect for the algorithm.
+ * \return NOISE_ERROR_INVALID_STATE if \a state does not contain a keypair.
  *
- * \note This function needs to generate random key material for the
- * \a private_key, so the system random number generator must be properly
- * seeded before calling this function.
- *
- * \sa noise_dhstate_calculate(), noise_dhstate_get_private_key_length(),
- * noise_dhstate_get_public_key_length()
+ * \sa noise_dhstate_set_keypair(), noise_dhstate_get_public_key()
  */
-int noise_dhstate_generate_keypair
+int noise_dhstate_get_keypair
     (const NoiseDHState *state, uint8_t *private_key, size_t private_key_len,
      uint8_t *public_key, size_t public_key_len)
 {
@@ -306,102 +356,222 @@ int noise_dhstate_generate_keypair
     if (public_key_len != state->public_key_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* Generate the keypair */
-    return (*(state->generate_keypair))(state, private_key, public_key);
+    /* Is this actually a keypair? */
+    if (state->key_type != NOISE_DHSTATE_KEYPAIR) {
+        memset(private_key, 0, private_key_len);
+        memset(public_key, 0, public_key_len);
+        return NOISE_ERROR_INVALID_STATE;
+    }
+
+    /* Copy the keypair out */
+    memcpy(private_key, state->private_key, private_key_len);
+    memcpy(public_key, state->public_key, public_key_len);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Sets the public key in a DHState object.
+ *
+ * \param state The DHState object.
+ * \param public_key Points to the public key.
+ * \param public_key_len The public key length in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
+ * for the algorithm.
+ * \return NOISE_ERROR_INVALID_PUBLIC_KEY if \a public_key is not valid
+ * and it is not the special null value.
+ *
+ * After this function succeeds, the DHState will only contain a public key.
+ * Any existing private key will be cleared.  Thus, this function is useful
+ * to set the public key of a remote party.  Use noise_dhstate_set_keypair()
+ * to set both the public and private key for the local party.
+ *
+ * The algorithm may decide to defer NOISE_ERROR_INVALID_PUBLIC_KEY to
+ * later when the public key is actually used during noise_dhstate_calculate().
+ *
+ * \sa noise_dhstate_get_public_key(), noise_dhstate_set_keypair()
+ */
+int noise_dhstate_set_public_key
+    (NoiseDHState *state, const uint8_t *public_key, size_t public_key_len)
+{
+    int is_null, err;
+
+    /* Validate the parameters */
+    if (!state || !public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (public_key_len != state->public_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Validate the public key with the back end and then ignore the
+       result if the public key is the special null value */
+    is_null = noise_is_zero(public_key, public_key_len);
+    err = (*(state->validate_public_key))(state, public_key);
+    err &= (is_null - 1);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    /* Copy the public key into place and clear the private key */
+    memcpy(state->public_key, public_key, public_key_len);
+    memset(state->private_key, 0, state->private_key_len);
+    state->key_type = NOISE_DHSTATE_PUBLIC;
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Gets the public key value from a DHState object.
+ *
+ * \param state The DHState object.
+ * \param public_key The buffer to receive the public key value.
+ * \param public_key_len The public key length in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
+ * for this algorithm.
+ *
+ * \sa noise_dhstate_set_public_key(), noise_dhstate_get_public_key_length()
+ */
+int noise_dhstate_get_public_key
+    (const NoiseDHState *state, uint8_t *public_key, size_t public_key_len)
+{
+    /* Validate the parameters */
+    if (!state || !public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (public_key_len != state->public_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Copy the public key out */
+    memcpy(public_key, state->public_key, public_key_len);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Sets the public key in a DHState object to the special null value.
+ *
+ * \param state The DHState object.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ *
+ * \sa noise_dhstate_is_null_public_key()
+ */
+int noise_dhstate_set_null_public_key(NoiseDHState *state)
+{
+    /* Validate the parameter */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Clear the key to all-zeroes */
+    memset(state->public_key, 0, state->public_key_len);
+    memset(state->private_key, 0, state->private_key_len);
+
+    /* We have a public key but no private key */
+    state->key_type = NOISE_DHSTATE_PUBLIC;
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Determine if the public key in a DHState object has the
+ * special null value.
+ *
+ * \param state The DHState object.
+ *
+ * \return Returns non-zero if the public key within \a state is the
+ * special null value; zero otherwise.
+ *
+ * \sa noise_dhstate_set_null_public_key()
+ */
+int noise_dhstate_is_null_public_key(const NoiseDHState *state)
+{
+    if (state && state->key_type != NOISE_DHSTATE_NO_KEY)
+        return noise_is_zero(state->public_key, state->public_key_len);
+    else
+        return 0;
+}
+
+/**
+ * \brief Clears the key in a DHState object.
+ *
+ * \param state The DHState object.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ *
+ * \sa noise_dhstate_has_keypair(), noise_dhstate_has_public_key()
+ */
+int noise_dhstate_clear_key(NoiseDHState *state)
+{
+    /* Validate the parameter */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Clear the key to all-zeroes */
+    memset(state->public_key, 0, state->public_key_len);
+    memset(state->private_key, 0, state->private_key_len);
+
+    /* There is no key in the object now */
+    state->key_type = NOISE_DHSTATE_NO_KEY;
+    return NOISE_ERROR_NONE;
 }
 
 /**
  * \brief Performs a Diffie-Hellman calculation.
  *
- * \param state Points to the DHState.
+ * \param private_key_state Points to the DHState containing the private key.
+ * \param public_key_state Points to the DHState containing the public key.
  * \param shared_key Points to the shared key on exit.
  * \param shared_key_len The length of the \a shared_key buffer in bytes.
- * \param private_key Points to the private key.
- * \param private_key_len The length of the \a private_key in bytes.
- * \param public_key Points to the public key.
- * \param public_key_len The length of the \a public_key in bytes.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state, \a shared_key,
- * \a private_key or \a public_key is NULL.
- * \return NOISE_ERROR_INVALID_DH_KEY if either \a public_key or \a private_key
- * are invalid for the algorithm.
+ * \return NOISE_ERROR_INVALID_PARAM if \a private_key_state,
+ * \a public_key_state, or \a shared_key is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a private_key_state and
+ * \a public_key_state do not have the same algorithm identifier.
+ * \return NOISE_ERROR_INVALID_PRIVATE_KEY if \a private_key_state does not
+ * contain a private key or the private key is invalid.
+ * \return NOISE_ERROR_INVALID_PUBLIC_KEY if the public key in
+ * \a public_key_state is invalid.
  *
- * If the input \a public_key is the special null value, then the output
- * \a shared_key will also be the null value.
+ * If the input public key is the special null value, then the output
+ * \a shared_key will also be the null value and NOISE_ERROR_NONE
+ * will be returned.
  *
  * \sa noise_dhstate_generate_keypair()
  */
 int noise_dhstate_calculate
-    (const NoiseDHState *state, uint8_t *shared_key, size_t shared_key_len,
-     const uint8_t *private_key, size_t private_key_len,
-     const uint8_t *public_key, size_t public_key_len)
+    (const NoiseDHState *private_key_state,
+     const NoiseDHState *public_key_state,
+     uint8_t *shared_key, size_t shared_key_len)
 {
     int is_null, err;
 
     /* Validate the parameters */
-    if (!state || !shared_key || !private_key || !public_key)
+    if (!private_key_state || !public_key_state || !shared_key)
         return NOISE_ERROR_INVALID_PARAM;
-    if (shared_key_len != state->shared_key_len)
+    if (private_key_state->dh_id != public_key_state->dh_id)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (shared_key_len != private_key_state->shared_key_len)
         return NOISE_ERROR_INVALID_LENGTH;
-    if (private_key_len != state->private_key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
-    if (public_key_len != state->public_key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
+    if (private_key_state->key_type != NOISE_DHSTATE_KEYPAIR)
+        return NOISE_ERROR_INVALID_PRIVATE_KEY;
 
     /* If the public key is null, then the output must be null too.
        We check for null now, but still perform the normal evaluation.
        At the end we will null out the result in constant time */
-    is_null = noise_is_zero(public_key, public_key_len);
+    is_null = noise_is_zero
+        (public_key_state->public_key, public_key_state->public_key_len);
 
     /* Perform the calculation */
-    err = (*(state->calculate))(state, shared_key, private_key, public_key);
+    err = (*(private_key_state->calculate))
+        (private_key_state, public_key_state, shared_key);
 
     /* If the public key was null, then we need to set the shared key
        to null and replace any error we got from the back end with "none" */
     noise_cmove_zero(shared_key, shared_key_len, is_null);
     err &= (is_null - 1);
     return err;
-}
-
-/**
- * \brief Validates a Diffie-Hellman keypair.
- *
- * \param state Points to the DHState.
- * \param private_key Points to the private key for the keypair.
- * \param private_key_len The length of the \a private_key in bytes.
- * \param public_key Points to the public key for the keypair.
- * \param public_key_len The length of the \a public_key in bytes.
- *
- * \return NOISE_ERROR_NONE if the keypair is valid.
- * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a private_key,
- * or \a public_key is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if either \a private_key_len or
- * \a public_key_len is invalid for the algorithm.
- * \return NOISE_ERROR_INVALID_DH_KEY if the \a public_key does not
- * match the \a private_key, or the values are otherwise invalid for
- * the algorithm.
- */
-int noise_dhstate_validate_keypair
-    (const NoiseDHState *state, const uint8_t *private_key,
-     size_t private_key_len, const uint8_t *public_key, size_t public_key_len)
-{
-    /* Validate the parameters */
-    if (!state || !private_key || !public_key)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (private_key_len != state->private_key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
-    if (public_key_len != state->public_key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
-
-    /* If the public key is NULL, then the keypair is invalid */
-    if (noise_dhstate_is_null_public_key(state, public_key, public_key_len))
-        return NOISE_ERROR_INVALID_DH_KEY;
-
-    /* TODO: Use the backend to perform algorithm-specific validation */
-
-    /* The keypair is OK */
-    return NOISE_ERROR_NONE;
 }
 
 /**@}*/

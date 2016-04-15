@@ -215,6 +215,10 @@ struct NoiseHashState_s
     void (*destroy)(NoiseHashState *state);
 };
 
+#define NOISE_DHSTATE_NO_KEY    0   /**< No key set yet */
+#define NOISE_DHSTATE_KEYPAIR   1   /**< Set to a keypair */
+#define NOISE_DHSTATE_PUBLIC    2   /**< Set to a public key only */
+
 /**
  * \brief Internal structure of the NoiseDHState type.
  */
@@ -226,6 +230,9 @@ struct NoiseDHState_s
     /** \brief Algorithm identifier for the Diffie-Hellman operation */
     int dh_id;
 
+    /** \brief The type of key stored within this DHState object */
+    uint16_t key_type;
+
     /** \brief Length of the private key for this algorithm in bytes */
     uint16_t private_key_len;
 
@@ -235,40 +242,69 @@ struct NoiseDHState_s
     /** \brief Length of the shared key for this algorithm in bytes */
     uint16_t shared_key_len;
 
+    /** \brief Points to the private key in the subclass state */
+    uint8_t *private_key;
+
+    /** \brief Points to the public key in the subclass state */
+    uint8_t *public_key;
+
     /**
-     * \brief Generates a key pair for this Diffie-Hellman algorithm.
+     * \brief Generates a new key pair for this Diffie-Hellman algorithm.
      *
      * \param state Points to the DHState.
-     * \param private_key Points to the private key on exit.  Must be at
-     * least \ref private_key_len bytes in length.
-     * \param public_key Points to the public key on exit.  Must be at
-     * least \ref public_key_len bytes in length.
-     *
-     * \return NOISE_ERROR_NONE on success.
      */
-    int (*generate_keypair)
-        (const NoiseDHState *state, uint8_t *private_key, uint8_t *public_key);
+    void (*generate_keypair)(NoiseDHState *state);
+
+    /**
+     * \brief Validates a keypair.
+     *
+     * \param state Points to the DHState.
+     * \param private_key Points to the private key for the keypair.
+     * \param public_key Points to the public key for the keypair.
+     *
+     * \return NOISE_ERROR_NONE if the keypair is valid.
+     * \return NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong
+     * with the private key.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
+     * with the public key.
+     */
+    int (*validate_keypair)
+        (const NoiseDHState *state, const uint8_t *private_key,
+         const uint8_t *public_key);
+
+    /**
+     * \brief Validates a public key.
+     *
+     * \param state Points to the DHState.
+     * \param public_key Points to the public key.
+     *
+     * \return NOISE_ERROR_NONE if the keypair is valid.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
+     * with the public key.
+     */
+    int (*validate_public_key)
+        (const NoiseDHState *state, const uint8_t *public_key);
 
     /**
      * \brief Performs a Diffie-Hellman calculation.
      *
-     * \param state Points to the DHState.
-     * \param shared_key Points to the shared key on exit.  Must be at
-     * least \ref shared_key_len bytes in length.
-     * \param private_key Points to the private key.  Must be at least
-     * \ref private_key_len bytes in length.
-     * \param public_key Points to the public key.  Must be at least
-     * \ref public_key_len bytes in length.
+     * \param private_key_state Points to the DHState for the private key.
+     * \param public_key_state Points to the DHState for the public key.
+     * \param shared_key Points to the shared key on exit.
      *
-     * \return NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_DH_KEY if
-     * either \a public_key or \a private_key are invalid for the algorithm.
+     * \return NOISE_ERROR_NONE on success.
+     * \return NOISE_ERROR_INVALID_PRIVATE_KEY if the private key is
+     * invalid for the algorithm.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is
+     * invalid for the algorithm.
      *
      * This function must always operate in the same amount of time, even
-     * if the \a public_key or \a private_key is invalid.
+     * if the private or public key is invalid.
      */
     int (*calculate)
-        (const NoiseDHState *state, uint8_t *shared_key,
-         const uint8_t *private_key, const uint8_t *public_key);
+        (const NoiseDHState *private_key_state,
+         const NoiseDHState *public_key_state,
+         uint8_t *shared_key);
 
     /**
      * \brief Destroys this DHState prior to the memory being freed.
