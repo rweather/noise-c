@@ -23,7 +23,7 @@
 #ifndef NOISE_NAMES_H
 #define NOISE_NAMES_H
 
-#include <noise/constants.h>
+#include <noise/protocol/constants.h>
 #include <stddef.h>
 
 #ifdef __cplusplus

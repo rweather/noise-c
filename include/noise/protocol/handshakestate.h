@@ -23,8 +23,8 @@
 #ifndef NOISE_HANDSHAKESTATE_H
 #define NOISE_HANDSHAKESTATE_H
 
-#include <noise/symmetricstate.h>
-#include <noise/dhstate.h>
+#include <noise/protocol/symmetricstate.h>
+#include <noise/protocol/dhstate.h>
 
 #ifdef __cplusplus
 extern "C" {

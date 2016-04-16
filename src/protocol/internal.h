@@ -23,7 +23,7 @@
 #ifndef NOISE_INTERNAL_H
 #define NOISE_INTERNAL_H
 
-#include <noise/noise.h>
+#include <noise/protocol.h>
 #include "crypto/chacha/chacha.h"
 #include <alloca.h>
 

@@ -101,6 +101,6 @@ or to suggest improvements, please contact the author Rhys Weatherley via
 */
 
 /**
-\file noise.h
-\brief Main header file to include the library definitions
+\file protocol.h
+\brief Main header file to include the Noise protocol library definitions
 */

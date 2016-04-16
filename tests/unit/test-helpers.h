@@ -23,7 +23,7 @@
 #ifndef TEST_HELPERS_H
 #define TEST_HELPERS_H
 
-#include <noise/noise.h>
+#include <noise/protocol.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

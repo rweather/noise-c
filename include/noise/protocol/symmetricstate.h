@@ -23,8 +23,8 @@
 #ifndef NOISE_SYMMETRICSTATE_H
 #define NOISE_SYMMETRICSTATE_H
 
-#include <noise/cipherstate.h>
-#include <noise/names.h>
+#include <noise/protocol/cipherstate.h>
+#include <noise/protocol/names.h>
 
 #ifdef __cplusplus
 extern "C" {

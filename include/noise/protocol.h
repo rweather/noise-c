@@ -20,16 +20,16 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_NOISE_H
-#define NOISE_NOISE_H
+#ifndef NOISE_PROTOCOL_H
+#define NOISE_PROTOCOL_H
 
-#include <noise/constants.h>
-#include <noise/errors.h>
-#include <noise/names.h>
-#include <noise/cipherstate.h>
-#include <noise/hashstate.h>
-#include <noise/dhstate.h>
-#include <noise/symmetricstate.h>
-#include <noise/handshakestate.h>
+#include <noise/protocol/constants.h>
+#include <noise/protocol/errors.h>
+#include <noise/protocol/names.h>
+#include <noise/protocol/cipherstate.h>
+#include <noise/protocol/hashstate.h>
+#include <noise/protocol/dhstate.h>
+#include <noise/protocol/symmetricstate.h>
+#include <noise/protocol/handshakestate.h>
 
 #endif
