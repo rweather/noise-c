@@ -832,6 +832,14 @@ static int noise_handshakestate_write
             noise_symmetricstate_mix_hash
                 (state->symmetric, message + size, len);
             size += len;
+
+            /* If the protocol is using pre-shared keys, then also mix
+               the local ephemeral key into the chaining key */
+            if (state->symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
+                err = noise_symmetricstate_mix_key
+                    (state->symmetric,
+                     state->dh_local_ephemeral->public_key, len);
+            }
             break;
         case NOISE_TOKEN_S:
             /* Encrypt the local static public key and add it to the message */
@@ -1037,6 +1045,14 @@ static int noise_handshakestate_read
             }
             message += len;
             message_size -= len;
+
+            /* If the protocol is using pre-shared keys, then also mix
+               the remote ephemeral key into the chaining key */
+            if (state->symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
+                err = noise_symmetricstate_mix_key
+                    (state->symmetric,
+                     state->dh_remote_ephemeral->public_key, len);
+            }
             break;
         case NOISE_TOKEN_S:
             /* Decrypt and read the remote static key */
