@@ -91,7 +91,7 @@ int curve448_eval(unsigned char mypublic[56], const unsigned char secret[56], co
     /* Loop on all bits of the secret from highest to lowest.
        We perform the required masking from RFC 7748 as we go */
     byte_val = secret[posn] | 0x80;
-    while (posn >= 0) {
+    for (;;) {
         /* Get the next bit of the secret and conditionally swap */
         k_t = (byte_val >> bit) & 1;
         swap ^= k_t;
