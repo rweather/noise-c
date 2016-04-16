@@ -1031,8 +1031,8 @@ static int noise_handshakestate_read
             if (noise_dhstate_is_null_public_key(state->dh_remote_ephemeral)) {
                 /* The remote ephemeral key is null, which means that it is
                    not contributing anything to the security of the session
-                   and is in fact downgrading the security to "none at all".
-                   Reject all such keys. */
+                   and is in fact downgrading the security to "none at all"
+                   in some of the message patterns.  Reject all such keys. */
                 return NOISE_ERROR_INVALID_PUBLIC_KEY;
             }
             message += len;

@@ -40,7 +40,7 @@ int noise_handshakestate_free(NoiseHandshakeState *state);
 int noise_handshakestate_get_role(const NoiseHandshakeState *state);
 int noise_handshakestate_get_protocol_id
     (const NoiseHandshakeState *state, NoiseProtocolId *id);
-NoiseDHState *noise_handshakestate_get_local_keypairdh
+NoiseDHState *noise_handshakestate_get_local_keypair_dh
     (const NoiseHandshakeState *state);
 NoiseDHState *noise_handshakestate_get_remote_public_key_dh
     (const NoiseHandshakeState *state);
