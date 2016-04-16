@@ -17,7 +17,8 @@ SOURCES = \
 	test-hashstate.c \
 	test-main.c \
 	test-names.c \
-	test-patterns.c
+	test-patterns.c \
+	test-symmetricstate.c
 
 OBJECTS = $(patsubst %.c,%.o,$(SOURCES))
 DEPS    = $(patsubst %.c,.depend/%.d,$(SOURCES))

@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     test(hashstate);
     test(names);
     test(patterns);
+    test(symmetricstate);
 
     /* Report the results */
     if (!test_failures) {

@@ -428,6 +428,14 @@ int noise_symmetricstate_decrypt_and_hash
     if (!state->cipher)
         return NOISE_ERROR_INVALID_STATE;
 
+    /* Validate the input data length before we hash the data */
+    if (in_data_len > NOISE_MAX_PAYLOAD_LEN)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (noise_cipherstate_has_key(state->cipher)) {
+        if (in_data_len < noise_cipherstate_get_mac_length(state->cipher))
+            return NOISE_ERROR_INVALID_LENGTH;
+    }
+
     /* Feed the ciphertext into the handshake hash first.  We make a
        temporary copy of the hash.  If the decryption fails below,
        then we don't update the handshake hash with the bogus data */
@@ -437,7 +445,7 @@ int noise_symmetricstate_decrypt_and_hash
 
     /* Decrypt the ciphertext using the underlying cipher */
     hash_len = noise_hashstate_get_hash_length(state->hash);
-    err = noise_cipherstate_encrypt_with_ad
+    err = noise_cipherstate_decrypt_with_ad
         (state->cipher, state->h, hash_len, data, in_data_len, out_data_len);
     if (err != NOISE_ERROR_NONE) {
         noise_clean(temp, sizeof(temp));
