@@ -75,45 +75,69 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="header">
   <div class="summary">
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">HashState API</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ga0365ae7e591e983de323ce54f51f4972"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structNoiseHashState__s.html">NoiseHashState_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a></td></tr>
+<tr class="memdesc:ga0365ae7e591e983de323ce54f51f4972"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opaque object that represents a HashState.  <a href="#ga0365ae7e591e983de323ce54f51f4972">More...</a><br/></td></tr>
+<tr class="separator:ga0365ae7e591e983de323ce54f51f4972"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga2ae5de8f7333ad9caaacaa2ffa972eb6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga2ae5de8f7333ad9caaacaa2ffa972eb6">noise_hashstate_free</a> (<a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *state)</td></tr>
+<tr class="memitem:ga2ae5de8f7333ad9caaacaa2ffa972eb6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga2ae5de8f7333ad9caaacaa2ffa972eb6">noise_hashstate_free</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state)</td></tr>
 <tr class="memdesc:ga2ae5de8f7333ad9caaacaa2ffa972eb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a HashState object after destroying all sensitive material.  <a href="#ga2ae5de8f7333ad9caaacaa2ffa972eb6">More...</a><br/></td></tr>
 <tr class="separator:ga2ae5de8f7333ad9caaacaa2ffa972eb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0084fb95db88521af5abd6a33a9f78aa"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga0084fb95db88521af5abd6a33a9f78aa">noise_hashstate_get_block_length</a> (const <a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *state)</td></tr>
+<tr class="memitem:ga0084fb95db88521af5abd6a33a9f78aa"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga0084fb95db88521af5abd6a33a9f78aa">noise_hashstate_get_block_length</a> (const <a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state)</td></tr>
 <tr class="memdesc:ga0084fb95db88521af5abd6a33a9f78aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the block for a HashState object.  <a href="#ga0084fb95db88521af5abd6a33a9f78aa">More...</a><br/></td></tr>
 <tr class="separator:ga0084fb95db88521af5abd6a33a9f78aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga442d5d807885851a1eaa3e98c4ef2aa4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga442d5d807885851a1eaa3e98c4ef2aa4">noise_hashstate_get_hash_id</a> (const <a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *state)</td></tr>
+<tr class="memitem:ga442d5d807885851a1eaa3e98c4ef2aa4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga442d5d807885851a1eaa3e98c4ef2aa4">noise_hashstate_get_hash_id</a> (const <a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state)</td></tr>
 <tr class="memdesc:ga442d5d807885851a1eaa3e98c4ef2aa4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the algorithm identifier for a HashState object.  <a href="#ga442d5d807885851a1eaa3e98c4ef2aa4">More...</a><br/></td></tr>
 <tr class="separator:ga442d5d807885851a1eaa3e98c4ef2aa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabc6271c86245c8ff4d27fe1c6e748b1b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#gabc6271c86245c8ff4d27fe1c6e748b1b">noise_hashstate_get_hash_length</a> (const <a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *state)</td></tr>
+<tr class="memitem:gabc6271c86245c8ff4d27fe1c6e748b1b"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#gabc6271c86245c8ff4d27fe1c6e748b1b">noise_hashstate_get_hash_length</a> (const <a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state)</td></tr>
 <tr class="memdesc:gabc6271c86245c8ff4d27fe1c6e748b1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the hash output for a HashState object.  <a href="#gabc6271c86245c8ff4d27fe1c6e748b1b">More...</a><br/></td></tr>
 <tr class="separator:gabc6271c86245c8ff4d27fe1c6e748b1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3d43824f15c1dd11b82bd8ae247b534e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e">noise_hashstate_hash_one</a> (<a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *state, const uint8_t *data, size_t data_len, uint8_t *hash)</td></tr>
+<tr class="memitem:ga3d43824f15c1dd11b82bd8ae247b534e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e">noise_hashstate_hash_one</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state, const uint8_t *data, size_t data_len, uint8_t *hash)</td></tr>
 <tr class="memdesc:ga3d43824f15c1dd11b82bd8ae247b534e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes a single data buffer and returns the hash value.  <a href="#ga3d43824f15c1dd11b82bd8ae247b534e">More...</a><br/></td></tr>
 <tr class="separator:ga3d43824f15c1dd11b82bd8ae247b534e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0142e57efdc94183de728cc9fca3c0b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2">noise_hashstate_hash_two</a> (<a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *state, const uint8_t *data1, size_t data1_len, const uint8_t *data2, size_t data2_len, uint8_t *hash)</td></tr>
+<tr class="memitem:ga0142e57efdc94183de728cc9fca3c0b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2">noise_hashstate_hash_two</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state, const uint8_t *data1, size_t data1_len, const uint8_t *data2, size_t data2_len, uint8_t *hash)</td></tr>
 <tr class="memdesc:ga0142e57efdc94183de728cc9fca3c0b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes the concatenation of two data buffers and returns the combined hash value.  <a href="#ga0142e57efdc94183de728cc9fca3c0b2">More...</a><br/></td></tr>
 <tr class="separator:ga0142e57efdc94183de728cc9fca3c0b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8972e42c53e5468d87133738aaf45245"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">noise_hashstate_hkdf</a> (<a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *state, const uint8_t *key, size_t key_len, const uint8_t *data, size_t data_len, uint8_t *output1, size_t output1_len, uint8_t *output2, size_t output2_len)</td></tr>
+<tr class="memitem:ga8972e42c53e5468d87133738aaf45245"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">noise_hashstate_hkdf</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state, const uint8_t *key, size_t key_len, const uint8_t *data, size_t data_len, uint8_t *output1, size_t output1_len, uint8_t *output2, size_t output2_len)</td></tr>
 <tr class="memdesc:ga8972e42c53e5468d87133738aaf45245"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes input data with a key to generate two output values.  <a href="#ga8972e42c53e5468d87133738aaf45245">More...</a><br/></td></tr>
 <tr class="separator:ga8972e42c53e5468d87133738aaf45245"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9676af5130ce0d68a90aa8533de55ee8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga9676af5130ce0d68a90aa8533de55ee8">noise_hashstate_new_by_id</a> (<a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> **state, int id)</td></tr>
+<tr class="memitem:ga9676af5130ce0d68a90aa8533de55ee8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga9676af5130ce0d68a90aa8533de55ee8">noise_hashstate_new_by_id</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> **state, int id)</td></tr>
 <tr class="memdesc:ga9676af5130ce0d68a90aa8533de55ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new HashState object by its algorithm identifier.  <a href="#ga9676af5130ce0d68a90aa8533de55ee8">More...</a><br/></td></tr>
 <tr class="separator:ga9676af5130ce0d68a90aa8533de55ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga795989697cb68459e4a9b5a91a98eed2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2">noise_hashstate_new_by_name</a> (<a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> **state, const char *name)</td></tr>
+<tr class="memitem:ga795989697cb68459e4a9b5a91a98eed2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2">noise_hashstate_new_by_name</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> **state, const char *name)</td></tr>
 <tr class="memdesc:ga795989697cb68459e4a9b5a91a98eed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new HashState object by its algorithm name.  <a href="#ga795989697cb68459e4a9b5a91a98eed2">More...</a><br/></td></tr>
 <tr class="separator:ga795989697cb68459e4a9b5a91a98eed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>The HashState API provides access to the hash algorithms within the library. Normally applications won't need to use these functions directly because <a class="el" href="group__symmetricstate.html">SymmetricState</a> takes care of hashing operations for the Noise protocol internally.</p>
 <p>These functions are provided mainly for testing purposes. However, applications can use them if they need to hash values for some higher-level protocol purpose. This may be preferable to the application having to source its own hash implementations for that purpose. </p>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="ga0365ae7e591e983de323ce54f51f4972"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Opaque object that represents a HashState. </p>
+
+<p>Definition at line <a class="el" href="hashstate_8h_source.html#l00033">33</a> of file <a class="el" href="hashstate_8h_source.html">hashstate.h</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a class="anchor" id="ga2ae5de8f7333ad9caaacaa2ffa972eb6"></a>
 <div class="memitem">
@@ -122,7 +146,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int noise_hashstate_free </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
           <td class="paramname"><em>state</em></td><td>)</td>
           <td></td>
         </tr>
@@ -136,10 +160,12 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, or NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga9676af5130ce0d68a90aa8533de55ee8" title="Creates a new HashState object by its algorithm identifier. ">noise_hashstate_new_by_id()</a>, <a class="el" href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2" title="Creates a new HashState object by its algorithm name. ">noise_hashstate_new_by_name()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00150">150</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00156">156</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -150,7 +176,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">size_t noise_hashstate_get_block_length </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
           <td class="paramname"><em>state</em></td><td>)</td>
           <td></td>
         </tr>
@@ -167,7 +193,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The size of the block in bytes, or 0 if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#gabc6271c86245c8ff4d27fe1c6e748b1b" title="Gets the length of the hash output for a HashState object. ">noise_hashstate_get_hash_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00200">200</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00206">206</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -178,7 +204,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int noise_hashstate_get_hash_id </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
           <td class="paramname"><em>state</em></td><td>)</td>
           <td></td>
         </tr>
@@ -194,7 +220,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The algorithm identifier, or NOISE_HASH_NONE if <em>state</em> is NULL. </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00172">172</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00178">178</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -205,7 +231,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">size_t noise_hashstate_get_hash_length </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
           <td class="paramname"><em>state</em></td><td>)</td>
           <td></td>
         </tr>
@@ -222,7 +248,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The size of the hash in bytes, or 0 if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga0084fb95db88521af5abd6a33a9f78aa" title="Gets the length of the block for a HashState object. ">noise_hashstate_get_block_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00186">186</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00192">192</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -233,7 +259,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int noise_hashstate_hash_one </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
@@ -272,11 +298,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>data</em>, or <em>hash</em> is NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>data</em>, or <em>hash</em> is NULL.</dd></dl>
 <p>The <em>data</em> and <em>hash</em> buffers are allowed to overlap.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2" title="Hashes the concatenation of two data buffers and returns the combined hash value. ...">noise_hashstate_hash_two()</a>, <a class="el" href="group__hashstate.html#gabc6271c86245c8ff4d27fe1c6e748b1b" title="Gets the length of the hash output for a HashState object. ">noise_hashstate_get_hash_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00222">222</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00229">229</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -287,7 +315,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int noise_hashstate_hash_two </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
@@ -341,10 +369,12 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <p>The <em>data1</em>, <em>data2</em>, and <em>hash</em> buffers are allowed to overlap.</p>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>data1</em>, <em>data2</em>, or <em>hash</em> is NULL.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>data1</em>, <em>data2</em>, or <em>hash</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e" title="Hashes a single data buffer and returns the hash value. ">noise_hashstate_hash_one()</a>, <a class="el" href="group__hashstate.html#gabc6271c86245c8ff4d27fe1c6e748b1b" title="Gets the length of the hash output for a HashState object. ">noise_hashstate_get_hash_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00257">257</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00264">264</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -355,7 +385,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int noise_hashstate_hkdf </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
@@ -429,11 +459,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>key</em>, <em>data</em>, <em>output1</em>, or <em>output2</em> is NULL, NOISE_ERROR_INVALID_LENGTH if <em>output1_len</em> or <em>output2_len</em> is greater than the hash length for the HashState object.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>key</em>, <em>data</em>, <em>output1</em>, or <em>output2</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_LENGTH if <em>output1_len</em> or <em>output2_len</em> is greater than the hash length for the HashState object.</dd></dl>
 <p>Reference: <a href="http://tools.ietf.org/html/rfc5869">RFC 5868</a></p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e" title="Hashes a single data buffer and returns the hash value. ">noise_hashstate_hash_one()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00375">375</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00382">382</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -444,7 +478,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int noise_hashstate_new_by_id </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> **&#160;</td>
+          <td class="paramtype"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> **&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
@@ -469,10 +503,16 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL, NOISE_ERROR_UNKNOWN_ID if <em>id</em> is unknown, or NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new HashState object.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_UNKNOWN_ID if <em>id</em> is unknown. </dd>
+<dd>
+NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new HashState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga2ae5de8f7333ad9caaacaa2ffa972eb6" title="Frees a HashState object after destroying all sensitive material. ">noise_hashstate_free()</a>, <a class="el" href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2" title="Creates a new HashState object by its algorithm name. ">noise_hashstate_new_by_name()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00068">68</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00073">73</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -483,7 +523,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int noise_hashstate_new_by_name </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> **&#160;</td>
+          <td class="paramtype"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> **&#160;</td>
           <td class="paramname"><em>state</em>, </td>
         </tr>
         <tr>
@@ -508,17 +548,23 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>name</em> is NULL, NOISE_ERROR_UNKNOWN_NAME if <em>name</em> is unknown, or NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new HashState object.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>name</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_UNKNOWN_NAME if <em>name</em> is unknown. </dd>
+<dd>
+NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new HashState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga2ae5de8f7333ad9caaacaa2ffa972eb6" title="Frees a HashState object after destroying all sensitive material. ">noise_hashstate_free()</a>, <a class="el" href="group__hashstate.html#ga9676af5130ce0d68a90aa8533de55ee8" title="Creates a new HashState object by its algorithm identifier. ">noise_hashstate_new_by_id()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00120">120</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00126">126</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 13 2016 06:12:16 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 16 2016 14:20:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

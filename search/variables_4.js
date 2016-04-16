@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['finalize',['finalize',['../structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7',1,'NoiseHashState_s']]]
+  ['encrypt',['encrypt',['../structNoiseCipherState__s.html#a6d4920ec56b5a494861d62f0104f13bd',1,'NoiseCipherState_s']]]
 ];

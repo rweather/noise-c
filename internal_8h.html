@@ -80,13 +80,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_5903c71b979204ea1ce2d27420efeaa9.html">protocol</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">internal.h File Reference</div>  </div>
@@ -96,6 +97,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Internal definitions for the library.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="noise_8h_source.html">noise/noise.h</a>&gt;</code><br/>
+<code>#include &quot;crypto/chacha/chacha.h&quot;</code><br/>
+<code>#include &lt;alloca.h&gt;</code><br/>
 </div>
 <p><a href="internal_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -113,32 +116,49 @@ Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseHashState__s.html">NoiseHashState_s</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal structure of the NoiseHashState type.  <a href="structNoiseHashState__s.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:structNoiseRandomState__s"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#structNoiseRandomState__s">NoiseRandomState_s</a></td></tr>
+<tr class="memdesc:structNoiseRandomState__s"><td class="mdescLeft">&#160;</td><td class="mdescRight">State information for CipherState random number generators.  <a href="internal_8h.html#structNoiseRandomState__s">More...</a><br/></td></tr>
+<tr class="separator:structNoiseRandomState__s"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structNoiseSymmetricState__s"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#structNoiseSymmetricState__s">NoiseSymmetricState_s</a></td></tr>
 <tr class="memdesc:structNoiseSymmetricState__s"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal structure of the NoiseSymmetricState type.  <a href="internal_8h.html#structNoiseSymmetricState__s">More...</a><br/></td></tr>
 <tr class="separator:structNoiseSymmetricState__s"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a3a380c0fbf332eaf163bef119058ee56"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a3a380c0fbf332eaf163bef119058ee56">NOISE_DHSTATE_KEYPAIR</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:a3a380c0fbf332eaf163bef119058ee56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab266a7873e41cc29a8a94230086eedfe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ab266a7873e41cc29a8a94230086eedfe">NOISE_DHSTATE_NO_KEY</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:ab266a7873e41cc29a8a94230086eedfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a919695960b1b5eb9fd0991c4bcec4e61"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a919695960b1b5eb9fd0991c4bcec4e61">NOISE_DHSTATE_PUBLIC</a>&#160;&#160;&#160;2</td></tr>
+<tr class="separator:a919695960b1b5eb9fd0991c4bcec4e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae08f3f420d645a6e57b8a33be0008a90"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ae08f3f420d645a6e57b8a33be0008a90">NOISE_MAX_HASHLEN</a>&#160;&#160;&#160;64</td></tr>
 <tr class="memdesc:ae08f3f420d645a6e57b8a33be0008a90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum hash length over all supported hash algorithms.  <a href="#ae08f3f420d645a6e57b8a33be0008a90">More...</a><br/></td></tr>
 <tr class="separator:ae08f3f420d645a6e57b8a33be0008a90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8403b5d2d468366eaed8ecf8b7eea24"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#aa8403b5d2d468366eaed8ecf8b7eea24">noise_new</a>(type)&#160;&#160;&#160;((type *)<a class="el" href="util_8c.html#a4ab73808a263b8269bb95e96e05fd08d">noise_new_object</a>(sizeof(type)))</td></tr>
 <tr class="memdesc:aa8403b5d2d468366eaed8ecf8b7eea24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates an object from the system and initializes it.  <a href="#aa8403b5d2d468366eaed8ecf8b7eea24">More...</a><br/></td></tr>
 <tr class="separator:aa8403b5d2d468366eaed8ecf8b7eea24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a090239192cda8526c8af363b1149c92f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a090239192cda8526c8af363b1149c92f">NOISE_PAT_FLAG_LOCAL_EMPEM_REQ</a>&#160;&#160;&#160;(1 &lt;&lt; 3)</td></tr>
+<tr class="separator:a090239192cda8526c8af363b1149c92f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a096111c67b6373c296527c1d79cc8fc6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a096111c67b6373c296527c1d79cc8fc6">NOISE_PAT_FLAG_LOCAL_EMPEMERAL</a>&#160;&#160;&#160;(1 &lt;&lt; 1)</td></tr>
 <tr class="separator:a096111c67b6373c296527c1d79cc8fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85005c2e47c76c460d500233eb926a10"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a85005c2e47c76c460d500233eb926a10">NOISE_PAT_FLAG_LOCAL_REQUIRED</a>&#160;&#160;&#160;(1 &lt;&lt; 2)</td></tr>
 <tr class="separator:a85005c2e47c76c460d500233eb926a10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a13739a7fe51745b86d6fc6c957ce8677"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a13739a7fe51745b86d6fc6c957ce8677">NOISE_PAT_FLAG_LOCAL_STATIC</a>&#160;&#160;&#160;(1 &lt;&lt; 0)</td></tr>
 <tr class="separator:a13739a7fe51745b86d6fc6c957ce8677"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad29b89d040ae5096671a8843bb4d4f00"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ad29b89d040ae5096671a8843bb4d4f00">NOISE_PAT_FLAG_REMOTE_EMPEM_REQ</a>&#160;&#160;&#160;(1 &lt;&lt; 7)</td></tr>
+<tr class="separator:ad29b89d040ae5096671a8843bb4d4f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a446075367191f65090c9c74c9b3de78f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a446075367191f65090c9c74c9b3de78f">NOISE_PAT_FLAG_REMOTE_EMPEMERAL</a>&#160;&#160;&#160;(1 &lt;&lt; 5)</td></tr>
 <tr class="separator:a446075367191f65090c9c74c9b3de78f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03de9218d0fa3ba140b283edc0fd4d2"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#af03de9218d0fa3ba140b283edc0fd4d2">NOISE_PAT_FLAG_REMOTE_REQUIRED</a>&#160;&#160;&#160;(1 &lt;&lt; 6)</td></tr>
 <tr class="separator:af03de9218d0fa3ba140b283edc0fd4d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1078786073aac16d9cb2eafd6b35068f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a1078786073aac16d9cb2eafd6b35068f">NOISE_PAT_FLAG_REMOTE_STATIC</a>&#160;&#160;&#160;(1 &lt;&lt; 4)</td></tr>
 <tr class="separator:a1078786073aac16d9cb2eafd6b35068f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25de2e80e2b462ec2fa0ffa3c563b128"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a25de2e80e2b462ec2fa0ffa3c563b128">NOISE_REQ_FALLBACK_EPHEM</a>&#160;&#160;&#160;(1 &lt;&lt; 4)</td></tr>
+<tr class="separator:a25de2e80e2b462ec2fa0ffa3c563b128"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1701d5bbaeb7699f8c54247c25442b39"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a1701d5bbaeb7699f8c54247c25442b39">NOISE_REQ_LOCAL_REQUIRED</a>&#160;&#160;&#160;(1 &lt;&lt; 0)</td></tr>
 <tr class="separator:a1701d5bbaeb7699f8c54247c25442b39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48fab3f014f7fee5d03c91c5ff19ab39"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a48fab3f014f7fee5d03c91c5ff19ab39">NOISE_REQ_PROLOGUE</a>&#160;&#160;&#160;(1 &lt;&lt; 3)</td></tr>
+<tr class="separator:a48fab3f014f7fee5d03c91c5ff19ab39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9b69b5bb560916ae89d9e7f10b824678"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a9b69b5bb560916ae89d9e7f10b824678">NOISE_REQ_PSK</a>&#160;&#160;&#160;(1 &lt;&lt; 2)</td></tr>
 <tr class="separator:a9b69b5bb560916ae89d9e7f10b824678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adaef0de41e54f3b2f90a91cfdfb8c79a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#adaef0de41e54f3b2f90a91cfdfb8c79a">NOISE_REQ_REMOTE_REQUIRED</a>&#160;&#160;&#160;(1 &lt;&lt; 1)</td></tr>
@@ -155,22 +175,26 @@ Macros</h2></td></tr>
 <tr class="separator:a83dd8de20e08eaee39c24a217208a178"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33266cba0956470272ba0f859adf4f43"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a33266cba0956470272ba0f859adf4f43">NOISE_TOKEN_END</a>&#160;&#160;&#160;0</td></tr>
 <tr class="separator:a33266cba0956470272ba0f859adf4f43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a811d1fa76f95820787c30505c513572f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a811d1fa76f95820787c30505c513572f">NOISE_TOKEN_FALLBACK</a>&#160;&#160;&#160;254</td></tr>
-<tr class="separator:a811d1fa76f95820787c30505c513572f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a202e376500c93dbe5bb0ef86e9b43a07"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a202e376500c93dbe5bb0ef86e9b43a07">NOISE_TOKEN_FLIP_DIR</a>&#160;&#160;&#160;255</td></tr>
 <tr class="separator:a202e376500c93dbe5bb0ef86e9b43a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a486e9da6d7ab598d7a880e0f7363db66"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a486e9da6d7ab598d7a880e0f7363db66">NOISE_TOKEN_S</a>&#160;&#160;&#160;1</td></tr>
 <tr class="separator:a486e9da6d7ab598d7a880e0f7363db66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ae4e31cb4051b60877651692f6c880c47"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="internal_8h.html#structNoiseRandomState__s">NoiseRandomState_s</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ae4e31cb4051b60877651692f6c880c47">NoiseRandomState</a></td></tr>
+<tr class="memdesc:ae4e31cb4051b60877651692f6c880c47"><td class="mdescLeft">&#160;</td><td class="mdescRight">State information for CipherState random number generators.  <a href="#ae4e31cb4051b60877651692f6c880c47">More...</a><br/></td></tr>
+<tr class="separator:ae4e31cb4051b60877651692f6c880c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad6f7d972a419b6dcea62a0519f560a65"><td class="memItemLeft" align="right" valign="top"><a class="el" href="cipherstate_8h.html#aef177dafa2e9f1e80965d96871e48a27">NoiseCipherState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ad6f7d972a419b6dcea62a0519f560a65">noise_aesgcm_new</a> (void)</td></tr>
+<tr class="memitem:ad6f7d972a419b6dcea62a0519f560a65"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ad6f7d972a419b6dcea62a0519f560a65">noise_aesgcm_new</a> (void)</td></tr>
 <tr class="separator:ad6f7d972a419b6dcea62a0519f560a65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab92f4a7a788a565e5b48d83cae9d038f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ab92f4a7a788a565e5b48d83cae9d038f">noise_blake2b_new</a> (void)</td></tr>
+<tr class="memitem:ab92f4a7a788a565e5b48d83cae9d038f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ab92f4a7a788a565e5b48d83cae9d038f">noise_blake2b_new</a> (void)</td></tr>
 <tr class="separator:ab92f4a7a788a565e5b48d83cae9d038f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4aa620d65c70f6b9ea5eac6eb9f63e40"><td class="memItemLeft" align="right" valign="top"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a4aa620d65c70f6b9ea5eac6eb9f63e40">noise_blake2s_new</a> (void)</td></tr>
+<tr class="memitem:a4aa620d65c70f6b9ea5eac6eb9f63e40"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a4aa620d65c70f6b9ea5eac6eb9f63e40">noise_blake2s_new</a> (void)</td></tr>
 <tr class="separator:a4aa620d65c70f6b9ea5eac6eb9f63e40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ac0b349b2d670bb4b1bb5ecf61a228d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="cipherstate_8h.html#aef177dafa2e9f1e80965d96871e48a27">NoiseCipherState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a3ac0b349b2d670bb4b1bb5ecf61a228d">noise_chachapoly_new</a> (void)</td></tr>
+<tr class="memitem:a3ac0b349b2d670bb4b1bb5ecf61a228d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a3ac0b349b2d670bb4b1bb5ecf61a228d">noise_chachapoly_new</a> (void)</td></tr>
 <tr class="separator:a3ac0b349b2d670bb4b1bb5ecf61a228d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d7440ace7a148437e229969490f6162"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a4d7440ace7a148437e229969490f6162">noise_clean</a> (void *data, size_t size)</td></tr>
 <tr class="memdesc:a4d7440ace7a148437e229969490f6162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans a block of memory to destroy its contents.  <a href="#a4d7440ace7a148437e229969490f6162">More...</a><br/></td></tr>
@@ -178,9 +202,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a3f9f4a6d0f31a749334c57a230b5d30d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a3f9f4a6d0f31a749334c57a230b5d30d">noise_cmove_zero</a> (uint8_t *data, size_t len, int condition)</td></tr>
 <tr class="memdesc:a3f9f4a6d0f31a749334c57a230b5d30d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Conditional move of zero into a buffer in constant time.  <a href="#a3f9f4a6d0f31a749334c57a230b5d30d">More...</a><br/></td></tr>
 <tr class="separator:a3f9f4a6d0f31a749334c57a230b5d30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc3037dcdebfbedb58228d71df77ea43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dhstate_8h.html#ad930e9dba7ffbe8dbfe4e9ba2f49cadc">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#adc3037dcdebfbedb58228d71df77ea43">noise_curve25519_new</a> (void)</td></tr>
+<tr class="memitem:adc3037dcdebfbedb58228d71df77ea43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#adc3037dcdebfbedb58228d71df77ea43">noise_curve25519_new</a> (void)</td></tr>
 <tr class="separator:adc3037dcdebfbedb58228d71df77ea43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee96651886a3393cea992c5c176aff7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="dhstate_8h.html#ad930e9dba7ffbe8dbfe4e9ba2f49cadc">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#aee96651886a3393cea992c5c176aff7c">noise_curve448_new</a> (void)</td></tr>
+<tr class="memitem:aee96651886a3393cea992c5c176aff7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#aee96651886a3393cea992c5c176aff7c">noise_curve448_new</a> (void)</td></tr>
 <tr class="separator:aee96651886a3393cea992c5c176aff7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a> (void *ptr, size_t size)</td></tr>
 <tr class="memdesc:a7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the contents of a block of memory and free it.  <a href="#a7c7fc1bf7455aa40e16e26b78ff4d6eb">More...</a><br/></td></tr>
@@ -203,9 +227,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2c655f02a16fc53fbbe703dcb61bb196"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a2c655f02a16fc53fbbe703dcb61bb196">noise_rand_bytes</a> (void *bytes, size_t size)</td></tr>
 <tr class="memdesc:a2c655f02a16fc53fbbe703dcb61bb196"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets cryptographically-strong random bytes from the system.  <a href="#a2c655f02a16fc53fbbe703dcb61bb196">More...</a><br/></td></tr>
 <tr class="separator:a2c655f02a16fc53fbbe703dcb61bb196"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09251980b41fc9b5fef2d0591869705d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a09251980b41fc9b5fef2d0591869705d">noise_sha256_new</a> (void)</td></tr>
+<tr class="memitem:a09251980b41fc9b5fef2d0591869705d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a09251980b41fc9b5fef2d0591869705d">noise_sha256_new</a> (void)</td></tr>
 <tr class="separator:a09251980b41fc9b5fef2d0591869705d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc603487111b8b90eb04d30aadc1cdb3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#afc603487111b8b90eb04d30aadc1cdb3">noise_sha512_new</a> (void)</td></tr>
+<tr class="memitem:afc603487111b8b90eb04d30aadc1cdb3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#afc603487111b8b90eb04d30aadc1cdb3">noise_sha512_new</a> (void)</td></tr>
 <tr class="separator:afc603487111b8b90eb04d30aadc1cdb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -225,51 +249,39 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <div class="textblock"><p>Internal structure of the NoiseHandshakeState type. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00309">309</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00359">359</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="adc8a3cb3193a5fb5893fb7285574cf47"></a><a class="el" href="dhstate_8h.html#ad930e9dba7ffbe8dbfe4e9ba2f49cadc">NoiseDHState</a> *</td>
+<a class="anchor" id="a2359c24bd2af2ac99287b0ea6da92cd9"></a>int</td>
 <td class="fieldname">
-dh</td>
+action</td>
 <td class="fielddoc">
-Points to the DHState object for this HandshakeState. </td></tr>
+Next action to be taken by the application. </td></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="afdbdfe0f54b4e2c7c21523d68f844021"></a>uint8_t *</td>
+<a class="anchor" id="ac46bdefb4470eacb5e5d013bd3eb1d6b"></a><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *</td>
 <td class="fieldname">
-local_ephemeral_private_key</td>
+dh_local_ephemeral</td>
 <td class="fielddoc">
-Points to the local ephemeral private key. </td></tr>
+Points to the DHState object for local ephemeral key. </td></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="aab425f25825e7ca5412809678d06dbb4"></a>uint8_t *</td>
+<a class="anchor" id="afc890615228276fa796aaf9368c0f1d7"></a><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *</td>
 <td class="fieldname">
-local_ephemeral_public_key</td>
+dh_local_static</td>
 <td class="fielddoc">
-Points to the local ephemeral public key. </td></tr>
+Points to the DHState object for local static key. </td></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="aca6efb235213b1df8dd5a3d43205043d"></a>uint8_t *</td>
+<a class="anchor" id="afc6e0119033e8921c1024d189f35f049"></a><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *</td>
 <td class="fieldname">
-local_static_private_key</td>
+dh_remote_ephemeral</td>
 <td class="fielddoc">
-Points to the local static private key. </td></tr>
+Points to the DHState object for remote ephemeral key. </td></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="a5f83b997dd87525c604a9fc47184f652"></a>uint8_t *</td>
+<a class="anchor" id="aaae70a348550678734f35f6bb488f5ae"></a><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *</td>
 <td class="fieldname">
-local_static_public_key</td>
+dh_remote_static</td>
 <td class="fielddoc">
-Points to the local static public key. </td></tr>
-<tr><td class="fieldtype">
-<a class="anchor" id="a53b61401d6912f4744cc480fd9839a7a"></a>uint8_t *</td>
-<td class="fieldname">
-remote_ephemeral_public_key</td>
-<td class="fielddoc">
-Points to the remote ephemeral public key. </td></tr>
-<tr><td class="fieldtype">
-<a class="anchor" id="a71eaa7bc6abb26e9b5bf35ef4c6e09ea"></a>uint8_t *</td>
-<td class="fieldname">
-remote_static_public_key</td>
-<td class="fielddoc">
-Points to the remote static public key. </td></tr>
+Points to the DHState object for remote static key. </td></tr>
 <tr><td class="fieldtype">
 <a class="anchor" id="a00061e5181a1ab3c6d789e545778add4"></a>int</td>
 <td class="fieldname">
@@ -289,7 +301,7 @@ size</td>
 <td class="fielddoc">
 Total size of the structure, including DH key storage. </td></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="a9f633dec6fadfe5cecd9c46d682cc22e"></a><a class="el" href="symmetricstate_8h.html#a33e9914ab0b5b5c7ea3c6f179450f66e">NoiseSymmetricState</a> *</td>
+<a class="anchor" id="a9f633dec6fadfe5cecd9c46d682cc22e"></a><a class="el" href="group__symmetricstate.html#gaafb7dab7644f6ebb68fbd3a9c7b1c32c">NoiseSymmetricState</a> *</td>
 <td class="fieldname">
 symmetric</td>
 <td class="fielddoc">
@@ -300,6 +312,42 @@ Points to the SymmetricState object for this HandshakeState. </td></tr>
 tokens</td>
 <td class="fielddoc">
 Points to the next message pattern tokens to be processed. </td></tr>
+</table>
+
+</div>
+</div>
+<a name="structNoiseRandomState__s" id="structNoiseRandomState__s"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">struct NoiseRandomState_s</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<div class="textblock"><p>State information for CipherState random number generators. </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00050">50</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+</div><table class="fieldtable">
+<tr><th colspan="3">Data Fields</th></tr>
+<tr><td class="fieldtype">
+<a class="anchor" id="acaa1b3e654f7782999954fe8d50f188b"></a>chacha_ctx</td>
+<td class="fieldname">
+chacha</td>
+<td class="fielddoc">
+ChaCha20 state for the random number generator. </td></tr>
+<tr><td class="fieldtype">
+<a class="anchor" id="a0f4c5b4966a254d05f63f506dedd2149"></a>size_t</td>
+<td class="fieldname">
+left</td>
+<td class="fielddoc">
+Number of bytes left until the next reseed. </td></tr>
+<tr><td class="fieldtype">
+<a class="anchor" id="a872553a6f42a6c28b9a7309417a974ef"></a>size_t</td>
+<td class="fieldname">
+size</td>
+<td class="fielddoc">
+Total size of the structure. </td></tr>
 </table>
 
 </div>
@@ -315,11 +363,11 @@ Points to the next message pattern tokens to be processed. </td></tr>
 </div><div class="memdoc">
 <div class="textblock"><p>Internal structure of the NoiseSymmetricState type. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00278">278</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00328">328</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="abdaa0815b889e88f06814eb5f49c181e"></a><a class="el" href="cipherstate_8h.html#aef177dafa2e9f1e80965d96871e48a27">NoiseCipherState</a> *</td>
+<a class="anchor" id="abdaa0815b889e88f06814eb5f49c181e"></a><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *</td>
 <td class="fieldname">
 cipher</td>
 <td class="fielddoc">
@@ -339,7 +387,7 @@ h[<a class="el" href="internal_8h.html#ae08f3f420d645a6e57b8a33be0008a90">NOISE_
 <td class="fielddoc">
 Current value of the handshake hash. </td></tr>
 <tr><td class="fieldtype">
-<a class="anchor" id="a8b7c288fc5c182e1c23e00a9b7a8a6a0"></a><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a> *</td>
+<a class="anchor" id="a8b7c288fc5c182e1c23e00a9b7a8a6a0"></a><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *</td>
 <td class="fieldname">
 hash</td>
 <td class="fielddoc">
@@ -361,6 +409,51 @@ Total size of the structure. </td></tr>
 </div>
 </div>
 <h2 class="groupheader">Macro Definition Documentation</h2>
+<a class="anchor" id="a3a380c0fbf332eaf163bef119058ee56"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NOISE_DHSTATE_KEYPAIR&#160;&#160;&#160;1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set to a keypair </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00220">220</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ab266a7873e41cc29a8a94230086eedfe"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NOISE_DHSTATE_NO_KEY&#160;&#160;&#160;0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>No key set yet </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00219">219</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a919695960b1b5eb9fd0991c4bcec4e61"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NOISE_DHSTATE_PUBLIC&#160;&#160;&#160;2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Set to a public key only </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00221">221</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ae08f3f420d645a6e57b8a33be0008a90"></a>
 <div class="memitem">
 <div class="memproto">
@@ -373,7 +466,7 @@ Total size of the structure. </td></tr>
 
 <p>Maximum hash length over all supported hash algorithms. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00043">43</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00045">45</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -404,6 +497,21 @@ Total size of the structure. </td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a090239192cda8526c8af363b1149c92f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NOISE_PAT_FLAG_LOCAL_EMPEM_REQ&#160;&#160;&#160;(1 &lt;&lt; 3)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pattern requires that the local ephemeral key be provided ahead of time to start the protocol (for XXfallback) </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00413">413</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a096111c67b6373c296527c1d79cc8fc6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -415,7 +523,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a local ephemeral keypair </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00364">364</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00405">405</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -430,7 +538,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires that the local public key be provided ahead of time to start the protocol. That is, it is not sent as part of the protocol but is assumed to already be known to the other party. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00369">369</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00410">410</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -445,7 +553,22 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a local static keypair </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00362">362</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00403">403</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ad29b89d040ae5096671a8843bb4d4f00"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NOISE_PAT_FLAG_REMOTE_EMPEM_REQ&#160;&#160;&#160;(1 &lt;&lt; 7)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pattern requires that the remote ephemeral key be provided ahead of time to start the protocol (for XXfallback) </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00425">425</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -460,7 +583,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a remote ephemeral public key </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00373">373</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00417">417</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -475,7 +598,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires that the local public key be provided ahead of time to start the protocol. That is, it is not sent as part of the protocol but is assumed to already be known to the other party. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00378">378</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00422">422</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -490,7 +613,22 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a remote static public key </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00371">371</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00415">415</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a25de2e80e2b462ec2fa0ffa3c563b128"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NOISE_REQ_FALLBACK_EPHEM&#160;&#160;&#160;(1 &lt;&lt; 4)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Emphemeral key for fallback pre-message has been provided </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00436">436</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -503,9 +641,24 @@ Total size of the structure. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Local static keypair has not been provided yet </p>
+<p>Local static keypair is required for the handshake </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00381">381</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00428">428</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a48fab3f014f7fee5d03c91c5ff19ab39"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define NOISE_REQ_PROLOGUE&#160;&#160;&#160;(1 &lt;&lt; 3)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Prologue has not been provided yet </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00434">434</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -520,7 +673,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pre-shared key has not been provided yet </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00385">385</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00432">432</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -533,9 +686,9 @@ Total size of the structure. </td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Remote publie key has not been provided yet </p>
+<p>Remote public key is required for the handshake </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00383">383</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00430">430</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -550,7 +703,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhee" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00354">354</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00396">396</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -565,7 +718,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhes" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00355">355</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00397">397</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -580,7 +733,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhse" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00356">356</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00398">398</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -595,7 +748,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhss" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00357">357</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00399">399</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -610,7 +763,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"e" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00353">353</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00395">395</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -625,22 +778,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>End of pattern, start data session </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00351">351</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a811d1fa76f95820787c30505c513572f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define NOISE_TOKEN_FALLBACK&#160;&#160;&#160;254</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Continue with the fallback protocol </p>
-
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00358">358</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00393">393</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -655,7 +793,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Flip the handshake direction </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00359">359</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00400">400</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -670,7 +808,22 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"s" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00352">352</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00394">394</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a class="anchor" id="ae4e31cb4051b60877651692f6c880c47"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="internal_8h.html#structNoiseRandomState__s">NoiseRandomState_s</a>  <a class="el" href="internal_8h.html#ae4e31cb4051b60877651692f6c880c47">NoiseRandomState</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>State information for CipherState random number generators. </p>
 
 </div>
 </div>
@@ -680,7 +833,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="cipherstate_8h.html#aef177dafa2e9f1e80965d96871e48a27">NoiseCipherState</a>* noise_aesgcm_new </td>
+          <td class="memname"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a>* noise_aesgcm_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -696,7 +849,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a>* noise_blake2b_new </td>
+          <td class="memname"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a>* noise_blake2b_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -712,7 +865,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a>* noise_blake2s_new </td>
+          <td class="memname"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a>* noise_blake2s_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -728,7 +881,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="cipherstate_8h.html#aef177dafa2e9f1e80965d96871e48a27">NoiseCipherState</a>* noise_chachapoly_new </td>
+          <td class="memname"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a>* noise_chachapoly_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -826,7 +979,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="dhstate_8h.html#ad930e9dba7ffbe8dbfe4e9ba2f49cadc">NoiseDHState</a>* noise_curve25519_new </td>
+          <td class="memname"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a>* noise_curve25519_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -842,7 +995,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="dhstate_8h.html#ad930e9dba7ffbe8dbfe4e9ba2f49cadc">NoiseDHState</a>* noise_curve448_new </td>
+          <td class="memname"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a>* noise_curve448_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -1028,7 +1181,7 @@ Total size of the structure. </td></tr>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the pattern or NULL if <em>id</em> is unknown.</dd></dl>
 <p>The first byte of the returned pattern contains the pattern flags. The remaining bytes are the token for the pattern, terminated by NOISE_TOKEN_END. </p>
 
-<p>Definition at line <a class="el" href="patterns_8c_source.html#l00483">483</a> of file <a class="el" href="patterns_8c_source.html">patterns.c</a>.</p>
+<p>Definition at line <a class="el" href="patterns_8c_source.html#l00478">478</a> of file <a class="el" href="patterns_8c_source.html">patterns.c</a>.</p>
 
 </div>
 </div>
@@ -1055,7 +1208,7 @@ Total size of the structure. </td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The reversed flags, with the responder now being "local". </dd></dl>
 
-<p>Definition at line <a class="el" href="patterns_8c_source.html#l00513">513</a> of file <a class="el" href="patterns_8c_source.html">patterns.c</a>.</p>
+<p>Definition at line <a class="el" href="patterns_8c_source.html#l00508">508</a> of file <a class="el" href="patterns_8c_source.html">patterns.c</a>.</p>
 
 </div>
 </div>
@@ -1103,7 +1256,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a>* noise_sha256_new </td>
+          <td class="memname"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a>* noise_sha256_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -1119,7 +1272,7 @@ Total size of the structure. </td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="hashstate_8h.html#ab6ea118f1fe9f008069b2cfcb2325257">NoiseHashState</a>* noise_sha512_new </td>
+          <td class="memname"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a>* noise_sha512_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -1133,7 +1286,7 @@ Total size of the structure. </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 13 2016 06:12:16 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 16 2016 14:20:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

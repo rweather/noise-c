@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['decrypt',['decrypt',['../structNoiseCipherState__s.html#a465d41a66eb999d594e97f11cbbbcb00',1,'NoiseCipherState_s']]],
-  ['destroy',['destroy',['../structNoiseCipherState__s.html#abd576b311efc077bcb296a3a7f82c45a',1,'NoiseCipherState_s::destroy()'],['../structNoiseHashState__s.html#add43fdc210ad2900cf23075081f1a601',1,'NoiseHashState_s::destroy()'],['../structNoiseDHState__s.html#a19deb64f0c9b893f8f736db347823c81',1,'NoiseDHState_s::destroy()']]],
-  ['dh',['dh',['../internal_8h.html#adc8a3cb3193a5fb5893fb7285574cf47',1,'NoiseHandshakeState_s']]],
-  ['dh_5fid',['dh_id',['../structNoiseDHState__s.html#aa92d90f9b82e88e7d7976d2e86cc2fca',1,'NoiseDHState_s::dh_id()'],['../group__names.html#a4376a3caecc734701bd5a67c865ccfb5',1,'NoiseProtocolId::dh_id()']]]
+  ['calculate',['calculate',['../structNoiseDHState__s.html#aec63c22f14213fff9a0db0ebc3047f2c',1,'NoiseDHState_s']]],
+  ['chacha',['chacha',['../internal_8h.html#acaa1b3e654f7782999954fe8d50f188b',1,'NoiseRandomState_s']]],
+  ['cipher',['cipher',['../internal_8h.html#abdaa0815b889e88f06814eb5f49c181e',1,'NoiseSymmetricState_s']]],
+  ['cipher_5fid',['cipher_id',['../structNoiseCipherState__s.html#a7294ecca5a1b225a590f8d693a79c28b',1,'NoiseCipherState_s::cipher_id()'],['../group__names.html#ab0759596d7a806fd1aabd96824e35627',1,'NoiseProtocolId::cipher_id()']]],
+  ['ck',['ck',['../internal_8h.html#a1a61d4b68f39148b1bdf56fee5f5e627',1,'NoiseSymmetricState_s']]],
+  ['create',['create',['../structNoiseCipherState__s.html#a2d42882b9ebb8451531ee365b08cabd6',1,'NoiseCipherState_s']]]
 ];

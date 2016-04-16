@@ -74,7 +74,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
   <div id="navrow4" class="tabs3">
     <ul class="tablist">
-      <li><a href="#index_a"><span>a</span></a></li>
       <li class="current"><a href="#index_n"><span>n</span></a></li>
     </ul>
   </div>
@@ -95,13 +94,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div class="contents">
 &#160;
-
-<h3><a class="anchor" id="index_a"></a>- a -</h3><ul>
-<li>alloc_key
-: <a class="el" href="handshakestate_8c.html#ad656d522d3cb3b711d99fe6f598d218a">handshakestate.c</a>
-</li>
-</ul>
-
 
 <h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
 <li>NOISE_ACTION_FAILED
@@ -143,8 +135,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>NOISE_DH_NONE
 : <a class="el" href="group__dh__id.html#ga786d6ebf274a66d807073ee8f81e8e30">constants.h</a>
 </li>
-<li>NOISE_ERROR_INVALID_DH_KEY
-: <a class="el" href="group__errors.html#ga9a70de828edf4f5a8d2a0064411a265f">constants.h</a>
+<li>NOISE_DHSTATE_KEYPAIR
+: <a class="el" href="internal_8h.html#a3a380c0fbf332eaf163bef119058ee56">internal.h</a>
+</li>
+<li>NOISE_DHSTATE_NO_KEY
+: <a class="el" href="internal_8h.html#ab266a7873e41cc29a8a94230086eedfe">internal.h</a>
+</li>
+<li>NOISE_DHSTATE_PUBLIC
+: <a class="el" href="internal_8h.html#a919695960b1b5eb9fd0991c4bcec4e61">internal.h</a>
 </li>
 <li>NOISE_ERROR_INVALID_LENGTH
 : <a class="el" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">constants.h</a>
@@ -154,6 +152,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>NOISE_ERROR_INVALID_PARAM
 : <a class="el" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">constants.h</a>
+</li>
+<li>NOISE_ERROR_INVALID_PRIVATE_KEY
+: <a class="el" href="group__errors.html#gac238537ac0758522fe2e8a0ad6e9eb34">constants.h</a>
+</li>
+<li>NOISE_ERROR_INVALID_PUBLIC_KEY
+: <a class="el" href="group__errors.html#gade43f4bbe18a8a89863dc2048a8d0c3f">constants.h</a>
 </li>
 <li>NOISE_ERROR_INVALID_STATE
 : <a class="el" href="group__errors.html#gaa2f38fe867879538e1438f05054d6aa7">constants.h</a>
@@ -218,6 +222,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>noise_new
 : <a class="el" href="internal_8h.html#aa8403b5d2d468366eaed8ecf8b7eea24">internal.h</a>
 </li>
+<li>NOISE_PADDING_RANDOM
+: <a class="el" href="constants_8h.html#a8f845e853df5b14fabd434915c7559b5">constants.h</a>
+</li>
+<li>NOISE_PADDING_ZERO
+: <a class="el" href="constants_8h.html#a5f63770f27d92cd12b5c4bef76fac57b">constants.h</a>
+</li>
+<li>NOISE_PAT_FLAG_LOCAL_EMPEM_REQ
+: <a class="el" href="internal_8h.html#a090239192cda8526c8af363b1149c92f">internal.h</a>
+</li>
 <li>NOISE_PAT_FLAG_LOCAL_EMPEMERAL
 : <a class="el" href="internal_8h.html#a096111c67b6373c296527c1d79cc8fc6">internal.h</a>
 </li>
@@ -226,6 +239,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>NOISE_PAT_FLAG_LOCAL_STATIC
 : <a class="el" href="internal_8h.html#a13739a7fe51745b86d6fc6c957ce8677">internal.h</a>
+</li>
+<li>NOISE_PAT_FLAG_REMOTE_EMPEM_REQ
+: <a class="el" href="internal_8h.html#ad29b89d040ae5096671a8843bb4d4f00">internal.h</a>
 </li>
 <li>NOISE_PAT_FLAG_REMOTE_EMPEMERAL
 : <a class="el" href="internal_8h.html#a446075367191f65090c9c74c9b3de78f">internal.h</a>
@@ -305,8 +321,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>NOISE_PREFIX_STANDARD
 : <a class="el" href="group__prefix__id.html#gaa2243bb63a319324806d7496c6ff4f21">constants.h</a>
 </li>
+<li>NOISE_REQ_FALLBACK_EPHEM
+: <a class="el" href="internal_8h.html#a25de2e80e2b462ec2fa0ffa3c563b128">internal.h</a>
+</li>
 <li>NOISE_REQ_LOCAL_REQUIRED
 : <a class="el" href="internal_8h.html#a1701d5bbaeb7699f8c54247c25442b39">internal.h</a>
+</li>
+<li>NOISE_REQ_PROLOGUE
+: <a class="el" href="internal_8h.html#a48fab3f014f7fee5d03c91c5ff19ab39">internal.h</a>
 </li>
 <li>NOISE_REQ_PSK
 : <a class="el" href="internal_8h.html#a9b69b5bb560916ae89d9e7f10b824678">internal.h</a>
@@ -338,9 +360,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>NOISE_TOKEN_END
 : <a class="el" href="internal_8h.html#a33266cba0956470272ba0f859adf4f43">internal.h</a>
 </li>
-<li>NOISE_TOKEN_FALLBACK
-: <a class="el" href="internal_8h.html#a811d1fa76f95820787c30505c513572f">internal.h</a>
-</li>
 <li>NOISE_TOKEN_FLIP_DIR
 : <a class="el" href="internal_8h.html#a202e376500c93dbe5bb0ef86e9b43a07">internal.h</a>
 </li>
@@ -354,7 +373,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 13 2016 06:12:16 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 16 2016 14:20:22 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -292,12 +292,18 @@ reserved_id</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if either <em>name</em> or <em>id</em> are NULL, NOISE_ERROR_INVALID_LENGTH if the <em>name</em> buffer is not large enough to contain the full name, or NOISE_ERROR_UNKNOWN_ID if one of the identifiers in <em>id</em> does not have a known mapping to a name.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if either <em>name</em> or <em>id</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_LENGTH if the <em>name</em> buffer is not large enough to contain the full name. </dd>
+<dd>
+NOISE_ERROR_UNKNOWN_ID if one of the identifiers in <em>id</em> does not have a known mapping to a name.</dd></dl>
 <p>This function guarantees to NUL-terminate the <em>name</em> if the function succeeds.</p>
 <p>It is recommended that <em>name_len</em> be at least NOISE_MAX_PROTOCOL_NAME bytes in length.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__names.html#gac3b71a24c6e9acfba67ca73c3854ba89" title="Parses a protocol name into a set of identifiers for the algorithms that are indicated by the name...">noise_protocol_name_to_id()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="names_8c_source.html#l00350">350</a> of file <a class="el" href="names_8c_source.html">names.c</a>.</p>
+<p>Definition at line <a class="el" href="names_8c_source.html#l00351">351</a> of file <a class="el" href="names_8c_source.html">names.c</a>.</p>
 
 </div>
 </div>
@@ -340,7 +346,11 @@ reserved_id</td>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_INVALID_PARAM if either <em>id</em> or <em>name</em> is NULL, or NOISE_ERROR_UNKNOWN_NAME if the protocol name could not be parsed.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if either <em>id</em> or <em>name</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_UNKNOWN_NAME if the protocol name could not be parsed.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d" title="Formats a protocol name from a set of identifiers for the algorithms that make up the name...">noise_protocol_id_to_name()</a> </dd></dl>
 
 <p>Definition at line <a class="el" href="names_8c_source.html#l00241">241</a> of file <a class="el" href="names_8c_source.html">names.c</a>.</p>
@@ -350,7 +360,7 @@ reserved_id</td>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 13 2016 06:12:16 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 16 2016 14:20:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

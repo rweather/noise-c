@@ -80,7 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_5903c71b979204ea1ce2d27420efeaa9.html">protocol</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -310,50 +310,50 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        name[*posn] = <span class="charliteral">&#39;\0&#39;</span>;</div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;}</div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d">noise_protocol_id_to_name</a></div>
-<div class="line"><a name="l00350"></a><span class="lineno"><a class="line" href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d">  350</a></span>&#160;    (<span class="keywordtype">char</span> *name, <span class="keywordtype">size_t</span> name_len, <span class="keyword">const</span> <a class="code" href="group__names.html#structNoiseProtocolId">NoiseProtocolId</a> *<span class="keywordtype">id</span>)</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;{</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="keywordtype">size_t</span> posn;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="keywordtype">int</span> err;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="comment">/* Bail out if the parameters are incorrect */</span></div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="keywordflow">if</span> (!<span class="keywordtype">id</span>) {</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        <span class="keywordflow">if</span> (name &amp;&amp; name_len)</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            *name = <span class="charliteral">&#39;\0&#39;</span>;   <span class="comment">/* Just to be safe */</span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    }</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="keywordflow">if</span> (!name)</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="keywordflow">if</span> (!name_len)</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="comment">/* Format the fields into the return buffer */</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    posn = 0;</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    err = <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    noise_protocol_format_field</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        (<a class="code" href="group__prefix__id.html#ga670bb4a76dc34d49940ff7b93f7ee1f6">NOISE_PREFIX_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a28ed86d8adce5c81d2a47fa1e93ec74d">prefix_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    noise_protocol_format_field</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        (<a class="code" href="group__pattern__id.html#ga57fb741e49b848f04c886813eff2cca3">NOISE_PATTERN_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a03585bc8d03a3f0cbc6dcc18f5feed02">pattern_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    noise_protocol_format_field</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        (<a class="code" href="group__dh__id.html#ga7eb71d01712e8a89ff0cc5a617200f48">NOISE_DH_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a4376a3caecc734701bd5a67c865ccfb5">dh_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    noise_protocol_format_field</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;        (<a class="code" href="group__cipher__id.html#ga9a22aeae28f8aa6d3a33207ebef90fae">NOISE_CIPHER_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#ab0759596d7a806fd1aabd96824e35627">cipher_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    noise_protocol_format_field</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        (<a class="code" href="group__hash__id.html#ga85da0485deb46ecc4fb69a4bbd5b4315">NOISE_HASH_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a2b55ce2e8fea5b773c65d1d8cbc6aeed">hash_id</a>, name, name_len, &amp;posn, 1, &amp;err);</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="comment">/* The reserved identifier must be zero.  We don&#39;t know how to</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="comment">       format reserved identifiers other than zero */</span></div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    <span class="keywordflow">if</span> (id-&gt;<a class="code" href="group__names.html#a31df7887e75b88d0434aedb6f99a6245">reserved_id</a> != 0 &amp;&amp; err == <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>)</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        err = <a class="code" href="group__errors.html#gaf3507f95e7e1464a7299d6954f39a413">NOISE_ERROR_UNKNOWN_ID</a>;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    <span class="comment">/* If an error occurred, then clear the buffer just to be safe */</span></div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keywordflow">if</span> (err != <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>)</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        *name = <span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    <span class="comment">/* Done */</span></div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="keywordflow">return</span> err;</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;}</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d">noise_protocol_id_to_name</a></div>
+<div class="line"><a name="l00351"></a><span class="lineno"><a class="line" href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d">  351</a></span>&#160;    (<span class="keywordtype">char</span> *name, <span class="keywordtype">size_t</span> name_len, <span class="keyword">const</span> <a class="code" href="group__names.html#structNoiseProtocolId">NoiseProtocolId</a> *<span class="keywordtype">id</span>)</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;{</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="keywordtype">size_t</span> posn;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    <span class="keywordtype">int</span> err;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="comment">/* Bail out if the parameters are incorrect */</span></div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="keywordflow">if</span> (!<span class="keywordtype">id</span>) {</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        <span class="keywordflow">if</span> (name &amp;&amp; name_len)</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            *name = <span class="charliteral">&#39;\0&#39;</span>;   <span class="comment">/* Just to be safe */</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    }</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="keywordflow">if</span> (!name)</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="keywordflow">if</span> (!name_len)</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="comment">/* Format the fields into the return buffer */</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    posn = 0;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    err = <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    noise_protocol_format_field</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        (<a class="code" href="group__prefix__id.html#ga670bb4a76dc34d49940ff7b93f7ee1f6">NOISE_PREFIX_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a28ed86d8adce5c81d2a47fa1e93ec74d">prefix_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    noise_protocol_format_field</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        (<a class="code" href="group__pattern__id.html#ga57fb741e49b848f04c886813eff2cca3">NOISE_PATTERN_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a03585bc8d03a3f0cbc6dcc18f5feed02">pattern_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    noise_protocol_format_field</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        (<a class="code" href="group__dh__id.html#ga7eb71d01712e8a89ff0cc5a617200f48">NOISE_DH_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a4376a3caecc734701bd5a67c865ccfb5">dh_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    noise_protocol_format_field</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        (<a class="code" href="group__cipher__id.html#ga9a22aeae28f8aa6d3a33207ebef90fae">NOISE_CIPHER_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#ab0759596d7a806fd1aabd96824e35627">cipher_id</a>, name, name_len, &amp;posn, 0, &amp;err);</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    noise_protocol_format_field</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        (<a class="code" href="group__hash__id.html#ga85da0485deb46ecc4fb69a4bbd5b4315">NOISE_HASH_CATEGORY</a>, id-&gt;<a class="code" href="group__names.html#a2b55ce2e8fea5b773c65d1d8cbc6aeed">hash_id</a>, name, name_len, &amp;posn, 1, &amp;err);</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    <span class="comment">/* The reserved identifier must be zero.  We don&#39;t know how to</span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="comment">       format reserved identifiers other than zero */</span></div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordflow">if</span> (id-&gt;<a class="code" href="group__names.html#a31df7887e75b88d0434aedb6f99a6245">reserved_id</a> != 0 &amp;&amp; err == <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>)</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        err = <a class="code" href="group__errors.html#gaf3507f95e7e1464a7299d6954f39a413">NOISE_ERROR_UNKNOWN_ID</a>;</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="comment">/* If an error occurred, then clear the buffer just to be safe */</span></div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="keywordflow">if</span> (err != <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>)</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        *name = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="comment">/* Done */</span></div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    <span class="keywordflow">return</span> err;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;}</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;</div>
 <div class="ttc" id="group__pattern__id_html_gae2494af92893095158957c36158800bd"><div class="ttname"><a href="group__pattern__id.html#gae2494af92893095158957c36158800bd">NOISE_PATTERN_XX</a></div><div class="ttdeci">#define NOISE_PATTERN_XX</div><div class="ttdoc">Handshake pattern identifier for &quot;XX&quot;. </div></div>
 <div class="ttc" id="group__names_html_structNoiseProtocolId"><div class="ttname"><a href="group__names.html#structNoiseProtocolId">NoiseProtocolId</a></div><div class="ttdoc">Noise protocol name broken out into separate identifier fields. </div><div class="ttdef"><b>Definition:</b> <a href="names_8h_source.html#l00033">names.h:33</a></div></div>
 <div class="ttc" id="group__names_html_ab0759596d7a806fd1aabd96824e35627"><div class="ttname"><a href="group__names.html#ab0759596d7a806fd1aabd96824e35627">NoiseProtocolId::cipher_id</a></div><div class="ttdeci">int cipher_id</div><div class="ttdef"><b>Definition:</b> <a href="names_8h_source.html#l00038">names.h:38</a></div></div>
@@ -404,7 +404,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="group__hash__id_html_ga51dde543fb0b679be7691772c9f29aa4"><div class="ttname"><a href="group__hash__id.html#ga51dde543fb0b679be7691772c9f29aa4">NOISE_HASH_BLAKE2s</a></div><div class="ttdeci">#define NOISE_HASH_BLAKE2s</div><div class="ttdoc">Hash identifier for &quot;BLAKE2s&quot;. </div></div>
 <div class="ttc" id="group__hash__id_html_ga7eec0afff4d8e66a2b8a94169445b7a2"><div class="ttname"><a href="group__hash__id.html#ga7eec0afff4d8e66a2b8a94169445b7a2">NOISE_HASH_SHA512</a></div><div class="ttdeci">#define NOISE_HASH_SHA512</div><div class="ttdoc">Hash identifier for &quot;SHA512&quot;. </div></div>
 <div class="ttc" id="group__prefix__id_html_gaaf9a6dfcbc031fcda1101e0cb211c4b7"><div class="ttname"><a href="group__prefix__id.html#gaaf9a6dfcbc031fcda1101e0cb211c4b7">NOISE_PREFIX_PSK</a></div><div class="ttdeci">#define NOISE_PREFIX_PSK</div><div class="ttdoc">Protocol prefix identifier for &quot;NoisePSK&quot;. </div></div>
-<div class="ttc" id="group__names_html_gab9db2e7768a702f6de6eb64e01e5c73d"><div class="ttname"><a href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d">noise_protocol_id_to_name</a></div><div class="ttdeci">int noise_protocol_id_to_name(char *name, size_t name_len, const NoiseProtocolId *id)</div><div class="ttdoc">Formats a protocol name from a set of identifiers for the algorithms that make up the name...</div><div class="ttdef"><b>Definition:</b> <a href="names_8c_source.html#l00350">names.c:350</a></div></div>
+<div class="ttc" id="group__names_html_gab9db2e7768a702f6de6eb64e01e5c73d"><div class="ttname"><a href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d">noise_protocol_id_to_name</a></div><div class="ttdeci">int noise_protocol_id_to_name(char *name, size_t name_len, const NoiseProtocolId *id)</div><div class="ttdoc">Formats a protocol name from a set of identifiers for the algorithms that make up the name...</div><div class="ttdef"><b>Definition:</b> <a href="names_8c_source.html#l00351">names.c:351</a></div></div>
 <div class="ttc" id="group__hash__id_html_ga329ec81766f18312269e0c144dfc8d7d"><div class="ttname"><a href="group__hash__id.html#ga329ec81766f18312269e0c144dfc8d7d">NOISE_HASH_NONE</a></div><div class="ttdeci">#define NOISE_HASH_NONE</div><div class="ttdoc">Hash identifier that indicates &quot;no hash&quot;. </div></div>
 <div class="ttc" id="group__cipher__id_html_ga2c30822fe720a51ce5d58bb087686190"><div class="ttname"><a href="group__cipher__id.html#ga2c30822fe720a51ce5d58bb087686190">NOISE_CIPHER_NONE</a></div><div class="ttdeci">#define NOISE_CIPHER_NONE</div><div class="ttdoc">Cipher identifier that indicates &quot;no cipher&quot;. </div></div>
 <div class="ttc" id="group__pattern__id_html_gaf0a50ef7b6a2ab4920f006068e366509"><div class="ttname"><a href="group__pattern__id.html#gaf0a50ef7b6a2ab4920f006068e366509">NOISE_PATTERN_X</a></div><div class="ttdeci">#define NOISE_PATTERN_X</div><div class="ttdoc">Handshake pattern identifier for &quot;X&quot;. </div></div>
@@ -412,7 +412,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 13 2016 06:12:16 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 16 2016 14:20:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

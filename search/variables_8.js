@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['key_5flen',['key_len',['../structNoiseCipherState__s.html#a3fc638c57aa8725dfdbfc8a4538f1ded',1,'NoiseCipherState_s']]]
+  ['id',['id',['../internal_8h.html#a464cb28d32084823d51f4dc3a46aed62',1,'NoiseSymmetricState_s']]],
+  ['init_5fkey',['init_key',['../structNoiseCipherState__s.html#a9f11219c7827bd8604a13d4abb4669fd',1,'NoiseCipherState_s']]]
 ];

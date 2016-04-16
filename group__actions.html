@@ -83,8 +83,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:gac5bdb4d1b23bb9ac09b26a9321ed1d99"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__actions.html#gac5bdb4d1b23bb9ac09b26a9321ed1d99">NOISE_ACTION_FAILED</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 4)</td></tr>
-<tr class="memdesc:gac5bdb4d1b23bb9ac09b26a9321ed1d99"><td class="mdescLeft">&#160;</td><td class="mdescRight">The HandshakeState has flagged that the handshake has failed with a MAC error.  <a href="#gac5bdb4d1b23bb9ac09b26a9321ed1d99">More...</a><br/></td></tr>
+<tr class="memitem:gac5bdb4d1b23bb9ac09b26a9321ed1d99"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__actions.html#gac5bdb4d1b23bb9ac09b26a9321ed1d99">NOISE_ACTION_FAILED</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 3)</td></tr>
+<tr class="memdesc:gac5bdb4d1b23bb9ac09b26a9321ed1d99"><td class="mdescLeft">&#160;</td><td class="mdescRight">The HandshakeState has flagged that the handshake has failed due to some kind of error.  <a href="#gac5bdb4d1b23bb9ac09b26a9321ed1d99">More...</a><br/></td></tr>
 <tr class="separator:gac5bdb4d1b23bb9ac09b26a9321ed1d99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga506cd5908cf48072b0fc0b510cc96b5c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__actions.html#ga506cd5908cf48072b0fc0b510cc96b5c">NOISE_ACTION_NONE</a>&#160;&#160;&#160;0</td></tr>
 <tr class="memdesc:ga506cd5908cf48072b0fc0b510cc96b5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">No action is required of the application yet because the handshake has not started.  <a href="#ga506cd5908cf48072b0fc0b510cc96b5c">More...</a><br/></td></tr>
@@ -92,7 +92,7 @@ Macros</h2></td></tr>
 <tr class="memitem:gacd9192f4a1fa0282068b37c34905c310"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__actions.html#gacd9192f4a1fa0282068b37c34905c310">NOISE_ACTION_READ_MESSAGE</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 2)</td></tr>
 <tr class="memdesc:gacd9192f4a1fa0282068b37c34905c310"><td class="mdescLeft">&#160;</td><td class="mdescRight">The HandshakeState expects the application to read the next message payload from the handshake.  <a href="#gacd9192f4a1fa0282068b37c34905c310">More...</a><br/></td></tr>
 <tr class="separator:gacd9192f4a1fa0282068b37c34905c310"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1417b5ae4bcfb3915dbf111b7c4a13ba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__actions.html#ga1417b5ae4bcfb3915dbf111b7c4a13ba">NOISE_ACTION_SPLIT</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 3)</td></tr>
+<tr class="memitem:ga1417b5ae4bcfb3915dbf111b7c4a13ba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__actions.html#ga1417b5ae4bcfb3915dbf111b7c4a13ba">NOISE_ACTION_SPLIT</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 4)</td></tr>
 <tr class="memdesc:ga1417b5ae4bcfb3915dbf111b7c4a13ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">The HandshakeState has flagged that the handshake is over and that the application is expected to call noise_handshake_split() and begin data session communications.  <a href="#ga1417b5ae4bcfb3915dbf111b7c4a13ba">More...</a><br/></td></tr>
 <tr class="separator:ga1417b5ae4bcfb3915dbf111b7c4a13ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga082423d9d506c8242268f95dafec3afe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__actions.html#ga082423d9d506c8242268f95dafec3afe">NOISE_ACTION_WRITE_MESSAGE</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 1)</td></tr>
@@ -106,12 +106,12 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define NOISE_ACTION_FAILED&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 4)</td>
+          <td class="memname">#define NOISE_ACTION_FAILED&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 3)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>The HandshakeState has flagged that the handshake has failed with a MAC error. </p>
+<p>The HandshakeState has flagged that the handshake has failed due to some kind of error. </p>
 
 </div>
 </div>
@@ -148,7 +148,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define NOISE_ACTION_SPLIT&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 3)</td>
+          <td class="memname">#define NOISE_ACTION_SPLIT&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('A', 4)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -174,7 +174,7 @@ Macros</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 13 2016 06:12:16 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 16 2016 14:20:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
