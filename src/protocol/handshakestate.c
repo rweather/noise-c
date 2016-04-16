@@ -619,6 +619,7 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  * \return NOISE_ERROR_INVALID_STATE if the previous protocol has not
  * been started or has not reached the fallback position yet.
+ * \return NOISE_ERROR_INVALID_LENGTH if the new protocol name is too long.
  * \return NOISE_ERROR_NOT_APPLICABLE if the handshake pattern in the
  * original protocol name was not "IK".
  *
@@ -643,7 +644,77 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  */
 int noise_handshakestate_fallback(NoiseHandshakeState *state)
 {
-    // TODO
+    char name[NOISE_MAX_PROTOCOL_NAME];
+    size_t hash_len;
+    size_t name_len;
+    NoiseProtocolId id;
+    int err;
+
+    /* Validate the parameter */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->symmetric->id.pattern_id != NOISE_PATTERN_IK)
+        return NOISE_ERROR_NOT_APPLICABLE;
+
+    /* The initiator should be waiting for a return message from the
+       responder, and the responder should have failed on the first
+       handshake message from the initiator.  We also allow the
+       responder to fallback after processing the first message
+       successfully; it decides to always fall back anyway. */
+    if (state->role == NOISE_ROLE_INITIATOR) {
+        if (state->action != NOISE_ACTION_READ_MESSAGE)
+            return NOISE_ERROR_INVALID_STATE;
+        if (!noise_dhstate_has_public_key(state->dh_local_ephemeral))
+            return NOISE_ERROR_INVALID_STATE;
+    } else {
+        if (state->action != NOISE_ACTION_FAILED &&
+                state->action != NOISE_ACTION_WRITE_MESSAGE)
+            return NOISE_ERROR_INVALID_STATE;
+        if (!noise_dhstate_has_public_key(state->dh_remote_ephemeral))
+            return NOISE_ERROR_INVALID_STATE;
+    }
+
+    /* Format a new protocol name for the "XXfallback" variant */
+    id = state->symmetric->id;
+    id.pattern_id = NOISE_PATTERN_XX_FALLBACK;
+    err = noise_protocol_id_to_name(name, sizeof(name), &id);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    /* Convert the HandshakeState to the "XXfallback" pattern */
+    state->symmetric->id.pattern_id = NOISE_PATTERN_XX_FALLBACK;
+    noise_dhstate_clear_key(state->dh_remote_static);
+    if (state->role == NOISE_ROLE_INITIATOR) {
+        noise_dhstate_clear_key(state->dh_remote_ephemeral);
+        state->action = NOISE_ACTION_READ_MESSAGE;
+        state->role = NOISE_ROLE_RESPONDER;
+    } else {
+        noise_dhstate_clear_key(state->dh_local_ephemeral);
+        state->action = NOISE_ACTION_WRITE_MESSAGE;
+        state->role = NOISE_ROLE_INITIATOR;
+    }
+    state->requirements |= NOISE_REQ_FALLBACK_EPHEM;
+
+    /* Re-initialize the chaining key "ck" and the handshake hash "h" from
+       the new protocol name.  If the name is too long, hash it down first */
+    name_len = strlen(name);
+    hash_len = noise_hashstate_get_hash_length(state->symmetric->hash);
+    if (name_len <= hash_len) {
+        memcpy(state->symmetric->h, name, name_len);
+        memset(state->symmetric->h + name_len, 0, hash_len - name_len);
+    } else {
+        noise_hashstate_hash_one
+            (state->symmetric->hash, (const uint8_t *)name, name_len,
+             state->symmetric->h);
+    }
+    memcpy(state->symmetric->ck, state->symmetric->h, hash_len);
+
+    /* Reset the encryption key within the symmetric state to empty */
+    state->symmetric->cipher->has_key = 0;
+    state->symmetric->cipher->n = 0;
+    state->symmetric->cipher->nonce_overflow = 0;
+
+    /* Ready to go */
     return NOISE_ERROR_NONE;
 }
 
