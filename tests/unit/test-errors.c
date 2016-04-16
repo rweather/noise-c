@@ -23,7 +23,7 @@
 #include "test-helpers.h"
 
 #define NOISE_MIN_ERROR     NOISE_ID('E', 1)
-#define NOISE_MAX_ERROR     NOISE_ID('E', 14)
+#define NOISE_MAX_ERROR     NOISE_ID('E', 16)
 
 void test_errors(void)
 {
@@ -71,4 +71,27 @@ void test_errors(void)
     compare(noise_strerror(err, buffer, sizeof(buffer)), 0);
     verify(memchr(buffer, 0, sizeof(buffer)) != 0);
     verify(strncmp(buffer, "Unknown error 0x", 16) == 0);
+
+    /* Dump the error strings to help test if the right string is
+       associated with the right code */
+    if (verbose) {
+        #define dump_error(name) noise_perror(#name, name)
+        dump_error(NOISE_ERROR_NONE);
+        dump_error(NOISE_ERROR_NO_MEMORY);
+        dump_error(NOISE_ERROR_UNKNOWN_ID);
+        dump_error(NOISE_ERROR_UNKNOWN_NAME);
+        dump_error(NOISE_ERROR_MAC_FAILURE);
+        dump_error(NOISE_ERROR_NOT_APPLICABLE);
+        dump_error(NOISE_ERROR_SYSTEM);
+        dump_error(NOISE_ERROR_REMOTE_KEY_REQUIRED);
+        dump_error(NOISE_ERROR_LOCAL_KEY_REQUIRED);
+        dump_error(NOISE_ERROR_PSK_REQUIRED);
+        dump_error(NOISE_ERROR_INVALID_LENGTH);
+        dump_error(NOISE_ERROR_INVALID_PARAM);
+        dump_error(NOISE_ERROR_INVALID_STATE);
+        dump_error(NOISE_ERROR_INVALID_NONCE);
+        dump_error(NOISE_ERROR_INVALID_PRIVATE_KEY);
+        dump_error(NOISE_ERROR_INVALID_PUBLIC_KEY);
+        dump_error(NOISE_ERROR_INVALID_FORMAT);
+    }
 }

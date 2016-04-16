@@ -26,9 +26,14 @@ int test_count = 0;
 int test_failures = 0;
 jmp_buf test_jump_back;
 const char *data_name = 0;
+int verbose = 0;
 
 int main(int argc, char *argv[])
 {
+    /* Parse the command-line arguments */
+    if (argc > 1 && !strcmp(argv[1], "--verbose"))
+        verbose = 1;
+
     /* Run all tests */
     test(cipherstate);
     test(dhstate);

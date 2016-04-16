@@ -392,6 +392,11 @@
  */
 
 /**
+ * \def NOISE_ERROR_INVALID_FORMAT
+ * \brief Invalid format for packet or key file.
+ */
+
+/**
  * \def NOISE_ERROR_REMOTE_KEY_REQUIRED
  * \brief A remote static public key is required for the selected protocol,
  * but one was not supplied.
@@ -416,6 +421,15 @@
  *
  * For example, a pre shared key was supplied to a protocol that does not
  * use pre shared keys.
+ */
+
+/**
+ * \def NOISE_ERROR_SYSTEM
+ * \brief System error, with more information in errno.
+ *
+ * This code is intended for reporting errors from the underlying
+ * operating system, with more information about the specific error
+ * in the standard errno variable.
  */
 
 /**@}*/

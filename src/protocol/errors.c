@@ -43,19 +43,21 @@
 static const char * const error_strings[] = {
     "No error",
     "Out of memory",
-    "Unknown algorithm identifier",
-    "Unknown algorithm name",
+    "Unknown identifier",
+    "Unknown name",
     "MAC failure",
+    "Not applicable",
+    "System error",
+    "Remote public key required",
+    "Local keypair required",
+    "Pre shared key required",
     "Invalid length",
     "Invalid parameter",
     "Invalid state",
     "Invalid nonce",
     "Invalid private key",
     "Invalid public key",
-    "Remote static public key required",
-    "Local keypair required",
-    "Pre shared key required",
-    "Option is not applicable",
+    "Invalid format",
     "END"
 };
 #define num_error_strings (sizeof(error_strings) / sizeof(error_strings[0]) - 1)

@@ -37,6 +37,7 @@ extern int test_count;
 extern int test_failures;
 extern jmp_buf test_jump_back;
 extern const char *data_name;
+extern int verbose;
 
 /**
  * \brief Immediate fail of the test.
