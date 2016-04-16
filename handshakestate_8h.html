@@ -80,7 +80,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8fc3edce35c16727281702f1661971f8.html">noise</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8fc3edce35c16727281702f1661971f8.html">noise</a></li><li class="navelem"><a class="el" href="dir_280ee90ff45a98b8f20ec95d74e4d304.html">protocol</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -94,8 +94,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p>HandshakeState interface.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;<a class="el" href="symmetricstate_8h_source.html">noise/symmetricstate.h</a>&gt;</code><br/>
-<code>#include &lt;<a class="el" href="dhstate_8h_source.html">noise/dhstate.h</a>&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="symmetricstate_8h_source.html">noise/protocol/symmetricstate.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="dhstate_8h_source.html">noise/protocol/dhstate.h</a>&gt;</code><br/>
 </div>
 <p><a href="handshakestate_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -117,8 +117,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga34e785f9102ce47f97292bbb897ace66"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66">noise_handshakestate_get_action</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
 <tr class="memdesc:ga34e785f9102ce47f97292bbb897ace66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the next action the application should perform for the handshake phase of the protocol.  <a href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66">More...</a><br/></td></tr>
 <tr class="separator:ga34e785f9102ce47f97292bbb897ace66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3aac554a230e3350ce2dfab835e8d53"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="handshakestate_8h.html#ac3aac554a230e3350ce2dfab835e8d53">noise_handshakestate_get_local_keypairdh</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
-<tr class="separator:ac3aac554a230e3350ce2dfab835e8d53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7d54d2d642d3893dd8392a6bc6b30a22"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22">noise_handshakestate_get_local_keypair_dh</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
+<tr class="memdesc:ga7d54d2d642d3893dd8392a6bc6b30a22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the DHStatic object that contains the local static keypair.  <a href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22">More...</a><br/></td></tr>
+<tr class="separator:ga7d54d2d642d3893dd8392a6bc6b30a22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8ba0bc0e82c4ec5cbbb1a7be41164959"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga8ba0bc0e82c4ec5cbbb1a7be41164959">noise_handshakestate_get_protocol_id</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state, <a class="el" href="group__names.html#structNoiseProtocolId">NoiseProtocolId</a> *id)</td></tr>
 <tr class="memdesc:ga8ba0bc0e82c4ec5cbbb1a7be41164959"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the protocol identifier associated with a HandshakeState object.  <a href="group__handshakestate.html#ga8ba0bc0e82c4ec5cbbb1a7be41164959">More...</a><br/></td></tr>
 <tr class="separator:ga8ba0bc0e82c4ec5cbbb1a7be41164959"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -169,27 +170,10 @@ Functions</h2></td></tr>
 <div class="textblock"><p>HandshakeState interface. </p>
 
 <p>Definition in file <a class="el" href="handshakestate_8h_source.html">handshakestate.h</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="ac3aac554a230e3350ce2dfab835e8d53"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a>* noise_handshakestate_get_local_keypairdh </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *&#160;</td>
-          <td class="paramname"><em>state</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 16 2016 14:20:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 17 2016 08:29:07 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -323,7 +323,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <p>This function can be used to determine the size of the MAC value that will be added to the next packet that will be encrypted with <a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a>. Early in the handshake when packets are still being exchanged in plaintext, the size will be zero.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00470">470</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00478">478</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -613,14 +613,14 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>The <em>c1</em> object should be used to protect messages from the initiator to the responder, and the <em>c2</em> object should be used to protect messages from the responder to the initiator.</p>
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on <em>c2</em> as it will not be needed. Alternatively, the application can pass NULL to <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> as the <em>c2</em> argument and the second CipherState will not be created at all. </p>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00518">518</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00526">526</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 16 2016 14:20:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 17 2016 08:29:07 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

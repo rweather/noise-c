@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Noise-C: errors.c File Reference</title>
+<title>Noise-C: protocol Directory Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -39,7 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
-      <li class="current"><a href="files.html"><span>Files</span></a></li>
+      <li><a href="files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -58,12 +58,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       </li>
     </ul>
   </div>
-  <div id="navrow2" class="tabs2">
-    <ul class="tablist">
-      <li><a href="files.html"><span>File&#160;List</span></a></li>
-      <li><a href="globals.html"><span>Globals</span></a></li>
-    </ul>
-  </div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -80,45 +74,43 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_5903c71b979204ea1ce2d27420efeaa9.html">protocol</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_8fc3edce35c16727281702f1661971f8.html">noise</a></li><li class="navelem"><a class="el" href="dir_280ee90ff45a98b8f20ec95d74e4d304.html">protocol</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#define-members">Macros</a> &#124;
-<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">errors.c File Reference</div>  </div>
+<div class="title">protocol Directory Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Error reporting implementation.  
-<a href="#details">More...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="internal_8h_source.html">internal.h</a>&quot;</code><br/>
-<code>#include &lt;stdio.h&gt;</code><br/>
-<code>#include &lt;string.h&gt;</code><br/>
-</div>
-<p><a href="errors_8c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:gaa1755cd6f7f26aede242a77537be4259"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__reports.html#gaa1755cd6f7f26aede242a77537be4259">num_error_strings</a>&#160;&#160;&#160;(sizeof(error_strings) / sizeof(error_strings[0]) - 1)</td></tr>
-<tr class="separator:gaa1755cd6f7f26aede242a77537be4259"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:ga0885ea578e579336e85716e7b58e4aa3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__reports.html#ga0885ea578e579336e85716e7b58e4aa3">noise_perror</a> (const char *s, int err)</td></tr>
-<tr class="memdesc:ga0885ea578e579336e85716e7b58e4aa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints a descriptive string for an error to stderr.  <a href="group__error__reports.html#ga0885ea578e579336e85716e7b58e4aa3">More...</a><br/></td></tr>
-<tr class="separator:ga0885ea578e579336e85716e7b58e4aa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6dd658a63b1d30f754f12f0eb69f07e0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__error__reports.html#ga6dd658a63b1d30f754f12f0eb69f07e0">noise_strerror</a> (int err, char *buf, size_t size)</td></tr>
-<tr class="memdesc:ga6dd658a63b1d30f754f12f0eb69f07e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the descriptive string for an error code.  <a href="group__error__reports.html#ga6dd658a63b1d30f754f12f0eb69f07e0">More...</a><br/></td></tr>
-<tr class="separator:ga6dd658a63b1d30f754f12f0eb69f07e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="files"></a>
+Files</h2></td></tr>
+<tr class="memitem:cipherstate_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cipherstate_8h.html">cipherstate.h</a> <a href="cipherstate_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:cipherstate_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">CipherState interface. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:constants_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html">constants.h</a> <a href="constants_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:constants_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constants for algorithm identifiers, limit values, etc. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:dhstate_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dhstate_8h.html">dhstate.h</a> <a href="dhstate_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:dhstate_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">DHState interface. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:errors_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="errors_8h.html">errors.h</a> <a href="errors_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:errors_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error reporting interface. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:handshakestate_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="handshakestate_8h.html">handshakestate.h</a> <a href="handshakestate_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:handshakestate_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">HandshakeState interface. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:hashstate_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="hashstate_8h.html">hashstate.h</a> <a href="hashstate_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:hashstate_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">HashState interface. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:names_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="names_8h.html">names.h</a> <a href="names_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:names_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mapping algorithm names to/from identifiers. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:symmetricstate_8h"><td class="memItemLeft" align="right" valign="top">file &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="symmetricstate_8h.html">symmetricstate.h</a> <a href="symmetricstate_8h_source.html">[code]</a></td></tr>
+<tr class="memdesc:symmetricstate_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">SymmetricState interface. <br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Error reporting implementation. </p>
-
-<p>Definition in file <a class="el" href="errors_8c_source.html">errors.c</a>.</p>
-</div></div><!-- contents -->
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated on Sun Apr 17 2016 08:29:07 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
