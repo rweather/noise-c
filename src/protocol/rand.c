@@ -97,3 +97,14 @@ void noise_rand_bytes(void *bytes, size_t size)
     fprintf(stderr, "Do not know how to generate random numbers!  Abort!\n");
     exit(1);
 }
+
+#ifdef ED25519_CUSTOMRANDOM
+
+/* We are building against ed25519-donna, which needs a random function */
+
+void ed25519_randombytes_unsafe(void *p, size_t len)
+{
+    noise_rand_bytes(p, len);
+}
+
+#endif

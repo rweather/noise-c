@@ -196,3 +196,11 @@ void sha512_finish(sha512_context_t *context, uint8_t *hash)
     for (posn = 0; posn < 8; ++posn)
         write_be64(hash + posn * 8, context->h[posn]);
 }
+
+void sha512_hash(uint8_t *hash, const void *data, size_t size)
+{
+    sha512_context_t context;
+    sha512_reset(&context);
+    sha512_update(&context, data, size);
+    sha512_finish(&context, hash);
+}

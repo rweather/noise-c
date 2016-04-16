@@ -42,6 +42,7 @@ typedef struct
 void sha512_reset(sha512_context_t *context);
 void sha512_update(sha512_context_t *context, const void *data, size_t size);
 void sha512_finish(sha512_context_t *context, uint8_t *hash);
+void sha512_hash(uint8_t *hash, const void *data, size_t size);
 
 #ifdef __cplusplus
 };

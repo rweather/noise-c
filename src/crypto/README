@@ -42,3 +42,8 @@ curve448:
     Simple implementation of curve448 built on top of the p448 arithmetic
     from goldilocks.  This can be exported and used in other projects.
     MIT license
+
+ed25519:
+    Reference implementation of the Ed25519 signature signature algorithm.
+    https://github.com/floodyberry/ed25519-donna.git
+    Public domain

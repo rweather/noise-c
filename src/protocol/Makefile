@@ -14,8 +14,11 @@ GOLDILOCKS_CPPFLAGS = \
 	-I$(GOLDILOCKS_SRCDIR)/p448 \
 	-I$(GOLDILOCKS_SRCDIR)/p448/$(GOLDILOCKS_ARCH)
 
+# Definitions for ed25519-donna (Ed25519 reference implementation)
+ED25519_CPPFLAGS = -DED25519_CUSTOMHASH -DED25519_CUSTOMRANDOM
+
 CPPFLAGS = -I$(TOPDIR)/include -I$(SRCDIR) -I$(SRCDIR)/protocol \
-	$(GOLDILOCKS_CPPFLAGS)
+	$(GOLDILOCKS_CPPFLAGS) $(ED25519_CPPFLAGS)
 CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
 
 MAIN_SOURCES = \
@@ -51,7 +54,8 @@ CRYPTO_REF_SOURCES = \
 	$(SRCDIR)/crypto/ghash/ghash.c \
 	$(SRCDIR)/crypto/sha2/sha256.c \
 	$(SRCDIR)/crypto/sha2/sha512.c \
-	$(SRCDIR)/crypto/goldilocks/src/p448/$(GOLDILOCKS_ARCH)/p448.c
+	$(SRCDIR)/crypto/goldilocks/src/p448/$(GOLDILOCKS_ARCH)/p448.c \
+	$(SRCDIR)/crypto/ed25519/ed25519.c
 
 SOURCES = $(MAIN_SOURCES) $(BACKEND_REF_SOURCES) $(CRYPTO_REF_SOURCES)
 
