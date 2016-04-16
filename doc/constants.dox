@@ -312,16 +312,16 @@
  */
 
 /**
+ * \def NOISE_ACTION_FAILED
+ * \brief The HandshakeState has flagged that the handshake has failed
+ * due to some kind of error.
+ */
+
+/**
  * \def NOISE_ACTION_SPLIT
  * \brief The HandshakeState has flagged that the handshake is over and
  * that the application is expected to call noise_handshake_split() and
  * begin data session communications.
- */
-
-/**
- * \def NOISE_ACTION_FAILED
- * \brief The HandshakeState has flagged that the handshake has failed
- * with a MAC error.
  */
 
 /**@}*/

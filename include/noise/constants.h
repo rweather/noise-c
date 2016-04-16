@@ -86,8 +86,8 @@ extern "C" {
 #define NOISE_ACTION_NONE               0
 #define NOISE_ACTION_WRITE_MESSAGE      NOISE_ID('A', 1)
 #define NOISE_ACTION_READ_MESSAGE       NOISE_ID('A', 2)
-#define NOISE_ACTION_SPLIT              NOISE_ID('A', 3)
-#define NOISE_ACTION_FAILED             NOISE_ID('A', 4)
+#define NOISE_ACTION_FAILED             NOISE_ID('A', 3)
+#define NOISE_ACTION_SPLIT              NOISE_ID('A', 4)
 
 /* Padding modes for noise_cipherstate_pad() */
 #define NOISE_PADDING_ZERO              NOISE_ID('G', 1)
@@ -108,8 +108,7 @@ extern "C" {
 #define NOISE_ERROR_REMOTE_KEY_REQUIRED NOISE_ID('E', 11)
 #define NOISE_ERROR_LOCAL_KEY_REQUIRED  NOISE_ID('E', 12)
 #define NOISE_ERROR_PSK_REQUIRED        NOISE_ID('E', 13)
-#define NOISE_ERROR_EPHEM_KEY_REQUIRED  NOISE_ID('E', 14)
-#define NOISE_ERROR_NOT_APPLICABLE      NOISE_ID('E', 15)
+#define NOISE_ERROR_NOT_APPLICABLE      NOISE_ID('E', 14)
 
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535

@@ -428,14 +428,12 @@ struct NoiseHandshakeState_s
 #define NOISE_REQ_LOCAL_REQUIRED        (1 << 0)
 /** Remote public key is required for the handshake */
 #define NOISE_REQ_REMOTE_REQUIRED       (1 << 1)
-/** Local ephemeral keypair is required for the handshake */
-#define NOISE_REQ_LOCAL_EPHEM_REQ       (1 << 2)
-/** Remote ephemeral public key is required for the handshake */
-#define NOISE_REQ_REMOTE_EPHEM_REQ      (1 << 3)
 /** Pre-shared key has not been provided yet */
-#define NOISE_REQ_PSK                   (1 << 4)
+#define NOISE_REQ_PSK                   (1 << 2)
 /** Prologue has not been provided yet */
-#define NOISE_REQ_PROLOGUE              (1 << 5)
+#define NOISE_REQ_PROLOGUE              (1 << 3)
+/** Emphemeral key for fallback pre-message has been provided */
+#define NOISE_REQ_FALLBACK_EPHEM        (1 << 4)
 
 #define noise_new(type) ((type *)noise_new_object(sizeof(type)))
 void *noise_new_object(size_t size);

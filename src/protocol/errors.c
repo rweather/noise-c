@@ -55,7 +55,6 @@ static const char * const error_strings[] = {
     "Remote static public key required",
     "Local keypair required",
     "Pre shared key required",
-    "Ephemeral key required",
     "Option is not applicable",
     "END"
 };
