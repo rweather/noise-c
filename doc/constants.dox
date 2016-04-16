@@ -410,11 +410,6 @@
  */
 
 /**
- * \def NOISE_ERROR_EPHEM_KEY_REQUIRED
- * \brief An epemeral key must be provided to start the "XXfallback" protocol.
- */
-
-/**
  * \def NOISE_ERROR_NOT_APPLICABLE
  * \brief An option was supplied that was not applicable to the
  * selected protocol.
