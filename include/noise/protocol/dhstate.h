@@ -45,6 +45,8 @@ int noise_dhstate_generate_keypair(NoiseDHState *state);
 int noise_dhstate_set_keypair
     (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len,
      const uint8_t *public_key, size_t public_key_len);
+int noise_dhstate_set_keypair_private
+    (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len);
 int noise_dhstate_get_keypair
     (const NoiseDHState *state, uint8_t *private_key, size_t private_key_len,
      uint8_t *public_key, size_t public_key_len);

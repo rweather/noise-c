@@ -298,7 +298,8 @@ int noise_dhstate_generate_keypair(NoiseDHState *state)
  * NOISE_ERROR_INVALID_PUBLIC_KEY to later when the keypair is actually
  * used during noise_dhstate_calculate().
  *
- * \sa noise_dhstate_get_keypair(), noise_dhstate_set_public_key()
+ * \sa noise_dhstate_get_keypair(), noise_dhstate_set_public_key(),
+ * noise_dhstate_set_keypair_private()
  */
 int noise_dhstate_set_keypair
     (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len,
@@ -322,6 +323,56 @@ int noise_dhstate_set_keypair
     /* Copy the key into place */
     memcpy(state->private_key, private_key, state->private_key_len);
     memcpy(state->public_key, public_key, state->public_key_len);
+    state->key_type = NOISE_DHSTATE_KEYPAIR;
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Sets the keypair within a DHState object based on a private key only.
+ *
+ * \param state The DHState object.
+ * \param private_key Points to the private key.
+ * \param private_key_len The private key length in bytes.
+ *
+ * \return NOISE_ERROR on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a private_key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if either \a private_key_len is
+ * incorrect for the algorithm.
+ * \return NOISE_ERROR_INVALID_PRIVATE_KEY if \a private_key is not valid.
+ * \return NOISE_ERROR_INVALID_PUBLIC_KEY if \a public_key that is derived
+ * from the \a private_key is not valid.
+ *
+ * The algorithm may decide to defer NOISE_ERROR_INVALID_PRIVATE_KEY or
+ * NOISE_ERROR_INVALID_PUBLIC_KEY to later when the keypair is actually
+ * used during noise_dhstate_calculate().
+ *
+ * This function only takes the private key as an argument.  The public
+ * key in the keypair is derived from the private key.
+ *
+ * \sa noise_dhstate_get_keypair(), noise_dhstate_set_public_key(),
+ * noise_dhstate_set_keypair()
+ */
+int noise_dhstate_set_keypair_private
+    (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len)
+{
+    int err;
+
+    /* Validate the parameters */
+    if (!state || !private_key)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (private_key_len != state->private_key_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Derive the public key from the private key */
+    err = (*(state->derive_public_key))
+        (state, private_key, state->public_key);
+    if (err != NOISE_ERROR_NONE) {
+        noise_dhstate_clear_key(state);
+        return err;
+    }
+
+    /* Copy the private key into place */
+    memcpy(state->private_key, private_key, state->private_key_len);
     state->key_type = NOISE_DHSTATE_KEYPAIR;
     return NOISE_ERROR_NONE;
 }

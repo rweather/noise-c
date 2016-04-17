@@ -66,6 +66,14 @@ static int noise_curve448_validate_public_key
     return NOISE_ERROR_NONE;
 }
 
+static int noise_curve448_derive_public_key
+        (const NoiseDHState *state, const uint8_t *private_key,
+         uint8_t *public_key)
+{
+    curve448_eval(public_key, private_key, basepoint);
+    return NOISE_ERROR_NONE;
+}
+
 static int noise_curve448_calculate
     (const NoiseDHState *private_key_state,
      const NoiseDHState *public_key_state,
@@ -91,6 +99,7 @@ NoiseDHState *noise_curve448_new(void)
     state->parent.generate_keypair = noise_curve448_generate_keypair;
     state->parent.validate_keypair = noise_curve448_validate_keypair;
     state->parent.validate_public_key = noise_curve448_validate_public_key;
+    state->parent.derive_public_key = noise_curve448_derive_public_key;
     state->parent.calculate = noise_curve448_calculate;
     return &(state->parent);
 }

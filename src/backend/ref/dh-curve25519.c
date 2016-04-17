@@ -63,6 +63,14 @@ static int noise_curve25519_validate_public_key
     return NOISE_ERROR_NONE;
 }
 
+static int noise_curve25519_derive_public_key
+        (const NoiseDHState *state, const uint8_t *private_key,
+         uint8_t *public_key)
+{
+    curve25519_donna(public_key, private_key, basepoint);
+    return NOISE_ERROR_NONE;
+}
+
 static int noise_curve25519_calculate
     (const NoiseDHState *private_key_state,
      const NoiseDHState *public_key_state,
@@ -88,6 +96,7 @@ NoiseDHState *noise_curve25519_new(void)
     state->parent.generate_keypair = noise_curve25519_generate_keypair;
     state->parent.validate_keypair = noise_curve25519_validate_keypair;
     state->parent.validate_public_key = noise_curve25519_validate_public_key;
+    state->parent.derive_public_key = noise_curve25519_derive_public_key;
     state->parent.calculate = noise_curve25519_calculate;
     return &(state->parent);
 }

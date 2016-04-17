@@ -274,6 +274,23 @@ struct NoiseDHState_s
          const uint8_t *public_key);
 
     /**
+     * \brief Derives a public key from a private key.
+     *
+     * \param state Points to the DHState.
+     * \param private_key Points to the private key for the keypair.
+     * \param public_key Points to the public key for the keypair.
+     *
+     * \return NOISE_ERROR_NONE if the keypair is valid.
+     * \return NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong
+     * with the private key.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
+     * with the derived public key.
+     */
+    int (*derive_public_key)
+        (const NoiseDHState *state, const uint8_t *private_key,
+         uint8_t *public_key);
+
+    /**
      * \brief Validates a public key.
      *
      * \param state Points to the DHState.

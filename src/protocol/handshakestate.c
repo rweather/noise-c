@@ -336,6 +336,24 @@ NoiseDHState *noise_handshakestate_get_remote_public_key_dh
     return state ? state->dh_remote_static : 0;
 }
 
+/** @cond */
+
+/* Not part of the public API.  Intended for fixed vector tests only. */
+
+NoiseDHState *noise_handshakestate_get_local_ephemeral_dh_
+    (const NoiseHandshakeState *state)
+{
+    return state ? state->dh_local_ephemeral : 0;
+}
+
+NoiseDHState *noise_handshakestate_get_remote_ephemeral_dh_
+    (const NoiseHandshakeState *state)
+{
+    return state ? state->dh_remote_ephemeral : 0;
+}
+
+/** @endcond */
+
 /**
  * \brief Sets the pre shared key for a HandshakeState.
  *
@@ -819,13 +837,16 @@ static int noise_handshakestate_write
         switch (token) {
         case NOISE_TOKEN_E:
             /* Generate a local ephemeral keypair and add the public
-               key to the message */
+               key to the message.  If we are running fixed vector tests,
+               then the ephemeral key may have already been provided. */
             if (!state->dh_local_ephemeral)
                 return NOISE_ERROR_INVALID_STATE;
             len = state->dh_local_ephemeral->public_key_len;
-            err = noise_dhstate_generate_keypair(state->dh_local_ephemeral);
-            if (err != NOISE_ERROR_NONE)
-                break;
+            if (!noise_dhstate_has_keypair(state->dh_local_ephemeral)) {
+                err = noise_dhstate_generate_keypair(state->dh_local_ephemeral);
+                if (err != NOISE_ERROR_NONE)
+                    break;
+            }
             if ((max_size - size) < len)
                 return NOISE_ERROR_INVALID_LENGTH;
             memcpy(message + size, state->dh_local_ephemeral->public_key, len);
