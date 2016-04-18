@@ -1068,6 +1068,9 @@ static int noise_handshakestate_read
             len = state->dh_remote_ephemeral->public_key_len;
             if (message_size < len)
                 return NOISE_ERROR_INVALID_LENGTH;
+            err = noise_symmetricstate_mix_hash(state->symmetric, message, len);
+            if (err != NOISE_ERROR_NONE)
+                break;
             err = noise_dhstate_set_public_key
                 (state->dh_remote_ephemeral, message, len);
             if (err != NOISE_ERROR_NONE)
