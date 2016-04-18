@@ -25,12 +25,11 @@
 #include <setjmp.h>
 
 #define MAX_MESSAGES 32
+#define MAX_MESSAGE_SIZE 256
 
-/* Internal functions to directly supply ephemeral keys during testing */
-NoiseDHState *noise_handshakestate_get_local_ephemeral_dh_
-    (const NoiseHandshakeState *state);
-NoiseDHState *noise_handshakestate_get_remote_ephemeral_dh_
-    (const NoiseHandshakeState *state);
+/* Internal function to directly supply ephemeral keys during testing */
+NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh_
+    (NoiseHandshakeState *state);
 
 /**
  * \brief Information about a single test vector.
@@ -121,6 +120,11 @@ static jmp_buf test_jump_back;
 #define fail(message) _fail((message))
 
 /**
+ * \brief Skips the current test.
+ */
+#define skip() longjmp(test_jump_back, 2)
+
+/**
  * \brief Verifies that a condition is true, failing the test if not.
  *
  * \param condition The boolean condition to test.
@@ -148,6 +152,32 @@ static jmp_buf test_jump_back;
             printf(#actual " != " #expected " at " __FILE__ ":%d\n", __LINE__); \
             printf("    actual  : %Ld (0x%Lx)\n", _actual, _actual); \
             printf("    expected: %Ld (0x%Lx)\n", _expected, _expected); \
+            longjmp(test_jump_back, 1); \
+        } \
+    } while (0)
+
+static void dump_block(uint8_t *block, size_t len)
+{
+    size_t index;
+    if (len > 16)
+        printf("\n       ");
+    for (index = 0; index < len; ++index) {
+        printf(" %02x", block[index]);
+        if ((index % 16) == 15 && len > 16)
+            printf("\n       ");
+    }
+    printf("\n");
+}
+
+#define compare_blocks(name, actual, actual_len, expected, expected_len)  \
+    do { \
+        if ((actual_len) != (expected_len) || \
+                memcmp((actual), (expected), (actual_len)) != 0) { \
+            printf("%s wrong at " __FILE__ ":%d\n", (name), __LINE__); \
+            printf("    actual  :"); \
+            dump_block((actual), (actual_len)); \
+            printf("    expected:"); \
+            dump_block((expected), (expected_len)); \
             longjmp(test_jump_back, 1); \
         } \
     } while (0)
@@ -189,21 +219,172 @@ static void test_name_parsing(const TestVector *vec)
 }
 
 /**
+ * \brief Test a connection between an initiator and a responder.
+ *
+ * \param vec The test vector.
+ */
+static void test_connection(const TestVector *vec)
+{
+    NoiseHandshakeState *initiator;
+    NoiseHandshakeState *responder;
+    NoiseHandshakeState *send;
+    NoiseHandshakeState *recv;
+    NoiseDHState *dh;
+    uint8_t message[MAX_MESSAGE_SIZE];
+    uint8_t payload[MAX_MESSAGE_SIZE];
+    size_t message_size;
+    size_t payload_size;
+    size_t index;
+    int role;
+
+    /* Skip Curve448 tests for now - FIXME */
+    if (!strcmp(vec->dh, "448"))
+        skip();
+
+    /* Create the two ends of the connection */
+    compare(noise_handshakestate_new_by_name
+                (&initiator, vec->name, NOISE_ROLE_INITIATOR),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_new_by_name
+                (&responder, vec->name, NOISE_ROLE_RESPONDER),
+            NOISE_ERROR_NONE);
+
+    /* Set all keys that we need to use */
+    if (vec->init_static) {
+        dh = noise_handshakestate_get_local_keypair_dh(initiator);
+        compare(noise_dhstate_set_keypair_private
+                    (dh, vec->init_static, vec->init_static_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->init_public_static) {
+        dh = noise_handshakestate_get_remote_public_key_dh(responder);
+        compare(noise_dhstate_set_public_key
+                    (dh, vec->init_public_static, vec->init_public_static_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->resp_static) {
+        dh = noise_handshakestate_get_local_keypair_dh(responder);
+        compare(noise_dhstate_set_keypair_private
+                    (dh, vec->resp_static, vec->resp_static_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->resp_public_static) {
+        dh = noise_handshakestate_get_remote_public_key_dh(initiator);
+        compare(noise_dhstate_set_public_key
+                    (dh, vec->resp_public_static, vec->resp_public_static_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->init_ephemeral) {
+        dh = noise_handshakestate_get_fixed_ephemeral_dh_(initiator);
+        compare(noise_dhstate_set_keypair_private
+                    (dh, vec->init_ephemeral, vec->init_ephemeral_len),
+                NOISE_ERROR_NONE);
+    }
+    /* Note: The test data contains responder ephemeral keys for one-way
+       patterns which doesn't actually make sense.  Ignore those keys. */
+    if (vec->resp_ephemeral && strlen(vec->pattern) != 1) {
+        dh = noise_handshakestate_get_fixed_ephemeral_dh_(responder);
+        compare(noise_dhstate_set_keypair_private
+                    (dh, vec->resp_ephemeral, vec->resp_ephemeral_len),
+                NOISE_ERROR_NONE);
+    }
+
+    /* Set the prologues and pre shared keys */
+    if (vec->init_prologue) {
+        compare(noise_handshakestate_set_prologue
+                    (initiator, vec->init_prologue, vec->init_prologue_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->resp_prologue) {
+        compare(noise_handshakestate_set_prologue
+                    (responder, vec->resp_prologue, vec->resp_prologue_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->init_psk) {
+        compare(noise_handshakestate_set_pre_shared_key
+                    (initiator, vec->init_psk, vec->init_psk_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->resp_psk) {
+        compare(noise_handshakestate_set_pre_shared_key
+                    (responder, vec->resp_psk, vec->resp_psk_len),
+                NOISE_ERROR_NONE);
+    }
+
+    /* Should be able to start the handshake now on both sides */
+    compare(noise_handshakestate_start(initiator), NOISE_ERROR_NONE);
+    compare(noise_handshakestate_start(responder), NOISE_ERROR_NONE);
+
+    /* Work through the messages one by one until both sides "split" */
+    role = NOISE_ROLE_INITIATOR;
+    for (index = 0; index < vec->num_messages; ++index) {
+    //printf("msg %d\n", (int)index);
+        if (noise_handshakestate_get_action(initiator) == NOISE_ACTION_SPLIT &&
+            noise_handshakestate_get_action(responder) == NOISE_ACTION_SPLIT) {
+            break;
+        }
+        if (role == NOISE_ROLE_INITIATOR) {
+            /* Send on the initiator, receive on the responder */
+            send = initiator;
+            recv = responder;
+            role = NOISE_ROLE_RESPONDER;
+        } else {
+            /* Send on the responder, receive on the initiator */
+            send = responder;
+            recv = initiator;
+            role = NOISE_ROLE_INITIATOR;
+        }
+        compare(noise_handshakestate_get_action(send),
+                NOISE_ACTION_WRITE_MESSAGE);
+        compare(noise_handshakestate_get_action(recv),
+                NOISE_ACTION_READ_MESSAGE);
+        message_size = sizeof(message);
+        compare(noise_handshakestate_write_message
+                    (send, vec->messages[index].payload,
+                     vec->messages[index].payload_len,
+                     message, &message_size),
+                NOISE_ERROR_NONE);
+        compare_blocks("ciphertext", message, message_size,
+                       vec->messages[index].ciphertext,
+                       vec->messages[index].ciphertext_len);
+        payload_size = sizeof(payload);
+        compare(noise_handshakestate_read_message
+                    (recv, message, message_size, payload, &payload_size),
+                NOISE_ERROR_NONE);
+        compare_blocks("plaintext", payload, payload_size,
+                       vec->messages[index].payload,
+                       vec->messages[index].payload_len);
+    }
+
+    /* Clean up */
+    compare(noise_handshakestate_free(initiator), NOISE_ERROR_NONE);
+    compare(noise_handshakestate_free(responder), NOISE_ERROR_NONE);
+}
+
+/**
  * \brief Runs a fully parsed test vector.
  *
  * \param reader The input stream, for error reporting.
  * \param vec The test vector.
+ *
+ * \return Non-zero if the test succeeded, zero if it failed.
  */
-static void test_vector_run(JSONReader *reader, const TestVector *vec)
+static int test_vector_run(JSONReader *reader, const TestVector *vec)
 {
+    int value;
     printf("%s ... ", vec->name);
     fflush(stdout);
-    if (!setjmp(test_jump_back)) {
+    if ((value = setjmp(test_jump_back)) == 0) {
         test_name_parsing(vec);
-        // TODO
+        test_connection(vec);
         printf("ok\n");
+        return 1;
+    } else if (value == 2) {
+        printf("skipped\n");
+        return 1;
     } else {
         printf("-> test data at %s:%ld\n", reader->filename, vec->line_number);
+        return 0;
     }
 }
 
@@ -325,10 +506,13 @@ static size_t expect_binary_field(JSONReader *reader, uint8_t **value)
  * \brief Processes a single test vector from an input stream.
  *
  * \param reader The reader representing the input stream.
+ *
+ * \return Non-zero if the test succeeded, zero if it failed.
  */
-static void process_test_vector(JSONReader *reader)
+static int process_test_vector(JSONReader *reader)
 {
     TestVector vec;
+    int retval = 1;
     memset(&vec, 0, sizeof(TestVector));
     while (!reader->errors && reader->token == JSON_TOKEN_STRING) {
         if (json_is_name(reader, "name")) {
@@ -417,9 +601,10 @@ static void process_test_vector(JSONReader *reader)
         }
     }
     if (!reader->errors) {
-        test_vector_run(reader, &vec);
+        retval = test_vector_run(reader, &vec);
     }
     test_vector_free(&vec);
+    return retval;
 }
 
 /**
@@ -429,7 +614,8 @@ static void process_test_vector(JSONReader *reader)
  */
 static void process_test_vectors(JSONReader *reader)
 {
-    int count = 20;     // REMOVEME
+    int count = 128;     // REMOVEME
+    int ok = 1;
     printf("--------------------------------------------------------------\n");
     printf("Processing vectors from %s\n", reader->filename);
     json_next_token(reader);
@@ -438,17 +624,23 @@ static void process_test_vectors(JSONReader *reader)
     expect_token(reader, JSON_TOKEN_LSQUARE, "[");
     while (!reader->errors && reader->token != JSON_TOKEN_RSQUARE) {
         expect_token(reader, JSON_TOKEN_LBRACE, "{");
-        process_test_vector(reader);
+        if (!process_test_vector(reader))
+            ok = 0;
         expect_token(reader, JSON_TOKEN_RBRACE, "}");
         if (!reader->errors && reader->token == JSON_TOKEN_COMMA)
             expect_token(reader, JSON_TOKEN_COMMA, ",");
     if (--count <= 0)   // REMOVEME
-        return;
+        goto end;
     }
     expect_token(reader, JSON_TOKEN_RSQUARE, "]");
     expect_token(reader, JSON_TOKEN_RBRACE, "}");
     expect_token(reader, JSON_TOKEN_END, "EOF");
+end: // REMOVEME
     printf("--------------------------------------------------------------\n");
+    if (!ok) {
+        /* Some of the test vectors failed, so report a global failure */
+        ++(reader->errors);
+    }
 }
 
 int main(int argc, char *argv[])

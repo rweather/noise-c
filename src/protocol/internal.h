@@ -404,6 +404,9 @@ struct NoiseHandshakeState_s
 
     /** \brief Points to the DHState object for remote ephemeral key */
     NoiseDHState *dh_remote_ephemeral;
+
+    /** \brief Points to the object for the fixed ephemeral test key */
+    NoiseDHState *dh_fixed_ephemeral;
 };
 
 /* Handshake message pattern tokens (must be single-byte values) */
