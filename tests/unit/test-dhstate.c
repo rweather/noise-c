@@ -211,9 +211,11 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     verify(!noise_dhstate_has_public_key(state2));
     verify(!noise_dhstate_is_null_public_key(state2));
 
-    /* Make sure that it is still the same object by checking DH outputs */
-    compare(noise_dhstate_set_keypair
-                (state1, priv_key, private_key_len, pub_key, public_key_len),
+    /* Make sure that it is still the same object by checking DH outputs.
+       This time we derive state1's public key from the private key rather
+       than use the value from the test data. */
+    compare(noise_dhstate_set_keypair_private
+                (state1, priv_key, private_key_len),
             NOISE_ERROR_NONE);
     compare(noise_dhstate_set_public_key
                 (state2, other_pub_key, public_key_len),
