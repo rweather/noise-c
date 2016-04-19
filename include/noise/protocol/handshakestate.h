@@ -63,6 +63,8 @@ int noise_handshakestate_read_message
      void *payload, size_t *payload_size);
 int noise_handshakestate_split
     (NoiseHandshakeState *state, NoiseCipherState **c1, NoiseCipherState **c2);
+int noise_handshakestate_get_handshake_hash
+    (const NoiseHandshakeState *state, uint8_t *hash, size_t max_len);
 
 #ifdef __cplusplus
 };

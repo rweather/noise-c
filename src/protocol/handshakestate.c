@@ -1287,6 +1287,8 @@ int noise_handshakestate_read_message
  * noise_cipherstate_free() on \a c2 as it will not be needed.  Alternatively,
  * the application can pass NULL to noise_handshakestate_split() as the
  * \a c2 argument and the second CipherState will not be created at all.
+ *
+ * \sa noise_handshakestate_get_handshake_hash()
  */
 int noise_handshakestate_split
     (NoiseHandshakeState *state, NoiseCipherState **c1, NoiseCipherState **c2)
@@ -1301,6 +1303,57 @@ int noise_handshakestate_split
 
     /* Split the cipher objects out of the SymmetricState */
     return noise_symmetricstate_split(state->symmetric, c1, c2);
+}
+
+/**
+ * \brief Gets the handshake hash value once the handshake ends.
+ *
+ * \param state The HandshakeState object.
+ * \param hash The buffer to receive the handshake hash value.
+ * \param max_len The maximum length of the \a hash buffer.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a hash is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the handshake has not successfully
+ * completed yet.
+ *
+ * If \a max_len is greater than the length of the handshake hash,
+ * then the extra bytes will be filled with zeroes.  If \a max_len
+ * is less than the length of the handshake hash, then the value
+ * will be truncated to the first \a max_len bytes.  Handshake hashes
+ * are typically 32 or 64 bytes in length, depending upon the hash
+ * algorithm that was used during the protocol.
+ *
+ * The handshake hash can be used to implement "channel binding".
+ * The value will be a unique identifier for the session.
+ *
+ * \note The handshake hash is generated from publicly-known values
+ * in the handshake.  If the application needs a unique secret identifier,
+ * then it should combine the handshake hash with other randomly generated
+ * data that is sent encrypted during the session.
+ *
+ * \sa noise_handshakestate_split()
+ */
+int noise_handshakestate_get_handshake_hash
+    (const NoiseHandshakeState *state, uint8_t *hash, size_t max_len)
+{
+    size_t hash_len;
+
+    /* Validate the parameters */
+    if (!state || !hash)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->action != NOISE_ACTION_SPLIT)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Copy the handshake hash into the supplied buffer */
+    hash_len = noise_hashstate_get_hash_length(state->symmetric->hash);
+    if (hash_len <= max_len) {
+        memcpy(hash, state->symmetric->h, hash_len);
+        memset(hash + hash_len, 0, max_len - hash_len);
+    } else {
+        memcpy(hash, state->symmetric->h, max_len);
+    }
+    return NOISE_ERROR_NONE;
 }
 
 /**@}*/
