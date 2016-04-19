@@ -237,10 +237,6 @@ static void test_connection(const TestVector *vec)
     size_t index;
     int role;
 
-    /* Skip Curve448 tests for now - FIXME */
-    if (!strcmp(vec->dh, "448"))
-        skip();
-
     /* Create the two ends of the connection */
     compare(noise_handshakestate_new_by_name
                 (&initiator, vec->name, NOISE_ROLE_INITIATOR),
