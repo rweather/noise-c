@@ -25,7 +25,11 @@
 
 #include <noise/protocol.h>
 #include "crypto/chacha/chacha.h"
+#if defined(__WIN32__) || defined(WIN32)
+#include <malloc.h>
+#else
 #include <alloca.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

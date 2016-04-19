@@ -24,9 +24,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#if defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN32__)
+#include <windows.h>
+#include <wincrypt.h>
+#else
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#endif
 
 /**
  * \file rand.c
@@ -41,6 +46,9 @@
 
 #if defined(linux) || defined(__linux) || defined(__linux__)
 #define RANDOM_DEVICE   "/dev/urandom"
+#endif
+#if defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN32__)
+#define RANDOM_WIN32    1
 #endif
 
 /**
@@ -74,6 +82,16 @@ void noise_rand_bytes(void *bytes, size_t size)
         }
     } else {
         perror(RANDOM_DEVICE);
+    }
+#elif defined(RANDOM_WIN32)
+    /* http://msdn.microsoft.com/en-us/library/windows/desktop/aa379942(v=vs.85).aspx */
+    HCRYPTPROV provider = 0;
+    memset(bytes, 0, size);
+    if (CryptAcquireContextW(&provider, 0, 0, PROV_RSA_FULL,
+                             CRYPT_VERIFYCONTEXT | CRYPT_SILENT)) {
+        CryptGenRandom(provider, size, bytes);
+        CryptReleaseContext(provider, 0);
+        return;
     }
 #endif
     fprintf(stderr, "Do not know how to generate random numbers!  Abort!\n");

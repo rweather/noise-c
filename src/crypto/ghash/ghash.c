@@ -22,7 +22,19 @@
 
 #include "ghash.h"
 #include <string.h>
+#if defined(__WIN32__) || defined(WIN32)
+#ifndef __BIG_ENDIAN
+#define __BIG_ENDIAN 4321
+#endif
+#ifndef __LITTLE_ENDIAN
+#define __LITTLE_ENDIAN 1234
+#endif
+#ifndef __BYTE_ORDER
+#define __BYTE_ORDER __LITTLE_ENDIAN
+#endif
+#else
 #include <endian.h>
+#endif
 
 static uint32_t swapEndian(uint32_t x)
 {

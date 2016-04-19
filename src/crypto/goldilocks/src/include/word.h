@@ -12,10 +12,22 @@
 
 
 #ifndef __APPLE__
+#if defined(__WIN32__) || defined(WIN32)
+#ifndef __BIG_ENDIAN
+#define __BIG_ENDIAN 4321
+#endif
+#ifndef __LITTLE_ENDIAN
+#define __LITTLE_ENDIAN 1234
+#endif
+#ifndef __BYTE_ORDER
+#define __BYTE_ORDER __LITTLE_ENDIAN
+#endif
+#else
 #ifndef _BSD_SOURCE
 #define _BSD_SOURCE 1
 #endif
 #include <endian.h>
+#endif
 #endif
 
 #include <stdint.h>
