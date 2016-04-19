@@ -453,7 +453,11 @@ struct NoiseHandshakeState_s
 /** Prologue has not been provided yet */
 #define NOISE_REQ_PROLOGUE              (1 << 3)
 /** Emphemeral key for fallback pre-message has been provided */
-#define NOISE_REQ_FALLBACK_EPHEM        (1 << 4)
+#define NOISE_REQ_FALLBACK_PREMSG       (1 << 4)
+/** Local public key is part of the pre-message */
+#define NOISE_REQ_LOCAL_PREMSG          (1 << 5)
+/** Remote public key is part of the pre-message */
+#define NOISE_REQ_REMOTE_PREMSG         (1 << 6)
 
 #define noise_new(type) ((type *)noise_new_object(sizeof(type)))
 void *noise_new_object(size_t size);

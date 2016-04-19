@@ -97,12 +97,19 @@ static int noise_handshakestate_new
 
     /* What keys do we require to be able to start the protocol? */
     requirements = 0;
-    if (flags & (NOISE_PAT_FLAG_LOCAL_STATIC | NOISE_PAT_FLAG_LOCAL_REQUIRED))
+    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
         requirements |= NOISE_REQ_LOCAL_REQUIRED;
-    if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED)
+    } if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
+        requirements |= NOISE_REQ_LOCAL_REQUIRED;
+        requirements |= NOISE_REQ_LOCAL_PREMSG;
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
         requirements |= NOISE_REQ_REMOTE_REQUIRED;
-    if (symmetric->id.prefix_id == NOISE_PREFIX_PSK)
+        requirements |= NOISE_REQ_REMOTE_PREMSG;
+    }
+    if (symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
         requirements |= NOISE_REQ_PSK;
+    }
     requirements |= NOISE_REQ_PROLOGUE;
 
     /* Initialize the HandshakeState */
@@ -597,7 +604,7 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
     if (state->action != NOISE_ACTION_NONE)
         return NOISE_ERROR_INVALID_STATE;
     if (state->symmetric->id.pattern_id == NOISE_PATTERN_XX_FALLBACK &&
-            (state->requirements & NOISE_REQ_FALLBACK_EPHEM) == 0)
+            (state->requirements & NOISE_REQ_FALLBACK_PREMSG) == 0)
         return NOISE_ERROR_NOT_APPLICABLE;
 
     /* Check that we have satisfied all of the pattern requirements */
@@ -616,15 +623,19 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
 
     /* Mix the pre-supplied public keys into the handshake hash */
     if (state->role == NOISE_ROLE_INITIATOR) {
-        noise_handshakestate_mix_public_key(state, state->dh_local_static);
-        noise_handshakestate_mix_public_key(state, state->dh_local_ephemeral);
-        noise_handshakestate_mix_public_key(state, state->dh_remote_static);
-        noise_handshakestate_mix_public_key(state, state->dh_remote_ephemeral);
+        if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_local_static);
+        if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_remote_static);
+        if (state->requirements & NOISE_REQ_FALLBACK_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_remote_ephemeral);
     } else {
-        noise_handshakestate_mix_public_key(state, state->dh_remote_static);
-        noise_handshakestate_mix_public_key(state, state->dh_remote_ephemeral);
-        noise_handshakestate_mix_public_key(state, state->dh_local_static);
-        noise_handshakestate_mix_public_key(state, state->dh_local_ephemeral);
+        if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_remote_static);
+        if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_local_static);
+        if (state->requirements & NOISE_REQ_FALLBACK_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_local_ephemeral);
     }
 
     /* The handshake has now officially started */
@@ -718,7 +729,7 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
         state->action = NOISE_ACTION_WRITE_MESSAGE;
         state->role = NOISE_ROLE_INITIATOR;
     }
-    state->requirements |= NOISE_REQ_FALLBACK_EPHEM;
+    state->requirements |= NOISE_REQ_FALLBACK_PREMSG;
 
     /* Re-initialize the chaining key "ck" and the handshake hash "h" from
        the new protocol name.  If the name is too long, hash it down first */
