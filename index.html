@@ -79,7 +79,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Noise-C is a plain C implementation of the <a href="http://noiseprotocol.org/">Noise Protocol</a>, intended as a reference implementation. It can also be referred to as "Noisy", which is what you get when you say "Noise-C" too fast. The code is distributed under the terms of the MIT license, with the code available from <a href="https://github.com/rweather/noise-c">github</a>.</p>
-<dl class="section note"><dt>Note</dt><dd>This project is still a work in progress. It doesn't work yet, but soon.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This project is still a work in progress. The vector tests from <a href="https://github.com/centromere/cacophony">cacophony</a> are working but there is still a lot of cleaning up and example writing to do.</dd></dl>
 <p>The initial target is GNU/Linux systems, because that's what I have, but contributions are definitely welcome to make the code work on other platforms. Desktop systems will be targeted first and then embedded systems. "Make It Work And Then Make It Work Better" is my motto.</p>
 <h1><a class="anchor" id="apis"></a>
 Major API's</h1>
@@ -99,7 +99,7 @@ Directory structure</h1>
 <li><code>src/backend/ref/</code> - Backends for <a class="el" href="group__cipherstate.html">CipherState</a>, <a class="el" href="group__hashstate.html">HashState</a>, and <a class="el" href="group__dhstate.html">DHState</a> that use the reference cryptographic primitives. </li>
 <li><code>src/backend/xyz/</code> - Recommended location for alternative backends. </li>
 <li><code>tests/unit/</code> - Unit tests to exercise the library's functionality. </li>
-<li><code>tests/vector/</code> - Public test vectors for the Noise protocol. </li>
+<li><code>tests/vector/</code> - Public JSON test vectors and test harness for the Noise protocol. </li>
 <li><code>examples/</code> - Source code for examples. </li>
 <li><code>doc/</code> - Overview and example documentation.</li>
 </ul>
@@ -129,7 +129,7 @@ Contact</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 08:29:07 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 19:03:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

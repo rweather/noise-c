@@ -98,6 +98,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aec63c22f14213fff9a0db0ebc3047f2c"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#aec63c22f14213fff9a0db0ebc3047f2c">calculate</a> )(const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *private_key_state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *public_key_state, uint8_t *shared_key)</td></tr>
 <tr class="memdesc:aec63c22f14213fff9a0db0ebc3047f2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a Diffie-Hellman calculation.  <a href="#aec63c22f14213fff9a0db0ebc3047f2c">More...</a><br/></td></tr>
 <tr class="separator:aec63c22f14213fff9a0db0ebc3047f2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3abd0225f5cc1efa5fae5903a7b8948"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#aa3abd0225f5cc1efa5fae5903a7b8948">derive_public_key</a> )(const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const uint8_t *<a class="el" href="structNoiseDHState__s.html#aacb825aedaa140d12fab37b897da06f0">private_key</a>, uint8_t *<a class="el" href="structNoiseDHState__s.html#a63a30c2d7fc0b31b9082f4b706194b2a">public_key</a>)</td></tr>
+<tr class="memdesc:aa3abd0225f5cc1efa5fae5903a7b8948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives a public key from a private key.  <a href="#aa3abd0225f5cc1efa5fae5903a7b8948">More...</a><br/></td></tr>
+<tr class="separator:aa3abd0225f5cc1efa5fae5903a7b8948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19deb64f0c9b893f8f736db347823c81"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a19deb64f0c9b893f8f736db347823c81">destroy</a> )(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:a19deb64f0c9b893f8f736db347823c81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys this DHState prior to the memory being freed.  <a href="#a19deb64f0c9b893f8f736db347823c81">More...</a><br/></td></tr>
 <tr class="separator:a19deb64f0c9b893f8f736db347823c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,7 +169,36 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if the private key is invalid for the algorithm.
 NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</dd></dl>
 <p>This function must always operate in the same amount of time, even if the private or public key is invalid. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00306">306</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00323">323</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="aa3abd0225f5cc1efa5fae5903a7b8948"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int(* NoiseDHState_s::derive_public_key)(const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const uint8_t *<a class="el" href="structNoiseDHState__s.html#aacb825aedaa140d12fab37b897da06f0">private_key</a>, uint8_t *<a class="el" href="structNoiseDHState__s.html#a63a30c2d7fc0b31b9082f4b706194b2a">public_key</a>)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Derives a public key from a private key. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Points to the DHState. </td></tr>
+    <tr><td class="paramname">private_key</td><td>Points to the private key for the keypair. </td></tr>
+    <tr><td class="paramname">public_key</td><td>Points to the public key for the keypair.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE if the keypair is valid. </dd>
+<dd>
+NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong with the private key. </dd>
+<dd>
+NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived public key. </dd></dl>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00290">290</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -190,7 +222,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</
 <p>This function is called just before the memory for the DHState is deallocated. It gives the back end an opportunity to clean up linked objects.</p>
 <p>This pointer can be NULL if the back end does not need any special clean up logic. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00322">322</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00339">339</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -395,7 +427,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. 
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00287">287</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00304">304</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -405,7 +437,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 17 2016 08:29:07 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue Apr 19 2016 19:03:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
