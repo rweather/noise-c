@@ -314,7 +314,6 @@ static void test_connection(const TestVector *vec)
     /* Work through the messages one by one until both sides "split" */
     role = NOISE_ROLE_INITIATOR;
     for (index = 0; index < vec->num_messages; ++index) {
-    //printf("msg %d\n", (int)index);
         if (noise_handshakestate_get_action(initiator) == NOISE_ACTION_SPLIT &&
             noise_handshakestate_get_action(responder) == NOISE_ACTION_SPLIT) {
             break;
@@ -610,7 +609,6 @@ static int process_test_vector(JSONReader *reader)
  */
 static void process_test_vectors(JSONReader *reader)
 {
-    int count = 128;     // REMOVEME
     int ok = 1;
     printf("--------------------------------------------------------------\n");
     printf("Processing vectors from %s\n", reader->filename);
@@ -625,13 +623,10 @@ static void process_test_vectors(JSONReader *reader)
         expect_token(reader, JSON_TOKEN_RBRACE, "}");
         if (!reader->errors && reader->token == JSON_TOKEN_COMMA)
             expect_token(reader, JSON_TOKEN_COMMA, ",");
-    if (--count <= 0)   // REMOVEME
-        goto end;
     }
     expect_token(reader, JSON_TOKEN_RSQUARE, "]");
     expect_token(reader, JSON_TOKEN_RBRACE, "}");
     expect_token(reader, JSON_TOKEN_END, "EOF");
-end: // REMOVEME
     printf("--------------------------------------------------------------\n");
     if (!ok) {
         /* Some of the test vectors failed, so report a global failure */
