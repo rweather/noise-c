@@ -31,7 +31,9 @@ which is what you get when you say "Noise-C" too fast.  The code is
 distributed under the terms of the MIT license, with the code available from
 <a href="https://github.com/rweather/noise-c">github</a>.
 
-\note This project is still a work in progress.  It doesn't work yet, but soon.
+\note This project is still a work in progress.  The vector tests from
+<a href="https://github.com/centromere/cacophony">cacophony</a> are
+working but there is still a lot of cleaning up and example writing to do.
 
 The initial target is GNU/Linux systems, because that's what I have,
 but contributions are definitely welcome to make the code work
@@ -59,7 +61,8 @@ is my motto.
     that use the reference cryptographic primitives.
 \li <tt>src/backend/xyz/</tt> - Recommended location for alternative backends.
 \li <tt>tests/unit/</tt> - Unit tests to exercise the library's functionality.
-\li <tt>tests/vector/</tt> - Public test vectors for the Noise protocol.
+\li <tt>tests/vector/</tt> - Public JSON test vectors and test harness for
+the Noise protocol.
 \li <tt>examples/</tt> - Source code for examples.
 \li <tt>doc/</tt> - Overview and example documentation.
 
