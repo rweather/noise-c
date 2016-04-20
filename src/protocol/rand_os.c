@@ -38,7 +38,7 @@
 #endif
 
 /**
- * \file rand.c
+ * \file rand_os.c
  * \brief Access to the system random number generator.
  *
  * This module provides access to the system random number generator for
