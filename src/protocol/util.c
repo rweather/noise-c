@@ -24,11 +24,26 @@
 #include <stdlib.h>
 
 /**
- * \file util.c
- * \brief Internal utilities used to implement the library.
- *
- * \note The definitions in this module are not part of the public API.
+ * \file util.h
+ * \brief Utility function interface
  */
+
+/**
+ * \file util.c
+ * \brief Utility function implementation
+ */
+
+/**
+ * \defgroup utils Utilities
+ *
+ * The functions in this module are intended to assist applications that
+ * make use of the Noise protocol library.
+ *
+ * The noise_clean() function is probably the most useful function here.
+ * It zeroes the contents of a buffer in a way that the compiler will
+ * hopefully not optimize away like it might optimize memset().
+ */
+/**@{*/
 
 /**
  * \def noise_new(type)
@@ -43,7 +58,7 @@
  * The object is assumed to start with a size_t field, which will be
  * initialized with the size of \a type.  This is intended for use
  * with noise_free() to destroy the object's contents when it is
- * deallocated.
+ * deallocated.  The remaining bytes are initialized to zero.
  *
  * \sa noise_new_object(), noise_free()
  */
@@ -59,7 +74,7 @@
  * If \a size is greater than or equal to sizeof(size_t), then the
  * first few bytes in the returned memory will be set to \a size.
  * That is, the object is assumed to start with a size field.
- * All other bytes in the object are initialized to zero.
+ * The remaining bytes in the object are initialized to zero.
  *
  * \note If the caller is allocating a structure, then noise_new()
  * is a better option to ensure type-safety.
@@ -153,24 +168,4 @@ int noise_is_zero(const void *data, size_t size)
     return (0x0100 - (int)temp) >> 8;
 }
 
-/**
- * \brief Conditional move of zero into a buffer in constant time.
- *
- * \param data The data buffer to fill with zeroes if the condition is true.
- * \param len The length of the \a data buffer in bytes.
- * \param condition Condition that is 1 to move zero into \a data, or
- * zero to leave the contents of \a data as-is.
- */
-void noise_cmove_zero(uint8_t *data, size_t len, int condition)
-{
-    /* Turn the condition into an all-zeroes or all-ones mask.
-       If the condition is set, then we want all-zeroes in the mask.
-       If the condition is not set, then we want all-ones in the mask. */
-    uint8_t mask = ~((uint8_t)(-condition));
-
-    /* AND the contents of the data buffer with the mask */
-    while (len > 0) {
-        *data++ &= mask;
-        --len;
-    }
-}
+/**@}*/

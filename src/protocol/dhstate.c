@@ -568,6 +568,28 @@ int noise_dhstate_clear_key(NoiseDHState *state)
 }
 
 /**
+ * \brief Conditional move of zero into a buffer in constant time.
+ *
+ * \param data The data buffer to fill with zeroes if the condition is true.
+ * \param len The length of the \a data buffer in bytes.
+ * \param condition Condition that is 1 to move zero into \a data, or
+ * zero to leave the contents of \a data as-is.
+ */
+static void noise_cmove_zero(uint8_t *data, size_t len, int condition)
+{
+    /* Turn the condition into an all-zeroes or all-ones mask.
+       If the condition is set, then we want all-zeroes in the mask.
+       If the condition is not set, then we want all-ones in the mask. */
+    uint8_t mask = ~((uint8_t)(-condition));
+
+    /* AND the contents of the data buffer with the mask */
+    while (len > 0) {
+        *data++ &= mask;
+        --len;
+    }
+}
+
+/**
  * \brief Performs a Diffie-Hellman calculation.
  *
  * \param private_key_state Points to the DHState containing the private key.

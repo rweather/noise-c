@@ -20,19 +20,26 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_PROTOCOL_H
-#define NOISE_PROTOCOL_H
+#ifndef NOISE_UTIL_H
+#define NOISE_UTIL_H
 
-#include <noise/protocol/constants.h>
-#include <noise/protocol/errors.h>
-#include <noise/protocol/names.h>
-#include <noise/protocol/cipherstate.h>
-#include <noise/protocol/hashstate.h>
-#include <noise/protocol/dhstate.h>
-#include <noise/protocol/signstate.h>
-#include <noise/protocol/randstate.h>
-#include <noise/protocol/symmetricstate.h>
-#include <noise/protocol/handshakestate.h>
-#include <noise/protocol/util.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define noise_new(type) ((type *)noise_new_object(sizeof(type)))
+void *noise_new_object(size_t size);
+void noise_free(void *ptr, size_t size);
+
+void noise_clean(void *data, size_t size);
+
+int noise_is_equal(const void *s1, const void *s2, size_t size);
+int noise_is_zero(const void *data, size_t size);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

@@ -582,17 +582,6 @@ struct NoiseHandshakeState_s
 /** Remote public key is part of the pre-message */
 #define NOISE_REQ_REMOTE_PREMSG         (1 << 6)
 
-#define noise_new(type) ((type *)noise_new_object(sizeof(type)))
-void *noise_new_object(size_t size);
-void noise_free(void *ptr, size_t size);
-
-void noise_clean(void *data, size_t size);
-
-int noise_is_equal(const void *s1, const void *s2, size_t size);
-int noise_is_zero(const void *data, size_t size);
-
-void noise_cmove_zero(uint8_t *data, size_t len, int condition);
-
 void noise_rand_bytes(void *bytes, size_t size);
 
 NoiseCipherState *noise_chachapoly_new(void);
