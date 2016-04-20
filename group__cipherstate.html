@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -64,7 +65,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -120,12 +121,6 @@ Functions</h2></td></tr>
 <tr class="memitem:gad028a9c95917d2e5f148c317bfaa9696"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#gad028a9c95917d2e5f148c317bfaa9696">noise_cipherstate_new_by_name</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **state, const char *name)</td></tr>
 <tr class="memdesc:gad028a9c95917d2e5f148c317bfaa9696"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new CipherState object by its algorithm name.  <a href="#gad028a9c95917d2e5f148c317bfaa9696">More...</a><br/></td></tr>
 <tr class="separator:gad028a9c95917d2e5f148c317bfaa9696"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacf9f934dd976784f58aef4088a4f7b7d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#gacf9f934dd976784f58aef4088a4f7b7d">noise_cipherstate_pad</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, uint8_t *payload, size_t orig_len, size_t padded_len, int padding_mode)</td></tr>
-<tr class="memdesc:gacf9f934dd976784f58aef4088a4f7b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds padding bytes to the end of a message payload.  <a href="#gacf9f934dd976784f58aef4088a4f7b7d">More...</a><br/></td></tr>
-<tr class="separator:gacf9f934dd976784f58aef4088a4f7b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga516ad81b9355cba6ab08c18fa3cf7479"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#ga516ad81b9355cba6ab08c18fa3cf7479">noise_cipherstate_rand_bytes</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, uint8_t *buffer, size_t len, int force_reseed)</td></tr>
-<tr class="memdesc:ga516ad81b9355cba6ab08c18fa3cf7479"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates random bytes for use by the application.  <a href="#ga516ad81b9355cba6ab08c18fa3cf7479">More...</a><br/></td></tr>
-<tr class="separator:ga516ad81b9355cba6ab08c18fa3cf7479"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3a10548dfc0948bb2e29ac416dc8a901"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#ga3a10548dfc0948bb2e29ac416dc8a901">noise_cipherstate_set_nonce</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, uint64_t nonce)</td></tr>
 <tr class="memdesc:ga3a10548dfc0948bb2e29ac416dc8a901"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the nonce value for this cipherstate object.  <a href="#ga3a10548dfc0948bb2e29ac416dc8a901">More...</a><br/></td></tr>
 <tr class="separator:ga3a10548dfc0948bb2e29ac416dc8a901"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -225,7 +220,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is larger than 65535 bytes or
 <p>The ciphertext is decrypted in-place with the plaintext also written to <em>data</em>. In other words, it is assumed that the ciphertext plus MAC is in an input buffer ready to be processed once the MAC has been checked and the ciphertext has been decrypted.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gaba9d99ad1068e4aa1a6b49e1ef83827e" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a>, <a class="el" href="group__cipherstate.html#gae96037b3451f22ac86e51cfc177a06ad" title="Gets the length of packet MAC values for a CipherState object. ">noise_cipherstate_get_mac_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00349">349</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00343">343</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -299,7 +294,7 @@ or NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is too large to contain th
 <p>The plaintext is encrypted in-place with the ciphertext also written to <em>data</em>. There must be enough room on the end of <em>data</em> to hold the extra MAC value that will be appended. In other words, it is assumed that the plaintext is in an output buffer ready to be transmitted once the data has been encrypted and the final packet length (<em>out_data_len</em>) has been determined.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#ga147f818d2466e7c3a1cbab91ca631bba" title="Decrypts a block of data with this CipherState object. ">noise_cipherstate_decrypt_with_ad()</a>, <a class="el" href="group__cipherstate.html#gae96037b3451f22ac86e51cfc177a06ad" title="Gets the length of packet MAC values for a CipherState object. ">noise_cipherstate_get_mac_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00278">278</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00272">272</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -356,7 +351,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The algorithm identifier, or NOISE_CIPHER_NONE if <em>state</em> is NULL. </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00170">170</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00164">164</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -384,7 +379,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The size of the key in bytes, or 0 if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gae96037b3451f22ac86e51cfc177a06ad" title="Gets the length of packet MAC values for a CipherState object. ">noise_cipherstate_get_mac_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00184">184</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00178">178</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -412,7 +407,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The size of the MAC in bytes, or 0 if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gaf2e1035f4d0b85154176d9a3042eee81" title="Gets the length of the encryption key for a CipherState object. ">noise_cipherstate_get_key_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00198">198</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00192">192</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -440,7 +435,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns 1 if the key has been set, or 0 if the key has not been set (or <em>state</em> is NULL).</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gac10e4b2b02a43c1e1e23253420eea1d0" title="Initializes the key on a CipherState object. ">noise_cipherstate_init_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00244">244</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00238">238</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -490,7 +485,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>key</em> is NULL. </dd>
 NOISE_ERROR_INVALID_LENGTH if <em>key_len</em> is the wrong length for this cipher.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gaf2e1035f4d0b85154176d9a3042eee81" title="Gets the length of the encryption key for a CipherState object. ">noise_cipherstate_get_key_length()</a>, <a class="el" href="group__cipherstate.html#ga7c8497c3f9682d6ac5b6cbce58a4a9e3" title="Determine if the key has been set on a CipherState object. ">noise_cipherstate_has_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00218">218</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00212">212</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -584,131 +579,6 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new Cipher
 
 </div>
 </div>
-<a class="anchor" id="gacf9f934dd976784f58aef4088a4f7b7d"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int noise_cipherstate_pad </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>payload</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>orig_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>padded_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>padding_mode</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Adds padding bytes to the end of a message payload. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>The CipherState object. </td></tr>
-    <tr><td class="paramname">payload</td><td>Points to the original message payload to be padded, which must be large enough to hold the maximum of <em>orig_len</em> or <em>padded_len</em>. </td></tr>
-    <tr><td class="paramname">orig_len</td><td>The original length of the payload before padding. </td></tr>
-    <tr><td class="paramname">padded_len</td><td>The new length of the payload, including the original data and padding. </td></tr>
-    <tr><td class="paramname">padding_mode</td><td>The padding mode to use, NOISE_PADDING_ZERO or NOISE_PADDING_RANDOM. If the padding mode is unknown, then NOISE_PADDING_RANDOM will be used instead.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
-<dd>
-NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>payload</em> is NULL. </dd>
-<dd>
-NOISE_ERROR_NO_MEMORY if this is the first time this function has been used to generate random padding and there is insufficient memory to allocate the state for the random number generator. Will not occur if the <em>padding_mode</em> is NOISE_PADDING_ZERO.</dd></dl>
-<p>This function is intended for padding message payloads prior to them being encrypted with <a class="el" href="group__handshakestate.html#ga305a81df454bd2cd2b039061e79849a8" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a> or <a class="el" href="group__cipherstate.html#gaba9d99ad1068e4aa1a6b49e1ef83827e" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a>. If the <em>padding_mode</em> is NOISE_PADDING_RANDOM, then the random bytes are generated using <a class="el" href="group__cipherstate.html#ga516ad81b9355cba6ab08c18fa3cf7479" title="Generates random bytes for use by the application. ">noise_cipherstate_rand_bytes()</a>.</p>
-<p>The number of padding bytes added will be <em>padded_len</em> - <em>orig_len</em>. If <em>padded_len</em> is less than or equal to <em>orig_len</em>, then no padding bytes will be added. Essentially, this function pads the payload to a minimum length. Larger payloads are transmitted as-is.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#ga516ad81b9355cba6ab08c18fa3cf7479" title="Generates random bytes for use by the application. ">noise_cipherstate_rand_bytes()</a> </dd></dl>
-
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00652">652</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga516ad81b9355cba6ab08c18fa3cf7479"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int noise_cipherstate_rand_bytes </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>buffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>force_reseed</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Generates random bytes for use by the application. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>The CipherState object. </td></tr>
-    <tr><td class="paramname">buffer</td><td>The buffer to fill with random bytes. </td></tr>
-    <tr><td class="paramname">len</td><td>The number of random bytes to generate. </td></tr>
-    <tr><td class="paramname">force_reseed</td><td>Non-zero to force the random number generator to reseed entropy from the operating system, zero to let this function decide itself when to reseed (zero is recommended).</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
-<dd>
-NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>buffer</em> is NULL. </dd>
-<dd>
-NOISE_ERROR_NO_MEMORY if this is the first time this function has been called and there is insufficient memory to allocate the state for the random number generator.</dd></dl>
-<p>This function is provided as a convenience for applications that need to generate extra random data during the course of a higher-level protocol that runs over the Noise protocol.</p>
-<p>If the application wishes to pad message payloads with random data, then the <a class="el" href="group__cipherstate.html#gacf9f934dd976784f58aef4088a4f7b7d" title="Adds padding bytes to the end of a message payload. ">noise_cipherstate_pad()</a> function may be a better option.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gacf9f934dd976784f58aef4088a4f7b7d" title="Adds padding bytes to the end of a message payload. ">noise_cipherstate_pad()</a> </dd></dl>
-
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00550">550</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
-
-</div>
-</div>
 <a class="anchor" id="ga3a10548dfc0948bb2e29ac416dc8a901"></a>
 <div class="memitem">
 <div class="memproto">
@@ -751,7 +621,7 @@ NOISE_ERROR_INVALID_NONCE if <em>nonce</em> is smaller than the current value.</
 <dl class="section warning"><dt>Warning</dt><dd>This function is intended for testing purposes only. It is dangerous to set the nonce back to a previously-used value so this function will actively prevent that from happening.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gac10e4b2b02a43c1e1e23253420eea1d0" title="Initializes the key on a CipherState object. ">noise_cipherstate_init_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00459">459</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00453">453</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -811,14 +681,14 @@ or NOISE_ERROR_NO_MEMORY if the system is out of memory.</dd></dl>
 <p>This function is intended to help implement <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a>. It clones the existing object, creating a new object with the same algorithm identifier but a new key.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00416">416</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00410">410</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

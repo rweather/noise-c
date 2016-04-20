@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -128,9 +129,6 @@ Data Fields</h2></td></tr>
 <tr class="memitem:acfccba116293338d485ed781e2d88bbf"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseCipherState__s.html#acfccba116293338d485ed781e2d88bbf">nonce_overflow</a></td></tr>
 <tr class="memdesc:acfccba116293338d485ed781e2d88bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non-zero if the nonce has overflowed.  <a href="#acfccba116293338d485ed781e2d88bbf">More...</a><br/></td></tr>
 <tr class="separator:acfccba116293338d485ed781e2d88bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78497bf7c0af17204100955c42db38a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="internal_8h.html#ae4e31cb4051b60877651692f6c880c47">NoiseRandomState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseCipherState__s.html#a78497bf7c0af17204100955c42db38a0">rand</a></td></tr>
-<tr class="memdesc:a78497bf7c0af17204100955c42db38a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Points to the random number generator for this CipherState.  <a href="#a78497bf7c0af17204100955c42db38a0">More...</a><br/></td></tr>
-<tr class="separator:a78497bf7c0af17204100955c42db38a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acca6bed643d8fa0fb1831630b155d419"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseCipherState__s.html#acca6bed643d8fa0fb1831630b155d419">size</a></td></tr>
 <tr class="memdesc:acca6bed643d8fa0fb1831630b155d419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total size of the structure including subclass state.  <a href="#acca6bed643d8fa0fb1831630b155d419">More...</a><br/></td></tr>
 <tr class="separator:acca6bed643d8fa0fb1831630b155d419"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,7 +136,7 @@ Data Fields</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal structure of the NoiseCipherState type. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00070">70</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00053">53</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a class="anchor" id="a7294ecca5a1b225a590f8d693a79c28b"></a>
 <div class="memitem">
@@ -152,7 +150,7 @@ Data Fields</h2></td></tr>
 
 <p>Algorithm identifier for the cipher. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00076">76</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00059">59</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -169,7 +167,7 @@ Data Fields</h2></td></tr>
 <p>Creates a new CipherState of the same type as this one. </p>
 <dl class="section return"><dt>Returns</dt><dd>A new CipherState object, or NULL if there is insufficient memory for the request. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00102">102</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00082">82</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -196,7 +194,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_MAC_FAILURE if the MAC check failed. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00148">148</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00128">128</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -220,7 +218,7 @@ Data Fields</h2></td></tr>
 <p>This function is called just before the memory for the CipherState is deallocated. It gives the back end an opportunity to clean up linked objects.</p>
 <p>This pointer can be NULL if the back end does not need any special clean up logic. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00163">163</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00143">143</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -248,7 +246,7 @@ Data Fields</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success.</dd></dl>
 <p>The <em>data</em> buffer must have enough room to append <a class="el" href="structNoiseCipherState__s.html#ae86d179092c51b9b5498f0b0f34284d9">mac_len</a> extra bytes for the MAC value. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00131">131</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00111">111</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -264,7 +262,7 @@ Data Fields</h2></td></tr>
 
 <p>Non-zero if the key has been set on this cipher. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00079">79</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00062">62</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -288,7 +286,7 @@ Data Fields</h2></td></tr>
 </dl>
 <p>If the key has already been set before, then calling this function again will set a new key. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00113">113</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00093">93</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -304,7 +302,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the key for this cipher in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00085">85</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00068">68</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -320,7 +318,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the MAC for this cipher in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00088">88</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00071">71</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -336,7 +334,7 @@ Data Fields</h2></td></tr>
 
 <p>The nonce value for the next packet. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00091">91</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00074">74</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -352,23 +350,7 @@ Data Fields</h2></td></tr>
 
 <p>Non-zero if the nonce has overflowed. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00082">82</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a78497bf7c0af17204100955c42db38a0"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="internal_8h.html#ae4e31cb4051b60877651692f6c880c47">NoiseRandomState</a>* NoiseCipherState_s::rand</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Points to the random number generator for this CipherState. </p>
-
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00094">94</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00065">65</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -384,7 +366,7 @@ Data Fields</h2></td></tr>
 
 <p>Total size of the structure including subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00073">73</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00056">56</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -394,7 +376,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

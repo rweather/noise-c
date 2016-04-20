@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['mac_5flen',['mac_len',['../structNoiseCipherState__s.html#ae86d179092c51b9b5498f0b0f34284d9',1,'NoiseCipherState_s']]]
+  ['n',['n',['../structNoiseCipherState__s.html#aa3f5e61581db25327873b6aafef39543',1,'NoiseCipherState_s']]],
+  ['nonce_5foverflow',['nonce_overflow',['../structNoiseCipherState__s.html#acfccba116293338d485ed781e2d88bbf',1,'NoiseCipherState_s']]]
 ];

@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -144,7 +145,7 @@ Data Fields</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal structure of the NoiseSignState type. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00350">350</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00330">330</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a class="anchor" id="ad2b6f79f05e8f9789c16f50323c9bc0d"></a>
 <div class="memitem">
@@ -171,7 +172,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong with the private key
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00414">414</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00394">394</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -195,7 +196,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 <p>This function is called just before the memory for the SignState is deallocated. It gives the back end an opportunity to clean up linked objects.</p>
 <p>This pointer can be NULL if the back end does not need any special clean up logic. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00482">482</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00462">462</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -217,7 +218,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00381">381</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00361">361</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -233,7 +234,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>The type of key stored within this SignState object. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00359">359</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00339">339</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -249,7 +250,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Points to the private key in the subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00371">371</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00351">351</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -265,7 +266,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the private key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00362">362</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00342">342</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -281,7 +282,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Points to the public key in the subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00374">374</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00354">354</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -297,7 +298,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the public key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00365">365</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00345">345</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -328,7 +329,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if the private key is invalid for the algorithm.
 NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</dd></dl>
 <p>This function must always operate in the same amount of time, even if the private or public key is invalid. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00448">448</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00428">428</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -344,7 +345,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</
 
 <p>Algorithm identifier for the digital signature operation. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00356">356</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00336">336</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -360,7 +361,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</
 
 <p>Length of the signature for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00368">368</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00348">348</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -376,7 +377,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</
 
 <p>Total size of the structure including subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00353">353</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00333">333</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -405,7 +406,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong with the private key
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00397">397</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00377">377</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -431,7 +432,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. 
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00428">428</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00408">408</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -461,7 +462,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if <em>state</em> does not contain a public key o
 <dd>
 NOISE_ERROR_INVALID_SIGNATURE if the <em>signature</em> is not valid for the <em>message</em> using this public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00467">467</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00447">447</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -471,7 +472,7 @@ NOISE_ERROR_INVALID_SIGNATURE if the <em>signature</em> is not valid for the <em
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

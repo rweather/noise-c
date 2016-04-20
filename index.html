@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li class="current"><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -64,7 +65,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -78,6 +79,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">Noise-C Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="toc"><h3>Table of Contents</h3>
+<ul><li class="level1"><a href="#major_apis">Major API's</a></li>
+<li class="level1"><a href="#supporting_apis">Supporting API's</a></li>
+<li class="level1"><a href="#other_info">Other information</a></li>
+<li class="level1"><a href="#dir_structure">Directory structure</a></li>
+<li class="level1"><a href="#building">Building</a></li>
+<li class="level1"><a href="#todo">TODO</a></li>
+<li class="level1"><a href="#contact">Contact</a></li>
+</ul>
+</div>
 <div class="textblock"><p>Noise-C is a plain C implementation of the <a href="http://noiseprotocol.org/">Noise Protocol</a>, intended as a reference implementation. It can also be referred to as "Noisy", which is what you get when you say "Noise-C" too fast. The code is distributed under the terms of the MIT license, with the code available from <a href="https://github.com/rweather/noise-c">github</a>.</p>
 <dl class="section note"><dt>Note</dt><dd>This project is still a work in progress. The vector tests from <a href="https://github.com/centromere/cacophony">cacophony</a> are working but there is still a lot of cleaning up and example writing to do.</dd></dl>
 <p>The initial target is GNU/Linux systems, because that's what I have, but contributions are definitely welcome to make the code work on other platforms. Desktop systems will be targeted first and then embedded systems. "Make It Work And Then Make It Work Better" is my motto.</p>
@@ -93,7 +104,13 @@ Supporting API's</h1>
 <li><a class="el" href="group__symmetricstate.html">SymmetricState</a> </li>
 <li><a class="el" href="group__hashstate.html">HashState</a> </li>
 <li><a class="el" href="group__dhstate.html">DHState</a> </li>
-<li><a class="el" href="group__signstate.html">SignState</a></li>
+<li><a class="el" href="group__signstate.html">SignState</a> </li>
+<li><a class="el" href="group__randstate.html">RandState</a></li>
+</ul>
+<h1><a class="anchor" id="other_info"></a>
+Other information</h1>
+<ul>
+<li><a class="el" href="cert_key_format.html">Certificate and private key file format</a></li>
 </ul>
 <h1><a class="anchor" id="dir_structure"></a>
 Directory structure</h1>
@@ -123,7 +140,7 @@ TODO</h1>
 <li>Mechanism to encrypt static DH keypairs with a passphrase. </li>
 <li>Standalone key generation utility for static DH keypairs. </li>
 <li>Convert the build system to standard autoconf/automake conventions. </li>
-<li>Port to other platforms (<a class="el" href="rand_8c.html" title="Access to the system random number generator. ">rand.c</a> is a particular place that needs work). </li>
+<li>Port to other platforms (<a class="el" href="rand__os_8c.html" title="Access to the system random number generator. ">rand_os.c</a> is a particular place that needs work). </li>
 <li>Back ends for other cryptography libraries: OpenSSL, libsodium, ... </li>
 <li>Compile-time subsetting of the library for applications that only need a subset of the algorithms, and for platforms with limited memory.</li>
 </ul>
@@ -134,7 +151,7 @@ Contact</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

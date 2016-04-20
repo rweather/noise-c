@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['pattern_5fid',['pattern_id',['../group__names.html#a03585bc8d03a3f0cbc6dcc18f5feed02',1,'NoiseProtocolId']]],
-  ['patterns_2ec',['patterns.c',['../patterns_8c.html',1,'']]],
-  ['prefix_5fid',['prefix_id',['../group__names.html#a28ed86d8adce5c81d2a47fa1e93ec74d',1,'NoiseProtocolId::prefix_id()'],['../group__prefix__id.html',1,'(Global Namespace)']]],
-  ['private_5fkey',['private_key',['../structNoiseDHState__s.html#aacb825aedaa140d12fab37b897da06f0',1,'NoiseDHState_s::private_key()'],['../structNoiseSignState__s.html#a1e65cf0f1989366df94f328d65619a1d',1,'NoiseSignState_s::private_key()']]],
-  ['private_5fkey_5flen',['private_key_len',['../structNoiseDHState__s.html#ad70fed9dc7645821fbf40bb89f4ab6df',1,'NoiseDHState_s::private_key_len()'],['../structNoiseSignState__s.html#abbeec938bf1948fec924cb80c36f5e81',1,'NoiseSignState_s::private_key_len()']]],
-  ['protocol_2eh',['protocol.h',['../protocol_8h.html',1,'']]],
-  ['public_5fkey',['public_key',['../structNoiseDHState__s.html#a63a30c2d7fc0b31b9082f4b706194b2a',1,'NoiseDHState_s::public_key()'],['../structNoiseSignState__s.html#abee6d6fc74d5a90bf771088345b9a7e5',1,'NoiseSignState_s::public_key()']]],
-  ['public_5fkey_5flen',['public_key_len',['../structNoiseDHState__s.html#ab5a28a815c35396a971ee4ae533686fd',1,'NoiseDHState_s::public_key_len()'],['../structNoiseSignState__s.html#a7fe1b60adec20b128efd94601e624eb4',1,'NoiseSignState_s::public_key_len()']]]
+  ['rand_5fos_2ec',['rand_os.c',['../rand__os_8c.html',1,'']]],
+  ['randstate_20api',['RandState API',['../group__randstate.html',1,'']]],
+  ['randstate_2ec',['randstate.c',['../randstate_8c.html',1,'']]],
+  ['randstate_2eh',['randstate.h',['../randstate_8h.html',1,'']]],
+  ['requirements',['requirements',['../internal_8h.html#a00061e5181a1ab3c6d789e545778add4',1,'NoiseHandshakeState_s']]],
+  ['reserved_5fid',['reserved_id',['../group__names.html#a31df7887e75b88d0434aedb6f99a6245',1,'NoiseProtocolId']]],
+  ['reset',['reset',['../structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e',1,'NoiseHashState_s']]],
+  ['role',['role',['../internal_8h.html#ac500f5fbe534ac4ab87dec00fc68380a',1,'NoiseHandshakeState_s']]]
 ];

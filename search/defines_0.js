@@ -7,7 +7,6 @@ var searchData=
   ['noise_5fmax_5fhashlen',['NOISE_MAX_HASHLEN',['../internal_8h.html#ae08f3f420d645a6e57b8a33be0008a90',1,'internal.h']]],
   ['noise_5fmax_5fpayload_5flen',['NOISE_MAX_PAYLOAD_LEN',['../constants_8h.html#a706be47390a8b57968e60fd8719b98f3',1,'constants.dox']]],
   ['noise_5fmax_5fprotocol_5fname',['NOISE_MAX_PROTOCOL_NAME',['../constants_8h.html#ac67d796e3e24090442f31aec6092b2dd',1,'constants.dox']]],
-  ['noise_5fnew',['noise_new',['../internal_8h.html#aa8403b5d2d468366eaed8ecf8b7eea24',1,'util.c']]],
   ['noise_5fpadding_5frandom',['NOISE_PADDING_RANDOM',['../constants_8h.html#a8f845e853df5b14fabd434915c7559b5',1,'constants.h']]],
   ['noise_5fpadding_5fzero',['NOISE_PADDING_ZERO',['../constants_8h.html#a5f63770f27d92cd12b5c4bef76fac57b',1,'constants.h']]],
   ['noise_5fpat_5fflag_5flocal_5fempem_5freq',['NOISE_PAT_FLAG_LOCAL_EMPEM_REQ',['../internal_8h.html#a090239192cda8526c8af363b1149c92f',1,'internal.h']]],

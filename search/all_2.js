@@ -1,7 +1,8 @@
 var searchData=
 [
   ['calculate',['calculate',['../structNoiseDHState__s.html#aec63c22f14213fff9a0db0ebc3047f2c',1,'NoiseDHState_s']]],
-  ['chacha',['chacha',['../internal_8h.html#acaa1b3e654f7782999954fe8d50f188b',1,'NoiseRandomState_s']]],
+  ['cert_2dkey_2dformat_2edox',['cert-key-format.dox',['../cert-key-format_8dox.html',1,'']]],
+  ['certificate_20and_20private_20key_20format',['Certificate and private key format',['../cert_key_format.html',1,'']]],
   ['cipher',['cipher',['../internal_8h.html#abdaa0815b889e88f06814eb5f49c181e',1,'NoiseSymmetricState_s']]],
   ['cipher_5fid',['cipher_id',['../structNoiseCipherState__s.html#a7294ecca5a1b225a590f8d693a79c28b',1,'NoiseCipherState_s::cipher_id()'],['../group__names.html#ab0759596d7a806fd1aabd96824e35627',1,'NoiseProtocolId::cipher_id()'],['../group__cipher__id.html',1,'(Global Namespace)']]],
   ['cipherstate_20api',['CipherState API',['../group__cipherstate.html',1,'']]],

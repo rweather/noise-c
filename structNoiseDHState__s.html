@@ -37,6 +37,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="modules.html"><span>Modules</span></a></li>
       <li class="current"><a href="annotated.html"><span>Data&#160;Structures</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
@@ -70,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Data Structures</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Typedefs</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Macros</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Groups</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -141,7 +142,7 @@ Data Fields</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal structure of the NoiseDHState type. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00231">231</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00211">211</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a class="anchor" id="aec63c22f14213fff9a0db0ebc3047f2c"></a>
 <div class="memitem">
@@ -169,7 +170,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if the private key is invalid for the algorithm.
 NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</dd></dl>
 <p>This function must always operate in the same amount of time, even if the private or public key is invalid. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00328">328</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00308">308</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -198,7 +199,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong with the private key
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00295">295</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00275">275</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -222,7 +223,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 <p>This function is called just before the memory for the DHState is deallocated. It gives the back end an opportunity to clean up linked objects.</p>
 <p>This pointer can be NULL if the back end does not need any special clean up logic. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00344">344</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00324">324</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -238,7 +239,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Algorithm identifier for the Diffie-Hellman operation. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00237">237</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00217">217</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -260,7 +261,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00262">262</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00242">242</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -276,7 +277,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>The type of key stored within this DHState object. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00240">240</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00220">220</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -292,7 +293,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Points to the private key in the subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00252">252</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00232">232</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -308,7 +309,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the private key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00243">243</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00223">223</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -324,7 +325,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Points to the public key in the subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00255">255</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00235">235</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -340,7 +341,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the public key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00246">246</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00226">226</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -356,7 +357,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the shared key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00249">249</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00229">229</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -372,7 +373,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Total size of the structure including subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00234">234</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00214">214</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -401,7 +402,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong with the private key
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00278">278</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00258">258</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -427,7 +428,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. 
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00309">309</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00289">289</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -437,7 +438,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
