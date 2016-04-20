@@ -220,9 +220,10 @@ struct NoiseHashState_s
     void (*destroy)(NoiseHashState *state);
 };
 
-#define NOISE_DHSTATE_NO_KEY    0   /**< No key set yet */
-#define NOISE_DHSTATE_KEYPAIR   1   /**< Set to a keypair */
-#define NOISE_DHSTATE_PUBLIC    2   /**< Set to a public key only */
+/* States for public key algorithms, either DHState or SignState */
+#define NOISE_KEY_TYPE_NO_KEY   0   /**< No key set yet */
+#define NOISE_KEY_TYPE_KEYPAIR  1   /**< Set to a keypair */
+#define NOISE_KEY_TYPE_PUBLIC   2   /**< Set to a public key only */
 
 /**
  * \brief Internal structure of the NoiseDHState type.
@@ -341,6 +342,144 @@ struct NoiseDHState_s
      * clean up logic.
      */
     void (*destroy)(NoiseDHState *state);
+};
+
+/**
+ * \brief Internal structure of the NoiseSignState type.
+ */
+struct NoiseSignState_s
+{
+    /** \brief Total size of the structure including subclass state */
+    size_t size;
+
+    /** \brief Algorithm identifier for the digital signature operation */
+    int sign_id;
+
+    /** \brief The type of key stored within this SignState object */
+    uint16_t key_type;
+
+    /** \brief Length of the private key for this algorithm in bytes */
+    uint16_t private_key_len;
+
+    /** \brief Length of the public key for this algorithm in bytes */
+    uint16_t public_key_len;
+
+    /** \brief Length of the signature for this algorithm in bytes */
+    uint16_t signature_len;
+
+    /** \brief Points to the private key in the subclass state */
+    uint8_t *private_key;
+
+    /** \brief Points to the public key in the subclass state */
+    uint8_t *public_key;
+
+    /**
+     * \brief Generates a new key pair for this digital signature algorithm.
+     *
+     * \param state Points to the SignState.
+     */
+    void (*generate_keypair)(NoiseSignState *state);
+
+    /**
+     * \brief Validates a keypair.
+     *
+     * \param state Points to the SignState.
+     * \param private_key Points to the private key for the keypair.
+     * \param public_key Points to the public key for the keypair.
+     *
+     * \return NOISE_ERROR_NONE if the keypair is valid.
+     * \return NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong
+     * with the private key.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
+     * with the public key.
+     */
+    int (*validate_keypair)
+        (const NoiseSignState *state, const uint8_t *private_key,
+         const uint8_t *public_key);
+
+    /**
+     * \brief Derives a public key from a private key.
+     *
+     * \param state Points to the SignState.
+     * \param private_key Points to the private key for the keypair.
+     * \param public_key Points to the public key for the keypair.
+     *
+     * \return NOISE_ERROR_NONE if the keypair is valid.
+     * \return NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong
+     * with the private key.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
+     * with the derived public key.
+     */
+    int (*derive_public_key)
+        (const NoiseSignState *state, const uint8_t *private_key,
+         uint8_t *public_key);
+
+    /**
+     * \brief Validates a public key.
+     *
+     * \param state Points to the SignState.
+     * \param public_key Points to the public key.
+     *
+     * \return NOISE_ERROR_NONE if the keypair is valid.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
+     * with the public key.
+     */
+    int (*validate_public_key)
+        (const NoiseSignState *state, const uint8_t *public_key);
+
+    /**
+     * \brief Creates a signature.
+     *
+     * \param state Points to the SignState.
+     * \param message Points to the message to be signed.
+     * \param message_len The length of the \a message to be signed.
+     * \param signature Points to the signature on exit.
+     *
+     * \return NOISE_ERROR_NONE on success.
+     * \return NOISE_ERROR_INVALID_PRIVATE_KEY if the private key is
+     * invalid for the algorithm.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is
+     * invalid for the algorithm.
+     *
+     * This function must always operate in the same amount of time, even
+     * if the private or public key is invalid.
+     */
+    int (*sign)
+        (const NoiseSignState *state, const uint8_t *message,
+         size_t message_len, uint8_t *signature);
+
+    /**
+     * \brief Verifies a digital signature on a message.
+     *
+     * \param state Points to the SignState.
+     * \param message Points to the message whose signature should
+     * be verified, which is usually a short hash value.
+     * \param message_len The length of the \a message to be verified.
+     * \param signature Points to the signature to be verified.
+     *
+     * \return NOISE_ERROR_NONE on success.
+     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if \a state does not
+     * contain a public key or the public key is invalid.
+     * \return NOISE_ERROR_INVALID_SIGNATURE if the \a signature is not
+     * valid for the \a message using this public key.
+     */
+    int (*verify)
+        (const NoiseSignState *state, const uint8_t *message,
+         size_t message_len, const uint8_t *signature);
+
+    /**
+     * \brief Destroys this SignState prior to the memory being freed.
+     *
+     * \param state Points to the SignState.
+     *
+     * This function is called just before the memory for the SignState
+     * is deallocated.  It gives the back end an opportunity to clean up
+     * linked objects.
+     *
+     * This pointer can be NULL if the back end does not need any special
+     * clean up logic.
+     */
+    void (*destroy)(NoiseSignState *state);
 };
 
 /**
@@ -486,6 +625,8 @@ NoiseHashState *noise_sha512_new(void);
 
 NoiseDHState *noise_curve25519_new(void);
 NoiseDHState *noise_curve448_new(void);
+
+NoiseSignState *noise_ed25519_new(void);
 
 const uint8_t *noise_pattern_lookup(int id);
 uint8_t noise_pattern_reverse_flags(uint8_t flags);

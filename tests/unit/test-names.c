@@ -86,6 +86,8 @@ static void test_id_mappings(void)
     check_id("Noise", NOISE_PREFIX_STANDARD);
     check_id("NoisePSK", NOISE_PREFIX_PSK);
 
+    check_id("Ed25519", NOISE_SIGN_ED25519);
+
     /* Check for unknown names/identifiers */
     compare(noise_name_to_id(NOISE_CIPHER_CATEGORY, "AESGCM-128", 10), 0);
     compare(noise_name_to_id(0, "AESGCM-128", 10), 0);

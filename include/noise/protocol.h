@@ -29,6 +29,7 @@
 #include <noise/protocol/cipherstate.h>
 #include <noise/protocol/hashstate.h>
 #include <noise/protocol/dhstate.h>
+#include <noise/protocol/signstate.h>
 #include <noise/protocol/symmetricstate.h>
 #include <noise/protocol/handshakestate.h>
 

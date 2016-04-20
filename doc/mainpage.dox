@@ -41,13 +41,17 @@ on other platforms.  Desktop systems will be targeted first and
 then embedded systems.  "Make It Work And Then Make It Work Better"
 is my motto.
 
-\section apis Major API's
+\section major_apis Major API's
 
 \li \ref handshakestate "HandshakeState"
-\li \ref symmetricstate "SymmetricState"
 \li \ref cipherstate "CipherState"
+
+\section supporting_apis Supporting API's
+
+\li \ref symmetricstate "SymmetricState"
 \li \ref hashstate "HashState"
 \li \ref dhstate "DHState"
+\li \ref signstate "SignState"
 
 \section dir_structure Directory structure
 
@@ -57,8 +61,8 @@ is my motto.
 \li <tt>src/crypto/</tt> - Public domain and open source reference
     implementations of the cryptographic primitives.
 \li <tt>src/backend/ref/</tt> - Backends for \ref cipherstate "CipherState",
-    \ref hashstate "HashState", and \ref dhstate "DHState"
-    that use the reference cryptographic primitives.
+    \ref hashstate "HashState", \ref dhstate "DHState", and
+    \ref signstate "SignState" that use the reference cryptographic primitives.
 \li <tt>src/backend/xyz/</tt> - Recommended location for alternative backends.
 \li <tt>tests/unit/</tt> - Unit tests to exercise the library's functionality.
 \li <tt>tests/vector/</tt> - Public JSON test vectors and test harness for

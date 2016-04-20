@@ -78,6 +78,11 @@ extern "C" {
 #define NOISE_PREFIX_STANDARD           NOISE_ID('N', 1)
 #define NOISE_PREFIX_PSK                NOISE_ID('N', 2)
 
+/* Signature algorithms */
+#define NOISE_SIGN_NONE                 0
+#define NOISE_SIGN_CATEGORY             NOISE_ID('S', 0)
+#define NOISE_SIGN_ED25519              NOISE_ID('S', 1)
+
 /* Role for this end of the communications */
 #define NOISE_ROLE_INITIATOR            NOISE_ID('R', 1)
 #define NOISE_ROLE_RESPONDER            NOISE_ID('R', 2)
@@ -111,6 +116,7 @@ extern "C" {
 #define NOISE_ERROR_INVALID_PRIVATE_KEY NOISE_ID('E', 14)
 #define NOISE_ERROR_INVALID_PUBLIC_KEY  NOISE_ID('E', 15)
 #define NOISE_ERROR_INVALID_FORMAT      NOISE_ID('E', 16)
+#define NOISE_ERROR_INVALID_SIGNATURE   NOISE_ID('E', 17)
 
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535

@@ -397,6 +397,11 @@
  */
 
 /**
+ * \def NOISE_ERROR_INVALID_SIGNATURE
+ * \brief Invalid digital signature; does not verify.
+ */
+
+/**
  * \def NOISE_ERROR_REMOTE_KEY_REQUIRED
  * \brief A remote static public key is required for the selected protocol,
  * but one was not supplied.

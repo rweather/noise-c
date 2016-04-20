@@ -58,6 +58,7 @@ static const char * const error_strings[] = {
     "Invalid private key",
     "Invalid public key",
     "Invalid format",
+    "Invalid signature",
     "END"
 };
 #define num_error_strings (sizeof(error_strings) / sizeof(error_strings[0]) - 1)

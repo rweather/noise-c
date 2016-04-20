@@ -24,61 +24,57 @@
 #include <string.h>
 
 /**
- * \file dhstate.h
- * \brief DHState interface
+ * \file signstate.h
+ * \brief SignState interface
  */
 
 /**
- * \file dhstate.c
- * \brief DHState implementation
+ * \file signstate.c
+ * \brief SignState implementation
  */
 
 /**
- * \defgroup dhstate DHState API
+ * \defgroup signstate SignState API
  *
- * DHState objects are used to store the keypairs for the local party or
+ * SignState objects are used to store the keypairs for the local party or
  * the public keys for remote parties.  Once the keys have been set,
- * noise_dhstate_calculate() can be used to perform a Diffie-Hellman
- * operation with two DHState objects.
+ * noise_signstate_sign() can be used to create a digital signature with a
+ * keypair, or noise_signstate_verify() can be used to verify a digital
+ * signature with a public key.
  */
 /**@{*/
 
 /**
- * \typedef NoiseDHState
- * \brief Opaque object that represents a DHState.
+ * \typedef NoiseSignState
+ * \brief Opaque object that represents a SignState.
  */
 
 /**
- * \brief Creates a new DHState object by its algorithm identifier.
+ * \brief Creates a new SignState object by its algorithm identifier.
  *
  * \param state Points to the variable where to store the pointer to
- * the new DHState object.
- * \param id The algorithm identifier; NOISE_DH_CURVE25519,
- * NOISE_DH_CURVE448, etc.
+ * the new SignState object.
+ * \param id The algorithm identifier; e.g. NOISE_SIGN_ED5519.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  * \return NOISE_ERROR_UNKNOWN_ID if \a id is unknown.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
- * allocate the new DHState object.
+ * allocate the new SignState object.
  *
- * \sa noise_dhstate_free(), noise_dhstate_new_by_name()
+ * \sa noise_signstate_free(), noise_signstate_new_by_name()
  */
-int noise_dhstate_new_by_id(NoiseDHState **state, int id)
+int noise_signstate_new_by_id(NoiseSignState **state, int id)
 {
     /* The "state" argument must be non-NULL */
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
 
-    /* Create the DHState object for the "id" */
+    /* Create the SignState object for the "id" */
     *state = 0;
     switch (id) {
-    case NOISE_DH_CURVE25519:
-        *state = noise_curve25519_new();
-        break;
-
-    case NOISE_DH_CURVE448:
-        *state = noise_curve448_new();
+    case NOISE_SIGN_ED25519:
+        *state = noise_ed25519_new();
         break;
 
     default:
@@ -94,22 +90,22 @@ int noise_dhstate_new_by_id(NoiseDHState **state, int id)
 }
 
 /**
- * \brief Creates a new DHState object by its algorithm name.
+ * \brief Creates a new SignState object by its algorithm name.
  *
  * \param state Points to the variable where to store the pointer to
- * the new DHState object.
- * \param name The name of the Diffie-Hellman algorithm; e.g. "25519".
+ * the new SignState object.
+ * \param name The name of the digital signature algorithm; e.g. "Ed25519".
  * This string must be NUL-terminated.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a name is NULL.
  * \return NOISE_ERROR_UNKNOWN_NAME if \a name is unknown.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
- * allocate the new DHState object.
+ * allocate the new SignState object.
  *
- * \sa noise_dhstate_free(), noise_dhstate_new_by_id()
+ * \sa noise_signstate_free(), noise_signstate_new_by_id()
  */
-int noise_dhstate_new_by_name(NoiseDHState **state, const char *name)
+int noise_signstate_new_by_name(NoiseSignState **state, const char *name)
 {
     int id;
 
@@ -121,27 +117,27 @@ int noise_dhstate_new_by_name(NoiseDHState **state, const char *name)
         return NOISE_ERROR_INVALID_PARAM;
 
     /* Map the name and create the corresponding object */
-    id = noise_name_to_id(NOISE_DH_CATEGORY, name, strlen(name));
+    id = noise_name_to_id(NOISE_SIGN_CATEGORY, name, strlen(name));
     if (id)
-        return noise_dhstate_new_by_id(state, id);
+        return noise_signstate_new_by_id(state, id);
 
     /* We don't know what this is */
     return NOISE_ERROR_UNKNOWN_NAME;
 }
 
 /**
- * \brief Frees a DHState object after destroying all sensitive material.
+ * \brief Frees a SignState object after destroying all sensitive material.
  *
- * \param state The DHState object to free.
+ * \param state The SignState object to free.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  *
- * \sa noise_dhstate_new_by_id(), noise_dhstate_new_by_name()
+ * \sa noise_signstate_new_by_id(), noise_signstate_new_by_name()
  */
-int noise_dhstate_free(NoiseDHState *state)
+int noise_signstate_free(NoiseSignState *state)
 {
-    /* Bail out if no DH state */
+    /* Bail out if no sign state */
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
 
@@ -155,75 +151,75 @@ int noise_dhstate_free(NoiseDHState *state)
 }
 
 /**
- * \brief Gets the algorithm identifier for a DHState object.
+ * \brief Gets the algorithm identifier for a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
- * \return The algorithm identifier, or NOISE_DH_NONE if \a state is NULL.
+ * \return The algorithm identifier, or NOISE_SIGN_NONE if \a state is NULL.
  */
-int noise_dhstate_get_dh_id(const NoiseDHState *state)
+int noise_signstate_get_sign_id(const NoiseSignState *state)
 {
-    return state ? state->dh_id : NOISE_DH_NONE;
+    return state ? state->sign_id : NOISE_SIGN_NONE;
 }
 
 /**
- * \brief Gets the length of the public key for a DHState object.
+ * \brief Gets the length of the public key for a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
  * \return The size of the public key in bytes, or 0 if \a state is NULL.
  *
- * \sa noise_dhstate_get_private_key_length(),
- * noise_dhstate_get_shared_key_length()
+ * \sa noise_signstate_get_private_key_length(),
+ * noise_signstate_get_signature_length()
  */
-size_t noise_dhstate_get_public_key_length(const NoiseDHState *state)
+size_t noise_signstate_get_public_key_length(const NoiseSignState *state)
 {
     return state ? state->public_key_len : 0;
 }
 
 /**
- * \brief Gets the length of the private key for a DHState object.
+ * \brief Gets the length of the private key for a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
  * \return The size of the private key in bytes, or 0 if \a state is NULL.
  *
- * \sa noise_dhstate_get_public_key_length(),
- * noise_dhstate_get_shared_key_length()
+ * \sa noise_signstate_get_public_key_length(),
+ * noise_signstate_get_signature_length()
  */
-size_t noise_dhstate_get_private_key_length(const NoiseDHState *state)
+size_t noise_signstate_get_private_key_length(const NoiseSignState *state)
 {
     return state ? state->private_key_len : 0;
 }
 
 /**
- * \brief Gets the length of the shared key for a DHState object.
+ * \brief Gets the length of the signature for a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
- * \return The size of the shared key in bytes, or 0 if \a state is NULL.
+ * \return The size of the signature in bytes, or 0 if \a state is NULL.
  *
- * \sa noise_dhstate_get_public_key_length(),
- * noise_dhstate_get_private_key_length()
+ * \sa noise_signstate_get_public_key_length(),
+ * noise_signstate_get_private_key_length()
  */
-size_t noise_dhstate_get_shared_key_length(const NoiseDHState *state)
+size_t noise_signstate_get_signature_length(const NoiseSignState *state)
 {
-    return state ? state->shared_key_len : 0;
+    return state ? state->signature_len : 0;
 }
 
 /**
- * \brief Determine if a DHState object contains a keypair.
+ * \brief Determine if a SignState object contains a keypair.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
  * \return Returns 1 if \a state contains both a private key and a
  * public key.  Returns 0 if \a state is NULL or it only contains a
  * public key.
  *
- * \sa noise_dhstate_set_keypair(), noise_dhstate_has_public_key(),
- * noise_dhstate_clear_key()
+ * \sa noise_signstate_set_keypair(), noise_signstate_has_public_key(),
+ * noise_signstate_clear_key()
  */
-int noise_dhstate_has_keypair(const NoiseDHState *state)
+int noise_signstate_has_keypair(const NoiseSignState *state)
 {
     if (state)
         return state->key_type == NOISE_KEY_TYPE_KEYPAIR;
@@ -232,18 +228,18 @@ int noise_dhstate_has_keypair(const NoiseDHState *state)
 }
 
 /**
- * \brief Determine if a DHState object contains a public key.
+ * \brief Determine if a SignState object contains a public key.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
  * \return Returns 1 if \a state contains a public key (and optionally a
  * private key).  Returns 0 if \a state is NULL or it does not contain a
  * public key.
  *
- * \sa noise_dhstate_set_keypair(), noise_dhstate_has_public_key(),
- * noise_dhstate_clear_key()
+ * \sa noise_signstate_set_keypair(), noise_signstate_has_public_key(),
+ * noise_signstate_clear_key()
  */
-int noise_dhstate_has_public_key(const NoiseDHState *state)
+int noise_signstate_has_public_key(const NoiseSignState *state)
 {
     if (state)
         return state->key_type != NOISE_KEY_TYPE_NO_KEY;
@@ -252,9 +248,9 @@ int noise_dhstate_has_public_key(const NoiseDHState *state)
 }
 
 /**
- * \brief Generates a new key pair within a DHState object.
+ * \brief Generates a new key pair within a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
@@ -263,9 +259,9 @@ int noise_dhstate_has_public_key(const NoiseDHState *state)
  * private key, so the system random number generator must be properly
  * seeded before calling this function.
  *
- * \sa noise_dhstate_calculate(), noise_dhstate_set_keypair()
+ * \sa noise_signstate_sign(), noise_signstate_set_keypair()
  */
-int noise_dhstate_generate_keypair(NoiseDHState *state)
+int noise_signstate_generate_keypair(NoiseSignState *state)
 {
     /* Validate the parameter */
     if (!state)
@@ -278,9 +274,9 @@ int noise_dhstate_generate_keypair(NoiseDHState *state)
 }
 
 /**
- * \brief Sets the keypair within a DHState object.
+ * \brief Sets the keypair within a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  * \param private_key Points to the private key.
  * \param private_key_len The private key length in bytes.
  * \param public_key Points to the public key.
@@ -296,13 +292,13 @@ int noise_dhstate_generate_keypair(NoiseDHState *state)
  *
  * The algorithm may decide to defer NOISE_ERROR_INVALID_PRIVATE_KEY or
  * NOISE_ERROR_INVALID_PUBLIC_KEY to later when the keypair is actually
- * used during noise_dhstate_calculate().
+ * used during noise_signstate_sign().
  *
- * \sa noise_dhstate_get_keypair(), noise_dhstate_set_public_key(),
- * noise_dhstate_set_keypair_private()
+ * \sa noise_signstate_get_keypair(), noise_signstate_set_public_key(),
+ * noise_signstate_set_keypair_private()
  */
-int noise_dhstate_set_keypair
-    (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len,
+int noise_signstate_set_keypair
+    (NoiseSignState *state, const uint8_t *private_key, size_t private_key_len,
      const uint8_t *public_key, size_t public_key_len)
 {
     int err;
@@ -328,9 +324,9 @@ int noise_dhstate_set_keypair
 }
 
 /**
- * \brief Sets the keypair within a DHState object based on a private key only.
+ * \brief Sets the keypair within a SignState object based on a private key only.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  * \param private_key Points to the private key.
  * \param private_key_len The private key length in bytes.
  *
@@ -344,16 +340,16 @@ int noise_dhstate_set_keypair
  *
  * The algorithm may decide to defer NOISE_ERROR_INVALID_PRIVATE_KEY or
  * NOISE_ERROR_INVALID_PUBLIC_KEY to later when the keypair is actually
- * used during noise_dhstate_calculate().
+ * used during noise_signstate_sign().
  *
  * This function only takes the private key as an argument.  The public
  * key in the keypair is derived from the private key.
  *
- * \sa noise_dhstate_get_keypair(), noise_dhstate_set_public_key(),
- * noise_dhstate_set_keypair()
+ * \sa noise_signstate_get_keypair(), noise_signstate_set_public_key(),
+ * noise_signstate_set_keypair()
  */
-int noise_dhstate_set_keypair_private
-    (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len)
+int noise_signstate_set_keypair_private
+    (NoiseSignState *state, const uint8_t *private_key, size_t private_key_len)
 {
     int err;
 
@@ -367,7 +363,7 @@ int noise_dhstate_set_keypair_private
     err = (*(state->derive_public_key))
         (state, private_key, state->public_key);
     if (err != NOISE_ERROR_NONE) {
-        noise_dhstate_clear_key(state);
+        noise_signstate_clear_key(state);
         return err;
     }
 
@@ -378,9 +374,9 @@ int noise_dhstate_set_keypair_private
 }
 
 /**
- * \brief Gets the keypair from within a DHState object.
+ * \brief Gets the keypair from within a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  * \param private_key Points to the buffer to receive the private key.
  * \param private_key_len The private key buffer length in bytes.
  * \param public_key Points to the buffer to receive the public key.
@@ -393,10 +389,10 @@ int noise_dhstate_set_keypair_private
  * \a public_key_len is incorrect for the algorithm.
  * \return NOISE_ERROR_INVALID_STATE if \a state does not contain a keypair.
  *
- * \sa noise_dhstate_set_keypair(), noise_dhstate_get_public_key()
+ * \sa noise_signstate_set_keypair(), noise_signstate_get_public_key()
  */
-int noise_dhstate_get_keypair
-    (const NoiseDHState *state, uint8_t *private_key, size_t private_key_len,
+int noise_signstate_get_keypair
+    (const NoiseSignState *state, uint8_t *private_key, size_t private_key_len,
      uint8_t *public_key, size_t public_key_len)
 {
     /* Validate the parameters */
@@ -421,9 +417,9 @@ int noise_dhstate_get_keypair
 }
 
 /**
- * \brief Sets the public key in a DHState object.
+ * \brief Sets the public key in a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  * \param public_key Points to the public key.
  * \param public_key_len The public key length in bytes.
  *
@@ -431,23 +427,22 @@ int noise_dhstate_get_keypair
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
  * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
  * for the algorithm.
- * \return NOISE_ERROR_INVALID_PUBLIC_KEY if \a public_key is not valid
- * and it is not the special null value.
+ * \return NOISE_ERROR_INVALID_PUBLIC_KEY if \a public_key is not valid.
  *
- * After this function succeeds, the DHState will only contain a public key.
+ * After this function succeeds, the SignState will only contain a public key.
  * Any existing private key will be cleared.  Thus, this function is useful
- * to set the public key of a remote party.  Use noise_dhstate_set_keypair()
+ * to set the public key of a remote party.  Use noise_signstate_set_keypair()
  * to set both the public and private key for the local party.
  *
  * The algorithm may decide to defer NOISE_ERROR_INVALID_PUBLIC_KEY to
- * later when the public key is actually used during noise_dhstate_calculate().
+ * later when the public key is actually used during noise_signstate_verify().
  *
- * \sa noise_dhstate_get_public_key(), noise_dhstate_set_keypair()
+ * \sa noise_signstate_get_public_key(), noise_signstate_set_keypair()
  */
-int noise_dhstate_set_public_key
-    (NoiseDHState *state, const uint8_t *public_key, size_t public_key_len)
+int noise_signstate_set_public_key
+    (NoiseSignState *state, const uint8_t *public_key, size_t public_key_len)
 {
-    int is_null, err;
+    int err;
 
     /* Validate the parameters */
     if (!state || !public_key)
@@ -455,11 +450,8 @@ int noise_dhstate_set_public_key
     if (public_key_len != state->public_key_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* Validate the public key with the back end and then ignore the
-       result if the public key is the special null value */
-    is_null = noise_is_zero(public_key, public_key_len);
+    /* Validate the public key with the back end */
     err = (*(state->validate_public_key))(state, public_key);
-    err &= (is_null - 1);
     if (err != NOISE_ERROR_NONE)
         return err;
 
@@ -471,9 +463,9 @@ int noise_dhstate_set_public_key
 }
 
 /**
- * \brief Gets the public key value from a DHState object.
+ * \brief Gets the public key value from a SignState object.
  *
- * \param state The DHState object.
+ * \param state The SignState object.
  * \param public_key The buffer to receive the public key value.
  * \param public_key_len The public key length in bytes.
  *
@@ -481,17 +473,21 @@ int noise_dhstate_set_public_key
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a public_key is NULL.
  * \return NOISE_ERROR_INVALID_LENGTH if \a public_key_len is incorrect
  * for this algorithm.
+ * \return NOISE_ERROR_INVALID_STATE if the public key has not been
+ * set on the SignState object yet.
  *
- * \sa noise_dhstate_set_public_key(), noise_dhstate_get_public_key_length()
+ * \sa noise_signstate_set_public_key(), noise_signstate_get_public_key_length()
  */
-int noise_dhstate_get_public_key
-    (const NoiseDHState *state, uint8_t *public_key, size_t public_key_len)
+int noise_signstate_get_public_key
+    (const NoiseSignState *state, uint8_t *public_key, size_t public_key_len)
 {
     /* Validate the parameters */
     if (!state || !public_key)
         return NOISE_ERROR_INVALID_PARAM;
     if (public_key_len != state->public_key_len)
         return NOISE_ERROR_INVALID_LENGTH;
+    if (state->key_type == NOISE_KEY_TYPE_NO_KEY)
+        return NOISE_ERROR_INVALID_STATE;
 
     /* Copy the public key out */
     memcpy(public_key, state->public_key, public_key_len);
@@ -499,60 +495,16 @@ int noise_dhstate_get_public_key
 }
 
 /**
- * \brief Sets the public key in a DHState object to the special null value.
+ * \brief Clears the key in a SignState object.
  *
- * \param state The DHState object.
- *
- * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
- *
- * \sa noise_dhstate_is_null_public_key()
- */
-int noise_dhstate_set_null_public_key(NoiseDHState *state)
-{
-    /* Validate the parameter */
-    if (!state)
-        return NOISE_ERROR_INVALID_PARAM;
-
-    /* Clear the key to all-zeroes */
-    memset(state->public_key, 0, state->public_key_len);
-    memset(state->private_key, 0, state->private_key_len);
-
-    /* We have a public key but no private key */
-    state->key_type = NOISE_KEY_TYPE_PUBLIC;
-    return NOISE_ERROR_NONE;
-}
-
-/**
- * \brief Determine if the public key in a DHState object has the
- * special null value.
- *
- * \param state The DHState object.
- *
- * \return Returns non-zero if the public key within \a state is the
- * special null value; zero otherwise.
- *
- * \sa noise_dhstate_set_null_public_key()
- */
-int noise_dhstate_is_null_public_key(const NoiseDHState *state)
-{
-    if (state && state->key_type != NOISE_KEY_TYPE_NO_KEY)
-        return noise_is_zero(state->public_key, state->public_key_len);
-    else
-        return 0;
-}
-
-/**
- * \brief Clears the key in a DHState object.
- *
- * \param state The DHState object.
+ * \param state The SignState object.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  *
- * \sa noise_dhstate_has_keypair(), noise_dhstate_has_public_key()
+ * \sa noise_signstate_has_keypair(), noise_signstate_has_public_key()
  */
-int noise_dhstate_clear_key(NoiseDHState *state)
+int noise_signstate_clear_key(NoiseSignState *state)
 {
     /* Validate the parameter */
     if (!state)
@@ -568,63 +520,79 @@ int noise_dhstate_clear_key(NoiseDHState *state)
 }
 
 /**
- * \brief Performs a Diffie-Hellman calculation.
+ * \brief Signs a message to create a digital signature.
  *
- * \param private_key_state Points to the DHState containing the private key.
- * \param public_key_state Points to the DHState containing the public key.
- * \param shared_key Points to the shared key on exit.
- * \param shared_key_len The length of the \a shared_key buffer in bytes.
+ * \param state The SignState object containing the private key.
+ * \param message Points to the message to be signed, which is usually a
+ * short hash value.
+ * \param message_len The length of the \a message to be signed.
+ * \param signature Points to the signature on exit.
+ * \param signature_len The length of the \a signature buffer in bytes.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a private_key_state,
- * \a public_key_state, or \a shared_key is NULL.
- * \return NOISE_ERROR_INVALID_PARAM if \a private_key_state and
- * \a public_key_state do not have the same algorithm identifier.
- * \return NOISE_ERROR_INVALID_LENGTH if \a shared_key_len is not
+ * \return NOISE_ERROR_INVALID_PARAM if \a state, \a message,
+ * or \a signature is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a signature_len is not
  * correct for the algorithm.
- * \return NOISE_ERROR_INVALID_PRIVATE_KEY if \a private_key_state does not
+ * \return NOISE_ERROR_INVALID_PRIVATE_KEY if \a state does not
  * contain a private key or the private key is invalid.
  * \return NOISE_ERROR_INVALID_PUBLIC_KEY if the public key in
- * \a public_key_state is invalid.
+ * \a state is invalid.
  *
- * If the input public key is the special null value, then the output
- * \a shared_key will also be the null value and NOISE_ERROR_NONE
- * will be returned.
- *
- * \sa noise_dhstate_generate_keypair()
+ * \sa noise_signstate_generate_keypair(), noise_signstate_verify()
  */
-int noise_dhstate_calculate
-    (const NoiseDHState *private_key_state,
-     const NoiseDHState *public_key_state,
-     uint8_t *shared_key, size_t shared_key_len)
+int noise_signstate_sign
+    (const NoiseSignState *state, const uint8_t *message, size_t message_len,
+     uint8_t *signature, size_t signature_len)
 {
-    int is_null, err;
-
     /* Validate the parameters */
-    if (!private_key_state || !public_key_state || !shared_key)
+    if (!state || !message || !signature)
         return NOISE_ERROR_INVALID_PARAM;
-    if (private_key_state->dh_id != public_key_state->dh_id)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (shared_key_len != private_key_state->shared_key_len)
+    if (signature_len != state->signature_len)
         return NOISE_ERROR_INVALID_LENGTH;
-    if (private_key_state->key_type != NOISE_KEY_TYPE_KEYPAIR)
+    if (state->key_type != NOISE_KEY_TYPE_KEYPAIR)
         return NOISE_ERROR_INVALID_PRIVATE_KEY;
 
-    /* If the public key is null, then the output must be null too.
-       We check for null now, but still perform the normal evaluation.
-       At the end we will null out the result in constant time */
-    is_null = noise_is_zero
-        (public_key_state->public_key, public_key_state->public_key_len);
+    /* Create the digial signature */
+    return (*(state->sign))(state, message, message_len, signature);
+}
 
-    /* Perform the calculation */
-    err = (*(private_key_state->calculate))
-        (private_key_state, public_key_state, shared_key);
+/**
+ * \brief Verifies a digital signature on a message.
+ *
+ * \param state The SignState object containing the private key.
+ * \param message Points to the message whose signature should
+ * be verified, which is usually a short hash value.
+ * \param message_len The length of the \a message to be verified.
+ * \param signature Points to the signature to be verified.
+ * \param signature_len The length of the \a signature in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state, \a message,
+ * or \a signature is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a signature_len is not
+ * correct for the algorithm.
+ * \return NOISE_ERROR_INVALID_PUBLIC_KEY if \a state does not
+ * contain a public key or the public key is invalid.
+ * \return NOISE_ERROR_INVALID_SIGNATURE if the \a signature is not
+ * valid for the \a message using this public key.
+ *
+ * \sa noise_signstate_set_public_key(), noise_signstate_sign()
+ */
+int noise_signstate_verify
+    (const NoiseSignState *state, const uint8_t *message, size_t message_len,
+     const uint8_t *signature, size_t signature_len)
+{
+    /* Validate the parameters */
+    if (!state || !message || !signature)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (signature_len != state->signature_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (state->key_type == NOISE_KEY_TYPE_NO_KEY)
+        return NOISE_ERROR_INVALID_PUBLIC_KEY;
 
-    /* If the public key was null, then we need to set the shared key
-       to null and replace any error we got from the back end with "none" */
-    noise_cmove_zero(shared_key, shared_key_len, is_null);
-    err &= (is_null - 1);
-    return err;
+    /* Verify the digial signature */
+    return (*(state->verify))(state, message, message_len, signature);
 }
 
 /**@}*/

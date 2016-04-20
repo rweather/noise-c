@@ -91,6 +91,9 @@ static NoiseIdMapping const algorithm_names[] = {
     {NOISE_PREFIX_STANDARD,     "Noise",         5},
     {NOISE_PREFIX_PSK,          "NoisePSK",      8},
 
+    /* Signature algorithms */
+    {NOISE_SIGN_ED25519,        "Ed25519",       7},
+
     /* Terminator for the list */
     {0,                         0,               0}
 };
@@ -102,8 +105,8 @@ static NoiseIdMapping const algorithm_names[] = {
  *
  * \param category The category of identifier to look for; one of
  * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
- * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, or zero.
- * Zero indicates "any category".
+ * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, NOISE_SIGN_CATEGORY,
+ * or zero.  Zero indicates "any category".
  * \param name Points to the name to map.
  * \param name_len Length of the \a name in bytes.
  *
@@ -139,8 +142,8 @@ int noise_name_to_id(int category, const char *name, size_t name_len)
  *
  * \param category The category of identifier to look for; one of
  * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
- * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, or zero.
- * Zero indicates "any category".
+ * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, NOISE_SIGN_CATEGORY,
+ * or zero.  Zero indicates "any category".
  * \param id The algorithm identifier to map.
  *
  * \return The NUL-terminated name of the algorithm, or NULL if the

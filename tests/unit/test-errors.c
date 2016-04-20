@@ -23,7 +23,7 @@
 #include "test-helpers.h"
 
 #define NOISE_MIN_ERROR     NOISE_ID('E', 1)
-#define NOISE_MAX_ERROR     NOISE_ID('E', 16)
+#define NOISE_MAX_ERROR     NOISE_ID('E', 17)
 
 void test_errors(void)
 {
@@ -93,5 +93,6 @@ void test_errors(void)
         dump_error(NOISE_ERROR_INVALID_PRIVATE_KEY);
         dump_error(NOISE_ERROR_INVALID_PUBLIC_KEY);
         dump_error(NOISE_ERROR_INVALID_FORMAT);
+        dump_error(NOISE_ERROR_INVALID_SIGNATURE);
     }
 }

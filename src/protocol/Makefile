@@ -30,6 +30,7 @@ MAIN_SOURCES = \
 	$(SRCDIR)/protocol/names.c \
 	$(SRCDIR)/protocol/patterns.c \
 	$(SRCDIR)/protocol/rand.c \
+	$(SRCDIR)/protocol/signstate.c \
 	$(SRCDIR)/protocol/symmetricstate.c \
 	$(SRCDIR)/protocol/util.c
 
@@ -41,7 +42,8 @@ BACKEND_REF_SOURCES = \
 	$(SRCDIR)/backend/ref/hash-blake2s.c \
 	$(SRCDIR)/backend/ref/hash-blake2b.c \
 	$(SRCDIR)/backend/ref/hash-sha256.c \
-	$(SRCDIR)/backend/ref/hash-sha512.c
+	$(SRCDIR)/backend/ref/hash-sha512.c \
+	$(SRCDIR)/backend/ref/sign-ed25519.c
 
 CRYPTO_REF_SOURCES = \
 	$(SRCDIR)/crypto/aes/rijndael-alg-fst.c \
