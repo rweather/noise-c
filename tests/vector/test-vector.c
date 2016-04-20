@@ -201,8 +201,10 @@ static void check_id(int id, int category, const char *name)
  * \brief Tests the parsing of the protocol name into components.
  *
  * \param vec The test vector.
+ *
+ * \return Non-zero if the handshake pattern is one-way.
  */
-static void test_name_parsing(const TestVector *vec)
+static int test_name_parsing(const TestVector *vec)
 {
     NoiseProtocolId id;
     compare(noise_protocol_name_to_id(&id, vec->name, strlen(vec->name)),
@@ -216,25 +218,36 @@ static void test_name_parsing(const TestVector *vec)
     check_id(id.cipher_id, NOISE_CIPHER_CATEGORY, vec->cipher);
     check_id(id.hash_id, NOISE_HASH_CATEGORY, vec->hash);
     compare(id.reserved_id, 0);
+    return id.pattern_id == NOISE_PATTERN_N ||
+           id.pattern_id == NOISE_PATTERN_X ||
+           id.pattern_id == NOISE_PATTERN_K;
 }
 
 /**
  * \brief Test a connection between an initiator and a responder.
  *
  * \param vec The test vector.
+ * \param is_one_way Non-zero if the handshake pattern is one-way.
  */
-static void test_connection(const TestVector *vec)
+static void test_connection(const TestVector *vec, int is_one_way)
 {
     NoiseHandshakeState *initiator;
     NoiseHandshakeState *responder;
     NoiseHandshakeState *send;
     NoiseHandshakeState *recv;
     NoiseDHState *dh;
+    NoiseCipherState *c1init;
+    NoiseCipherState *c2init;
+    NoiseCipherState *c1resp;
+    NoiseCipherState *c2resp;
+    NoiseCipherState *csend;
+    NoiseCipherState *crecv;
     uint8_t message[MAX_MESSAGE_SIZE];
     uint8_t payload[MAX_MESSAGE_SIZE];
     size_t message_size;
     size_t payload_size;
     size_t index;
+    size_t mac_len;
     int role;
 
     /* Create the two ends of the connection */
@@ -322,7 +335,8 @@ static void test_connection(const TestVector *vec)
             /* Send on the initiator, receive on the responder */
             send = initiator;
             recv = responder;
-            role = NOISE_ROLE_RESPONDER;
+            if (!is_one_way)
+                role = NOISE_ROLE_RESPONDER;
         } else {
             /* Send on the responder, receive on the initiator */
             send = responder;
@@ -351,9 +365,52 @@ static void test_connection(const TestVector *vec)
                        vec->messages[index].payload_len);
     }
 
+    /* Handshake finished.  Now handle the data transport */
+    compare(noise_handshakestate_split(initiator, &c1init, &c2init),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_split(responder, &c1resp, &c2resp),
+            NOISE_ERROR_NONE);
+    mac_len = noise_cipherstate_get_mac_length(c1init);
+    for (; index < vec->num_messages; ++index) {
+        if (role == NOISE_ROLE_INITIATOR) {
+            /* Send on the initiator, receive on the responder */
+            csend = c1init;
+            crecv = c1resp;
+            if (!is_one_way)
+                role = NOISE_ROLE_RESPONDER;
+        } else {
+            /* Send on the responder, receive on the initiator */
+            csend = c2resp;
+            crecv = c2init;
+            role = NOISE_ROLE_INITIATOR;
+        }
+        message_size = sizeof(message);
+        verify(message_size >= (vec->messages[index].payload_len + mac_len));
+        memcpy(message, vec->messages[index].payload,
+               vec->messages[index].payload_len);
+        compare(noise_cipherstate_encrypt_with_ad
+                    (csend, 0, 0, message, vec->messages[index].payload_len,
+                     &message_size),
+                NOISE_ERROR_NONE);
+        compare_blocks("ciphertext", message, message_size,
+                       vec->messages[index].ciphertext,
+                       vec->messages[index].ciphertext_len);
+        payload_size = sizeof(message);
+        compare(noise_cipherstate_decrypt_with_ad
+                    (crecv, 0, 0, message, message_size, &payload_size),
+                NOISE_ERROR_NONE);
+        compare_blocks("plaintext", message, payload_size,
+                       vec->messages[index].payload,
+                       vec->messages[index].payload_len);
+    }
+
     /* Clean up */
     compare(noise_handshakestate_free(initiator), NOISE_ERROR_NONE);
     compare(noise_handshakestate_free(responder), NOISE_ERROR_NONE);
+    compare(noise_cipherstate_free(c1init), NOISE_ERROR_NONE);
+    compare(noise_cipherstate_free(c2init), NOISE_ERROR_NONE);
+    compare(noise_cipherstate_free(c1resp), NOISE_ERROR_NONE);
+    compare(noise_cipherstate_free(c2resp), NOISE_ERROR_NONE);
 }
 
 /**
@@ -370,8 +427,8 @@ static int test_vector_run(JSONReader *reader, const TestVector *vec)
     printf("%s ... ", vec->name);
     fflush(stdout);
     if ((value = setjmp(test_jump_back)) == 0) {
-        test_name_parsing(vec);
-        test_connection(vec);
+        int is_one_way = test_name_parsing(vec);
+        test_connection(vec, is_one_way);
         printf("ok\n");
         return 1;
     } else if (value == 2) {
