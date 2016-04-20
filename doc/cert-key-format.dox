@@ -1,0 +1,437 @@
+/*
+ * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file cert-key-format.dox
+\page cert_key_format Certificate and private key format
+
+\tableofcontents
+
+This document describes certificate and private key formats that
+are proposed for use in implementations of Noise.
+
+\section cert_design Design principles
+
+The following principles were considered when designing this format:
+
+\li It should be a simple text-based format that can be viewed with
+    ordinary text viewers and manipulated with oridinary text tools.
+\li Compact representation so that certificates chains of reasonable
+    length can fit within a single Noise packet.
+\li Editing a certificate to add new signature blocks should be easy.
+\li Certificate chains are the simple concatenation of multiple certificates.
+\li No surprises.  A human signer can read and understand the text format and
+    decide whether they are willing to sign the certificate.  Binary formats
+    make it difficult to know what you are actually signing.
+
+\section cert_format Certificate format
+
+The following is an example of a minimal certificate for "Jane Smith"
+that has been signed by "Trent Peoples":
+
+\code
+-NOISE-CERT-V1-
+Name: Jane Smith
+Id: jane.smith@example.com
+Enc-Role: client
+Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=
+-SIGNATURE-
+Name: Trent Peoples
+Id: tpeoples@example.org
+Sign-Key: Ed25519,dS45RT8DNVhldxcHgsFHj6NA6pKs5dF2lUrda9lhoAb=
+Nonce: Lya4LdMCDhAwVbJf8oKwFw==
+Valid-From: 2016-03-15T00:00:00Z
+Valid-To: 2026-03-15T23:59:59Z
+Signature: BLAKE2b,28pgTWIJGGXIL5CJ4zSQoM9jLWQtzdTpqQ2wLFr1esmtdMakMJdDyQw3pkI1poyftCFEuAnJa7v8VAhpOzE+zg==
+-END-NOISE-CERT-
+\endcode
+
+Here, Jane has declared that her Curve25519 encryption key will be used
+in the "client" role.  Trent then accepted that role, hashed the certificate
+data with "BLAKE2b", and added his signature using the "Ed25519" algorithm.
+
+The signature covers all lines from <tt>-NOISE-CERT-V1-</tt> through to
+the line just before <tt>-Signature-</tt>.  Line endings MUST be normalized
+to CRLF's when computing the signature.
+
+Multiple signature blocks can be included from multiple signers:
+
+\code
+-NOISE-CERT-V1-
+Name: Jane Smith
+Id: jane.smith@example.com
+Enc-Role: client
+Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=
+Enc-Key: 448,fPgovvcg4ZEHZdAOnUP89KV39u87pDZtVqdLBWZWhCzy9DPWc76PmtgZZpn3EpXqiw4zJCadA6Y=
+-SIGNATURE-
+Name: Trent Peoples
+Id: tpeoples@example.org
+Sign-Key: Ed25519,dS45RT8DNVhldxcHgsFHj6NA6pKs5dF2lUrda9lhoAb=
+Nonce: Lya4LdMCDhAwVbJf8oKwFw==
+Valid-From: 2016-03-15T00:00:00Z
+Valid-To: 2026-03-15T23:59:59Z
+Signature: BLAKE2b,28pgTWIJGGXIL5CJ4zSQoM9jLWQtzdTpqQ2wLFr1esmtdMakMJdDyQw3pkI1poyftCFEuAnJa7v8VAhpOzE+zg==
+-SIGNATURE-
+Name: Mary Sue
+Id: mary.sue@example.com
+Sign-Key: Ed25519,GMzi9DASQiLw0t1sAvgCSwjddHEQs9Xkaq3x3g0iQin=
+Nonce: z/doQzK8LEwAovegMZzDcw==
+Valid-From: 2015-05-17T00:00:00Z
+Valid-To: 2025-05-17T23:59:59Z
+Signature: SHA512,JBUjGRz8KCLh1HnqWjZ9ayj/Fzc2WJcoZSu9o9aWZ8VX0X5Q1ETQ+SpJH1UwQRq90fcMv6T6zXbNj16qwQu1eg==
+-END-NOISE-CERT-
+\endcode
+
+Each signature is independent, covering the subject information leading up
+to the first <tt>-SIGNATURE-</tt> line, and then continuing with the
+details for the specific signer.  In the above example, Mary's signature does
+not include the details from Trent.  The certificate would be equally valid
+with Mary's signature listed first.
+
+Because the signatures are independent, new signatures can be added to
+the end of the certificate at any time.  Or old signatures can be removed
+from the certificate at any time.  Any remaining signatures will remain
+valid as they only vouch for Jane's identity, not the identity of
+the other signers.
+
+This approach also allows certificates to be trimmed when they are sent
+in Noise packets.  If the client is communicating with a server that
+trusts Trent as a certificate authority, then there is no need to send
+the signature block for Mary.  Certificates may also be trimmed to
+hide the identity of additional signers from remote parties that do not
+need to know about those signers.
+
+\note Signatures provide additional information that may help bind a key
+to an identity for specific use cases, but signatures are not necessary
+for secure communication to occur.  Protocols should keep this in mind
+when using Noise certificates.  The lack of a signature does not imply
+that the user is untrustworthy.  It only implies that the user has not
+found anyone yet who they trust to sign their certificate.  Other
+strategies such as "Trust On First Use" can be used to manage certificates
+that lack signatures.
+
+\subsection cert_overall_format Overall format of a certificate
+
+Certificiates are represented in UTF-8, and consist of lines of UTF-8
+text.  Lines SHOULD be terminated with CRLF, and MAY be terminated with a
+single LF.  LF line terminators MUST be converted into CRLF before
+hashing the data to sign it.  There MUST NOT be any extra whitespace
+on the start or end of lines.
+
+Certificates MUST start with a line <tt>-NOISE-CERT-V1-</tt>,
+called the "certificate introducer".  Certificates MUST end with a line
+<tt>-END-NOISE-CERT-</tt>, called the "certificate terminator".
+
+The certificate introducer is followed by the "subject information"
+fields.  Each field consists of a name, followed by a colon and a space
+character, and then followed by the field's value.
+
+Field names are a sequence of printable US-ASCII characters chosen from
+the set A-Z, a-z, 0-9, and the minus sign.  The field name MUST NOT start
+with a minus sign.  Any other character before the colon other than
+those from the recommended set is considered an error.  Field names
+starting with "X-" are reserved for private use.
+
+The field name SHOULD be made up of English words or abbreviations
+that are clear as to their meaning in the context of the larger protocol.
+The restriction to English words and abbreviations is motivated by the
+"No surprises" design principle.  A human reading the field name should
+have no problem determining what the field is for, or finding an English
+speaker to explain what it is for.  Non-English words or opaque abbreviations
+make this more difficult.
+
+Field values MUST be encoded in a single line of UTF-8 text, leading
+up to the terminating CRLF or LF sequence.  There is no support for
+line continuations.  Lines may be of arbitrary length.  When a field
+value is displayed to a human user, it may be necessary to wrap strings
+to fit in the available screen space, and to filter out unprintable
+control characters.  Such details are left up to the implementation.
+
+After the subject information, there may appear zero or more
+"signature blocks", each of which begins with the line
+<tt>-SIGNATURE-</tt>.  The signature blocks are also a list
+of fields, formatted in the same way as the subject information.
+However, the set of allowable fields is different for signature blocks.
+
+\subsection cert_subject Subject information
+
+This section lists the fields that MAY appear in a Subject information block.
+All fields are optional.
+
+<tt>Name</tt> - The name of the subject for the certificate.  This string
+is intended to be human-readable and MUST be encoded in UTF-8.  If the
+<tt>Name</tt> is not present, <tt>Id</tt> can be displayed to the human user
+instead.
+
+<tt>Id</tt> - The identity of the subject, formatted as "foo@domain".
+The <tt>Id</tt> may look like an e-mail address but it doesn't have to be.
+It only needs to be unique in the context of the larger Noise protocol.
+
+Both <tt>Name</tt> and <tt>Id</tt> are OPTIONAL.  If neither are present,
+then the subject is identified by their public key fingerprint.  This option
+is provided to protect the identity of anonymous users.  A pseudonym could
+be used instead, but pseudonym use is not required.
+
+<tt>Enc-Key</tt> - Specifies an encryption key for the subject.
+The field consists of an algoritm name, a comma, and the base64 encoding
+of the public key value.  The format of the public key value is determined
+from the algorithm name.  The currently defined algorithms are
+"25519" and "448", corresponding to the Diffie-Hellman algorithms in
+Noise of the same names.
+
+<tt>Enc-Role</tt> - Specifies the role that the key in the next line
+can be used for.  The currently defined values are "client" and "server",
+in lower case.  If the same key can be used for both roles, then it must
+appear twice in the certificate:
+
+\code
+Enc-Role: client
+Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=
+Enc-Role: server
+Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=
+\endcode
+
+Using the same key for multiple roles is not recommended.
+
+There may be multiple <tt>Enc-Key</tt> lines, one for each public encryption
+key that the subject owns for a role.  The first <tt>Enc-Key</tt> line
+SHOULD be preceded by a <tt>Enc-Role</tt> line defining the role.  The default
+role is "client".
+
+\code
+Enc-Role: client
+Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=
+Enc-Key: 448,fPgovvcg4ZEHZdAOnUP89KV39u87pDZtVqdLBWZWhCzy9DPWc76PmtgZZpn3EpXqiw4zJCadA6Y=
+\endcode
+
+<tt>Sign-Key</tt> - Specifies a signing key for the subject.
+The field consists of an algorithm name, a comma, and the base64 encoding
+of the public key value.  The format of the public key value is determined
+from the algorithm name.  The only currently defined algorithm is "Ed25519".
+
+<tt>Sign-Role</tt> - Specifies the role that the signing key in the next
+line can be used for.  The currently defined values are "certificate" and
+"identity", in lower case.  A role of "certificate" indicates that the key
+can be used to sign certificates for other users.  A role of "identity"
+indicates that the key is used to assert the identity of the user.
+If the same key can be used for both roles, then it should appear twice
+in the same way as <tt>Enc-Role</tt>.  Using the same key for multiple
+roles is not recommended.
+
+There may be multiple <tt>Sign-Key</tt> lines, one for each public encryption
+key that the subject owns for a role.  The first <tt>Sign-Key</tt> line
+SHOULD be preceded by a <tt>Sign-Role</tt> line defining the role.
+The default role is "certificate".
+
+While it would be possible to offer a comma-separated list of
+roles for a key, it was chosen not to do this.  Certificate parsers can
+be simpler if they are checking for entire literal strings, compared with
+having to parse comma-separated fields.  And since implementations
+SHOULD use different keys for different roles, different key blocks
+will probably be needed anyway.
+
+There may be other fields in the subject information block.  Any field
+that is not understood should be ignored by implementations.  However,
+when a certificate is signed, these fields SHOULD be shown to the signer
+so that they are not tricked into signing information they do not agree with.
+
+Field names that do not start with "X-" are reserved for future versions
+of this specification.  Field names starting with "X-" may be assigned any
+local meaning by implementers.  For example "X-Foo-Nickname" may be useful
+in a secure chat client called "Foo" to set the user's preferred nickname.
+Any information that could identify the user (such as a nickname)
+SHOULD be optional.
+
+\subsection cert_signature Signature blocks
+
+This section lists the fields that MAY appear in a Subject information block.
+
+<tt>Name</tt> and <tt>Id</tt> have the same format and meaning as for
+subject information blocks.  In this case they identify the signer.
+Both fields can be omitted to hide the identity of the signer.
+
+There SHOULD be a single <tt>Sign-Key</tt> line which specifies the
+algorithm name and public key that was used to sign the certificate.
+This line can be omitted if the recipient has some other means to
+obtain the key for the signer.
+
+<tt>Nonce</tt> is an extra pseudorandom value added by the signer,
+which ensures that multiple signatures for the same subject from
+the same signer will be different.  The value should be considered
+opaque.  It is recommended that it consist of at least 128 bits
+of pseudorandom data, encoded in base64.  This field SHOULD be
+included.  It MAY be omitted for anonymous users to avoid the
+watermarking problems described under \ref cert_other "Other issues"
+below.  The <tt>Valid-From</tt> field SHOULD be included in this
+case to provide a fallback nonce that is different between signatures.
+
+<tt>Valid-From</tt> and <tt>Valid-To</tt> are OPTIONAL fields that
+indicate the starting and ending times for the validity of the signature.
+Note: This is the validity of the signature, not of the certificate.
+The signer is not saying "this key is valid for this period" but
+rather "I do not vouch for this certificate outside this time period".
+The subject information may remain valid for much longer.  The format MUST
+comply with <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>
+as profiled in <a href="https://tools.ietf.org/html/rfc3339">RFC 3339</a>.
+
+<tt>Signature</tt> MUST be the last line in the signature block,
+and consists of a hash algorithm name and the actual signature produced
+with the <tt>Sign-Key</tt>.
+
+The signature is computed over the following lines:
+
+\li The line <tt>-NOISE-CERT-V1-</tt>, which binds the signature to
+    the specific certificate version.
+\li All lines in the subject information block in the order in which
+    they appear.
+\li The line <tt>-SIGNATURE-</tt>, which separates the subject
+    information fields from the signature information fields.
+\li All lines in the signature block, excluding the final
+    <tt>Signature</tt> line.
+\li The line <tt>-END-NOISE-CERT-</tt>, which terminates the certificate.
+
+If there were any existing <tt>-SIGNATURE-</tt> blocks in the
+certificate to be signed, they are ignored when calculating the hash.
+
+Lines that end in LF MUST be converted into lines ending in CRLF before
+applying the hash algorithm.
+
+The new signature block is inserted at the end of the certificate,
+starting with <tt>-SIGNATURE-</tt> and ending just before the
+existing <tt>-END-NOISE-CERT-</tt> line.
+
+\subsection cert_other Other issues
+
+Any strings that are read from a certificate and presented to a human
+user should be preprocessed to remove or transform control characters or
+other data that may be problematic for the output device.
+
+The <tt>Nonce</tt> value and implementation-specific fields could be used
+to watermark users who otherwise wish to remain anonymous.  Once a
+certificate is signed, the subject will need to import the signature into
+their key ring.  At this point the subject can see if any extra fields
+were inserted that concern them and reject the signature.
+
+The <tt>Nonce</tt> field is opaque and non-obvious but highly recommended
+to deal with duplicate signatures for the same subject key.  The <tt>Nonce</tt>
+field MAY be omitted by a signer from certificates if they wish to provide
+some assurance to anonymous users that they have not watermarked the
+signature.  The <tt>Valid-From</tt> field is used as a fallback nonce
+for this case.
+
+Anonymous users can choose to reject signatures that include a
+<tt>Nonce</tt>.  They should also carefully inspect the <tt>Valid-From</tt>
+and <tt>Valid-To</tt> timestamps.  Odd date or time values might provide
+another opportunity to include watermarking bits.
+
+The main protection against this is disclosure.  If it was discovered
+that well-known signing authorities were watermarking certificates,
+affected users can remove the offending signatures and seek new signers.
+
+Signers may require some kind of proof that the subject is in possession
+of the relevant key before adding a signature.  For encryption keys,
+the Noise protocol itself provides handshake patterns that can prove key
+possession.
+
+A hypothetical certificate issuing protocol should check that the static
+public key for the session matches that in the supplied certificate.
+This does become more complex if the subject has multiple encryption keys
+or signing keys.  Multiple requests may be necessary to prove ownership
+of the additional keys.
+
+\section key_format Private key format
+
+The private key format is similar to the certificate format, with
+additional information about the key:
+
+\code
+Name: Jane Smith
+Id: jane.smith@example.com
+Enc-Role: client
+Enc-Private-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=
+Enc-Private-Key: 448,fPgovvcg4ZEHZdAOnUP89KV39u87pDZtVqdLBWZWhCzy9DPWc76PmtgZZpn3EpXqiw4zJCadA6Y=
+\endcode
+
+The <tt>Enc-Private-Key</tt> field is similar to <tt>Enc-Key</tt> except
+that contains the private key component of the keypair.  The public key
+is derived from the private key at runtime.  The counterpart for signing
+keys is <tt>Sign-Private-Key</tt>.
+
+The above example specifies the bare private key details.  This information
+is not stored or transmitted in plaintext.  Instead it is encrypted using a
+passphrase to generate data such as the following:
+
+\code
+-NOISE-KEY-V1-
+Algorithm: ChaChaPoly_BLAKE2b_PBKDF2
+Salt: wo3KZvAoFdR9ek5oljNAJw==
+Iterations: 30000
+-KEY-DATA-
+TmFtZTogSmFuZSBTbWl0aApJZDogamFuZS5zbWl0aEBleGFtcGxlLmNvbQpFbmMtUm9sZTogY2xp
+ZW50CkVuYy1Qcml2LUtleTogMjU1MTksMGJ2WVl3T1B3ZHRjcm92ZTFpajM3U2JBaG51USsrNGoy
+Ly9zRUxKYU5VQT0sZzZGNmpmM2o2VFB1NmM4QU51THhQZVpwOW9BdW9WaXNVR2pNV3V4a2crRT0K
+RW5jLVByaXYtS2V5OiA0NDgsZlBnb3Z2Y2c0WkVIWmRBT25VUDg5S1YzOXU4N3BEWnRWcWRMQlda
+V2hDenk5RFBXYzc2UG10Z1pacG4zRXBYcWl3NHpKQ2FkQTZZPSxvK2dyYXJrVW9LaDZmQUtCeC9R
+RUY0QTVvM3pBSmlrVFV6bkQ3M0pyMXhGWWgvVCs4T3JGNE5wVExtQkxXbk5rMjFTVXlWSCtyRmc9
+Cg==
+-END-NOISE-KEY-
+\endcode
+
+Here, PBKDF2 (from <a href="https://www.ietf.org/rfc/rfc2898.txt">RFC 2898</a>)
+with the specified hash algorithm (BLAKE2b in this case) is used to generate
+an encryption key and nonce for ChaChaPoly.  The first 32 bytes of the PBKDF2
+output are used as the encryption key.  The next 8 bytes of the PBKDF2 output
+are interpreted as a big-endian 64-bit value and used as the nonce.  The
+entirety of the private key details are encrypted in a single request,
+which limits the size to 65535 bytes including the MAC.
+
+The <tt>-KEY-DATA-</tt> section is the base64 encoding of the outout
+of encrypting the bare private key details given earlier with ChaChaPoly.
+The final 16 bytes of the base64-encoded data is the MAC value which
+can be used to verify that the correct passphrase was supplied.
+
+The <tt>Salt</tt> and <tt>Iterations</tt> fields specify arguments
+to the PBKDF2 function.  The salt SHOULD be at least 16 bytes in length,
+and MAY be longer at the implementation's discretion.  The unsigned
+32-bit iteration count should be large enough to make dictionary attacks
+on the private key file time-consuming on current hardware.
+
+Encrypted private keys can be a hassle for servers and other systems
+that run unattended.  Such systems may need to use a static passphrase,
+even if only the empty passphrase.
+
+\section fingerprints Public key fingerprints
+
+When displaying a public key to a human user, the public key SHOULD
+be hashed with SHA256 with first 16 bytes of the value formatted
+in hexadecimal, separated by colons.  For example:
+
+\code
+34:da:01:7b:07:e1:a0:0d:64:14:be:e9:af:cf:db:7b
+\endcode
+
+Fingerprints MAY be calculated with other hash algorithms or MAY
+include more than 16 bytes.  However, SHA256 with truncation is
+RECOMMENDED to improve interoperability of fingerprints between
+implementations.
+
+*/

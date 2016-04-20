@@ -23,6 +23,7 @@
 /**
 \file mainpage.dox
 \mainpage
+\tableofcontents
 
 Noise-C is a plain C implementation of the
 <a href="http://noiseprotocol.org/">Noise Protocol</a>, intended as a
@@ -53,6 +54,10 @@ is my motto.
 \li \ref dhstate "DHState"
 \li \ref signstate "SignState"
 \li \ref randstate "RandState"
+
+\section other_info Other information
+
+\li \ref cert_key_format "Certificate and private key file format"
 
 \section dir_structure Directory structure
 
