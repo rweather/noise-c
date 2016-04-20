@@ -102,7 +102,8 @@ static int noise_symmetricstate_new
         memset(new_state->h + name_len, 0, hash_len - name_len);
     } else {
         noise_hashstate_hash_one
-            (new_state->hash, (const uint8_t *)name, name_len, new_state->h);
+            (new_state->hash, (const uint8_t *)name, name_len,
+             new_state->h, hash_len);
     }
     memcpy(new_state->ck, new_state->h, hash_len);
 
@@ -315,7 +316,7 @@ int noise_symmetricstate_mix_hash
     /* Mix the input data into "h" */
     hash_len = noise_hashstate_get_hash_length(state->hash);
     noise_hashstate_hash_two
-        (state->hash, state->h, hash_len, input, size, state->h);
+        (state->hash, state->h, hash_len, input, size, state->h, hash_len);
     return NOISE_ERROR_NONE;
 }
 
@@ -441,7 +442,7 @@ int noise_symmetricstate_decrypt_and_hash
        then we don't update the handshake hash with the bogus data */
     hash_len = noise_hashstate_get_hash_length(state->hash);
     noise_hashstate_hash_two
-        (state->hash, state->h, hash_len, data, in_data_len, temp);
+        (state->hash, state->h, hash_len, data, in_data_len, temp, hash_len);
 
     /* Decrypt the ciphertext using the underlying cipher */
     hash_len = noise_hashstate_get_hash_length(state->hash);

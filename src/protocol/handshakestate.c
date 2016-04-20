@@ -741,7 +741,7 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
     } else {
         noise_hashstate_hash_one
             (state->symmetric->hash, (const uint8_t *)name, name_len,
-             state->symmetric->h);
+             state->symmetric->h, hash_len);
     }
     memcpy(state->symmetric->ck, state->symmetric->h, hash_len);
 

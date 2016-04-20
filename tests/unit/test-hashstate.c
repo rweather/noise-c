@@ -49,7 +49,7 @@ static void check_hash(int id, size_t hash_len, size_t block_len,
 
     /* Check hashing all data in one hit */
     memset(temp, 0xAA, sizeof(temp));
-    compare(noise_hashstate_hash_one(state, input, input_len, temp),
+    compare(noise_hashstate_hash_one(state, input, input_len, temp, hash_len),
             NOISE_ERROR_NONE);
     verify(!memcmp(temp, output, hash_len));
 
@@ -57,26 +57,61 @@ static void check_hash(int id, size_t hash_len, size_t block_len,
     for (index = 0; index < input_len; ++index) {
         memset(temp, 0xAA, sizeof(temp));
         compare(noise_hashstate_hash_two
-            (state, input, index, input + index, input_len - index, temp),
+            (state, input, index, input + index, input_len - index,
+             temp, hash_len),
             NOISE_ERROR_NONE);
         verify(!memcmp(temp, output, hash_len));
     }
 
+    /* Check hashing the data with reset/update/finalize */
+    for (index = 0; index < input_len; ++index) {
+        memset(temp, 0xAA, sizeof(temp));
+        compare(noise_hashstate_reset(state), NOISE_ERROR_NONE);
+        if (index) {
+            compare(noise_hashstate_update(state, input, index),
+                    NOISE_ERROR_NONE);
+        }
+        compare(noise_hashstate_update(state, input + index, input_len - index),
+                NOISE_ERROR_NONE);
+        compare(noise_hashstate_finalize(state, temp, hash_len),
+                NOISE_ERROR_NONE);
+        verify(!memcmp(temp, output, hash_len));
+    }
+
     /* Check parameter error conditions */
-    compare(noise_hashstate_hash_one(0, input, input_len, temp),
+    compare(noise_hashstate_hash_one(0, input, input_len, temp, hash_len),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_hashstate_hash_one(state, 0, input_len, temp),
+    compare(noise_hashstate_hash_one(state, 0, input_len, temp, hash_len),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_hashstate_hash_one(state, input, input_len, 0),
+    compare(noise_hashstate_hash_one(state, input, input_len, 0, hash_len),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_hashstate_hash_two(0, input, 10, input + 10, 13, temp),
+    compare(noise_hashstate_hash_one(state, input, input_len, temp, hash_len - 1),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_hash_one(state, input, input_len, temp, hash_len + 1),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_hash_two(0, input, 10, input + 10, 13, temp, hash_len),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_hashstate_hash_two(state, 0, 10, input + 10, 13, temp),
+    compare(noise_hashstate_hash_two(state, 0, 10, input + 10, 13, temp, hash_len),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_hashstate_hash_two(state, input, 10, 0, 13, temp),
+    compare(noise_hashstate_hash_two(state, input, 10, 0, 13, temp, hash_len),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_hashstate_hash_two(state, input, 10, input + 10, 13, 0),
+    compare(noise_hashstate_hash_two(state, input, 10, input + 10, 13, 0, hash_len),
             NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_hash_two(state, input, 10, input + 10, 13, temp, hash_len - 1),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_hash_two(state, input, 10, input + 10, 13, temp, hash_len + 1),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_reset(0), NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_update(0, input, 10), NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_update(state, 0, 10), NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_finalize(0, temp, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_finalize(state, 0, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_finalize(state, temp, hash_len - 1),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_finalize(state, temp, hash_len + 1),
+            NOISE_ERROR_INVALID_LENGTH);
 
     /* Re-create the object by name and check its properties again */
     compare(noise_hashstate_free(state), NOISE_ERROR_NONE);
@@ -87,7 +122,7 @@ static void check_hash(int id, size_t hash_len, size_t block_len,
 
     /* Make sure that it is still the same object by checking hash outputs */
     memset(temp, 0xAA, sizeof(temp));
-    compare(noise_hashstate_hash_one(state, input, input_len, temp),
+    compare(noise_hashstate_hash_one(state, input, input_len, temp, hash_len),
             NOISE_ERROR_NONE);
     verify(!memcmp(temp, output, hash_len));
 
@@ -184,7 +219,7 @@ static void format_hmac_key(NoiseHashState *state, uint8_t *block,
         memcpy(block, key, key_len);
         memset(block + key_len, 0, block_len - key_len);
     } else {
-        noise_hashstate_hash_one(state, key, key_len, block);
+        noise_hashstate_hash_one(state, key, key_len, block, hash_len);
         memset(block + hash_len, 0, block_len - hash_len);
     }
     while (block_len > 0) {
@@ -202,9 +237,9 @@ static void hmac(NoiseHashState *state, uint8_t *hash,
     size_t block_len = noise_hashstate_get_block_length(state);
     uint8_t block[MAX_BLOCK_LEN];
     format_hmac_key(state, block, key, key_len, 0x36);
-    noise_hashstate_hash_two(state, block, block_len, data, data_len, hash);
+    noise_hashstate_hash_two(state, block, block_len, data, data_len, hash, hash_len);
     format_hmac_key(state, block, key, key_len, 0x5C);
-    noise_hashstate_hash_two(state, block, block_len, hash, hash_len, hash);
+    noise_hashstate_hash_two(state, block, block_len, hash, hash_len, hash, hash_len);
 }
 
 /* Simple implementation of HKDF for cross-checking the library */

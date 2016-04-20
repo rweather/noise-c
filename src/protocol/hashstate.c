@@ -209,29 +209,111 @@ size_t noise_hashstate_get_block_length(const NoiseHashState *state)
 }
 
 /**
+ * \brief Resets the hash state.
+ *
+ * \param state The HashState object.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ *
+ * \sa noise_hashstate_update(), noise_hashstate_finalize()
+ */
+int noise_hashstate_reset(NoiseHashState *state)
+{
+    /* Validate the parameter */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Reset the hash state */
+    (*(state->reset))(state);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Updates the hash state with more data.
+ *
+ * \param state The HashState object.
+ * \param data The new data to incorporate into the hash state.
+ * \param data_len The length of the \a data in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a data is NULL.
+ *
+ * \sa noise_hashstate_reset(), noise_hashstate_finalize()
+ */
+int noise_hashstate_update
+    (NoiseHashState *state, const uint8_t *data, size_t data_len)
+{
+    /* Validate the parameters */
+    if (!state || !data)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Update the hash state */
+    (*(state->update))(state, data, data_len);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Finalizes the hash state and returns the hash value.
+ *
+ * \param state The HashState object.
+ * \param hash The return buffer for the hash value.
+ * \param hash_len The length of the \a hash buffer in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a hash is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a hash_len is not the same
+ * as the hash length for the algorithm.
+ *
+ * \sa noise_hashstate_reset(), noise_hashstate_update(),
+ * noise_hashstate_get_hash_length()
+ */
+int noise_hashstate_finalize
+    (NoiseHashState *state, uint8_t *hash, size_t hash_len)
+{
+    /* Validate the parameters */
+    if (!state || !hash)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (hash_len != state->hash_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Finalize the hash state */
+    (*(state->finalize))(state, hash);
+    return NOISE_ERROR_NONE;
+}
+
+/**
  * \brief Hashes a single data buffer and returns the hash value.
  *
  * \param state The HashState object.
  * \param data Points to the data to be hashed.
  * \param data_len The length of the data in bytes.
- * \param hash The return buffer for the hash value.  This must contain
- * enough space for the hash length of the \a state object.
+ * \param hash The return buffer for the hash value.
+ * \param hash_len The length of the \a hash buffer in bytes.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a data,
  * or \a hash is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a hash_len is not the same
+ * as the hash length for the algorithm.
  *
  * The \a data and \a hash buffers are allowed to overlap.
+ *
+ * This is a convenience function that combines the effect of
+ * noise_hashstate_reset(), nose_hashstate_update(), and
+ * noise_hashstate_finalize().
  *
  * \sa noise_hashstate_hash_two(), noise_hashstate_get_hash_length()
  */
 int noise_hashstate_hash_one
     (NoiseHashState *state, const uint8_t *data, size_t data_len,
-     uint8_t *hash)
+     uint8_t *hash, size_t hash_len)
 {
     /* Validate the parameters */
     if (!state || !data || !hash)
         return NOISE_ERROR_INVALID_PARAM;
+    if (hash_len != state->hash_len)
+        return NOISE_ERROR_INVALID_LENGTH;
 
     /* Hash the data */
     (*(state->reset))(state);
@@ -249,24 +331,32 @@ int noise_hashstate_hash_one
  * \param data1_len The length of the first data buffer in bytes.
  * \param data2 Points to the second data buffer to be hashed.
  * \param data2_len The length of the second data buffer in bytes.
- * \param hash The return buffer for the hash value.  This must contain
- * enough space for the hash length of the \a state object.
- *
- * The \a data1, \a data2, and \a hash buffers are allowed to overlap.
+ * \param hash The return buffer for the hash value.
+ * \param hash_len The length of the \a hash buffer in bytes.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a data1,
  * \a data2, or \a hash is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a hash_len is not the same
+ * as the hash length for the algorithm.
+ *
+ * The \a data1, \a data2, and \a hash buffers are allowed to overlap.
+ *
+ * This is a convenience function that combines the effect of
+ * noise_hashstate_reset(), nose_hashstate_update(), and
+ * noise_hashstate_finalize().
  *
  * \sa noise_hashstate_hash_one(), noise_hashstate_get_hash_length()
  */
 int noise_hashstate_hash_two
     (NoiseHashState *state, const uint8_t *data1, size_t data1_len,
-     const uint8_t *data2, size_t data2_len, uint8_t *hash)
+     const uint8_t *data2, size_t data2_len, uint8_t *hash, size_t hash_len)
 {
     /* Validate the parameters */
     if (!state || !data1 || !data2 || !hash)
         return NOISE_ERROR_INVALID_PARAM;
+    if (hash_len != state->hash_len)
+        return NOISE_ERROR_INVALID_LENGTH;
 
     /* Hash the data */
     (*(state->reset))(state);

@@ -48,7 +48,7 @@ static HashValue HASH(const void *data, size_t len)
     HashValue result;
     memset(&result, 0, sizeof(result));
     compare(noise_hashstate_hash_one
-                (hashstate, (const uint8_t *)data, len, result.hash),
+                (hashstate, (const uint8_t *)data, len, result.hash, hash_len),
             NOISE_ERROR_NONE);
     return result;
 }
@@ -60,7 +60,7 @@ static HashValue HASHTwo(const HashValue h, const void *data, size_t len)
     memset(&result, 0, sizeof(result));
     compare(noise_hashstate_hash_two
                 (hashstate, h.hash, hash_len,
-                 (const uint8_t *)data, len, result.hash),
+                 (const uint8_t *)data, len, result.hash, hash_len),
             NOISE_ERROR_NONE);
     return result;
 }
