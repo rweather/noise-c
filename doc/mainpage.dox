@@ -52,6 +52,7 @@ is my motto.
 \li \ref hashstate "HashState"
 \li \ref dhstate "DHState"
 \li \ref signstate "SignState"
+\li \ref randstate "RandState"
 
 \section dir_structure Directory structure
 
@@ -93,7 +94,7 @@ In no particular order:
 \li Mechanism to encrypt static DH keypairs with a passphrase.
 \li Standalone key generation utility for static DH keypairs.
 \li Convert the build system to standard autoconf/automake conventions.
-\li Port to other platforms (rand.c is a particular place that needs work).
+\li Port to other platforms (rand_os.c is a particular place that needs work).
 \li Back ends for other cryptography libraries: OpenSSL, libsodium, ...
 \li Compile-time subsetting of the library for applications that only
     need a subset of the algorithms, and for platforms with limited memory.

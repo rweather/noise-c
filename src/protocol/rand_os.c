@@ -20,6 +20,10 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+/* This module gets random entropy from the operating system.  The code
+   here is very platform and OS dependent and will probably need work to
+   port it to new platforms. */
+
 #include "internal.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +56,7 @@
 #endif
 
 /**
- * \brief Gets cryptographically-strong random bytes from the system.
+ * \brief Gets cryptographically-strong random bytes from the operating system.
  *
  * \param bytes The buffer to fill with random bytes.
  * \param size The number of random bytes to obtain.

@@ -29,7 +29,8 @@ MAIN_SOURCES = \
 	$(SRCDIR)/protocol/hashstate.c \
 	$(SRCDIR)/protocol/names.c \
 	$(SRCDIR)/protocol/patterns.c \
-	$(SRCDIR)/protocol/rand.c \
+	$(SRCDIR)/protocol/randstate.c \
+	$(SRCDIR)/protocol/rand_os.c \
 	$(SRCDIR)/protocol/signstate.c \
 	$(SRCDIR)/protocol/symmetricstate.c \
 	$(SRCDIR)/protocol/util.c

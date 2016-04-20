@@ -20,18 +20,29 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_PROTOCOL_H
-#define NOISE_PROTOCOL_H
+#ifndef NOISE_RANDSTATE_H
+#define NOISE_RANDSTATE_H
 
-#include <noise/protocol/constants.h>
-#include <noise/protocol/errors.h>
-#include <noise/protocol/names.h>
-#include <noise/protocol/cipherstate.h>
-#include <noise/protocol/hashstate.h>
-#include <noise/protocol/dhstate.h>
-#include <noise/protocol/signstate.h>
-#include <noise/protocol/randstate.h>
-#include <noise/protocol/symmetricstate.h>
-#include <noise/protocol/handshakestate.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct NoiseRandState_s NoiseRandState;
+
+int noise_randstate_new(NoiseRandState **state);
+int noise_randstate_free(NoiseRandState *state);
+int noise_randstate_reseed(NoiseRandState *state);
+int noise_randstate_generate
+    (NoiseRandState *state, uint8_t *buffer, size_t len);
+int noise_randstate_pad
+    (NoiseRandState *state, uint8_t *payload, size_t orig_len,
+     size_t padded_len, int padding_mode);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
