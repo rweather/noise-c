@@ -34,7 +34,6 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
                          const char *ciphertext, const char *mac)
 {
     NoiseCipherState *state;
-    NoiseCipherState *new_state;
     NoiseCipherState *temp_state;
     uint8_t k[MAX_KEY_LEN];
     uint8_t a[MAX_AD_LEN];
@@ -180,27 +179,6 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     /* Reset the key to clear the "invalid nonce" state */
     compare(noise_cipherstate_init_key(state, k, key_len), NOISE_ERROR_NONE);
 
-    /* Split the cipherstate to create a clone with the same type */
-    compare(noise_cipherstate_split(state, k, key_len, &new_state),
-            NOISE_ERROR_NONE);
-    compare(noise_cipherstate_get_cipher_id(new_state), id);
-    compare(noise_cipherstate_get_key_length(new_state), key_len);
-    compare(noise_cipherstate_get_mac_length(new_state), mac_len);
-    verify(noise_cipherstate_has_key(new_state));
-
-    /* Fast forward the nonce on the new cipherstate and check encryption */
-    compare(noise_cipherstate_set_nonce(new_state, nonce), NOISE_ERROR_NONE);
-    out_data_len = (size_t)(-1);
-    memcpy(buffer, pt, pt_len);
-    compare(noise_cipherstate_encrypt_with_ad
-                (new_state, a, ad_len, buffer, pt_len, &out_data_len),
-            NOISE_ERROR_NONE);
-    compare(out_data_len, pt_len + mac_len);
-
-    /* Check the ciphertext and MAC that was generated */
-    verify(!memcmp(buffer, ct, pt_len));
-    verify(!memcmp(buffer + pt_len, tag, mac_len));
-
     /* Check for other parameter errors */
     compare(noise_cipherstate_init_key(0, k, key_len),
             NOISE_ERROR_INVALID_PARAM);
@@ -236,14 +214,6 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     compare(noise_cipherstate_decrypt_with_ad
                 (state, a, ad_len, buffer, mac_len / 2, &out_data_len),
             NOISE_ERROR_INVALID_LENGTH);
-    compare(noise_cipherstate_split(0, k, key_len, &temp_state),
-            NOISE_ERROR_INVALID_PARAM);
-    compare(noise_cipherstate_split(state, 0, key_len, &temp_state),
-            NOISE_ERROR_INVALID_PARAM);
-    compare(noise_cipherstate_split(state, k, key_len - 1, &temp_state),
-            NOISE_ERROR_INVALID_LENGTH);
-    compare(noise_cipherstate_split(state, k, key_len + 1, &temp_state),
-            NOISE_ERROR_INVALID_LENGTH);
 
     /* Re-create the object by name and check its properties again */
     compare(noise_cipherstate_free(state), NOISE_ERROR_NONE);
@@ -256,7 +226,6 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
 
     /* Clean up */
     compare(noise_cipherstate_free(state), NOISE_ERROR_NONE);
-    compare(noise_cipherstate_free(new_state), NOISE_ERROR_NONE);
 }
 
 /* Check against test vectors from the various specifications

@@ -385,53 +385,6 @@ int noise_cipherstate_decrypt_with_ad
 }
 
 /**
- * \brief Splits a new CipherState object out of an existing object.
- *
- * \param state The existing CipherState object.
- * \param key Points to the key to set on the new CipherState object.
- * \param key_len The length of the key in bytes.
- * \param new_state Points to a variable that should be set to a pointer
- * to the new CipherState object.
- *
- * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a key,
- * or \a new_state is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if \a key_len is incorrect for
- * the cipher.
- * \return or NOISE_ERROR_NO_MEMORY if the system is out of memory.
- *
- * This function is intended to help implement noise_symmetricstate_split().
- * It clones the existing object, creating a new object with the same
- * algorithm identifier but a new key.
- *
- * \sa noise_symmetricstate_split()
- */
-int noise_cipherstate_split
-    (const NoiseCipherState *state, const uint8_t *key, size_t key_len,
-     NoiseCipherState **new_state)
-{
-    /* Set the return object to NULL in case of error */
-    if (!new_state)
-        return NOISE_ERROR_INVALID_PARAM;
-    *new_state = 0;
-
-    /* Validate the parameters */
-    if (!state || !key)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (key_len != state->key_len)
-        return NOISE_ERROR_INVALID_LENGTH;
-
-    /* Create a new CipherState object of the same type */
-    *new_state = (*(state->create))();
-    if (!(*new_state))
-        return NOISE_ERROR_NO_MEMORY;
-
-    /* Initialize the key in the new state object */
-    noise_cipherstate_init_key(*new_state, key, key_len);
-    return NOISE_ERROR_NONE;
-}
-
-/**
  * \brief Sets the nonce value for this cipherstate object.
  *
  * \param state The CipherState object.

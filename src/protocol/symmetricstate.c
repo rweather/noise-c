@@ -551,12 +551,13 @@ int noise_symmetricstate_split
     /* Split a copy out of the cipher and give it the second key.
        We don't need to do this if the second CipherSuite is not required */
     if (c2) {
-        int err = noise_cipherstate_split(state->cipher, temp_k2, key_len, c2);
-        if (err != NOISE_ERROR_NONE) {
+        *c2 = (*(state->cipher->create))();
+        if (!(*c2)) {
             noise_clean(temp_k1, sizeof(temp_k1));
             noise_clean(temp_k2, sizeof(temp_k2));
-            return err;
+            return NOISE_ERROR_NO_MEMORY;
         }
+        noise_cipherstate_init_key(*c2, temp_k2, key_len);
     }
 
     /* Re-initialize the key in the internal cipher and copy it to c1 */
