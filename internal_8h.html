@@ -119,18 +119,21 @@ Data Structures</h2></td></tr>
 <tr class="memitem:structNoiseRandomState__s"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#structNoiseRandomState__s">NoiseRandomState_s</a></td></tr>
 <tr class="memdesc:structNoiseRandomState__s"><td class="mdescLeft">&#160;</td><td class="mdescRight">State information for CipherState random number generators.  <a href="internal_8h.html#structNoiseRandomState__s">More...</a><br/></td></tr>
 <tr class="separator:structNoiseRandomState__s"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseSignState__s.html">NoiseSignState_s</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal structure of the NoiseSignState type.  <a href="structNoiseSignState__s.html#details">More...</a><br/></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:structNoiseSymmetricState__s"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#structNoiseSymmetricState__s">NoiseSymmetricState_s</a></td></tr>
 <tr class="memdesc:structNoiseSymmetricState__s"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal structure of the NoiseSymmetricState type.  <a href="internal_8h.html#structNoiseSymmetricState__s">More...</a><br/></td></tr>
 <tr class="separator:structNoiseSymmetricState__s"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a3a380c0fbf332eaf163bef119058ee56"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a3a380c0fbf332eaf163bef119058ee56">NOISE_DHSTATE_KEYPAIR</a>&#160;&#160;&#160;1</td></tr>
-<tr class="separator:a3a380c0fbf332eaf163bef119058ee56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab266a7873e41cc29a8a94230086eedfe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ab266a7873e41cc29a8a94230086eedfe">NOISE_DHSTATE_NO_KEY</a>&#160;&#160;&#160;0</td></tr>
-<tr class="separator:ab266a7873e41cc29a8a94230086eedfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a919695960b1b5eb9fd0991c4bcec4e61"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a919695960b1b5eb9fd0991c4bcec4e61">NOISE_DHSTATE_PUBLIC</a>&#160;&#160;&#160;2</td></tr>
-<tr class="separator:a919695960b1b5eb9fd0991c4bcec4e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a3217264513a48a1bacbcec099d9dd9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a2a3217264513a48a1bacbcec099d9dd9">NOISE_KEY_TYPE_KEYPAIR</a>&#160;&#160;&#160;1</td></tr>
+<tr class="separator:a2a3217264513a48a1bacbcec099d9dd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a590688714150d3cba567fbea53211051"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a590688714150d3cba567fbea53211051">NOISE_KEY_TYPE_NO_KEY</a>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:a590688714150d3cba567fbea53211051"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae98761065be992fe68de48348e92623b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ae98761065be992fe68de48348e92623b">NOISE_KEY_TYPE_PUBLIC</a>&#160;&#160;&#160;2</td></tr>
+<tr class="separator:ae98761065be992fe68de48348e92623b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae08f3f420d645a6e57b8a33be0008a90"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ae08f3f420d645a6e57b8a33be0008a90">NOISE_MAX_HASHLEN</a>&#160;&#160;&#160;64</td></tr>
 <tr class="memdesc:ae08f3f420d645a6e57b8a33be0008a90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum hash length over all supported hash algorithms.  <a href="#ae08f3f420d645a6e57b8a33be0008a90">More...</a><br/></td></tr>
 <tr class="separator:ae08f3f420d645a6e57b8a33be0008a90"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -210,6 +213,8 @@ Functions</h2></td></tr>
 <tr class="separator:adc3037dcdebfbedb58228d71df77ea43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee96651886a3393cea992c5c176aff7c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#aee96651886a3393cea992c5c176aff7c">noise_curve448_new</a> (void)</td></tr>
 <tr class="separator:aee96651886a3393cea992c5c176aff7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae97ebbb48ae002ff960b50b77e531421"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#ae97ebbb48ae002ff960b50b77e531421">noise_ed25519_new</a> (void)</td></tr>
+<tr class="separator:ae97ebbb48ae002ff960b50b77e531421"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="internal_8h.html#a7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a> (void *ptr, size_t size)</td></tr>
 <tr class="memdesc:a7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the contents of a block of memory and free it.  <a href="#a7c7fc1bf7455aa40e16e26b78ff4d6eb">More...</a><br/></td></tr>
 <tr class="separator:a7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -253,7 +258,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <div class="textblock"><p>Internal structure of the NoiseHandshakeState type. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00376">376</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00519">519</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -337,7 +342,7 @@ Points to the next message pattern tokens to be processed. </td></tr>
 </div><div class="memdoc">
 <div class="textblock"><p>State information for CipherState random number generators. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00050">50</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00054">54</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -373,7 +378,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <div class="textblock"><p>Internal structure of the NoiseSymmetricState type. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00345">345</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00488">488</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -419,48 +424,48 @@ Total size of the structure. </td></tr>
 </div>
 </div>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="a3a380c0fbf332eaf163bef119058ee56"></a>
+<a class="anchor" id="a2a3217264513a48a1bacbcec099d9dd9"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define NOISE_DHSTATE_KEYPAIR&#160;&#160;&#160;1</td>
+          <td class="memname">#define NOISE_KEY_TYPE_KEYPAIR&#160;&#160;&#160;1</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Set to a keypair </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00220">220</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00225">225</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ab266a7873e41cc29a8a94230086eedfe"></a>
+<a class="anchor" id="a590688714150d3cba567fbea53211051"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define NOISE_DHSTATE_NO_KEY&#160;&#160;&#160;0</td>
+          <td class="memname">#define NOISE_KEY_TYPE_NO_KEY&#160;&#160;&#160;0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>No key set yet </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00219">219</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00224">224</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a919695960b1b5eb9fd0991c4bcec4e61"></a>
+<a class="anchor" id="ae98761065be992fe68de48348e92623b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define NOISE_DHSTATE_PUBLIC&#160;&#160;&#160;2</td>
+          <td class="memname">#define NOISE_KEY_TYPE_PUBLIC&#160;&#160;&#160;2</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Set to a public key only </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00221">221</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00226">226</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -476,7 +481,7 @@ Total size of the structure. </td></tr>
 
 <p>Maximum hash length over all supported hash algorithms. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00045">45</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00049">49</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -518,7 +523,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires that the local ephemeral key be provided ahead of time to start the protocol (for XXfallback) </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00433">433</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00576">576</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -533,7 +538,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a local ephemeral keypair </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00425">425</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00568">568</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -548,7 +553,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires that the local public key be provided ahead of time to start the protocol. That is, it is not sent as part of the protocol but is assumed to already be known to the other party. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00430">430</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00573">573</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -563,7 +568,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a local static keypair </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00423">423</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00566">566</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -578,7 +583,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires that the remote ephemeral key be provided ahead of time to start the protocol (for XXfallback) </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00445">445</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00588">588</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -593,7 +598,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a remote ephemeral public key </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00437">437</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00580">580</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -608,7 +613,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires that the local public key be provided ahead of time to start the protocol. That is, it is not sent as part of the protocol but is assumed to already be known to the other party. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00442">442</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00585">585</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -623,7 +628,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pattern requires a remote static public key </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00435">435</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00578">578</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -638,7 +643,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Emphemeral key for fallback pre-message has been provided </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00456">456</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00599">599</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -653,7 +658,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Local public key is part of the pre-message </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00458">458</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00601">601</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -668,7 +673,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Local static keypair is required for the handshake </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00448">448</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00591">591</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -683,7 +688,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Prologue has not been provided yet </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00454">454</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00597">597</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -698,7 +703,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Pre-shared key has not been provided yet </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00452">452</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00595">595</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -713,7 +718,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Remote public key is part of the pre-message </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00460">460</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00603">603</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -728,7 +733,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Remote public key is required for the handshake </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00450">450</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00593">593</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -743,7 +748,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhee" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00416">416</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00559">559</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -758,7 +763,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhes" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00417">417</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00560">560</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -773,7 +778,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhse" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00418">418</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00561">561</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -788,7 +793,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"dhss" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00419">419</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00562">562</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -803,7 +808,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"e" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00415">415</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00558">558</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -818,7 +823,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>End of pattern, start data session </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00413">413</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00556">556</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -833,7 +838,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>Flip the handshake direction </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00420">420</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00563">563</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -848,7 +853,7 @@ Total size of the structure. </td></tr>
 </div><div class="memdoc">
 <p>"s" token </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00414">414</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00557">557</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -1036,6 +1041,22 @@ Total size of the structure. </td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a>* noise_curve448_new </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ae97ebbb48ae002ff960b50b77e531421"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a>* noise_ed25519_new </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -1287,7 +1308,7 @@ Total size of the structure. </td></tr>
 <p>This function should not block waiting for entropy.</p>
 <dl class="section note"><dt>Note</dt><dd>Not part of the public API. </dd></dl>
 
-<p>Definition at line <a class="el" href="rand_8c_source.html#l00056">56</a> of file <a class="el" href="rand_8c_source.html">rand.c</a>.</p>
+<p>Definition at line <a class="el" href="rand_8c_source.html#l00064">64</a> of file <a class="el" href="rand_8c_source.html">rand.c</a>.</p>
 
 </div>
 </div>
@@ -1326,7 +1347,7 @@ Total size of the structure. </td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 19 2016 19:03:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

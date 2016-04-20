@@ -81,14 +81,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="textblock"><p>Noise-C is a plain C implementation of the <a href="http://noiseprotocol.org/">Noise Protocol</a>, intended as a reference implementation. It can also be referred to as "Noisy", which is what you get when you say "Noise-C" too fast. The code is distributed under the terms of the MIT license, with the code available from <a href="https://github.com/rweather/noise-c">github</a>.</p>
 <dl class="section note"><dt>Note</dt><dd>This project is still a work in progress. The vector tests from <a href="https://github.com/centromere/cacophony">cacophony</a> are working but there is still a lot of cleaning up and example writing to do.</dd></dl>
 <p>The initial target is GNU/Linux systems, because that's what I have, but contributions are definitely welcome to make the code work on other platforms. Desktop systems will be targeted first and then embedded systems. "Make It Work And Then Make It Work Better" is my motto.</p>
-<h1><a class="anchor" id="apis"></a>
+<h1><a class="anchor" id="major_apis"></a>
 Major API's</h1>
 <ul>
 <li><a class="el" href="group__handshakestate.html">HandshakeState</a> </li>
+<li><a class="el" href="group__cipherstate.html">CipherState</a></li>
+</ul>
+<h1><a class="anchor" id="supporting_apis"></a>
+Supporting API's</h1>
+<ul>
 <li><a class="el" href="group__symmetricstate.html">SymmetricState</a> </li>
-<li><a class="el" href="group__cipherstate.html">CipherState</a> </li>
 <li><a class="el" href="group__hashstate.html">HashState</a> </li>
-<li><a class="el" href="group__dhstate.html">DHState</a></li>
+<li><a class="el" href="group__dhstate.html">DHState</a> </li>
+<li><a class="el" href="group__signstate.html">SignState</a></li>
 </ul>
 <h1><a class="anchor" id="dir_structure"></a>
 Directory structure</h1>
@@ -96,7 +101,7 @@ Directory structure</h1>
 <li><code>include/noise/</code> - Public API definitions for inclusion into applications. </li>
 <li><code>src/protocol/</code> - Source code for the core Noise protocol library. </li>
 <li><code>src/crypto/</code> - Public domain and open source reference implementations of the cryptographic primitives. </li>
-<li><code>src/backend/ref/</code> - Backends for <a class="el" href="group__cipherstate.html">CipherState</a>, <a class="el" href="group__hashstate.html">HashState</a>, and <a class="el" href="group__dhstate.html">DHState</a> that use the reference cryptographic primitives. </li>
+<li><code>src/backend/ref/</code> - Backends for <a class="el" href="group__cipherstate.html">CipherState</a>, <a class="el" href="group__hashstate.html">HashState</a>, <a class="el" href="group__dhstate.html">DHState</a>, and <a class="el" href="group__signstate.html">SignState</a> that use the reference cryptographic primitives. </li>
 <li><code>src/backend/xyz/</code> - Recommended location for alternative backends. </li>
 <li><code>tests/unit/</code> - Unit tests to exercise the library's functionality. </li>
 <li><code>tests/vector/</code> - Public JSON test vectors and test harness for the Noise protocol. </li>
@@ -129,7 +134,7 @@ Contact</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 19 2016 19:03:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

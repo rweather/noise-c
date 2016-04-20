@@ -155,11 +155,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>derive_public_key
 : <a class="el" href="structNoiseDHState__s.html#aa3abd0225f5cc1efa5fae5903a7b8948">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#ad2b6f79f05e8f9789c16f50323c9bc0d">NoiseSignState_s</a>
 </li>
 <li>destroy
 : <a class="el" href="structNoiseCipherState__s.html#abd576b311efc077bcb296a3a7f82c45a">NoiseCipherState_s</a>
 , <a class="el" href="structNoiseDHState__s.html#a19deb64f0c9b893f8f736db347823c81">NoiseDHState_s</a>
 , <a class="el" href="structNoiseHashState__s.html#add43fdc210ad2900cf23075081f1a601">NoiseHashState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#afd8b0aee61139a93aff4f11bc3e3d273">NoiseSignState_s</a>
 </li>
 <li>dh_fixed_ephemeral
 : <a class="el" href="internal_8h.html#aff8cee2a4e22872a86b625248098dc68">NoiseHandshakeState_s</a>
@@ -200,6 +202,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
 <li>generate_keypair
 : <a class="el" href="structNoiseDHState__s.html#aa96e195a495bd06781ff277f348932af">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#af1b3ad4ea05e82439da05cee876210a4">NoiseSignState_s</a>
 </li>
 </ul>
 
@@ -240,6 +243,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>key_type
 : <a class="el" href="structNoiseDHState__s.html#a08aa4d3150b7d2da7d60a4253540a3c4">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#ac61e78c92aaabd7d3853bae522143c91">NoiseSignState_s</a>
 </li>
 </ul>
 
@@ -277,15 +281,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>private_key
 : <a class="el" href="structNoiseDHState__s.html#aacb825aedaa140d12fab37b897da06f0">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#a1e65cf0f1989366df94f328d65619a1d">NoiseSignState_s</a>
 </li>
 <li>private_key_len
 : <a class="el" href="structNoiseDHState__s.html#ad70fed9dc7645821fbf40bb89f4ab6df">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#abbeec938bf1948fec924cb80c36f5e81">NoiseSignState_s</a>
 </li>
 <li>public_key
 : <a class="el" href="structNoiseDHState__s.html#a63a30c2d7fc0b31b9082f4b706194b2a">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#abee6d6fc74d5a90bf771088345b9a7e5">NoiseSignState_s</a>
 </li>
 <li>public_key_len
 : <a class="el" href="structNoiseDHState__s.html#ab5a28a815c35396a971ee4ae533686fd">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#a7fe1b60adec20b128efd94601e624eb4">NoiseSignState_s</a>
 </li>
 </ul>
 
@@ -313,12 +321,22 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>shared_key_len
 : <a class="el" href="structNoiseDHState__s.html#ab1b932dd8f0412288ffebfdcda429b75">NoiseDHState_s</a>
 </li>
+<li>sign
+: <a class="el" href="structNoiseSignState__s.html#a4b76230985723a19a6563c5c672b66c0">NoiseSignState_s</a>
+</li>
+<li>sign_id
+: <a class="el" href="structNoiseSignState__s.html#a7021e66ac834cb6ce601063f5fc80806">NoiseSignState_s</a>
+</li>
+<li>signature_len
+: <a class="el" href="structNoiseSignState__s.html#a5c4df96d60c9e7c5b26fd08ac11f7617">NoiseSignState_s</a>
+</li>
 <li>size
 : <a class="el" href="structNoiseCipherState__s.html#acca6bed643d8fa0fb1831630b155d419">NoiseCipherState_s</a>
 , <a class="el" href="structNoiseDHState__s.html#a64f3d76f67f9479425903d418b0f7627">NoiseDHState_s</a>
 , <a class="el" href="internal_8h.html#a4365c4b1a1475b721c6f32a1105f1331">NoiseHandshakeState_s</a>
 , <a class="el" href="structNoiseHashState__s.html#a24034088ea44d4c99abb85edcd5ced82">NoiseHashState_s</a>
 , <a class="el" href="internal_8h.html#a872553a6f42a6c28b9a7309417a974ef">NoiseRandomState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#ac023f204e4a3f692789355bca54095e9">NoiseSignState_s</a>
 , <a class="el" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">NoiseSymmetricState_s</a>
 </li>
 <li>symmetric
@@ -344,15 +362,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
 <li>validate_keypair
 : <a class="el" href="structNoiseDHState__s.html#a804a90eca3e688dca73e87fce309461b">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#ac3e0af4bbd3c502013b1beb351fd460f">NoiseSignState_s</a>
 </li>
 <li>validate_public_key
 : <a class="el" href="structNoiseDHState__s.html#a545f092c1c6bd5aee0ae8a6c92aadaa1">NoiseDHState_s</a>
+, <a class="el" href="structNoiseSignState__s.html#a9a79dcdeb572f35c3ba59e69c37f3e4c">NoiseSignState_s</a>
+</li>
+<li>verify
+: <a class="el" href="structNoiseSignState__s.html#a26478f590caddfb72ee2a92cf64365a3">NoiseSignState_s</a>
 </li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 19 2016 19:03:05 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['noise_5fdhstate_5fkeypair',['NOISE_DHSTATE_KEYPAIR',['../internal_8h.html#a3a380c0fbf332eaf163bef119058ee56',1,'internal.h']]],
-  ['noise_5fdhstate_5fno_5fkey',['NOISE_DHSTATE_NO_KEY',['../internal_8h.html#ab266a7873e41cc29a8a94230086eedfe',1,'internal.h']]],
-  ['noise_5fdhstate_5fpublic',['NOISE_DHSTATE_PUBLIC',['../internal_8h.html#a919695960b1b5eb9fd0991c4bcec4e61',1,'internal.h']]],
   ['noise_5fid',['NOISE_ID',['../constants_8h.html#ad48917247492a63be0a48658cd0d626c',1,'constants.dox']]],
+  ['noise_5fkey_5ftype_5fkeypair',['NOISE_KEY_TYPE_KEYPAIR',['../internal_8h.html#a2a3217264513a48a1bacbcec099d9dd9',1,'internal.h']]],
+  ['noise_5fkey_5ftype_5fno_5fkey',['NOISE_KEY_TYPE_NO_KEY',['../internal_8h.html#a590688714150d3cba567fbea53211051',1,'internal.h']]],
+  ['noise_5fkey_5ftype_5fpublic',['NOISE_KEY_TYPE_PUBLIC',['../internal_8h.html#ae98761065be992fe68de48348e92623b',1,'internal.h']]],
   ['noise_5fmax_5fhashlen',['NOISE_MAX_HASHLEN',['../internal_8h.html#ae08f3f420d645a6e57b8a33be0008a90',1,'internal.h']]],
   ['noise_5fmax_5fpayload_5flen',['NOISE_MAX_PAYLOAD_LEN',['../constants_8h.html#a706be47390a8b57968e60fd8719b98f3',1,'constants.dox']]],
   ['noise_5fmax_5fprotocol_5fname',['NOISE_MAX_PROTOCOL_NAME',['../constants_8h.html#ac67d796e3e24090442f31aec6092b2dd',1,'constants.dox']]],
@@ -25,6 +25,9 @@ var searchData=
   ['noise_5freq_5fpsk',['NOISE_REQ_PSK',['../internal_8h.html#a9b69b5bb560916ae89d9e7f10b824678',1,'internal.h']]],
   ['noise_5freq_5fremote_5fpremsg',['NOISE_REQ_REMOTE_PREMSG',['../internal_8h.html#a3a167d41673f5346eb87129cce9ff08a',1,'internal.h']]],
   ['noise_5freq_5fremote_5frequired',['NOISE_REQ_REMOTE_REQUIRED',['../internal_8h.html#adaef0de41e54f3b2f90a91cfdfb8c79a',1,'internal.h']]],
+  ['noise_5fsign_5fcategory',['NOISE_SIGN_CATEGORY',['../constants_8h.html#a781484b6554bdb7f1b8e06e650d96172',1,'constants.h']]],
+  ['noise_5fsign_5fed25519',['NOISE_SIGN_ED25519',['../constants_8h.html#a2f0bb2c8d23d40619c95a751538854a3',1,'constants.h']]],
+  ['noise_5fsign_5fnone',['NOISE_SIGN_NONE',['../constants_8h.html#a2b9a0d802d28bbde1c9955c0fffac1d2',1,'constants.h']]],
   ['noise_5ftoken_5fdhee',['NOISE_TOKEN_DHEE',['../internal_8h.html#aedc56771cd200dd7eed6f04c28a6620a',1,'internal.h']]],
   ['noise_5ftoken_5fdhes',['NOISE_TOKEN_DHES',['../internal_8h.html#a33aff2403133935dd04e7c388cf54116',1,'internal.h']]],
   ['noise_5ftoken_5fdhse',['NOISE_TOKEN_DHSE',['../internal_8h.html#a0503ba88e7ad4a4252fb7030ea91d2a6',1,'internal.h']]],

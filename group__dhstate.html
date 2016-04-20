@@ -220,13 +220,15 @@ NOISE_ERROR_INVALID_PARAM if <em>private_key_state</em>, <em>public_key_state</e
 <dd>
 NOISE_ERROR_INVALID_PARAM if <em>private_key_state</em> and <em>public_key_state</em> do not have the same algorithm identifier. </dd>
 <dd>
+NOISE_ERROR_INVALID_LENGTH if <em>shared_key_len</em> is not correct for the algorithm. </dd>
+<dd>
 NOISE_ERROR_INVALID_PRIVATE_KEY if <em>private_key_state</em> does not contain a private key or the private key is invalid. </dd>
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if the public key in <em>public_key_state</em> is invalid.</dd></dl>
 <p>If the input public key is the special null value, then the output <em>shared_key</em> will also be the null value and NOISE_ERROR_NONE will be returned.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#ga4e8cf5645611200af11977fefb12b290" title="Generates a new key pair within a DHState object. ">noise_dhstate_generate_keypair()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00595">595</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00597">597</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -934,7 +936,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if <em>public_key</em> is not valid and it is not
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Apr 19 2016 19:03:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Apr 20 2016 19:08:28 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
