@@ -18,6 +18,7 @@ SOURCES = \
 	test-main.c \
 	test-names.c \
 	test-patterns.c \
+	test-randstate.c \
 	test-signstate.c \
 	test-symmetricstate.c
 
