@@ -34,7 +34,6 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
                          const char *ciphertext, const char *mac)
 {
     NoiseCipherState *state;
-    NoiseCipherState *temp_state;
     uint8_t k[MAX_KEY_LEN];
     uint8_t a[MAX_AD_LEN];
     uint8_t pt[MAX_CIPHER_DATA];
