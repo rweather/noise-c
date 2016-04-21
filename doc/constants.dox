@@ -272,6 +272,30 @@
 /**@}*/
 
 /**
+ * \defgroup signature_id Signature algorithm identifiers
+ */
+/**@{*/
+
+/**
+ * \def NOISE_SIGN_NONE
+ * \brief Signature algorithm identifier that indicates "no algorithm".
+ */
+
+/**
+ * \def NOISE_SIGN_CATEGORY
+ * \brief Category for signature algorithms.
+ *
+ * Intended for use with noise_name_to_id() and noise_id_to_name().
+ */
+
+/**
+ * \def NOISE_SIGN_ED25519
+ * \brief Signature algorithm identifier for "Ed25519".
+ */
+
+/**@}*/
+
+/**
  * \defgroup roles Initiator/responder role codes
  */
 /**@{*/
@@ -322,6 +346,23 @@
  * \brief The HandshakeState has flagged that the handshake is over and
  * that the application is expected to call noise_handshake_split() and
  * begin data session communications.
+ */
+
+/**@}*/
+
+/**
+ * \defgroup padding_modes Padding modes
+ */
+/**@{*/
+
+/**
+ * \def NOISE_PADDING_ZERO
+ * \brief Pads messages with zero bytes.
+ */
+
+/**
+ * \def NOISE_PADDING_RANDOM
+ * \brief Pads messages with random bytes.
  */
 
 /**@}*/

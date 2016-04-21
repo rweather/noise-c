@@ -584,6 +584,8 @@ struct NoiseHandshakeState_s
 
 void noise_rand_bytes(void *bytes, size_t size);
 
+/** @cond */
+
 NoiseCipherState *noise_chachapoly_new(void);
 NoiseCipherState *noise_aesgcm_new(void);
 
@@ -596,6 +598,8 @@ NoiseDHState *noise_curve25519_new(void);
 NoiseDHState *noise_curve448_new(void);
 
 NoiseSignState *noise_ed25519_new(void);
+
+/** @endcond */
 
 const uint8_t *noise_pattern_lookup(int id);
 uint8_t noise_pattern_reverse_flags(uint8_t flags);

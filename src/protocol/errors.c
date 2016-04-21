@@ -39,6 +39,8 @@
  */
 /**@{*/
 
+/** @cond */
+
 /* Default English strings for all known error codes */
 static const char * const error_strings[] = {
     "No error",
@@ -62,6 +64,8 @@ static const char * const error_strings[] = {
     "END"
 };
 #define num_error_strings (sizeof(error_strings) / sizeof(error_strings[0]) - 1)
+
+/** @endcond */
 
 /**
  * \brief Gets the string for an error code from the internal table.
