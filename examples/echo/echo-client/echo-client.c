@@ -100,7 +100,7 @@ static int parse_options(int argc, char *argv[])
 
 /* Initialize's the handshake using command-line options */
 static int initialize_handshake
-    (NoiseHandshakeState *handshake, const EchoProtocolId *echo_id)
+    (NoiseHandshakeState *handshake, const void *prologue, size_t prologue_len)
 {
     NoiseDHState *dh;
     uint8_t key[MAX_DH_KEY_LEN];
@@ -108,8 +108,7 @@ static int initialize_handshake
     int err;
 
     /* Set the prologue first */
-    err = noise_handshakestate_set_prologue
-        (handshake, echo_id, sizeof(EchoProtocolId));
+    err = noise_handshakestate_set_prologue(handshake, prologue, prologue_len);
     if (err != NOISE_ERROR_NONE) {
         noise_perror("prologue", err);
         return 0;
@@ -205,7 +204,7 @@ int main(int argc, char *argv[])
 
     /* Set the handshake options and verify that everything we need
        has been supplied on the command-line. */
-    if (!initialize_handshake(handshake, &id)) {
+    if (!initialize_handshake(handshake, &id, sizeof(id))) {
         noise_handshakestate_free(handshake);
         return 1;
     }

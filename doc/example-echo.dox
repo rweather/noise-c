@@ -78,15 +78,149 @@ to the system with noise_handshakestate_free():
 
 \subsection example_echo_setting_keys Setting keys
 
-TBD
+After the HandshakeState object has been created, the next step is to
+specify the prologue, pre shared key, and any public or private keys
+that are needed for the handshake.  We start with the prologue:
+
+\code
+err = noise_handshakestate_set_prologue(handshake, prologue, prologue_len);
+\endcode
+
+After the prologue, we can set the pre shared key value:
+
+\code
+err = noise_handshakestate_set_pre_shared_key(handshake, psk, sizeof(psk));
+\endcode
+
+Note that the prologue must be set before the pre shared key (PSK).
+If the PSK is set without a prologue, then the prologue is assumed
+to be empty.  A later attempt to set the prologue will be rejected
+with an error.
+
+Next is the local client private key.  The function
+noise_handshakestate_needs_local_keypair() tells us if the handshake
+requires a local keypair.
+
+Once we know if we need a keypair, we obtain the local Diffie-Hellman
+key object using noise_handshakestate_get_local_keypair_dh() and set
+the key with noise_dhstate_set_keypair_private():
+
+\code
+if (noise_handshakestate_needs_local_keypair(handshake)) {
+    dh = noise_handshakestate_get_local_keypair_dh(handshake);
+    key_len = noise_dhstate_get_private_key_length(dh);
+    if (!echo_load_private_key(client_private_key, key, key_len))
+        return 0;
+    err = noise_dhstate_set_keypair_private(dh, key, key_len);
+    ...
+}
+\endcode
+
+In this case we are using a private key only.  Noise-C internally
+derives the public key from the private key.  If we had both keys,
+then noise_dhstate_set_keypair() can be used to set both.
+
+The public key for the remote server is set in a similar fashion:
+
+\code
+if (noise_handshakestate_needs_remote_public_key(handshake)) {
+    dh = noise_handshakestate_get_remote_public_key_dh(handshake);
+    key_len = noise_dhstate_get_public_key_length(dh);
+    if (!echo_load_public_key(server_public_key, key, key_len))
+        return 0;
+    err = noise_dhstate_set_public_key(dh, key, key_len);
+    ...
+}
+\endcode
 
 \subsection example_echo_run_handshake Running the handshake phase
 
-TBD
+At this point we have a fully configured HandshakeState object.
+The next step is to start the handshake:
+
+\code
+err = noise_handshakestate_start(handshake);
+\endcode
+
+If there are any missing keys, then this function will fail with an error.
+
+The handshake runs until there are no more packets to be processed.
+Each step of the way, the noise_handshakestate_get_action() function
+tells the application what needs to be done next.  The two most
+important actions are \ref NOISE_ACTION_WRITE_MESSAGE and
+\ref NOISE_ACTION_READ_MESSAGE, which indicates whether the application
+should write or read the next handshake message.  A typical handshake
+processing loop looks like this:
+
+\code
+for (;;) {
+    int action = noise_handshakestate_get_action(handshake);
+    if (action == NOISE_ACTION_WRITE_MESSAGE) {
+        ...
+    } else if (action == NOISE_ACTION_READ_MESSAGE) {
+        ...
+    } else {
+        break;
+    }
+}
+\endcode
+
+When the application receives \ref NOISE_ACTION_WRITE_MESSAGE,
+it should format the next handshake payload and call
+noise_handshakestate_write_message() to prepare it for transmission.
+The application then transmits what it was given over the transport.
+
+When the application receives \ref NOISE_ACTION_READ_MESSAGE,
+it should wait for an incoming message from the transport and pass
+it to noise_handshakestate_read_message() to process it and recover
+the payload.
+
+This process continues until the action is either \ref NOISE_ACTION_FAILED
+or \ref NOISE_ACTION_SPLIT.  An action of \ref NOISE_ACTION_SPLIT
+indicates that the handshake has completed successfully and the
+application should move onto the data transport phase.
 
 \subsection example_echo_run_transport Running the data transport phase
 
-TBD
+Once the handshake completes successfully, we can "split" the HandshakeState
+into two CipherState objects, one for sending and the other for receiving:
+
+\code
+err = noise_handshakestate_split(handshake, &send_cipher, &recv_cipher);
+\endcode
+
+On the server side, the CipherState objects are reversed:
+
+\code
+err = noise_handshakestate_split(handshake, &recv_cipher, &send_cipher);
+\endcode
+
+If the remote side provided its public key during the handshake,
+then noise_handshakestate_get_remote_public_key_dh() and
+noise_dhstate_get_public_key() can be used to retrieve it at this point.
+
+The HandshakeState is now no longer required and we can discard it:
+
+\code
+noise_handshakestate_free(handshake);
+\endcode
+
+From now on, whenever the application has data to send, it calls
+noise_cipherstate_encrypt_with_ad() on the sending CipherState,
+and then writes the resulting packet to the transport.
+
+Whenever the application receives an incoming packet, it calls
+noise_cipherstate_decrypt_with_ad() on the receiving CipherState
+to decrypt it, and then processes the contents if the decryption
+succeeded.
+
+This process continues until the connection is terminated or an
+error occurs.  The final step is to clean up the two CipherState objects:
+
+\code
+noise_cipherstate_free(send_cipher);
+noise_cipherstate_free(recv_cipher);
+\endcode
 
 \section example_echo_using Using the echo example
 

@@ -92,15 +92,14 @@ static int parse_options(int argc, char *argv[])
 /* Initialize's the handshake with all necessary keys */
 static int initialize_handshake
     (NoiseHandshakeState *handshake, const NoiseProtocolId *nid,
-     const EchoProtocolId *echo_id)
+     const void *prologue, size_t prologue_len)
 {
     NoiseDHState *dh;
     int dh_id;
     int err;
 
     /* Set the prologue first */
-    err = noise_handshakestate_set_prologue
-        (handshake, echo_id, sizeof(EchoProtocolId));
+    err = noise_handshakestate_set_prologue(handshake, prologue, prologue_len);
     if (err != NOISE_ERROR_NONE) {
         noise_perror("prologue", err);
         return 0;
@@ -228,7 +227,7 @@ int main(int argc, char *argv[])
 
     /* Set all keys that are needed by the client's requested echo protocol */
     if (ok) {
-        if (!initialize_handshake(handshake, &nid, &id)) {
+        if (!initialize_handshake(handshake, &nid, &id, sizeof(id))) {
             ok = 0;
         }
     }
