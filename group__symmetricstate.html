@@ -202,7 +202,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is larger than 65535 bytes or
 <p>The ciphertext is decrypted in-place with the plaintext also written to <em>data</em>. In other words, it is assumed that the ciphertext plus MAC is in an input buffer ready to be processed once the MAC has been checked and the ciphertext has been decrypted.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00413">413</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00414">414</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -265,7 +265,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is too large to contain the c
 <p>The <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820" title="Gets the current length of packet MAC values for a SymmetricState object. ">noise_symmetricstate_get_mac_length()</a> function can be used to determine the size of the MAC value that will be added, which may be zero if the encryption key has not been set up yet.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#gaa914491b664e718adaa7b53af213b16a" title="Decrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_decrypt_and_hash()</a>, <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820" title="Gets the current length of packet MAC values for a SymmetricState object. ">noise_symmetricstate_get_mac_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00356">356</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00357">357</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -295,7 +295,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is too large to contain the c
 NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga8198aa2fea89f65139360558ee622aed" title="Creates a new SymmetricState object from a protocol identifier. ">noise_symmetricstate_new_by_id()</a>, <a class="el" href="group__symmetricstate.html#ga29d5f792aa9dc3cbff5609ff0bbce543" title="Creates a new SymmetricState object from a protocol name. ">noise_symmetricstate_new_by_name()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00208">208</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00209">209</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -324,7 +324,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <p>This function can be used to determine the size of the MAC value that will be added to the next packet that will be encrypted with <a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a>. Early in the handshake when packets are still being exchanged in plaintext, the size will be zero.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00478">478</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00479">479</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -364,7 +364,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dd>
 NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00237">237</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00238">238</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -414,7 +414,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>input</em> is NULL. </dd>
 NOISE_ERROR_INVALID_STATE if the <em>state</em> has already been split.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#gac792150120af1e5f6f45ebb42023b35a" title="Mixes new input data into the chaining key. ">noise_symmetricstate_mix_key()</a>, <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00303">303</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00304">304</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -464,7 +464,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>input</em> is NULL. </dd>
 NOISE_ERROR_INVALID_STATE if the <em>state</em> has already been split.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga88c5f5a80bc4984eff45cacdce01d11c" title="Mixes new input data into the handshake hash. ">noise_symmetricstate_mix_hash()</a>, <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00262">262</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00263">263</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -513,7 +513,7 @@ NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output or the cipher key a
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new SymmetricState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9" title="Frees a SymmetricState object after destroying all sensitive material. ">noise_symmetricstate_free()</a>, <a class="el" href="group__symmetricstate.html#ga29d5f792aa9dc3cbff5609ff0bbce543" title="Creates a new SymmetricState object from a protocol name. ">noise_symmetricstate_new_by_name()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00134">134</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00135">135</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -560,7 +560,7 @@ NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output or the cipher key a
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new SymmetricState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9" title="Frees a SymmetricState object after destroying all sensitive material. ">noise_symmetricstate_free()</a>, <a class="el" href="group__symmetricstate.html#ga8198aa2fea89f65139360558ee622aed" title="Creates a new SymmetricState object from a protocol identifier. ">noise_symmetricstate_new_by_id()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00175">175</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00176">176</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -614,14 +614,14 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>The <em>c1</em> object should be used to protect messages from the initiator to the responder, and the <em>c2</em> object should be used to protect messages from the responder to the initiator.</p>
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on <em>c2</em> as it will not be needed. Alternatively, the application can pass NULL to <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> as the <em>c2</em> argument and the second CipherState will not be created at all. </p>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00526">526</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00527">527</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

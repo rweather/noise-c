@@ -4,5 +4,6 @@ var searchData=
   ['error_20reporting',['Error reporting',['../group__error__reports.html',1,'']]],
   ['error_20codes',['Error codes',['../group__errors.html',1,'']]],
   ['errors_2ec',['errors.c',['../errors_8c.html',1,'']]],
-  ['errors_2eh',['errors.h',['../errors_8h.html',1,'']]]
+  ['errors_2eh',['errors.h',['../errors_8h.html',1,'']]],
+  ['example_2decho_2edox',['example-echo.dox',['../example-echo_8dox.html',1,'']]]
 ];

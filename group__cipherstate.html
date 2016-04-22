@@ -124,9 +124,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga3a10548dfc0948bb2e29ac416dc8a901"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#ga3a10548dfc0948bb2e29ac416dc8a901">noise_cipherstate_set_nonce</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, uint64_t nonce)</td></tr>
 <tr class="memdesc:ga3a10548dfc0948bb2e29ac416dc8a901"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the nonce value for this cipherstate object.  <a href="#ga3a10548dfc0948bb2e29ac416dc8a901">More...</a><br/></td></tr>
 <tr class="separator:ga3a10548dfc0948bb2e29ac416dc8a901"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac1670e8a21551140558f8ea7ac686589"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#gac1670e8a21551140558f8ea7ac686589">noise_cipherstate_split</a> (const <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, const uint8_t *key, size_t key_len, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **new_state)</td></tr>
-<tr class="memdesc:gac1670e8a21551140558f8ea7ac686589"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits a new CipherState object out of an existing object.  <a href="#gac1670e8a21551140558f8ea7ac686589">More...</a><br/></td></tr>
-<tr class="separator:gac1670e8a21551140558f8ea7ac686589"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>CipherState objects are used to encrypt or decrypt data during a session. Once the handshake has completed, <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> will create two CipherState objects for encrypting packets sent to the other party, and decrypting packets received from the other party. </p>
@@ -621,74 +618,14 @@ NOISE_ERROR_INVALID_NONCE if <em>nonce</em> is smaller than the current value.</
 <dl class="section warning"><dt>Warning</dt><dd>This function is intended for testing purposes only. It is dangerous to set the nonce back to a previously-used value so this function will actively prevent that from happening.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gac10e4b2b02a43c1e1e23253420eea1d0" title="Initializes the key on a CipherState object. ">noise_cipherstate_init_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00453">453</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gac1670e8a21551140558f8ea7ac686589"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int noise_cipherstate_split </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const uint8_t *&#160;</td>
-          <td class="paramname"><em>key</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>key_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **&#160;</td>
-          <td class="paramname"><em>new_state</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Splits a new CipherState object out of an existing object. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>The existing CipherState object. </td></tr>
-    <tr><td class="paramname">key</td><td>Points to the key to set on the new CipherState object. </td></tr>
-    <tr><td class="paramname">key_len</td><td>The length of the key in bytes. </td></tr>
-    <tr><td class="paramname">new_state</td><td>Points to a variable that should be set to a pointer to the new CipherState object.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
-<dd>
-NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>key</em>, or <em>new_state</em> is NULL. </dd>
-<dd>
-NOISE_ERROR_INVALID_LENGTH if <em>key_len</em> is incorrect for the cipher. </dd>
-<dd>
-or NOISE_ERROR_NO_MEMORY if the system is out of memory.</dd></dl>
-<p>This function is intended to help implement <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a>. It clones the existing object, creating a new object with the same algorithm identifier but a new key.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> </dd></dl>
-
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00410">410</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00406">406</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

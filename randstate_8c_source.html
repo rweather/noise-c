@@ -277,7 +277,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
 <div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
 <div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="comment">/* Pad the payload as requested */</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordflow">if</span> (padding_mode == <a class="code" href="constants_8h.html#a5f63770f27d92cd12b5c4bef76fac57b">NOISE_PADDING_ZERO</a>) {</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordflow">if</span> (padding_mode == <a class="code" href="group__padding__modes.html#ga5f63770f27d92cd12b5c4bef76fac57b">NOISE_PADDING_ZERO</a>) {</div>
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        memset(payload + orig_len, 0, padded_len - orig_len);</div>
 <div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    } <span class="keywordflow">else</span> {</div>
@@ -286,13 +286,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    }</div>
 <div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;}</div>
 <div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
+<div class="ttc" id="group__padding__modes_html_ga5f63770f27d92cd12b5c4bef76fac57b"><div class="ttname"><a href="group__padding__modes.html#ga5f63770f27d92cd12b5c4bef76fac57b">NOISE_PADDING_ZERO</a></div><div class="ttdeci">#define NOISE_PADDING_ZERO</div><div class="ttdoc">Pads messages with zero bytes. </div></div>
 <div class="ttc" id="group__utils_html_ga4d7440ace7a148437e229969490f6162"><div class="ttname"><a href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a></div><div class="ttdeci">void noise_clean(void *data, size_t size)</div><div class="ttdoc">Cleans a block of memory to destroy its contents. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00119">util.c:119</a></div></div>
 <div class="ttc" id="group__errors_html_ga4c2869f005128d7a415e6d941ccc67bb"><div class="ttname"><a href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_PARAM</div><div class="ttdoc">Invalid parameter to function; e.g. a NULL value. </div></div>
 <div class="ttc" id="group__errors_html_ga132b97fab62750f9f1e665c3783455c4"><div class="ttname"><a href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a></div><div class="ttdeci">#define NOISE_ERROR_NONE</div><div class="ttdoc">Success, no error. </div></div>
 <div class="ttc" id="group__randstate_html_ga2a45f812e88e15375e193a9716ca9ae1"><div class="ttname"><a href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">noise_randstate_pad</a></div><div class="ttdeci">int noise_randstate_pad(NoiseRandState *state, uint8_t *payload, size_t orig_len, size_t padded_len, int padding_mode)</div><div class="ttdoc">Adds padding bytes to the end of a message payload. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00304">randstate.c:304</a></div></div>
 <div class="ttc" id="group__errors_html_gae39efe3160d926a8a630bc9f946bdc02"><div class="ttname"><a href="group__errors.html#gae39efe3160d926a8a630bc9f946bdc02">NOISE_ERROR_NO_MEMORY</a></div><div class="ttdeci">#define NOISE_ERROR_NO_MEMORY</div><div class="ttdoc">Insufficient memory to complete the operation. </div></div>
 <div class="ttc" id="group__randstate_html_gab6d527eb906a8ff06743d93fec6ae2c0"><div class="ttname"><a href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a></div><div class="ttdeci">int noise_randstate_generate(NoiseRandState *state, uint8_t *buffer, size_t len)</div><div class="ttdoc">Generates random bytes for use by the application. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00223">randstate.c:223</a></div></div>
-<div class="ttc" id="constants_8h_html_a5f63770f27d92cd12b5c4bef76fac57b"><div class="ttname"><a href="constants_8h.html#a5f63770f27d92cd12b5c4bef76fac57b">NOISE_PADDING_ZERO</a></div><div class="ttdeci">#define NOISE_PADDING_ZERO</div><div class="ttdef"><b>Definition:</b> <a href="constants_8h_source.html#l00098">constants.h:98</a></div></div>
 <div class="ttc" id="group__randstate_html_ga119d7d822704ccd7783bf9960ea2f48a"><div class="ttname"><a href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">noise_randstate_new</a></div><div class="ttdeci">int noise_randstate_new(NoiseRandState **state)</div><div class="ttdoc">Creates a new random number generator. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00096">randstate.c:96</a></div></div>
 <div class="ttc" id="group__randstate_html_gade20313ad0e500c95f5faa2b8bcf536f"><div class="ttname"><a href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a></div><div class="ttdeci">struct NoiseRandState_s NoiseRandState</div><div class="ttdoc">Opaque object that represents a random number generator. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8h_source.html#l00033">randstate.h:33</a></div></div>
 <div class="ttc" id="internal_8h_html"><div class="ttname"><a href="internal_8h.html">internal.h</a></div><div class="ttdoc">Internal definitions for the library. </div></div>
@@ -304,7 +304,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

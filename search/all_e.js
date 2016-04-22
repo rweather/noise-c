@@ -3,6 +3,7 @@ var searchData=
   ['shared_5fkey_5flen',['shared_key_len',['../structNoiseDHState__s.html#ab1b932dd8f0412288ffebfdcda429b75',1,'NoiseDHState_s']]],
   ['sign',['sign',['../structNoiseSignState__s.html#a4b76230985723a19a6563c5c672b66c0',1,'NoiseSignState_s']]],
   ['sign_5fid',['sign_id',['../structNoiseSignState__s.html#a7021e66ac834cb6ce601063f5fc80806',1,'NoiseSignState_s']]],
+  ['signature_20algorithm_20identifiers',['Signature algorithm identifiers',['../group__signature__id.html',1,'']]],
   ['signature_5flen',['signature_len',['../structNoiseSignState__s.html#a5c4df96d60c9e7c5b26fd08ac11f7617',1,'NoiseSignState_s']]],
   ['signstate_20api',['SignState API',['../group__signstate.html',1,'']]],
   ['signstate_2ec',['signstate.c',['../signstate_8c.html',1,'']]],

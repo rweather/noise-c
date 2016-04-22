@@ -124,19 +124,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    *state = 0;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <span class="keywordflow">switch</span> (<span class="keywordtype">id</span>) {</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="group__hash__id.html#ga51dde543fb0b679be7691772c9f29aa4">NOISE_HASH_BLAKE2s</a>:</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        *state = <a class="code" href="internal_8h.html#a4aa620d65c70f6b9ea5eac6eb9f63e40">noise_blake2s_new</a>();</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        *state = noise_blake2s_new();</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="group__hash__id.html#ga1e61a610ff2f9628723ae2bbac01f7c9">NOISE_HASH_BLAKE2b</a>:</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        *state = <a class="code" href="internal_8h.html#ab92f4a7a788a565e5b48d83cae9d038f">noise_blake2b_new</a>();</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        *state = noise_blake2b_new();</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="group__hash__id.html#gac2679aae7f0f109220b1bbf6f38a9a1f">NOISE_HASH_SHA256</a>:</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        *state = <a class="code" href="internal_8h.html#a09251980b41fc9b5fef2d0591869705d">noise_sha256_new</a>();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        *state = noise_sha256_new();</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="group__hash__id.html#ga7eec0afff4d8e66a2b8a94169445b7a2">NOISE_HASH_SHA512</a>:</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        *state = <a class="code" href="internal_8h.html#afc603487111b8b90eb04d30aadc1cdb3">noise_sha512_new</a>();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        *state = noise_sha512_new();</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">default</span>:</div>
@@ -201,173 +201,213 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keywordflow">return</span> state ? state-&gt;<a class="code" href="structNoiseHashState__s.html#a995f88125638697ae74e68119680685e">block_len</a> : 0;</div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;}</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e">noise_hashstate_hash_one</a></div>
-<div class="line"><a name="l00229"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e">  229</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> data_len,</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;     uint8_t *hash)</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;{</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="keywordflow">if</span> (!state || !data || !hash)</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="comment">/* Hash the data */</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data, data_len);</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;}</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2">noise_hashstate_hash_two</a></div>
-<div class="line"><a name="l00264"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2">  264</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *data1, <span class="keywordtype">size_t</span> data1_len,</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;     <span class="keyword">const</span> uint8_t *data2, <span class="keywordtype">size_t</span> data2_len, uint8_t *hash)</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;{</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">if</span> (!state || !data1 || !data2 || !hash)</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <span class="comment">/* Hash the data */</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data1, data1_len);</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data2, data2_len);</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;}</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="preprocessor">#define HMAC_IPAD   0x36    </span></div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;<span class="preprocessor">#define HMAC_OPAD   0x5C    </span></div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;<span class="preprocessor">static void noise_hashstate_xor_key(uint8_t *key, size_t key_len, uint8_t value)</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;<span class="preprocessor"></span>{</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    <span class="keywordflow">while</span> (key_len &gt; 0) {</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        *key++ ^= value;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        --key_len;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    }</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;}</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> noise_hashstate_hmac</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *key, <span class="keywordtype">size_t</span> key_len,</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;     <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> data_len, uint8_t *hash)</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;{</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="keywordtype">size_t</span> hash_len = state-&gt;<a class="code" href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">hash_len</a>;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="keywordtype">size_t</span> block_len = state-&gt;<a class="code" href="structNoiseHashState__s.html#a995f88125638697ae74e68119680685e">block_len</a>;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    uint8_t *key_block;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="comment">/* Allocate temporary stack space for the key block */</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    key_block = alloca(block_len);</div>
+<div class="line"><a name="l00221"></a><span class="lineno"><a class="line" href="group__hashstate.html#gabf6c0c84d7ca72464e0c17dac8bc88a9">  221</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#gabf6c0c84d7ca72464e0c17dac8bc88a9">noise_hashstate_reset</a>(<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state)</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;{</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="comment">/* Validate the parameter */</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    <span class="keywordflow">if</span> (!state)</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <span class="comment">/* Reset the hash state */</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;}</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga3d345cecc3444574055ba8a4dad3529d">noise_hashstate_update</a></div>
+<div class="line"><a name="l00245"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga3d345cecc3444574055ba8a4dad3529d">  245</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> data_len)</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;{</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <span class="keywordflow">if</span> (!state || !data)</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    <span class="comment">/* Update the hash state */</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data, data_len);</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;}</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga6cce0dac1e841b8a08da331d81aa5f09">noise_hashstate_finalize</a></div>
+<div class="line"><a name="l00272"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga6cce0dac1e841b8a08da331d81aa5f09">  272</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, uint8_t *hash, <span class="keywordtype">size_t</span> hash_len)</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;{</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    <span class="keywordflow">if</span> (!state || !hash)</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="keywordflow">if</span> (hash_len != state-&gt;<a class="code" href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">hash_len</a>)</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    <span class="comment">/* Finalize the hash state */</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;}</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga495beb456544121bf24a32428d0384bc">noise_hashstate_hash_one</a></div>
+<div class="line"><a name="l00309"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga495beb456544121bf24a32428d0384bc">  309</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> data_len,</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;     uint8_t *hash, <span class="keywordtype">size_t</span> hash_len)</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;{</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    <span class="keywordflow">if</span> (!state || !data || !hash)</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordflow">if</span> (hash_len != state-&gt;<a class="code" href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">hash_len</a>)</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="comment">/* Hash the data */</span></div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data, data_len);</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;}</div>
 <div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <span class="comment">/* Format the key for the inner hashing context */</span></div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="keywordflow">if</span> (key_len &lt;= block_len) {</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        memcpy(key_block, key, key_len);</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        memset(key_block + key_len, 0, block_len - key_len);</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, key, key_len);</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, key_block);</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        memset(key_block + hash_len, 0, block_len - hash_len);</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    }</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    noise_hashstate_xor_key(key_block, block_len, HMAC_IPAD);</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="comment">/* Calculate the inner hash */</span></div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, key_block, block_len);</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data, data_len);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    <span class="comment">/* Format the key for the outer hashing context */</span></div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    noise_hashstate_xor_key(key_block, block_len, HMAC_IPAD ^ HMAC_OPAD);</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="comment">/* Calculate the outer hash */</span></div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, key_block, block_len);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, hash, hash_len);</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="comment">/* Clean up and exit */</span></div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(key_block, state-&gt;<a class="code" href="structNoiseHashState__s.html#a995f88125638697ae74e68119680685e">block_len</a>);</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;}</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">noise_hashstate_hkdf</a></div>
-<div class="line"><a name="l00382"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">  382</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *key, <span class="keywordtype">size_t</span> key_len,</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;     <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> data_len,</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;     uint8_t *output1, <span class="keywordtype">size_t</span> output1_len,</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;     uint8_t *output2, <span class="keywordtype">size_t</span> output2_len)</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;{</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="keywordtype">size_t</span> hash_len;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    uint8_t *temp_key;</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;    uint8_t *temp_hash;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    <span class="keywordflow">if</span> (!state || !key || !data || !output1 || !output2)</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    hash_len = state-&gt;<a class="code" href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">hash_len</a>;</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    <span class="keywordflow">if</span> (output1_len &gt; hash_len || output2_len &gt; hash_len)</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;    <span class="comment">/* Allocate local stack space for the temporary hash values */</span></div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    temp_key = alloca(hash_len);</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    temp_hash = alloca(hash_len + 1);</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    <span class="comment">/* Generate the temporary hashing key */</span></div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    noise_hashstate_hmac(state, key, key_len, data, data_len, temp_key);</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    <span class="comment">/* Generate the first output */</span></div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    temp_hash[0] = 0x01;</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    noise_hashstate_hmac</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        (state, temp_key, hash_len, temp_hash, 1, temp_hash);</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    memcpy(output1, temp_hash, output1_len);</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    <span class="comment">/* Generate the second output */</span></div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    temp_hash[hash_len] = 0x02;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    noise_hashstate_hmac</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;        (state, temp_key, hash_len, temp_hash, hash_len + 1, temp_hash);</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    memcpy(output2, temp_hash, output2_len);</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    <span class="comment">/* Clean up and exit */</span></div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(temp_key, hash_len);</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(temp_hash, hash_len + 1);</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;}</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga56323b62090970e874ed2967f020c2b6">noise_hashstate_hash_two</a></div>
+<div class="line"><a name="l00352"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga56323b62090970e874ed2967f020c2b6">  352</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *data1, <span class="keywordtype">size_t</span> data1_len,</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;     <span class="keyword">const</span> uint8_t *data2, <span class="keywordtype">size_t</span> data2_len, uint8_t *hash, <span class="keywordtype">size_t</span> hash_len)</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;{</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="keywordflow">if</span> (!state || !data1 || !data2 || !hash)</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keywordflow">if</span> (hash_len != state-&gt;<a class="code" href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">hash_len</a>)</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="comment">/* Hash the data */</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data1, data1_len);</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data2, data2_len);</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;}</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="preprocessor">#define HMAC_IPAD   0x36    </span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="preprocessor">#define HMAC_OPAD   0x5C    </span></div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;<span class="preprocessor">static void noise_hashstate_xor_key(uint8_t *key, size_t key_len, uint8_t value)</span></div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;<span class="preprocessor"></span>{</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <span class="keywordflow">while</span> (key_len &gt; 0) {</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        *key++ ^= value;</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        --key_len;</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    }</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;}</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> noise_hashstate_hmac</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *key, <span class="keywordtype">size_t</span> key_len,</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;     <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> data_len, uint8_t *hash)</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;{</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    <span class="keywordtype">size_t</span> hash_len = state-&gt;<a class="code" href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">hash_len</a>;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    <span class="keywordtype">size_t</span> block_len = state-&gt;<a class="code" href="structNoiseHashState__s.html#a995f88125638697ae74e68119680685e">block_len</a>;</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    uint8_t *key_block;</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    <span class="comment">/* Allocate temporary stack space for the key block */</span></div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    key_block = alloca(block_len);</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;    <span class="comment">/* Format the key for the inner hashing context */</span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    <span class="keywordflow">if</span> (key_len &lt;= block_len) {</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        memcpy(key_block, key, key_len);</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        memset(key_block + key_len, 0, block_len - key_len);</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;        (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, key, key_len);</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, key_block);</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;        memset(key_block + hash_len, 0, block_len - hash_len);</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    }</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    noise_hashstate_xor_key(key_block, block_len, HMAC_IPAD);</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;    <span class="comment">/* Calculate the inner hash */</span></div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, key_block, block_len);</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, data, data_len);</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    <span class="comment">/* Format the key for the outer hashing context */</span></div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    noise_hashstate_xor_key(key_block, block_len, HMAC_IPAD ^ HMAC_OPAD);</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;    <span class="comment">/* Calculate the outer hash */</span></div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">reset</a>))(state);</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, key_block, block_len);</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">update</a>))(state, hash, hash_len);</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    (*(state-&gt;<a class="code" href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">finalize</a>))(state, hash);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    <span class="comment">/* Clean up and exit */</span></div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(key_block, state-&gt;<a class="code" href="structNoiseHashState__s.html#a995f88125638697ae74e68119680685e">block_len</a>);</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;}</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">noise_hashstate_hkdf</a></div>
+<div class="line"><a name="l00472"></a><span class="lineno"><a class="line" href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">  472</a></span>&#160;    (<a class="code" href="structNoiseHashState__s.html">NoiseHashState</a> *state, <span class="keyword">const</span> uint8_t *key, <span class="keywordtype">size_t</span> key_len,</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;     <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> data_len,</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;     uint8_t *output1, <span class="keywordtype">size_t</span> output1_len,</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;     uint8_t *output2, <span class="keywordtype">size_t</span> output2_len)</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;{</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;    <span class="keywordtype">size_t</span> hash_len;</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;    uint8_t *temp_key;</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;    uint8_t *temp_hash;</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    <span class="keywordflow">if</span> (!state || !key || !data || !output1 || !output2)</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;    hash_len = state-&gt;<a class="code" href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">hash_len</a>;</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;    <span class="keywordflow">if</span> (output1_len &gt; hash_len || output2_len &gt; hash_len)</div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;    <span class="comment">/* Allocate local stack space for the temporary hash values */</span></div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;    temp_key = alloca(hash_len);</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    temp_hash = alloca(hash_len + 1);</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    <span class="comment">/* Generate the temporary hashing key */</span></div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;    noise_hashstate_hmac(state, key, key_len, data, data_len, temp_key);</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    <span class="comment">/* Generate the first output */</span></div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;    temp_hash[0] = 0x01;</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;    noise_hashstate_hmac</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        (state, temp_key, hash_len, temp_hash, 1, temp_hash);</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    memcpy(output1, temp_hash, output1_len);</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;    <span class="comment">/* Generate the second output */</span></div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;    temp_hash[hash_len] = 0x02;</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;    noise_hashstate_hmac</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;        (state, temp_key, hash_len, temp_hash, hash_len + 1, temp_hash);</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;    memcpy(output2, temp_hash, output2_len);</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;    <span class="comment">/* Clean up and exit */</span></div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(temp_key, hash_len);</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(temp_hash, hash_len + 1);</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;}</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;</div>
 <div class="ttc" id="group__errors_html_gaf3507f95e7e1464a7299d6954f39a413"><div class="ttname"><a href="group__errors.html#gaf3507f95e7e1464a7299d6954f39a413">NOISE_ERROR_UNKNOWN_ID</a></div><div class="ttdeci">#define NOISE_ERROR_UNKNOWN_ID</div><div class="ttdoc">Algorithm identifier is unknown. </div></div>
 <div class="ttc" id="structNoiseHashState__s_html_a2a4a6e0e368d0b29f14d9a1cf744ff4e"><div class="ttname"><a href="structNoiseHashState__s.html#a2a4a6e0e368d0b29f14d9a1cf744ff4e">NoiseHashState_s::reset</a></div><div class="ttdeci">void(* reset)(NoiseHashState *state)</div><div class="ttdoc">Resets the HashState for a new hashing session. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00168">internal.h:168</a></div></div>
 <div class="ttc" id="structNoiseHashState__s_html_ad4cf18514fd564ef6372d27f6ec49f23"><div class="ttname"><a href="structNoiseHashState__s.html#ad4cf18514fd564ef6372d27f6ec49f23">NoiseHashState_s::hash_len</a></div><div class="ttdeci">uint16_t hash_len</div><div class="ttdoc">Length of the output from this hash algorithm. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00158">internal.h:158</a></div></div>
 <div class="ttc" id="structNoiseHashState__s_html_a995f88125638697ae74e68119680685e"><div class="ttname"><a href="structNoiseHashState__s.html#a995f88125638697ae74e68119680685e">NoiseHashState_s::block_len</a></div><div class="ttdeci">uint16_t block_len</div><div class="ttdoc">Length of the underlying block for this hash algorithm. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00161">internal.h:161</a></div></div>
 <div class="ttc" id="group__utils_html_ga4d7440ace7a148437e229969490f6162"><div class="ttname"><a href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a></div><div class="ttdeci">void noise_clean(void *data, size_t size)</div><div class="ttdoc">Cleans a block of memory to destroy its contents. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00119">util.c:119</a></div></div>
-<div class="ttc" id="group__hashstate_html_ga3d43824f15c1dd11b82bd8ae247b534e"><div class="ttname"><a href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e">noise_hashstate_hash_one</a></div><div class="ttdeci">int noise_hashstate_hash_one(NoiseHashState *state, const uint8_t *data, size_t data_len, uint8_t *hash)</div><div class="ttdoc">Hashes a single data buffer and returns the hash value. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00229">hashstate.c:229</a></div></div>
 <div class="ttc" id="group__errors_html_ga4c2869f005128d7a415e6d941ccc67bb"><div class="ttname"><a href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_PARAM</div><div class="ttdoc">Invalid parameter to function; e.g. a NULL value. </div></div>
 <div class="ttc" id="structNoiseHashState__s_html"><div class="ttname"><a href="structNoiseHashState__s.html">NoiseHashState_s</a></div><div class="ttdoc">Internal structure of the NoiseHashState type. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00149">internal.h:149</a></div></div>
-<div class="ttc" id="internal_8h_html_a4aa620d65c70f6b9ea5eac6eb9f63e40"><div class="ttname"><a href="internal_8h.html#a4aa620d65c70f6b9ea5eac6eb9f63e40">noise_blake2s_new</a></div><div class="ttdeci">NoiseHashState * noise_blake2s_new(void)</div></div>
 <div class="ttc" id="group__errors_html_ga132b97fab62750f9f1e665c3783455c4"><div class="ttname"><a href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a></div><div class="ttdeci">#define NOISE_ERROR_NONE</div><div class="ttdoc">Success, no error. </div></div>
-<div class="ttc" id="group__hashstate_html_ga0142e57efdc94183de728cc9fca3c0b2"><div class="ttname"><a href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2">noise_hashstate_hash_two</a></div><div class="ttdeci">int noise_hashstate_hash_two(NoiseHashState *state, const uint8_t *data1, size_t data1_len, const uint8_t *data2, size_t data2_len, uint8_t *hash)</div><div class="ttdoc">Hashes the concatenation of two data buffers and returns the combined hash value. ...</div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00264">hashstate.c:264</a></div></div>
+<div class="ttc" id="group__hashstate_html_gabf6c0c84d7ca72464e0c17dac8bc88a9"><div class="ttname"><a href="group__hashstate.html#gabf6c0c84d7ca72464e0c17dac8bc88a9">noise_hashstate_reset</a></div><div class="ttdeci">int noise_hashstate_reset(NoiseHashState *state)</div><div class="ttdoc">Resets the hash state. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00221">hashstate.c:221</a></div></div>
 <div class="ttc" id="group__hash__id_html_ga1e61a610ff2f9628723ae2bbac01f7c9"><div class="ttname"><a href="group__hash__id.html#ga1e61a610ff2f9628723ae2bbac01f7c9">NOISE_HASH_BLAKE2b</a></div><div class="ttdeci">#define NOISE_HASH_BLAKE2b</div><div class="ttdoc">Hash identifier for &quot;BLAKE2b&quot;. </div></div>
 <div class="ttc" id="group__hash__id_html_ga85da0485deb46ecc4fb69a4bbd5b4315"><div class="ttname"><a href="group__hash__id.html#ga85da0485deb46ecc4fb69a4bbd5b4315">NOISE_HASH_CATEGORY</a></div><div class="ttdeci">#define NOISE_HASH_CATEGORY</div><div class="ttdoc">Category for hash algorithms. </div></div>
 <div class="ttc" id="group__hashstate_html_ga9676af5130ce0d68a90aa8533de55ee8"><div class="ttname"><a href="group__hashstate.html#ga9676af5130ce0d68a90aa8533de55ee8">noise_hashstate_new_by_id</a></div><div class="ttdeci">int noise_hashstate_new_by_id(NoiseHashState **state, int id)</div><div class="ttdoc">Creates a new HashState object by its algorithm identifier. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00073">hashstate.c:73</a></div></div>
 <div class="ttc" id="group__hashstate_html_ga795989697cb68459e4a9b5a91a98eed2"><div class="ttname"><a href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2">noise_hashstate_new_by_name</a></div><div class="ttdeci">int noise_hashstate_new_by_name(NoiseHashState **state, const char *name)</div><div class="ttdoc">Creates a new HashState object by its algorithm name. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00126">hashstate.c:126</a></div></div>
+<div class="ttc" id="group__hashstate_html_ga495beb456544121bf24a32428d0384bc"><div class="ttname"><a href="group__hashstate.html#ga495beb456544121bf24a32428d0384bc">noise_hashstate_hash_one</a></div><div class="ttdeci">int noise_hashstate_hash_one(NoiseHashState *state, const uint8_t *data, size_t data_len, uint8_t *hash, size_t hash_len)</div><div class="ttdoc">Hashes a single data buffer and returns the hash value. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00309">hashstate.c:309</a></div></div>
 <div class="ttc" id="structNoiseHashState__s_html_add43fdc210ad2900cf23075081f1a601"><div class="ttname"><a href="structNoiseHashState__s.html#add43fdc210ad2900cf23075081f1a601">NoiseHashState_s::destroy</a></div><div class="ttdeci">void(* destroy)(NoiseHashState *state)</div><div class="ttdoc">Destroys this HashState prior to the memory being freed. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00200">internal.h:200</a></div></div>
 <div class="ttc" id="group__hashstate_html_ga0084fb95db88521af5abd6a33a9f78aa"><div class="ttname"><a href="group__hashstate.html#ga0084fb95db88521af5abd6a33a9f78aa">noise_hashstate_get_block_length</a></div><div class="ttdeci">size_t noise_hashstate_get_block_length(const NoiseHashState *state)</div><div class="ttdoc">Gets the length of the block for a HashState object. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00206">hashstate.c:206</a></div></div>
 <div class="ttc" id="group__errors_html_gae39efe3160d926a8a630bc9f946bdc02"><div class="ttname"><a href="group__errors.html#gae39efe3160d926a8a630bc9f946bdc02">NOISE_ERROR_NO_MEMORY</a></div><div class="ttdeci">#define NOISE_ERROR_NO_MEMORY</div><div class="ttdoc">Insufficient memory to complete the operation. </div></div>
 <div class="ttc" id="structNoiseHashState__s_html_a3999a841a33a2196e4e2061aff6c4fb7"><div class="ttname"><a href="structNoiseHashState__s.html#a3999a841a33a2196e4e2061aff6c4fb7">NoiseHashState_s::finalize</a></div><div class="ttdeci">void(* finalize)(NoiseHashState *state, uint8_t *hash)</div><div class="ttdoc">Finalizes the HashState and returns the hash value. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00186">internal.h:186</a></div></div>
 <div class="ttc" id="group__errors_html_ga33189e26987e7b318cddb161b93365dc"><div class="ttname"><a href="group__errors.html#ga33189e26987e7b318cddb161b93365dc">NOISE_ERROR_UNKNOWN_NAME</a></div><div class="ttdeci">#define NOISE_ERROR_UNKNOWN_NAME</div><div class="ttdoc">Algorithm name is unknown. </div></div>
-<div class="ttc" id="internal_8h_html_ab92f4a7a788a565e5b48d83cae9d038f"><div class="ttname"><a href="internal_8h.html#ab92f4a7a788a565e5b48d83cae9d038f">noise_blake2b_new</a></div><div class="ttdeci">NoiseHashState * noise_blake2b_new(void)</div></div>
 <div class="ttc" id="group__errors_html_ga891ac255aebf03d4f8c4423299d79d93"><div class="ttname"><a href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_LENGTH</div><div class="ttdoc">Invalid length specified for a key, packet, etc. </div></div>
-<div class="ttc" id="internal_8h_html_a09251980b41fc9b5fef2d0591869705d"><div class="ttname"><a href="internal_8h.html#a09251980b41fc9b5fef2d0591869705d">noise_sha256_new</a></div><div class="ttdeci">NoiseHashState * noise_sha256_new(void)</div></div>
 <div class="ttc" id="group__hash__id_html_gac2679aae7f0f109220b1bbf6f38a9a1f"><div class="ttname"><a href="group__hash__id.html#gac2679aae7f0f109220b1bbf6f38a9a1f">NOISE_HASH_SHA256</a></div><div class="ttdeci">#define NOISE_HASH_SHA256</div><div class="ttdoc">Hash identifier for &quot;SHA256&quot;. </div></div>
 <div class="ttc" id="structNoiseHashState__s_html_aacc4000e04daf21183cbf8561c2bdd16"><div class="ttname"><a href="structNoiseHashState__s.html#aacc4000e04daf21183cbf8561c2bdd16">NoiseHashState_s::update</a></div><div class="ttdeci">void(* update)(NoiseHashState *state, const uint8_t *data, size_t len)</div><div class="ttdoc">Updates the HashState with more input data. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00177">internal.h:177</a></div></div>
 <div class="ttc" id="group__names_html_ga53677a3d2f6f6bace6530417dc9d5e78"><div class="ttname"><a href="group__names.html#ga53677a3d2f6f6bace6530417dc9d5e78">noise_name_to_id</a></div><div class="ttdeci">int noise_name_to_id(int category, const char *name, size_t name_len)</div><div class="ttdoc">Maps an algorithm name to the corresponding identifier. </div><div class="ttdef"><b>Definition:</b> <a href="names_8c_source.html#l00122">names.c:122</a></div></div>
-<div class="ttc" id="group__hashstate_html_ga8972e42c53e5468d87133738aaf45245"><div class="ttname"><a href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">noise_hashstate_hkdf</a></div><div class="ttdeci">int noise_hashstate_hkdf(NoiseHashState *state, const uint8_t *key, size_t key_len, const uint8_t *data, size_t data_len, uint8_t *output1, size_t output1_len, uint8_t *output2, size_t output2_len)</div><div class="ttdoc">Hashes input data with a key to generate two output values. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00382">hashstate.c:382</a></div></div>
+<div class="ttc" id="group__hashstate_html_ga8972e42c53e5468d87133738aaf45245"><div class="ttname"><a href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">noise_hashstate_hkdf</a></div><div class="ttdeci">int noise_hashstate_hkdf(NoiseHashState *state, const uint8_t *key, size_t key_len, const uint8_t *data, size_t data_len, uint8_t *output1, size_t output1_len, uint8_t *output2, size_t output2_len)</div><div class="ttdoc">Hashes input data with a key to generate two output values. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00472">hashstate.c:472</a></div></div>
+<div class="ttc" id="group__hashstate_html_ga6cce0dac1e841b8a08da331d81aa5f09"><div class="ttname"><a href="group__hashstate.html#ga6cce0dac1e841b8a08da331d81aa5f09">noise_hashstate_finalize</a></div><div class="ttdeci">int noise_hashstate_finalize(NoiseHashState *state, uint8_t *hash, size_t hash_len)</div><div class="ttdoc">Finalizes the hash state and returns the hash value. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00272">hashstate.c:272</a></div></div>
 <div class="ttc" id="group__hashstate_html_ga442d5d807885851a1eaa3e98c4ef2aa4"><div class="ttname"><a href="group__hashstate.html#ga442d5d807885851a1eaa3e98c4ef2aa4">noise_hashstate_get_hash_id</a></div><div class="ttdeci">int noise_hashstate_get_hash_id(const NoiseHashState *state)</div><div class="ttdoc">Gets the algorithm identifier for a HashState object. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00178">hashstate.c:178</a></div></div>
 <div class="ttc" id="internal_8h_html"><div class="ttname"><a href="internal_8h.html">internal.h</a></div><div class="ttdoc">Internal definitions for the library. </div></div>
 <div class="ttc" id="group__utils_html_ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><div class="ttname"><a href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a></div><div class="ttdeci">void noise_free(void *ptr, size_t size)</div><div class="ttdoc">Destroys the contents of a block of memory and free it. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00101">util.c:101</a></div></div>
 <div class="ttc" id="group__hashstate_html_ga2ae5de8f7333ad9caaacaa2ffa972eb6"><div class="ttname"><a href="group__hashstate.html#ga2ae5de8f7333ad9caaacaa2ffa972eb6">noise_hashstate_free</a></div><div class="ttdeci">int noise_hashstate_free(NoiseHashState *state)</div><div class="ttdoc">Frees a HashState object after destroying all sensitive material. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00156">hashstate.c:156</a></div></div>
+<div class="ttc" id="group__hashstate_html_ga3d345cecc3444574055ba8a4dad3529d"><div class="ttname"><a href="group__hashstate.html#ga3d345cecc3444574055ba8a4dad3529d">noise_hashstate_update</a></div><div class="ttdeci">int noise_hashstate_update(NoiseHashState *state, const uint8_t *data, size_t data_len)</div><div class="ttdoc">Updates the hash state with more data. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00245">hashstate.c:245</a></div></div>
 <div class="ttc" id="group__hash__id_html_ga51dde543fb0b679be7691772c9f29aa4"><div class="ttname"><a href="group__hash__id.html#ga51dde543fb0b679be7691772c9f29aa4">NOISE_HASH_BLAKE2s</a></div><div class="ttdeci">#define NOISE_HASH_BLAKE2s</div><div class="ttdoc">Hash identifier for &quot;BLAKE2s&quot;. </div></div>
 <div class="ttc" id="group__hash__id_html_ga7eec0afff4d8e66a2b8a94169445b7a2"><div class="ttname"><a href="group__hash__id.html#ga7eec0afff4d8e66a2b8a94169445b7a2">NOISE_HASH_SHA512</a></div><div class="ttdeci">#define NOISE_HASH_SHA512</div><div class="ttdoc">Hash identifier for &quot;SHA512&quot;. </div></div>
 <div class="ttc" id="group__hashstate_html_gabc6271c86245c8ff4d27fe1c6e748b1b"><div class="ttname"><a href="group__hashstate.html#gabc6271c86245c8ff4d27fe1c6e748b1b">noise_hashstate_get_hash_length</a></div><div class="ttdeci">size_t noise_hashstate_get_hash_length(const NoiseHashState *state)</div><div class="ttdoc">Gets the length of the hash output for a HashState object. </div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00192">hashstate.c:192</a></div></div>
 <div class="ttc" id="structNoiseHashState__s_html_a8545ec173c1db65724f65205505a5370"><div class="ttname"><a href="structNoiseHashState__s.html#a8545ec173c1db65724f65205505a5370">NoiseHashState_s::hash_id</a></div><div class="ttdeci">int hash_id</div><div class="ttdoc">Algorithm identifier for the hash. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00155">internal.h:155</a></div></div>
-<div class="ttc" id="internal_8h_html_afc603487111b8b90eb04d30aadc1cdb3"><div class="ttname"><a href="internal_8h.html#afc603487111b8b90eb04d30aadc1cdb3">noise_sha512_new</a></div><div class="ttdeci">NoiseHashState * noise_sha512_new(void)</div></div>
+<div class="ttc" id="group__hashstate_html_ga56323b62090970e874ed2967f020c2b6"><div class="ttname"><a href="group__hashstate.html#ga56323b62090970e874ed2967f020c2b6">noise_hashstate_hash_two</a></div><div class="ttdeci">int noise_hashstate_hash_two(NoiseHashState *state, const uint8_t *data1, size_t data1_len, const uint8_t *data2, size_t data2_len, uint8_t *hash, size_t hash_len)</div><div class="ttdoc">Hashes the concatenation of two data buffers and returns the combined hash value. ...</div><div class="ttdef"><b>Definition:</b> <a href="hashstate_8c_source.html#l00352">hashstate.c:352</a></div></div>
 <div class="ttc" id="group__hash__id_html_ga329ec81766f18312269e0c144dfc8d7d"><div class="ttname"><a href="group__hash__id.html#ga329ec81766f18312269e0c144dfc8d7d">NOISE_HASH_NONE</a></div><div class="ttdeci">#define NOISE_HASH_NONE</div><div class="ttdoc">Hash identifier that indicates &quot;no hash&quot;. </div></div>
 <div class="ttc" id="structNoiseHashState__s_html_a24034088ea44d4c99abb85edcd5ced82"><div class="ttname"><a href="structNoiseHashState__s.html#a24034088ea44d4c99abb85edcd5ced82">NoiseHashState_s::size</a></div><div class="ttdeci">size_t size</div><div class="ttdoc">Total size of the structure including subclass state. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00152">internal.h:152</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

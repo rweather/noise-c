@@ -124,11 +124,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    *state = 0;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">switch</span> (<span class="keywordtype">id</span>) {</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="group__dh__id.html#gad3388538cd5e6ebd0a31f34b0513ee18">NOISE_DH_CURVE25519</a>:</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        *state = <a class="code" href="internal_8h.html#adc3037dcdebfbedb58228d71df77ea43">noise_curve25519_new</a>();</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        *state = noise_curve25519_new();</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="group__dh__id.html#gae1f2fda5059c8d7477293c9d3c977427">NOISE_DH_CURVE448</a>:</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        *state = <a class="code" href="internal_8h.html#aee96651886a3393cea992c5c176aff7c">noise_curve448_new</a>();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        *state = noise_curve448_new();</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordflow">default</span>:</div>
@@ -435,8 +435,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="group__dhstate_html_ga37e9dfeeeadce4f90339cf1ffe5b1e2f"><div class="ttname"><a href="group__dhstate.html#ga37e9dfeeeadce4f90339cf1ffe5b1e2f">noise_dhstate_get_public_key_length</a></div><div class="ttdeci">size_t noise_dhstate_get_public_key_length(const NoiseDHState *state)</div><div class="ttdoc">Gets the length of the public key for a DHState object. </div><div class="ttdef"><b>Definition:</b> <a href="dhstate_8c_source.html#l00179">dhstate.c:179</a></div></div>
 <div class="ttc" id="group__dhstate_html_gacfb68c245cadc7f4c420ccb6ec9a08f5"><div class="ttname"><a href="group__dhstate.html#gacfb68c245cadc7f4c420ccb6ec9a08f5">noise_dhstate_get_keypair</a></div><div class="ttdeci">int noise_dhstate_get_keypair(const NoiseDHState *state, uint8_t *private_key, size_t private_key_len, uint8_t *public_key, size_t public_key_len)</div><div class="ttdoc">Gets the keypair from within a DHState object. </div><div class="ttdef"><b>Definition:</b> <a href="dhstate_8c_source.html#l00399">dhstate.c:399</a></div></div>
 <div class="ttc" id="group__errors_html_gaa2f38fe867879538e1438f05054d6aa7"><div class="ttname"><a href="group__errors.html#gaa2f38fe867879538e1438f05054d6aa7">NOISE_ERROR_INVALID_STATE</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_STATE</div><div class="ttdoc">Operation cannot be performed in the current state. </div></div>
-<div class="ttc" id="internal_8h_html_adc3037dcdebfbedb58228d71df77ea43"><div class="ttname"><a href="internal_8h.html#adc3037dcdebfbedb58228d71df77ea43">noise_curve25519_new</a></div><div class="ttdeci">NoiseDHState * noise_curve25519_new(void)</div></div>
-<div class="ttc" id="internal_8h_html_aee96651886a3393cea992c5c176aff7c"><div class="ttname"><a href="internal_8h.html#aee96651886a3393cea992c5c176aff7c">noise_curve448_new</a></div><div class="ttdeci">NoiseDHState * noise_curve448_new(void)</div></div>
 <div class="ttc" id="group__errors_html_ga4c2869f005128d7a415e6d941ccc67bb"><div class="ttname"><a href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_PARAM</div><div class="ttdoc">Invalid parameter to function; e.g. a NULL value. </div></div>
 <div class="ttc" id="structNoiseDHState__s_html_a63a30c2d7fc0b31b9082f4b706194b2a"><div class="ttname"><a href="structNoiseDHState__s.html#a63a30c2d7fc0b31b9082f4b706194b2a">NoiseDHState_s::public_key</a></div><div class="ttdeci">uint8_t * public_key</div><div class="ttdoc">Points to the public key in the subclass state. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00235">internal.h:235</a></div></div>
 <div class="ttc" id="structNoiseDHState__s_html_a08aa4d3150b7d2da7d60a4253540a3c4"><div class="ttname"><a href="structNoiseDHState__s.html#a08aa4d3150b7d2da7d60a4253540a3c4">NoiseDHState_s::key_type</a></div><div class="ttdeci">uint16_t key_type</div><div class="ttdoc">The type of key stored within this DHState object. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00220">internal.h:220</a></div></div>
@@ -486,7 +484,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 21:01:52 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

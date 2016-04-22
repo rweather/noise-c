@@ -112,18 +112,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>NOISE_ACTION_WRITE_MESSAGE
 : <a class="el" href="group__actions.html#ga082423d9d506c8242268f95dafec3afe">constants.h</a>
 </li>
-<li>noise_aesgcm_new()
-: <a class="el" href="internal_8h.html#ad6f7d972a419b6dcea62a0519f560a65">internal.h</a>
-</li>
-<li>noise_blake2b_new()
-: <a class="el" href="internal_8h.html#ab92f4a7a788a565e5b48d83cae9d038f">internal.h</a>
-</li>
-<li>noise_blake2s_new()
-: <a class="el" href="internal_8h.html#a4aa620d65c70f6b9ea5eac6eb9f63e40">internal.h</a>
-</li>
-<li>noise_chachapoly_new()
-: <a class="el" href="internal_8h.html#a3ac0b349b2d670bb4b1bb5ecf61a228d">internal.h</a>
-</li>
 <li>NOISE_CIPHER_AESGCM
 : <a class="el" href="group__cipher__id.html#ga3435d8a556dfe89ab25dfe75d2b6a61a">constants.h</a>
 </li>
@@ -180,19 +168,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="group__cipherstate.html#ga3a10548dfc0948bb2e29ac416dc8a901">cipherstate.c</a>
 , <a class="el" href="group__cipherstate.html#ga3a10548dfc0948bb2e29ac416dc8a901">cipherstate.h</a>
 </li>
-<li>noise_cipherstate_split()
-: <a class="el" href="group__cipherstate.html#gac1670e8a21551140558f8ea7ac686589">cipherstate.c</a>
-, <a class="el" href="group__cipherstate.html#gac1670e8a21551140558f8ea7ac686589">cipherstate.h</a>
-</li>
 <li>noise_clean()
 : <a class="el" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">util.c</a>
 , <a class="el" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">util.h</a>
-</li>
-<li>noise_curve25519_new()
-: <a class="el" href="internal_8h.html#adc3037dcdebfbedb58228d71df77ea43">internal.h</a>
-</li>
-<li>noise_curve448_new()
-: <a class="el" href="internal_8h.html#aee96651886a3393cea992c5c176aff7c">internal.h</a>
 </li>
 <li>NOISE_DH_CATEGORY
 : <a class="el" href="group__dh__id.html#ga7eb71d01712e8a89ff0cc5a617200f48">constants.h</a>
@@ -281,9 +259,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>noise_dhstate_set_public_key()
 : <a class="el" href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95">dhstate.c</a>
 , <a class="el" href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95">dhstate.h</a>
-</li>
-<li>noise_ed25519_new()
-: <a class="el" href="internal_8h.html#ae97ebbb48ae002ff960b50b77e531421">internal.h</a>
 </li>
 <li>NOISE_ERROR_INVALID_FORMAT
 : <a class="el" href="group__errors.html#ga57a864089387f9919d6550f1688589bf">constants.h</a>
@@ -388,8 +363,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6">handshakestate.h</a>
 </li>
 <li>noise_handshakestate_needs_remote_public_key()
-: <a class="el" href="group__handshakestate.html#ga9d88e66873413c052b05f7ad35827f1b">handshakestate.h</a>
-, <a class="el" href="group__handshakestate.html#ga9d88e66873413c052b05f7ad35827f1b">handshakestate.c</a>
+: <a class="el" href="group__handshakestate.html#ga9d88e66873413c052b05f7ad35827f1b">handshakestate.c</a>
+, <a class="el" href="group__handshakestate.html#ga9d88e66873413c052b05f7ad35827f1b">handshakestate.h</a>
 </li>
 <li>noise_handshakestate_new_by_id()
 : <a class="el" href="group__handshakestate.html#gab0b47aa4e0577b68ad90848565c00a8b">handshakestate.c</a>
@@ -441,6 +416,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>NOISE_HASH_SHA512
 : <a class="el" href="group__hash__id.html#ga7eec0afff4d8e66a2b8a94169445b7a2">constants.h</a>
 </li>
+<li>noise_hashstate_finalize()
+: <a class="el" href="group__hashstate.html#ga6cce0dac1e841b8a08da331d81aa5f09">hashstate.c</a>
+, <a class="el" href="group__hashstate.html#ga6cce0dac1e841b8a08da331d81aa5f09">hashstate.h</a>
+</li>
 <li>noise_hashstate_free()
 : <a class="el" href="group__hashstate.html#ga2ae5de8f7333ad9caaacaa2ffa972eb6">hashstate.c</a>
 , <a class="el" href="group__hashstate.html#ga2ae5de8f7333ad9caaacaa2ffa972eb6">hashstate.h</a>
@@ -458,12 +437,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="group__hashstate.html#gabc6271c86245c8ff4d27fe1c6e748b1b">hashstate.h</a>
 </li>
 <li>noise_hashstate_hash_one()
-: <a class="el" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e">hashstate.c</a>
-, <a class="el" href="group__hashstate.html#ga3d43824f15c1dd11b82bd8ae247b534e">hashstate.h</a>
+: <a class="el" href="group__hashstate.html#ga495beb456544121bf24a32428d0384bc">hashstate.c</a>
+, <a class="el" href="group__hashstate.html#ga495beb456544121bf24a32428d0384bc">hashstate.h</a>
 </li>
 <li>noise_hashstate_hash_two()
-: <a class="el" href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2">hashstate.c</a>
-, <a class="el" href="group__hashstate.html#ga0142e57efdc94183de728cc9fca3c0b2">hashstate.h</a>
+: <a class="el" href="group__hashstate.html#ga56323b62090970e874ed2967f020c2b6">hashstate.c</a>
+, <a class="el" href="group__hashstate.html#ga56323b62090970e874ed2967f020c2b6">hashstate.h</a>
 </li>
 <li>noise_hashstate_hkdf()
 : <a class="el" href="group__hashstate.html#ga8972e42c53e5468d87133738aaf45245">hashstate.c</a>
@@ -477,20 +456,28 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2">hashstate.c</a>
 , <a class="el" href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2">hashstate.h</a>
 </li>
+<li>noise_hashstate_reset()
+: <a class="el" href="group__hashstate.html#gabf6c0c84d7ca72464e0c17dac8bc88a9">hashstate.c</a>
+, <a class="el" href="group__hashstate.html#gabf6c0c84d7ca72464e0c17dac8bc88a9">hashstate.h</a>
+</li>
+<li>noise_hashstate_update()
+: <a class="el" href="group__hashstate.html#ga3d345cecc3444574055ba8a4dad3529d">hashstate.c</a>
+, <a class="el" href="group__hashstate.html#ga3d345cecc3444574055ba8a4dad3529d">hashstate.h</a>
+</li>
 <li>NOISE_ID
 : <a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">constants.h</a>
 </li>
 <li>noise_id_to_name()
-: <a class="el" href="group__names.html#gaea647437d39bd510b917611fef91d482">names.h</a>
-, <a class="el" href="group__names.html#gaea647437d39bd510b917611fef91d482">names.c</a>
+: <a class="el" href="group__names.html#gaea647437d39bd510b917611fef91d482">names.c</a>
+, <a class="el" href="group__names.html#gaea647437d39bd510b917611fef91d482">names.h</a>
 </li>
 <li>noise_is_equal()
 : <a class="el" href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">util.c</a>
 , <a class="el" href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">util.h</a>
 </li>
 <li>noise_is_zero()
-: <a class="el" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">util.h</a>
-, <a class="el" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">util.c</a>
+: <a class="el" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">util.c</a>
+, <a class="el" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">util.h</a>
 </li>
 <li>NOISE_KEY_TYPE_KEYPAIR
 : <a class="el" href="internal_8h.html#a2a3217264513a48a1bacbcec099d9dd9">internal.h</a>
@@ -511,21 +498,21 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 : <a class="el" href="constants_8h.html#ac67d796e3e24090442f31aec6092b2dd">constants.h</a>
 </li>
 <li>noise_name_to_id()
-: <a class="el" href="group__names.html#ga53677a3d2f6f6bace6530417dc9d5e78">names.h</a>
-, <a class="el" href="group__names.html#ga53677a3d2f6f6bace6530417dc9d5e78">names.c</a>
+: <a class="el" href="group__names.html#ga53677a3d2f6f6bace6530417dc9d5e78">names.c</a>
+, <a class="el" href="group__names.html#ga53677a3d2f6f6bace6530417dc9d5e78">names.h</a>
 </li>
 <li>noise_new
 : <a class="el" href="group__utils.html#gaa8403b5d2d468366eaed8ecf8b7eea24">util.h</a>
 </li>
 <li>noise_new_object()
-: <a class="el" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">util.c</a>
-, <a class="el" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">util.h</a>
+: <a class="el" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">util.h</a>
+, <a class="el" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">util.c</a>
 </li>
 <li>NOISE_PADDING_RANDOM
-: <a class="el" href="constants_8h.html#a8f845e853df5b14fabd434915c7559b5">constants.h</a>
+: <a class="el" href="group__padding__modes.html#ga8f845e853df5b14fabd434915c7559b5">constants.h</a>
 </li>
 <li>NOISE_PADDING_ZERO
-: <a class="el" href="constants_8h.html#a5f63770f27d92cd12b5c4bef76fac57b">constants.h</a>
+: <a class="el" href="group__padding__modes.html#ga5f63770f27d92cd12b5c4bef76fac57b">constants.h</a>
 </li>
 <li>NOISE_PAT_FLAG_LOCAL_EMPEM_REQ
 : <a class="el" href="internal_8h.html#a090239192cda8526c8af363b1149c92f">internal.h</a>
@@ -637,8 +624,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="group__names.html#gab9db2e7768a702f6de6eb64e01e5c73d">names.c</a>
 </li>
 <li>noise_protocol_name_to_id()
-: <a class="el" href="group__names.html#gac3b71a24c6e9acfba67ca73c3854ba89">names.c</a>
-, <a class="el" href="group__names.html#gac3b71a24c6e9acfba67ca73c3854ba89">names.h</a>
+: <a class="el" href="group__names.html#gac3b71a24c6e9acfba67ca73c3854ba89">names.h</a>
+, <a class="el" href="group__names.html#gac3b71a24c6e9acfba67ca73c3854ba89">names.c</a>
 </li>
 <li>noise_rand_bytes()
 : <a class="el" href="rand__os_8c.html#a2c655f02a16fc53fbbe703dcb61bb196">rand_os.c</a>
@@ -649,20 +636,20 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="group__randstate.html#gaa0617e1f888a7d143324ef983b578b1d">randstate.h</a>
 </li>
 <li>noise_randstate_generate()
-: <a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">randstate.h</a>
-, <a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">randstate.c</a>
+: <a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">randstate.c</a>
+, <a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">randstate.h</a>
 </li>
 <li>noise_randstate_new()
-: <a class="el" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">randstate.h</a>
-, <a class="el" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">randstate.c</a>
+: <a class="el" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">randstate.c</a>
+, <a class="el" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">randstate.h</a>
 </li>
 <li>noise_randstate_pad()
 : <a class="el" href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">randstate.c</a>
 , <a class="el" href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">randstate.h</a>
 </li>
 <li>noise_randstate_reseed()
-: <a class="el" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">randstate.c</a>
-, <a class="el" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">randstate.h</a>
+: <a class="el" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">randstate.h</a>
+, <a class="el" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">randstate.c</a>
 </li>
 <li>NOISE_REQ_FALLBACK_PREMSG
 : <a class="el" href="internal_8h.html#a739e9c4d75f890b7c266057835a7c7b0">internal.h</a>
@@ -691,20 +678,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>NOISE_ROLE_RESPONDER
 : <a class="el" href="group__roles.html#ga1f681376eb63a3f459b1c20a291d17b8">constants.h</a>
 </li>
-<li>noise_sha256_new()
-: <a class="el" href="internal_8h.html#a09251980b41fc9b5fef2d0591869705d">internal.h</a>
-</li>
-<li>noise_sha512_new()
-: <a class="el" href="internal_8h.html#afc603487111b8b90eb04d30aadc1cdb3">internal.h</a>
-</li>
 <li>NOISE_SIGN_CATEGORY
-: <a class="el" href="constants_8h.html#a781484b6554bdb7f1b8e06e650d96172">constants.h</a>
+: <a class="el" href="group__signature__id.html#ga781484b6554bdb7f1b8e06e650d96172">constants.h</a>
 </li>
 <li>NOISE_SIGN_ED25519
-: <a class="el" href="constants_8h.html#a2f0bb2c8d23d40619c95a751538854a3">constants.h</a>
+: <a class="el" href="group__signature__id.html#ga2f0bb2c8d23d40619c95a751538854a3">constants.h</a>
 </li>
 <li>NOISE_SIGN_NONE
-: <a class="el" href="constants_8h.html#a2b9a0d802d28bbde1c9955c0fffac1d2">constants.h</a>
+: <a class="el" href="group__signature__id.html#ga2b9a0d802d28bbde1c9955c0fffac1d2">constants.h</a>
 </li>
 <li>noise_signstate_clear_key()
 : <a class="el" href="group__signstate.html#gada9a88e272159c052becfa0dd227e7c3">signstate.c</a>
@@ -715,72 +696,72 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="group__signstate.html#gaf20cffb202ff1b8d90a203ccced8774f">signstate.h</a>
 </li>
 <li>noise_signstate_generate_keypair()
-: <a class="el" href="group__signstate.html#ga3281e133acfafba030935f2bcb7680f4">signstate.c</a>
-, <a class="el" href="group__signstate.html#ga3281e133acfafba030935f2bcb7680f4">signstate.h</a>
+: <a class="el" href="group__signstate.html#ga3281e133acfafba030935f2bcb7680f4">signstate.h</a>
+, <a class="el" href="group__signstate.html#ga3281e133acfafba030935f2bcb7680f4">signstate.c</a>
 </li>
 <li>noise_signstate_get_keypair()
-: <a class="el" href="group__signstate.html#gaf5b80010cd8e931a57f8b9e2e378ebe5">signstate.h</a>
-, <a class="el" href="group__signstate.html#gaf5b80010cd8e931a57f8b9e2e378ebe5">signstate.c</a>
+: <a class="el" href="group__signstate.html#gaf5b80010cd8e931a57f8b9e2e378ebe5">signstate.c</a>
+, <a class="el" href="group__signstate.html#gaf5b80010cd8e931a57f8b9e2e378ebe5">signstate.h</a>
 </li>
 <li>noise_signstate_get_private_key_length()
-: <a class="el" href="group__signstate.html#ga039d2b214b5f0abdc9a91bd77272e416">signstate.c</a>
-, <a class="el" href="group__signstate.html#ga039d2b214b5f0abdc9a91bd77272e416">signstate.h</a>
+: <a class="el" href="group__signstate.html#ga039d2b214b5f0abdc9a91bd77272e416">signstate.h</a>
+, <a class="el" href="group__signstate.html#ga039d2b214b5f0abdc9a91bd77272e416">signstate.c</a>
 </li>
 <li>noise_signstate_get_public_key()
-: <a class="el" href="group__signstate.html#ga867e361cf8da8e303f44fde26d076055">signstate.c</a>
-, <a class="el" href="group__signstate.html#ga867e361cf8da8e303f44fde26d076055">signstate.h</a>
+: <a class="el" href="group__signstate.html#ga867e361cf8da8e303f44fde26d076055">signstate.h</a>
+, <a class="el" href="group__signstate.html#ga867e361cf8da8e303f44fde26d076055">signstate.c</a>
 </li>
 <li>noise_signstate_get_public_key_length()
-: <a class="el" href="group__signstate.html#ga93ed9e0d47aa6f8c0bcae280a196f399">signstate.c</a>
-, <a class="el" href="group__signstate.html#ga93ed9e0d47aa6f8c0bcae280a196f399">signstate.h</a>
+: <a class="el" href="group__signstate.html#ga93ed9e0d47aa6f8c0bcae280a196f399">signstate.h</a>
+, <a class="el" href="group__signstate.html#ga93ed9e0d47aa6f8c0bcae280a196f399">signstate.c</a>
 </li>
 <li>noise_signstate_get_sign_id()
 : <a class="el" href="group__signstate.html#ga68c18c309c52e87d1e43e92f5b14e65c">signstate.c</a>
 , <a class="el" href="group__signstate.html#ga68c18c309c52e87d1e43e92f5b14e65c">signstate.h</a>
 </li>
 <li>noise_signstate_get_signature_length()
-: <a class="el" href="group__signstate.html#ga7bb039ccdfacce9347e18a664ab2b935">signstate.c</a>
-, <a class="el" href="group__signstate.html#ga7bb039ccdfacce9347e18a664ab2b935">signstate.h</a>
+: <a class="el" href="group__signstate.html#ga7bb039ccdfacce9347e18a664ab2b935">signstate.h</a>
+, <a class="el" href="group__signstate.html#ga7bb039ccdfacce9347e18a664ab2b935">signstate.c</a>
 </li>
 <li>noise_signstate_has_keypair()
-: <a class="el" href="group__signstate.html#gaa94dbd72fa85348538e0deeb65e69809">signstate.h</a>
-, <a class="el" href="group__signstate.html#gaa94dbd72fa85348538e0deeb65e69809">signstate.c</a>
+: <a class="el" href="group__signstate.html#gaa94dbd72fa85348538e0deeb65e69809">signstate.c</a>
+, <a class="el" href="group__signstate.html#gaa94dbd72fa85348538e0deeb65e69809">signstate.h</a>
 </li>
 <li>noise_signstate_has_public_key()
-: <a class="el" href="group__signstate.html#ga16aecc49cc9309a6016d72cb9b4ed07a">signstate.c</a>
-, <a class="el" href="group__signstate.html#ga16aecc49cc9309a6016d72cb9b4ed07a">signstate.h</a>
+: <a class="el" href="group__signstate.html#ga16aecc49cc9309a6016d72cb9b4ed07a">signstate.h</a>
+, <a class="el" href="group__signstate.html#ga16aecc49cc9309a6016d72cb9b4ed07a">signstate.c</a>
 </li>
 <li>noise_signstate_new_by_id()
-: <a class="el" href="group__signstate.html#gad8c8c68bea5f5ec7e345d13f0a7aca49">signstate.c</a>
-, <a class="el" href="group__signstate.html#gad8c8c68bea5f5ec7e345d13f0a7aca49">signstate.h</a>
+: <a class="el" href="group__signstate.html#gad8c8c68bea5f5ec7e345d13f0a7aca49">signstate.h</a>
+, <a class="el" href="group__signstate.html#gad8c8c68bea5f5ec7e345d13f0a7aca49">signstate.c</a>
 </li>
 <li>noise_signstate_new_by_name()
-: <a class="el" href="group__signstate.html#gae3ea08638bb4c506fdf1db9157eead61">signstate.c</a>
-, <a class="el" href="group__signstate.html#gae3ea08638bb4c506fdf1db9157eead61">signstate.h</a>
+: <a class="el" href="group__signstate.html#gae3ea08638bb4c506fdf1db9157eead61">signstate.h</a>
+, <a class="el" href="group__signstate.html#gae3ea08638bb4c506fdf1db9157eead61">signstate.c</a>
 </li>
 <li>noise_signstate_set_keypair()
-: <a class="el" href="group__signstate.html#ga9ce3bf872428bcd55657498845d07316">signstate.c</a>
-, <a class="el" href="group__signstate.html#ga9ce3bf872428bcd55657498845d07316">signstate.h</a>
+: <a class="el" href="group__signstate.html#ga9ce3bf872428bcd55657498845d07316">signstate.h</a>
+, <a class="el" href="group__signstate.html#ga9ce3bf872428bcd55657498845d07316">signstate.c</a>
 </li>
 <li>noise_signstate_set_keypair_private()
-: <a class="el" href="group__signstate.html#gaeda28d8f0757b16684f497c64f28ad7c">signstate.h</a>
-, <a class="el" href="group__signstate.html#gaeda28d8f0757b16684f497c64f28ad7c">signstate.c</a>
+: <a class="el" href="group__signstate.html#gaeda28d8f0757b16684f497c64f28ad7c">signstate.c</a>
+, <a class="el" href="group__signstate.html#gaeda28d8f0757b16684f497c64f28ad7c">signstate.h</a>
 </li>
 <li>noise_signstate_set_public_key()
-: <a class="el" href="group__signstate.html#gafc7ca775448324195c5c5a39f785dadd">signstate.c</a>
-, <a class="el" href="group__signstate.html#gafc7ca775448324195c5c5a39f785dadd">signstate.h</a>
+: <a class="el" href="group__signstate.html#gafc7ca775448324195c5c5a39f785dadd">signstate.h</a>
+, <a class="el" href="group__signstate.html#gafc7ca775448324195c5c5a39f785dadd">signstate.c</a>
 </li>
 <li>noise_signstate_sign()
-: <a class="el" href="group__signstate.html#gab9cc4ea435e6aa7c5a9023eb33ddb71b">signstate.h</a>
-, <a class="el" href="group__signstate.html#gab9cc4ea435e6aa7c5a9023eb33ddb71b">signstate.c</a>
+: <a class="el" href="group__signstate.html#gab9cc4ea435e6aa7c5a9023eb33ddb71b">signstate.c</a>
+, <a class="el" href="group__signstate.html#gab9cc4ea435e6aa7c5a9023eb33ddb71b">signstate.h</a>
 </li>
 <li>noise_signstate_verify()
-: <a class="el" href="group__signstate.html#ga833260ef791f10a3061d5838070fe9f0">signstate.h</a>
-, <a class="el" href="group__signstate.html#ga833260ef791f10a3061d5838070fe9f0">signstate.c</a>
+: <a class="el" href="group__signstate.html#ga833260ef791f10a3061d5838070fe9f0">signstate.c</a>
+, <a class="el" href="group__signstate.html#ga833260ef791f10a3061d5838070fe9f0">signstate.h</a>
 </li>
 <li>noise_strerror()
-: <a class="el" href="group__error__reports.html#ga6dd658a63b1d30f754f12f0eb69f07e0">errors.c</a>
-, <a class="el" href="group__error__reports.html#ga6dd658a63b1d30f754f12f0eb69f07e0">errors.h</a>
+: <a class="el" href="group__error__reports.html#ga6dd658a63b1d30f754f12f0eb69f07e0">errors.h</a>
+, <a class="el" href="group__error__reports.html#ga6dd658a63b1d30f754f12f0eb69f07e0">errors.c</a>
 </li>
 <li>noise_symmetricstate_decrypt_and_hash()
 : <a class="el" href="group__symmetricstate.html#gaa914491b664e718adaa7b53af213b16a">symmetricstate.h</a>
@@ -791,28 +772,28 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 , <a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4">symmetricstate.h</a>
 </li>
 <li>noise_symmetricstate_free()
-: <a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9">symmetricstate.c</a>
-, <a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9">symmetricstate.h</a>
+: <a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9">symmetricstate.h</a>
+, <a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9">symmetricstate.c</a>
 </li>
 <li>noise_symmetricstate_get_mac_length()
-: <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820">symmetricstate.c</a>
-, <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820">symmetricstate.h</a>
+: <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820">symmetricstate.h</a>
+, <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820">symmetricstate.c</a>
 </li>
 <li>noise_symmetricstate_get_protocol_id()
-: <a class="el" href="group__symmetricstate.html#ga9e8ec56dd66b6fe9f04cf9ff1f144b79">symmetricstate.h</a>
-, <a class="el" href="group__symmetricstate.html#ga9e8ec56dd66b6fe9f04cf9ff1f144b79">symmetricstate.c</a>
+: <a class="el" href="group__symmetricstate.html#ga9e8ec56dd66b6fe9f04cf9ff1f144b79">symmetricstate.c</a>
+, <a class="el" href="group__symmetricstate.html#ga9e8ec56dd66b6fe9f04cf9ff1f144b79">symmetricstate.h</a>
 </li>
 <li>noise_symmetricstate_mix_hash()
-: <a class="el" href="group__symmetricstate.html#ga88c5f5a80bc4984eff45cacdce01d11c">symmetricstate.c</a>
-, <a class="el" href="group__symmetricstate.html#ga88c5f5a80bc4984eff45cacdce01d11c">symmetricstate.h</a>
+: <a class="el" href="group__symmetricstate.html#ga88c5f5a80bc4984eff45cacdce01d11c">symmetricstate.h</a>
+, <a class="el" href="group__symmetricstate.html#ga88c5f5a80bc4984eff45cacdce01d11c">symmetricstate.c</a>
 </li>
 <li>noise_symmetricstate_mix_key()
 : <a class="el" href="group__symmetricstate.html#gac792150120af1e5f6f45ebb42023b35a">symmetricstate.c</a>
 , <a class="el" href="group__symmetricstate.html#gac792150120af1e5f6f45ebb42023b35a">symmetricstate.h</a>
 </li>
 <li>noise_symmetricstate_new_by_id()
-: <a class="el" href="group__symmetricstate.html#ga8198aa2fea89f65139360558ee622aed">symmetricstate.c</a>
-, <a class="el" href="group__symmetricstate.html#ga8198aa2fea89f65139360558ee622aed">symmetricstate.h</a>
+: <a class="el" href="group__symmetricstate.html#ga8198aa2fea89f65139360558ee622aed">symmetricstate.h</a>
+, <a class="el" href="group__symmetricstate.html#ga8198aa2fea89f65139360558ee622aed">symmetricstate.c</a>
 </li>
 <li>noise_symmetricstate_new_by_name()
 : <a class="el" href="group__symmetricstate.html#ga29d5f792aa9dc3cbff5609ff0bbce543">symmetricstate.h</a>
@@ -867,14 +848,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li>NoiseSymmetricState
 : <a class="el" href="group__symmetricstate.html#gaafb7dab7644f6ebb68fbd3a9c7b1c32c">symmetricstate.h</a>
 </li>
-<li>num_error_strings
-: <a class="el" href="group__error__reports.html#gaa1755cd6f7f26aede242a77537be4259">errors.c</a>
-</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 20 2016 21:01:53 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
