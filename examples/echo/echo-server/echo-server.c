@@ -268,6 +268,7 @@ int main(int argc, char *argv[])
                 break;
             }
             message_size -= 2;  /* Overhead of the packet length field */
+            payload_size = sizeof(message);
             err = noise_handshakestate_read_message
                 (handshake, message + 2, message_size, NULL, &payload_size);
             if (err != NOISE_ERROR_NONE) {
