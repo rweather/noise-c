@@ -57,6 +57,7 @@ is my motto.
 
 \section other_info Other information
 
+\li \ref example_echo "Using Noise-C: Client/Server Echo Example"
 \li \ref cert_key_format "Certificate and private key file format"
 
 \section dir_structure Directory structure

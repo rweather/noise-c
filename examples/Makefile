@@ -1,8 +1,7 @@
 
-.PHONY: all clean check docs
+.PHONY: all clean check
 
-SUBDIRS       = src tests examples
-TESTS_SUBDIRS = tests
+SUBDIRS = echo
 
 all:
 	@for dir in $(SUBDIRS) ; do \
@@ -14,10 +13,7 @@ clean:
 	    $(MAKE) -C $$dir clean; \
         done
 
-check:	all
-	@for dir in $(TESTS_SUBDIRS) ; do \
+check:
+	@for dir in $(SUBDIRS) ; do \
 	    $(MAKE) -C $$dir check; \
         done
-
-docs:
-	(cd doc; doxygen)

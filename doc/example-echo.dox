@@ -1,0 +1,185 @@
+/*
+ * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+\file example-echo.dox
+\page example_echo Using Noise-C: Client/Server Echo Example
+
+\tableofcontents
+
+This page describes how to use Noise-C to create a simple client/server
+echo system.  This example uses the same wire protocol as the echo example from
+<a href="https://github.com/centromere/cacophony#example-code">cacophony</a>,
+for testing interoperability between Noise implementations.
+
+The source code for the example is under the <tt>examples/echo</tt>
+directory in the Noise-C repository.  There are three programs that
+make up the example: <tt>echo-client</tt>, <tt>echo-server</tt>,
+and <tt>echo-keygen</tt>.  Here we describe the main points of the
+client code to demonstrate how to use Noise-C.  The server side is similar.
+
+\section example_echo_client Creating a Noise-C client application
+
+\subsection example_echo_create_handshake Creating the HandshakeState
+
+The first step in using a HandshakeState is to create it with either the
+noise_handshakestate_new_by_name() or noise_handshakestate_new_by_id()
+function:
+
+\dontinclude echo-client.c
+\skip NoiseHandshakeState *handshake;
+\until NoiseHandshakeState
+\skip noise_handshakestate_new_by_name
+\until }
+
+Here the "protocol" variable is the name of the Noise protocol,
+such as "Noise_XX_25519_ChaChaPoly_BLAKE2s".  Because we are writing a
+client, the role is \ref NOISE_ROLE_INITIATOR.  The server side uses
+\ref NOISE_ROLE_RESPONDER instead.
+
+If an error occurs, the noise_perror() function can be used to print a
+simple message to the standard error output in the same way as the
+perror() function in C.  If you want to report errors through some
+means other than the standard error output, you can use noise_strerror()
+to obtain the error string directly.
+
+For the rest of this page we will elide the calls to noise_perror() to
+make it easier to understand the code snippets.  Error handling is very
+important.  Noise sessions can fail for any number of reasons and
+forgetting to check an error return could lead the application to
+continue operating when it should stop.
+
+When you no longer need the HandshakeState, the memory should be returned
+to the system with noise_handshakestate_free():
+
+\dontinclude echo-client.c
+\skip no longer need
+\skip noise_handshakestate_free
+\until noise_handshakestate_free
+
+\subsection example_echo_setting_keys Setting keys
+
+TBD
+
+\subsection example_echo_run_handshake Running the handshake phase
+
+TBD
+
+\subsection example_echo_run_transport Running the data transport phase
+
+TBD
+
+\section example_echo_using Using the echo example
+
+This section describes how to use the echo example: how to generate keys,
+how to start an echo server running, and how to connect to it using an
+echo client.
+
+\subsection example_echo_keygen Generating keys
+
+The echo example uses a very simple key format.  Private key files are
+binary data containing the 32 or 56 bytes of the private key, for Curve25519
+and Curve448 respectively.  Public key files contain the base64 encoding of
+the 32 or 56 byte public key values.
+
+The <tt>echo-keygen</tt> example can be used to generate new keys or you can
+use the keys from cacophony.  To generate a new key for Curve25519, you would
+invoke the key generator as follows:
+
+\code
+echo-keygen 25519 client_key_25519 client_key_25519.pub
+\endcode
+
+The arguments are the curve type ("25519" or "448"), the name of the private
+key file, and the name of the public key file.
+
+The server needs a full set of keys, so here's how to generate them all:
+
+\code
+echo-keygen 25519 client_key_25519 client_key_25519.pub
+echo-keygen 25519 server_key_25519 server_key_25519.pub
+echo-keygen 448 client_key_448 client_key_448.pub
+echo-keygen 448 server_key_448 server_key_448.pub
+\endcode
+
+\subsection example_echo_start_server Starting an echo server
+
+A new echo server can be started with the following command:
+
+\code
+echo-server --key-dir=../keys 7000
+\endcode
+
+The server will look in <tt>key-dir</tt> for the keys that were generated
+earlier.  If <tt>--key-dir</tt> is omitted, it defaults to the current
+directory.
+
+The pre-shared key value is loaded from the "psk" file in the key
+directory.  It is assumed to be a 32 byte value encoded in base64.
+Pre-shared keys are only used if the client selects them.
+
+The final argument is the port number for the server to bind to.
+
+\subsection example_echo_start_client Running the echo client
+
+To use the client, specify the Noise protocol name, server hostname,
+and server port number on the command-line:
+
+\code
+echo-client Noise_NN_25519_AESGCM_SHA256 hostname 7000
+\endcode
+
+In this case we are using the "NN" pattern which does not require any
+additional local or remote static keys.  If keys are required, they can
+be provided via options:
+
+\code
+echo-client --client-private-key=client_key_448 \
+            --server-public-key=server_key_448.pub \
+            Noise_KK_448_ChaChaPoly_BLAKE2b hostname 7000
+
+echo-client --client-private-key=client_key_448 \
+            --server-public-key=server_key_448.pub \
+            --psk=pskfile \
+            NoisePSK_KK_448_ChaChaPoly_BLAKE2b hostname 7000
+\endcode
+
+After performing the handshake, the client reads lines of text from its
+standard input and sends them to the server.  After each line, the client
+will wait for a packet from the server and then will write its contents to
+standard output prefixed by `Received`:
+
+\code
+Hello!
+Received: Hello!
+What day is it?
+Received: What day is it?
+\endcode
+
+If the keys supplied to the client do not match those used by the server,
+the connection will abort with a "MAC failure".
+
+The <tt>--padding</tt> option can be supplied to cause the client to pad
+all outgoing messages to a uniform size with random data.  The padding will
+be stripped when the echo returns from the server.
+
+*/
