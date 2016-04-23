@@ -169,8 +169,8 @@ Running the data transport phase</h2>
 </div><!-- fragment --><p>If the remote side provided its public key during the handshake, then <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> and <a class="el" href="group__dhstate.html#gaf3f309448ef895b037fdf8a6b812fe40" title="Gets the public key value from a DHState object. ">noise_dhstate_get_public_key()</a> can be used to retrieve it at this point.</p>
 <p>The HandshakeState is now no longer required and we can discard it:</p>
 <div class="fragment"><div class="line"><a class="code" href="group__handshakestate.html#ga1ee4331d10a6c28bd336bfdf1017346d">noise_handshakestate_free</a>(handshake);</div>
-</div><!-- fragment --><p>From now on, whenever the application has data to send, it calls <a class="el" href="group__cipherstate.html#ga11123cb18f5d28e0fd4ed3e700aafeaa" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a> on the sending CipherState, and then writes the resulting packet to the transport.</p>
-<p>Whenever the application receives an incoming packet, it calls <a class="el" href="group__cipherstate.html#ga5b626f9fafa5173c9abe60e30e8148b2" title="Decrypts a block of data with this CipherState object. ">noise_cipherstate_decrypt_with_ad()</a> on the receiving CipherState to decrypt it, and then processes the contents if the decryption succeeded.</p>
+</div><!-- fragment --><p>From now on, whenever the application has data to send, it calls <a class="el" href="group__cipherstate.html#ga0e764ac8cb75e3da216987232255b9b9" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt()</a> or <a class="el" href="group__cipherstate.html#ga11123cb18f5d28e0fd4ed3e700aafeaa" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a> on the sending CipherState, and then writes the resulting packet to the transport.</p>
+<p>Whenever the application receives an incoming packet, it calls <a class="el" href="group__cipherstate.html#ga5a50b9a3d28358876361d3a056fdc9e9" title="Decrypts a block of data with this CipherState object. ">noise_cipherstate_decrypt()</a> or <a class="el" href="group__cipherstate.html#ga5b626f9fafa5173c9abe60e30e8148b2" title="Decrypts a block of data with this CipherState object. ">noise_cipherstate_decrypt_with_ad()</a> on the receiving CipherState to decrypt it, and then processes the contents if the decryption succeeded.</p>
 <p>This process continues until the connection is terminated or an error occurs. The final step is to clean up the two CipherState objects:</p>
 <div class="fragment"><div class="line"><a class="code" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a">noise_cipherstate_free</a>(send_cipher);</div>
 <div class="line"><a class="code" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a">noise_cipherstate_free</a>(recv_cipher);</div>
@@ -214,11 +214,12 @@ Running the echo client</h2>
 <div class="line">What day is it?</div>
 <div class="line">Received: What day is it?</div>
 </div><!-- fragment --><p>If the keys supplied to the client do not match those used by the server, the connection will abort with a "MAC failure".</p>
-<p>The <code>&ndash;padding</code> option can be supplied to cause the client to pad all outgoing messages to a uniform size with random data. The padding will be stripped when the echo returns from the server. </p>
+<p>The <code>&ndash;padding</code> option can be supplied to cause the client to pad all outgoing messages to a uniform size with random data. The padding will be stripped when the echo returns from the server.</p>
+<p>The <code>&ndash;verbose</code> or <code>-v</code> option can be supplied to dump the verbose packet contents that are transmitted or received. The <code>&ndash;fixed-ephemeral</code> or <code>-f</code> option will force the client or the server to use a fixed ephemeral key instead of the usual random ephemeral key. These options can help diagnose interoperability issues between different implementations of the echo protocol. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 23 2016 11:49:33 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 23 2016 16:08:27 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
