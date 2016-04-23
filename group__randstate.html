@@ -295,7 +295,7 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new RandSt
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
 <dd>
 NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>payload</em> is NULL.</dd></dl>
-<p>This function is intended for padding message payloads prior to them being encrypted with <a class="el" href="group__handshakestate.html#ga305a81df454bd2cd2b039061e79849a8" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a> or <a class="el" href="group__cipherstate.html#gaba9d99ad1068e4aa1a6b49e1ef83827e" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a>. If the <em>padding_mode</em> is NOISE_PADDING_RANDOM, then the random bytes are generated using <a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0" title="Generates random bytes for use by the application. ">noise_randstate_generate()</a>.</p>
+<p>This function is intended for padding message payloads prior to them being encrypted with <a class="el" href="group__handshakestate.html#gafdb5b38ecaf77c7c39e0aad49cf880b6" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a> or <a class="el" href="group__cipherstate.html#ga11123cb18f5d28e0fd4ed3e700aafeaa" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a>. If the <em>padding_mode</em> is NOISE_PADDING_RANDOM, then the random bytes are generated using <a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0" title="Generates random bytes for use by the application. ">noise_randstate_generate()</a>.</p>
 <p>The number of padding bytes added will be <em>padded_len</em> - <em>orig_len</em>. If <em>padded_len</em> is less than or equal to <em>orig_len</em>, then no padding bytes will be added. Essentially, this function pads the payload to a minimum length. Larger payloads are transmitted as-is.</p>
 <dl class="section see"><dt>See Also</dt><dd>noise_cipherstate_rand_bytes() </dd></dl>
 
@@ -338,7 +338,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 23 2016 11:49:33 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

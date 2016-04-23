@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['error_20reporting',['Error reporting',['../group__error__reports.html',1,'']]],
-  ['error_20codes',['Error codes',['../group__errors.html',1,'']]]
+  ['diffie_2dhellman_20algorithm_20identifiers',['Diffie-Hellman algorithm identifiers',['../group__dh__id.html',1,'']]],
+  ['dhstate_20api',['DHState API',['../group__dhstate.html',1,'']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['diffie_2dhellman_20algorithm_20identifiers',['Diffie-Hellman algorithm identifiers',['../group__dh__id.html',1,'']]],
-  ['dhstate_20api',['DHState API',['../group__dhstate.html',1,'']]]
+  ['cipher_20algorithm_20identifiers',['Cipher algorithm identifiers',['../group__cipher__id.html',1,'']]],
+  ['cipherstate_20api',['CipherState API',['../group__cipherstate.html',1,'']]]
 ];

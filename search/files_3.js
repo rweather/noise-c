@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['handshakestate_2ec',['handshakestate.c',['../handshakestate_8c.html',1,'']]],
-  ['handshakestate_2eh',['handshakestate.h',['../handshakestate_8h.html',1,'']]],
-  ['hashstate_2ec',['hashstate.c',['../hashstate_8c.html',1,'']]],
-  ['hashstate_2eh',['hashstate.h',['../hashstate_8h.html',1,'']]]
+  ['errors_2ec',['errors.c',['../errors_8c.html',1,'']]],
+  ['errors_2eh',['errors.h',['../errors_8h.html',1,'']]],
+  ['example_2decho_2edox',['example-echo.dox',['../example-echo_8dox.html',1,'']]]
 ];

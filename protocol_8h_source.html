@@ -117,16 +117,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="constants_8h.html">noise/protocol/constants.h</a>&gt;</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="errors_8h.html">noise/protocol/errors.h</a>&gt;</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="names_8h.html">noise/protocol/names.h</a>&gt;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="cipherstate_8h.html">noise/protocol/cipherstate.h</a>&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="hashstate_8h.html">noise/protocol/hashstate.h</a>&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="dhstate_8h.html">noise/protocol/dhstate.h</a>&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="signstate_8h.html">noise/protocol/signstate.h</a>&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="randstate_8h.html">noise/protocol/randstate.h</a>&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="symmetricstate_8h.html">noise/protocol/symmetricstate.h</a>&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="handshakestate_8h.html">noise/protocol/handshakestate.h</a>&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">noise/protocol/util.h</a>&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="buffer_8h.html">noise/protocol/buffer.h</a>&gt;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="cipherstate_8h.html">noise/protocol/cipherstate.h</a>&gt;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="hashstate_8h.html">noise/protocol/hashstate.h</a>&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="dhstate_8h.html">noise/protocol/dhstate.h</a>&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="signstate_8h.html">noise/protocol/signstate.h</a>&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="randstate_8h.html">noise/protocol/randstate.h</a>&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="symmetricstate_8h.html">noise/protocol/symmetricstate.h</a>&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="handshakestate_8h.html">noise/protocol/handshakestate.h</a>&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="util_8h.html">noise/protocol/util.h</a>&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="errors_8h_html"><div class="ttname"><a href="errors_8h.html">errors.h</a></div><div class="ttdoc">Error reporting interface. </div></div>
 <div class="ttc" id="hashstate_8h_html"><div class="ttname"><a href="hashstate_8h.html">hashstate.h</a></div><div class="ttdoc">HashState interface. </div></div>
 <div class="ttc" id="dhstate_8h_html"><div class="ttname"><a href="dhstate_8h.html">dhstate.h</a></div><div class="ttdoc">DHState interface. </div></div>
@@ -136,12 +137,13 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="ttc" id="util_8h_html"><div class="ttname"><a href="util_8h.html">util.h</a></div><div class="ttdoc">Utility function interface. </div></div>
 <div class="ttc" id="symmetricstate_8h_html"><div class="ttname"><a href="symmetricstate_8h.html">symmetricstate.h</a></div><div class="ttdoc">SymmetricState interface. </div></div>
 <div class="ttc" id="signstate_8h_html"><div class="ttname"><a href="signstate_8h.html">signstate.h</a></div><div class="ttdoc">SignState interface. </div></div>
+<div class="ttc" id="buffer_8h_html"><div class="ttname"><a href="buffer_8h.html">buffer.h</a></div><div class="ttdoc">Buffer management. </div></div>
 <div class="ttc" id="names_8h_html"><div class="ttname"><a href="names_8h.html">names.h</a></div><div class="ttdoc">Mapping algorithm names to/from identifiers. </div></div>
 <div class="ttc" id="cipherstate_8h_html"><div class="ttname"><a href="cipherstate_8h.html">cipherstate.h</a></div><div class="ttdoc">CipherState interface. </div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 23 2016 11:49:33 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

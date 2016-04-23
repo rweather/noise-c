@@ -92,12 +92,12 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gaa914491b664e718adaa7b53af213b16a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__symmetricstate.html#gaa914491b664e718adaa7b53af213b16a">noise_symmetricstate_decrypt_and_hash</a> (<a class="el" href="group__symmetricstate.html#gaafb7dab7644f6ebb68fbd3a9c7b1c32c">NoiseSymmetricState</a> *state, uint8_t *data, size_t in_data_len, size_t *out_data_len)</td></tr>
-<tr class="memdesc:gaa914491b664e718adaa7b53af213b16a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake hash.  <a href="#gaa914491b664e718adaa7b53af213b16a">More...</a><br/></td></tr>
-<tr class="separator:gaa914491b664e718adaa7b53af213b16a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga643bda3b74494baa6bb0e3543b12f1b4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4">noise_symmetricstate_encrypt_and_hash</a> (<a class="el" href="group__symmetricstate.html#gaafb7dab7644f6ebb68fbd3a9c7b1c32c">NoiseSymmetricState</a> *state, uint8_t *data, size_t in_data_len, size_t *out_data_len)</td></tr>
-<tr class="memdesc:ga643bda3b74494baa6bb0e3543b12f1b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake hash.  <a href="#ga643bda3b74494baa6bb0e3543b12f1b4">More...</a><br/></td></tr>
-<tr class="separator:ga643bda3b74494baa6bb0e3543b12f1b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga278bd4948592b1c5609df3657bd61b07"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__symmetricstate.html#ga278bd4948592b1c5609df3657bd61b07">noise_symmetricstate_decrypt_and_hash</a> (<a class="el" href="group__symmetricstate.html#gaafb7dab7644f6ebb68fbd3a9c7b1c32c">NoiseSymmetricState</a> *state, <a class="el" href="group__buffer__management.html#structNoiseBuffer">NoiseBuffer</a> *buffer)</td></tr>
+<tr class="memdesc:ga278bd4948592b1c5609df3657bd61b07"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake hash.  <a href="#ga278bd4948592b1c5609df3657bd61b07">More...</a><br/></td></tr>
+<tr class="separator:ga278bd4948592b1c5609df3657bd61b07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafb445fe2e3796abb8aabaf198ed5fd8b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__symmetricstate.html#gafb445fe2e3796abb8aabaf198ed5fd8b">noise_symmetricstate_encrypt_and_hash</a> (<a class="el" href="group__symmetricstate.html#gaafb7dab7644f6ebb68fbd3a9c7b1c32c">NoiseSymmetricState</a> *state, <a class="el" href="group__buffer__management.html#structNoiseBuffer">NoiseBuffer</a> *buffer)</td></tr>
+<tr class="memdesc:gafb445fe2e3796abb8aabaf198ed5fd8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake hash.  <a href="#gafb445fe2e3796abb8aabaf198ed5fd8b">More...</a><br/></td></tr>
+<tr class="separator:gafb445fe2e3796abb8aabaf198ed5fd8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6577c4265dd0cd484de5485a4b829cb9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9">noise_symmetricstate_free</a> (<a class="el" href="group__symmetricstate.html#gaafb7dab7644f6ebb68fbd3a9c7b1c32c">NoiseSymmetricState</a> *state)</td></tr>
 <tr class="memdesc:ga6577c4265dd0cd484de5485a4b829cb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a SymmetricState object after destroying all sensitive material.  <a href="#ga6577c4265dd0cd484de5485a4b829cb9">More...</a><br/></td></tr>
 <tr class="separator:ga6577c4265dd0cd484de5485a4b829cb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,7 +142,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="gaa914491b664e718adaa7b53af213b16a"></a>
+<a class="anchor" id="ga278bd4948592b1c5609df3657bd61b07"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -155,20 +155,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>in_data_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t *&#160;</td>
-          <td class="paramname"><em>out_data_len</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__buffer__management.html#structNoiseBuffer">NoiseBuffer</a> *&#160;</td>
+          <td class="paramname"><em>buffer</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -182,15 +170,13 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>The SymmetricState object. </td></tr>
-    <tr><td class="paramname">data</td><td>On entry, contains the ciphertext plus MAC. On exit, contains the plaintext. </td></tr>
-    <tr><td class="paramname">in_data_len</td><td>The number of bytes in <em>data</em>, including both the ciphertext and the MAC. </td></tr>
-    <tr><td class="paramname">out_data_len</td><td>Set to the number of plaintext bytes in <em>data</em> on exit.</td></tr>
+    <tr><td class="paramname">buffer</td><td>The buffer containing the ciphertext plus MAC on entry and the plaintext on exit.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
 <dd>
-NOISE_ERROR_INVALID_PARAM if the parameters are invalid. </dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>buffer</em> is NULL. </dd>
 <dd>
 NOISE_ERROR_MAC_FAILURE if the MAC check failed. </dd>
 <dd>
@@ -198,15 +184,15 @@ NOISE_ERROR_INVALID_STATE if this SymmetricState has already been split. </dd>
 <dd>
 NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed. </dd>
 <dd>
-NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is larger than 65535 bytes or too small to contain the MAC value.</dd></dl>
-<p>The ciphertext is decrypted in-place with the plaintext also written to <em>data</em>. In other words, it is assumed that the ciphertext plus MAC is in an input buffer ready to be processed once the MAC has been checked and the ciphertext has been decrypted.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a> </dd></dl>
+NOISE_ERROR_INVALID_LENGTH if the data in <em>buffer</em> is larger than 65535 bytes or too small to contain the MAC value.</dd></dl>
+<p>The ciphertext is decrypted in-place with the plaintext also written to <em>buffer</em>. In other words, it is assumed that the ciphertext plus MAC is in an input buffer ready to be processed once the MAC has been checked and the ciphertext has been decrypted.</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#gafb445fe2e3796abb8aabaf198ed5fd8b" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00414">414</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00403">403</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ga643bda3b74494baa6bb0e3543b12f1b4"></a>
+<a class="anchor" id="gafb445fe2e3796abb8aabaf198ed5fd8b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -219,20 +205,8 @@ NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is larger than 65535 bytes or
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>in_data_len</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t *&#160;</td>
-          <td class="paramname"><em>out_data_len</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="group__buffer__management.html#structNoiseBuffer">NoiseBuffer</a> *&#160;</td>
+          <td class="paramname"><em>buffer</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -246,26 +220,22 @@ NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is larger than 65535 bytes or
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>The SymmetricState object. </td></tr>
-    <tr><td class="paramname">data</td><td>On entry, contains the plaintext. On exit, contains the ciphertext plus the MAC. </td></tr>
-    <tr><td class="paramname">in_data_len</td><td>The number of bytes of plaintext in <em>data</em>. </td></tr>
-    <tr><td class="paramname">out_data_len</td><td>Set to the number of bytes of ciphertext plus MAC in <em>data</em> on exit.</td></tr>
+    <tr><td class="paramname">buffer</td><td>The buffer containing the plaintext on entry and the ciphertext plus MAC on exit.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
 <dd>
-NOISE_ERROR_INVALID_PARAM if the parameters are invalid. </dd>
-<dd>
-NOISE_ERROR_INVALID_STATE if this SymmetricState has already been split. </dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>buffer</em> is NULL. </dd>
 <dd>
 NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed </dd>
 <dd>
-NOISE_ERROR_INVALID_LENGTH if <em>in_data_len</em> is too large to contain the ciphertext plus MAC and still remain within 65535 bytes.</dd></dl>
-<p>The plaintext is encrypted in-place with the ciphertext also written to <em>data</em>. There must be enough room on the end of <em>data</em> to hold the extra MAC value that will be appended. In other words, it is assumed that the plaintext is in an output buffer ready to be transmitted once the data has been encrypted and the final packet length (<em>out_data_len</em>) has been determined.</p>
+NOISE_ERROR_INVALID_LENGTH if the ciphertext plus MAC is too large to fit within the maximum size of <em>buffer</em> and to also remain within 65535 bytes.</dd></dl>
+<p>The plaintext is encrypted in-place with the ciphertext also written to <em>buffer</em>. There must be enough room on the end of <em>buffer</em> to hold the extra MAC value that will be appended. In other words, it is assumed that the plaintext is in an output buffer ready to be transmitted once the data has been encrypted and the final packet length has been determined.</p>
 <p>The <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820" title="Gets the current length of packet MAC values for a SymmetricState object. ">noise_symmetricstate_get_mac_length()</a> function can be used to determine the size of the MAC value that will be added, which may be zero if the encryption key has not been set up yet.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#gaa914491b664e718adaa7b53af213b16a" title="Decrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_decrypt_and_hash()</a>, <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820" title="Gets the current length of packet MAC values for a SymmetricState object. ">noise_symmetricstate_get_mac_length()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga278bd4948592b1c5609df3657bd61b07" title="Decrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_decrypt_and_hash()</a>, <a class="el" href="group__symmetricstate.html#ga7c6c8d15eb40a3de6b2a5f8457bee820" title="Gets the current length of packet MAC values for a SymmetricState object. ">noise_symmetricstate_get_mac_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00357">357</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00353">353</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -321,10 +291,10 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The size of the MAC in bytes. Returns zero if <em>state</em> is NULL, the encryption key has not been set yet, or the SymmetricState has been split.</dd></dl>
-<p>This function can be used to determine the size of the MAC value that will be added to the next packet that will be encrypted with <a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a>. Early in the handshake when packets are still being exchanged in plaintext, the size will be zero.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga643bda3b74494baa6bb0e3543b12f1b4" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a> </dd></dl>
+<p>This function can be used to determine the size of the MAC value that will be added to the next packet that will be encrypted with <a class="el" href="group__symmetricstate.html#gafb445fe2e3796abb8aabaf198ed5fd8b" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a>. Early in the handshake when packets are still being exchanged in plaintext, the size will be zero.</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#gafb445fe2e3796abb8aabaf198ed5fd8b" title="Encrypts a block of data with this SymmetricState object and adds the ciphertext to the handshake has...">noise_symmetricstate_encrypt_and_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00479">479</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00464">464</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
@@ -614,14 +584,14 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>The <em>c1</em> object should be used to protect messages from the initiator to the responder, and the <em>c2</em> object should be used to protect messages from the responder to the initiator.</p>
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on <em>c2</em> as it will not be needed. Alternatively, the application can pass NULL to <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> as the <em>c2</em> argument and the second CipherState will not be created at all. </p>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00527">527</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00512">512</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Apr 22 2016 15:51:04 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 23 2016 11:49:33 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

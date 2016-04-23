@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['noisebuffer',['NoiseBuffer',['../group__buffer__management.html#structNoiseBuffer',1,'']]],
   ['noisecipherstate_5fs',['NoiseCipherState_s',['../structNoiseCipherState__s.html',1,'']]],
   ['noisedhstate_5fs',['NoiseDHState_s',['../structNoiseDHState__s.html',1,'']]],
   ['noisehandshakestate_5fs',['NoiseHandshakeState_s',['../internal_8h.html#structNoiseHandshakeState__s',1,'']]],
