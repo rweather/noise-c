@@ -206,13 +206,14 @@ noise_handshakestate_free(handshake);
 \endcode
 
 From now on, whenever the application has data to send, it calls
-noise_cipherstate_encrypt_with_ad() on the sending CipherState,
-and then writes the resulting packet to the transport.
+noise_cipherstate_encrypt() or noise_cipherstate_encrypt_with_ad()
+on the sending CipherState, and then writes the resulting packet to
+the transport.
 
 Whenever the application receives an incoming packet, it calls
-noise_cipherstate_decrypt_with_ad() on the receiving CipherState
-to decrypt it, and then processes the contents if the decryption
-succeeded.
+noise_cipherstate_decrypt() or noise_cipherstate_decrypt_with_ad()
+on the receiving CipherState to decrypt it, and then processes the
+contents if the decryption succeeded.
 
 This process continues until the connection is terminated or an
 error occurs.  The final step is to clean up the two CipherState objects:
@@ -315,5 +316,12 @@ the connection will abort with a "MAC failure".
 The <tt>--padding</tt> option can be supplied to cause the client to pad
 all outgoing messages to a uniform size with random data.  The padding will
 be stripped when the echo returns from the server.
+
+The <tt>--verbose</tt> or <tt>-v</tt> option can be supplied to dump the
+verbose packet contents that are transmitted or received.
+The <tt>--fixed-ephemeral</tt> or <tt>-f</tt> option will force the client
+or the server to use a fixed ephemeral key instead of the usual random
+ephemeral key.  These options can help diagnose interoperability issues
+between different implementations of the echo protocol.
 
 */
