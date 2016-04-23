@@ -28,17 +28,19 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#define short_options "k:v"
+#define short_options "k:vf"
 
 static struct option const long_options[] = {
     {"key-dir",                 required_argument,      NULL,       'k'},
     {"verbose",                 no_argument,            NULL,       'v'},
+    {"fixed-ephemeral",         no_argument,            NULL,       'f'},
     {NULL,                      0,                      NULL,        0 }
 };
 
 /* Parsed command-line options */
 static const char *key_dir = ".";
 static int port = 7000;
+static int fixed_ephemeral = 0;
 
 /* Loaded keys */
 #define CURVE25519_KEY_LEN 32
@@ -53,6 +55,18 @@ static uint8_t psk[32];
 #define MAX_MESSAGE_LEN 65535
 static uint8_t message[MAX_MESSAGE_LEN + 2];
 
+/* Internal function to directly supply ephemeral keys during testing */
+NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh_
+    (NoiseHandshakeState *state);
+
+/* Value to use when fixed ephemeral mode is selected */
+static uint8_t const fixed_ephemeral_value[32] = {
+    0xbb, 0xdb, 0x4c, 0xdb, 0xd3, 0x09, 0xf1, 0xa1,
+    0xf2, 0xe1, 0x45, 0x69, 0x67, 0xfe, 0x28, 0x8c,
+    0xad, 0xd6, 0xf7, 0x12, 0xd6, 0x5d, 0xc7, 0xb7,
+    0x79, 0x3d, 0x5e, 0x63, 0xda, 0x6b, 0x37, 0x5b
+};
+
 /* Print usage information */
 static void usage(const char *progname)
 {
@@ -64,6 +78,8 @@ static void usage(const char *progname)
     fprintf(stderr, "        Pre-shared key value to use.\n\n");
     fprintf(stderr, "    --verbose, -v\n");
     fprintf(stderr, "        Print all messages to and from the echo client.\n\n");
+    fprintf(stderr, "    --fixed-ephemeral, -f\n");
+    fprintf(stderr, "        Use a fixed local ephemeral key for testing.\n\n");
 }
 
 /* Parse the command-line options */
@@ -76,6 +92,7 @@ static int parse_options(int argc, char *argv[])
         switch (ch) {
         case 'k':   key_dir = optarg; break;
         case 'v':   echo_verbose = 1; break;
+        case 'f':   fixed_ephemeral = 1; break;
         default:
             usage(progname);
             return 0;
@@ -153,6 +170,17 @@ static int initialize_handshake
         }
         if (err != NOISE_ERROR_NONE) {
             noise_perror("set client public key", err);
+            return 0;
+        }
+    }
+
+    /* Set the fixed local ephemeral value if necessary */
+    if (fixed_ephemeral) {
+        dh = noise_handshakestate_get_fixed_ephemeral_dh_(handshake);
+        err = noise_dhstate_set_keypair_private
+            (dh, fixed_ephemeral_value, sizeof(fixed_ephemeral_value));
+        if (err != NOISE_ERROR_NONE) {
+            noise_perror("fixed ephemeral value", err);
             return 0;
         }
     }

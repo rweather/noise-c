@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#define short_options "c:s:p:gv"
+#define short_options "c:s:p:gvf"
 
 static struct option const long_options[] = {
     {"client-private-key",      required_argument,      NULL,       'c'},
@@ -36,6 +36,7 @@ static struct option const long_options[] = {
     {"psk",                     required_argument,      NULL,       'p'},
     {"padding",                 no_argument,            NULL,       'g'},
     {"verbose",                 no_argument,            NULL,       'v'},
+    {"fixed-ephemeral",         no_argument,            NULL,       'f'},
     {NULL,                      0,                      NULL,        0 }
 };
 
@@ -48,10 +49,23 @@ static const char *protocol = NULL;
 static const char *hostname = NULL;
 static int port = 7000;
 static int padding = 0;
+static int fixed_ephemeral = 0;
 
 /* Message buffer for send/receive */
 #define MAX_MESSAGE_LEN 4096
 static uint8_t message[MAX_MESSAGE_LEN + 2];
+
+/* Internal function to directly supply ephemeral keys during testing */
+NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh_
+    (NoiseHandshakeState *state);
+
+/* Value to use when fixed ephemeral mode is selected */
+static uint8_t const fixed_ephemeral_value[32] = {
+    0x89, 0x3e, 0x28, 0xb9, 0xdc, 0x6c, 0xa8, 0xd6,
+    0x11, 0xab, 0x66, 0x47, 0x54, 0xb8, 0xce, 0xb7,
+    0xba, 0xc5, 0x11, 0x73, 0x49, 0xa4, 0x43, 0x9a,
+    0x6b, 0x05, 0x69, 0xda, 0x97, 0x7c, 0x46, 0x4a
+};
 
 /* Print usage information */
 static void usage(const char *progname)
@@ -68,6 +82,8 @@ static void usage(const char *progname)
     fprintf(stderr, "        Pad messages with random data to a uniform size.\n\n");
     fprintf(stderr, "    --verbose, -v\n");
     fprintf(stderr, "        Print all messages to and from the echo server.\n\n");
+    fprintf(stderr, "    --fixed-ephemeral, -f\n");
+    fprintf(stderr, "        Use a fixed local ephemeral key for testing.\n\n");
 }
 
 /* Parse the command-line options */
@@ -83,6 +99,7 @@ static int parse_options(int argc, char *argv[])
         case 'p':   psk_file = optarg; break;
         case 'g':   padding = 1; break;
         case 'v':   echo_verbose = 1; break;
+        case 'f':   fixed_ephemeral = 1; break;
         default:
             usage(progname);
             return 0;
@@ -164,6 +181,17 @@ static int initialize_handshake
             }
         } else {
             fprintf(stderr, "Server public key required, but not provided.\n");
+            return 0;
+        }
+    }
+
+    /* Set the fixed local ephemeral value if necessary */
+    if (fixed_ephemeral) {
+        dh = noise_handshakestate_get_fixed_ephemeral_dh_(handshake);
+        err = noise_dhstate_set_keypair_private
+            (dh, fixed_ephemeral_value, sizeof(fixed_ephemeral_value));
+        if (err != NOISE_ERROR_NONE) {
+            noise_perror("fixed ephemeral value", err);
             return 0;
         }
     }
