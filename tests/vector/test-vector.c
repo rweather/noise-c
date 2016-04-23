@@ -27,10 +27,6 @@
 #define MAX_MESSAGES 32
 #define MAX_MESSAGE_SIZE 256
 
-/* Internal function to directly supply ephemeral keys during testing */
-NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh_
-    (NoiseHandshakeState *state);
-
 /**
  * \brief Information about a single test vector.
  */
@@ -284,7 +280,7 @@ static void test_connection(const TestVector *vec, int is_one_way)
                 NOISE_ERROR_NONE);
     }
     if (vec->init_ephemeral) {
-        dh = noise_handshakestate_get_fixed_ephemeral_dh_(initiator);
+        dh = noise_handshakestate_get_fixed_ephemeral_dh(initiator);
         compare(noise_dhstate_set_keypair_private
                     (dh, vec->init_ephemeral, vec->init_ephemeral_len),
                 NOISE_ERROR_NONE);
@@ -292,7 +288,7 @@ static void test_connection(const TestVector *vec, int is_one_way)
     /* Note: The test data contains responder ephemeral keys for one-way
        patterns which doesn't actually make sense.  Ignore those keys. */
     if (vec->resp_ephemeral && strlen(vec->pattern) != 1) {
-        dh = noise_handshakestate_get_fixed_ephemeral_dh_(responder);
+        dh = noise_handshakestate_get_fixed_ephemeral_dh(responder);
         compare(noise_dhstate_set_keypair_private
                     (dh, vec->resp_ephemeral, vec->resp_ephemeral_len),
                 NOISE_ERROR_NONE);

@@ -55,10 +55,6 @@ static uint8_t psk[32];
 #define MAX_MESSAGE_LEN 65535
 static uint8_t message[MAX_MESSAGE_LEN + 2];
 
-/* Internal function to directly supply ephemeral keys during testing */
-NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh_
-    (NoiseHandshakeState *state);
-
 /* Value to use when fixed ephemeral mode is selected */
 static uint8_t const fixed_ephemeral_value[32] = {
     0xbb, 0xdb, 0x4c, 0xdb, 0xd3, 0x09, 0xf1, 0xa1,
@@ -176,7 +172,7 @@ static int initialize_handshake
 
     /* Set the fixed local ephemeral value if necessary */
     if (fixed_ephemeral) {
-        dh = noise_handshakestate_get_fixed_ephemeral_dh_(handshake);
+        dh = noise_handshakestate_get_fixed_ephemeral_dh(handshake);
         err = noise_dhstate_set_keypair_private
             (dh, fixed_ephemeral_value, sizeof(fixed_ephemeral_value));
         if (err != NOISE_ERROR_NONE) {

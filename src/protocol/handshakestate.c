@@ -345,11 +345,21 @@ NoiseDHState *noise_handshakestate_get_remote_public_key_dh
     return state ? state->dh_remote_static : 0;
 }
 
-/** @cond */
-
-/* Not part of the public API.  Intended for fixed vector tests only. */
-
-NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh_
+/**
+ * \brief Gets the DHStatic object that contains the local ephemeral keypair.
+ *
+ * \param state The HandshakeState object.
+ *
+ * \return Returns a pointer to the DHState object for the local ephemeral
+ * keypair, or NULL if the system is out of memory or \a state is NULL.
+ *
+ * \note This function is intended for testing only.  It can be used to
+ * establish a fixed ephemeral key for test vectors.  This function should
+ * not be used in real applications.
+ *
+ * \sa noise_handshakestate_get_local_keypair_dh()
+ */
+NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
     (NoiseHandshakeState *state)
 {
     if (!state || !state->dh_local_ephemeral)
@@ -365,8 +375,6 @@ NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh_
 
     return state->dh_fixed_ephemeral;
 }
-
-/** @endcond */
 
 /**
  * \brief Sets the pre shared key for a HandshakeState.
