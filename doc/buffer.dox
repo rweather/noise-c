@@ -38,7 +38,7 @@
 /**@{*/
 
 /**
- * \typedef NoiseBuffer
+ * \struct NoiseBuffer
  * \brief Type that defines a region of memory for a data buffer.
  */
 
