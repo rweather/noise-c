@@ -55,12 +55,23 @@ static int fixed_ephemeral = 0;
 #define MAX_MESSAGE_LEN 4096
 static uint8_t message[MAX_MESSAGE_LEN + 2];
 
-/* Value to use when fixed ephemeral mode is selected */
-static uint8_t const fixed_ephemeral_value[32] = {
+/* Curve25519 private key to use when fixed ephemeral mode is selected */
+static uint8_t const fixed_ephemeral_25519[32] = {
     0x89, 0x3e, 0x28, 0xb9, 0xdc, 0x6c, 0xa8, 0xd6,
     0x11, 0xab, 0x66, 0x47, 0x54, 0xb8, 0xce, 0xb7,
     0xba, 0xc5, 0x11, 0x73, 0x49, 0xa4, 0x43, 0x9a,
     0x6b, 0x05, 0x69, 0xda, 0x97, 0x7c, 0x46, 0x4a
+};
+
+/* Curve448 private key to use when fixed ephemeral mode is selected */
+static uint8_t const fixed_ephemeral_448[56] = {
+    0x7f, 0xd2, 0x6c, 0x8b, 0x8a, 0x0d, 0x5c, 0x98,
+    0xc8, 0x5f, 0xf9, 0xca, 0x1d, 0x7b, 0xc6, 0x6d,
+    0x78, 0x57, 0x8b, 0x9f, 0x2c, 0x4c, 0x17, 0x08,
+    0x50, 0x74, 0x8b, 0x27, 0x99, 0x27, 0x67, 0xe6,
+    0xea, 0x6c, 0xc9, 0x99, 0x2a, 0x56, 0x1c, 0x9d,
+    0x19, 0xdf, 0xc3, 0x42, 0xe2, 0x60, 0xc2, 0x80,
+    0xef, 0x4f, 0x3f, 0x9b, 0x8f, 0x87, 0x9d, 0x4e
 };
 
 /* Print usage information */
@@ -184,8 +195,13 @@ static int initialize_handshake
     /* Set the fixed local ephemeral value if necessary */
     if (fixed_ephemeral) {
         dh = noise_handshakestate_get_fixed_ephemeral_dh(handshake);
-        err = noise_dhstate_set_keypair_private
-            (dh, fixed_ephemeral_value, sizeof(fixed_ephemeral_value));
+        if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
+            err = noise_dhstate_set_keypair_private
+                (dh, fixed_ephemeral_25519, sizeof(fixed_ephemeral_25519));
+        } else {
+            err = noise_dhstate_set_keypair_private
+                (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
+        }
         if (err != NOISE_ERROR_NONE) {
             noise_perror("fixed ephemeral value", err);
             return 0;
