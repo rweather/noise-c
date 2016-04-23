@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/wait.h>
@@ -295,6 +296,11 @@ int echo_connect(const char *hostname, int port)
     return fd;
 }
 
+static void sigchld_handler(int sig)
+{
+    /* Nothing to do here */
+}
+
 /* Accepts an incoming connection from an echo client.  Returns the file
    descriptor of the socket to use to communicate with the client.
 
@@ -310,6 +316,9 @@ int echo_accept(int port)
     struct sockaddr_in addr;
     socklen_t addrlen;
     pid_t pid;
+
+    /* We will need SIGCHLD signals to clean up child processes */
+    signal(SIGCHLD, sigchld_handler);
 
     /* Create the listening socket and bind it to the port */
     listen_fd = socket(AF_INET, SOCK_STREAM, 0);
