@@ -28,13 +28,14 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#define short_options "c:s:p:g"
+#define short_options "c:s:p:gv"
 
 static struct option const long_options[] = {
     {"client-private-key",      required_argument,      NULL,       'c'},
     {"server-public-key",       required_argument,      NULL,       's'},
     {"psk",                     required_argument,      NULL,       'p'},
     {"padding",                 no_argument,            NULL,       'g'},
+    {"verbose",                 no_argument,            NULL,       'v'},
     {NULL,                      0,                      NULL,        0 }
 };
 
@@ -65,6 +66,8 @@ static void usage(const char *progname)
     fprintf(stderr, "        Name of the file containing the pre-shared key value.\n\n");
     fprintf(stderr, "    --padding, -g\n");
     fprintf(stderr, "        Pad messages with random data to a uniform size.\n\n");
+    fprintf(stderr, "    --verbose, -v\n");
+    fprintf(stderr, "        Print all messages to and from the echo server.\n\n");
 }
 
 /* Parse the command-line options */
@@ -79,6 +82,7 @@ static int parse_options(int argc, char *argv[])
         case 's':   server_public_key = optarg; break;
         case 'p':   psk_file = optarg; break;
         case 'g':   padding = 1; break;
+        case 'v':   echo_verbose = 1; break;
         default:
             usage(progname);
             return 0;

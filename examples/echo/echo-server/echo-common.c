@@ -35,6 +35,8 @@
 #include <netdb.h>
 #include <errno.h>
 
+int echo_verbose = 0;
+
 /* Convert a Noise handshake protocol name into an Echo protocol id */
 int echo_get_protocol_id(EchoProtocolId *id, const char *name)
 {
@@ -380,9 +382,21 @@ int echo_accept(int port)
     return accept_fd;
 }
 
+static void echo_print_packet(const char *tag, const uint8_t *packet, size_t len)
+{
+    size_t index;
+    printf("%s:", tag);
+    for (index = 0; index < len; ++index) {
+        printf(" %02x", packet[index]);
+        if ((index % 16) == 15 && index != (len - 1))
+            printf("\n   ");
+    }
+    printf("\n");
+}
+
 /* Recevies an exact number of bytes, blocking until they are all available.
    Returns non-zero if OK, zero if the connection has been lost. */
-int echo_recv_exact(int fd, uint8_t *packet, size_t len)
+static int echo_recv_exact_internal(int fd, uint8_t *packet, size_t len)
 {
     size_t received = 0;
     while (len > 0) {
@@ -403,6 +417,20 @@ int echo_recv_exact(int fd, uint8_t *packet, size_t len)
     return received;
 }
 
+/* Recevies an exact number of bytes, blocking until they are all available.
+   Returns non-zero if OK, zero if the connection has been lost. */
+int echo_recv_exact(int fd, uint8_t *packet, size_t len)
+{
+    size_t received = echo_recv_exact_internal(fd, packet, len);
+    if (received) {
+        if (echo_verbose)
+            echo_print_packet("Rx", packet, received);
+    } else if (echo_verbose) {
+        printf("Rx: EOF\n");
+    }
+    return received;
+}
+
 /* Receives a complete Noise packet, including the two-byte length prefix.
    Returns the length of the packet, zero if the connection has been lost
    or the packet is too large for the supplied buffer. */
@@ -411,14 +439,16 @@ size_t echo_recv(int fd, uint8_t *packet, size_t max_len)
     size_t size;
     if (max_len < 2)
         return 0;
-    if (!echo_recv_exact(fd, packet, 2))
+    if (!echo_recv_exact_internal(fd, packet, 2))
         return 0;
     size = (((size_t)(packet[0])) << 8) | ((size_t)(packet[1]));
     if (size > (max_len - 2))
         return 0;
-    size = echo_recv_exact(fd, packet + 2, size);
+    size = echo_recv_exact_internal(fd, packet + 2, size);
     if (size)
         size += 2;
+    if (echo_verbose)
+        echo_print_packet("Rx", packet, size);
     return size;
 }
 
@@ -427,6 +457,8 @@ size_t echo_recv(int fd, uint8_t *packet, size_t max_len)
 int echo_send(int fd, const uint8_t *packet, size_t len)
 {
     int size;
+    if (echo_verbose)
+        echo_print_packet("Tx", packet, len);
     while ((size = send(fd, packet, len, MSG_NOSIGNAL)) != (int)len) {
         if (size < 0) {
             if (errno == EINTR || errno == EAGAIN) {

@@ -28,10 +28,11 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#define short_options "k:"
+#define short_options "k:v"
 
 static struct option const long_options[] = {
     {"key-dir",                 required_argument,      NULL,       'k'},
+    {"verbose",                 no_argument,            NULL,       'v'},
     {NULL,                      0,                      NULL,        0 }
 };
 
@@ -61,6 +62,8 @@ static void usage(const char *progname)
     fprintf(stderr, "        Directory containing the client and server keys.\n\n");
     fprintf(stderr, "    --psk=value, -p value\n");
     fprintf(stderr, "        Pre-shared key value to use.\n\n");
+    fprintf(stderr, "    --verbose, -v\n");
+    fprintf(stderr, "        Print all messages to and from the echo client.\n\n");
 }
 
 /* Parse the command-line options */
@@ -72,6 +75,7 @@ static int parse_options(int argc, char *argv[])
     while ((ch = getopt_long(argc, argv, short_options, long_options, &index)) != -1) {
         switch (ch) {
         case 'k':   key_dir = optarg; break;
+        case 'v':   echo_verbose = 1; break;
         default:
             usage(progname);
             return 0;
