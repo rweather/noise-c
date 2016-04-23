@@ -325,26 +325,22 @@ int noise_symmetricstate_mix_hash
  * and adds the ciphertext to the handshake hash.
  *
  * \param state The SymmetricState object.
- * \param data On entry, contains the plaintext.  On exit, contains the
- * ciphertext plus the MAC.
- * \param in_data_len The number of bytes of plaintext in \a data.
- * \param out_data_len Set to the number of bytes of ciphertext plus MAC
- * in \a data on exit.
+ * \param buffer The buffer containing the plaintext on entry and the
+ * ciphertext plus MAC on exit.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
- * \return NOISE_ERROR_INVALID_STATE if this SymmetricState has already
- * been split.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
  * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed
- * \return NOISE_ERROR_INVALID_LENGTH if \a in_data_len is too large to
- * contain the ciphertext plus MAC and still remain within 65535 bytes.
+ * \return NOISE_ERROR_INVALID_LENGTH if the ciphertext plus MAC is
+ * too large to fit within the maximum size of \a buffer and to also
+ * remain within 65535 bytes.
  *
  * The plaintext is encrypted in-place with the ciphertext also written
- * to \a data.  There must be enough room on the end of \a data to hold
- * the extra MAC value that will be appended.  In other words, it is
- * assumed that the plaintext is in an output buffer ready to be
+ * to \a buffer.  There must be enough room on the end of \a buffer
+ * to hold the extra MAC value that will be appended.  In other words,
+ * it is assumed that the plaintext is in an output buffer ready to be
  * transmitted once the data has been encrypted and the final packet
- * length (\a out_data_len) has been determined.
+ * length has been determined.
  *
  * The noise_symmetricstate_get_mac_length() function can be used to
  * determine the size of the MAC value that will be added, which may
@@ -354,17 +350,13 @@ int noise_symmetricstate_mix_hash
  * noise_symmetricstate_get_mac_length()
  */
 int noise_symmetricstate_encrypt_and_hash
-    (NoiseSymmetricState *state, uint8_t *data,
-     size_t in_data_len, size_t *out_data_len)
+    (NoiseSymmetricState *state, NoiseBuffer *buffer)
 {
     size_t hash_len;
     int err;
 
     /* Validate the parameters */
-    if (!out_data_len)
-        return NOISE_ERROR_INVALID_PARAM;
-    *out_data_len = 0;
-    if (!state || !data)
+    if (!state || !buffer || !(buffer->data))
         return NOISE_ERROR_INVALID_PARAM;
 
     /* If the state has been split, then we cannot do this */
@@ -374,12 +366,12 @@ int noise_symmetricstate_encrypt_and_hash
     /* Encrypt the plaintext using the underlying cipher */
     hash_len = noise_hashstate_get_hash_length(state->hash);
     err = noise_cipherstate_encrypt_with_ad
-        (state->cipher, state->h, hash_len, data, in_data_len, out_data_len);
+        (state->cipher, state->h, hash_len, buffer);
     if (err != NOISE_ERROR_NONE)
         return err;
 
     /* Feed the ciphertext into the handshake hash */
-    noise_symmetricstate_mix_hash(state, data, *out_data_len);
+    noise_symmetricstate_mix_hash(state, buffer->data, buffer->size);
     return NOISE_ERROR_NONE;
 }
 
@@ -388,41 +380,34 @@ int noise_symmetricstate_encrypt_and_hash
  * and adds the ciphertext to the handshake hash.
  *
  * \param state The SymmetricState object.
- * \param data On entry, contains the ciphertext plus MAC.  On exit,
- * contains the plaintext.
- * \param in_data_len The number of bytes in \a data, including both
- * the ciphertext and the MAC.
- * \param out_data_len Set to the number of plaintext bytes in \a data on exit.
+ * \param buffer The buffer containing the ciphertext plus MAC on entry
+ * and the plaintext on exit.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
  * \return NOISE_ERROR_MAC_FAILURE if the MAC check failed.
  * \return NOISE_ERROR_INVALID_STATE if this SymmetricState has
  * already been split.
  * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
- * \return NOISE_ERROR_INVALID_LENGTH if \a in_data_len is
+ * \return NOISE_ERROR_INVALID_LENGTH if the data in \a buffer is
  * larger than 65535 bytes or too small to contain the MAC value.
  *
  * The ciphertext is decrypted in-place with the plaintext also written
- * to \a data.  In other words, it is assumed that the ciphertext plus
+ * to \a buffer.  In other words, it is assumed that the ciphertext plus
  * MAC is in an input buffer ready to be processed once the MAC has
  * been checked and the ciphertext has been decrypted.
  *
  * \sa noise_symmetricstate_encrypt_and_hash()
  */
 int noise_symmetricstate_decrypt_and_hash
-    (NoiseSymmetricState *state, uint8_t *data,
-     size_t in_data_len, size_t *out_data_len)
+    (NoiseSymmetricState *state, NoiseBuffer *buffer)
 {
     uint8_t temp[NOISE_MAX_HASHLEN];
     size_t hash_len;
     int err;
 
     /* Validate the parameters */
-    if (!out_data_len)
-        return NOISE_ERROR_INVALID_PARAM;
-    *out_data_len = 0;
-    if (!state || !data)
+    if (!state || !buffer || !(buffer->data))
         return NOISE_ERROR_INVALID_PARAM;
 
     /* If the state has been split, then we cannot do this */
@@ -430,10 +415,10 @@ int noise_symmetricstate_decrypt_and_hash
         return NOISE_ERROR_INVALID_STATE;
 
     /* Validate the input data length before we hash the data */
-    if (in_data_len > NOISE_MAX_PAYLOAD_LEN)
+    if (buffer->size > NOISE_MAX_PAYLOAD_LEN)
         return NOISE_ERROR_INVALID_LENGTH;
     if (noise_cipherstate_has_key(state->cipher)) {
-        if (in_data_len < noise_cipherstate_get_mac_length(state->cipher))
+        if (buffer->size < noise_cipherstate_get_mac_length(state->cipher))
             return NOISE_ERROR_INVALID_LENGTH;
     }
 
@@ -442,12 +427,12 @@ int noise_symmetricstate_decrypt_and_hash
        then we don't update the handshake hash with the bogus data */
     hash_len = noise_hashstate_get_hash_length(state->hash);
     noise_hashstate_hash_two
-        (state->hash, state->h, hash_len, data, in_data_len, temp, hash_len);
+        (state->hash, state->h, hash_len,
+         buffer->data, buffer->size, temp, hash_len);
 
     /* Decrypt the ciphertext using the underlying cipher */
-    hash_len = noise_hashstate_get_hash_length(state->hash);
     err = noise_cipherstate_decrypt_with_ad
-        (state->cipher, state->h, hash_len, data, in_data_len, out_data_len);
+        (state->cipher, state->h, hash_len, buffer);
     if (err != NOISE_ERROR_NONE) {
         noise_clean(temp, sizeof(temp));
         return err;

@@ -242,10 +242,10 @@ static void test_connection(const TestVector *vec, int is_one_way)
     NoiseCipherState *c2resp;
     NoiseCipherState *csend;
     NoiseCipherState *crecv;
+    NoiseBuffer mbuf;
+    NoiseBuffer pbuf;
     uint8_t message[MAX_MESSAGE_SIZE];
     uint8_t payload[MAX_MESSAGE_SIZE];
-    size_t message_size;
-    size_t payload_size;
     size_t index;
     size_t mac_len;
     int role;
@@ -347,20 +347,18 @@ static void test_connection(const TestVector *vec, int is_one_way)
                 NOISE_ACTION_WRITE_MESSAGE);
         compare(noise_handshakestate_get_action(recv),
                 NOISE_ACTION_READ_MESSAGE);
-        message_size = sizeof(message);
-        compare(noise_handshakestate_write_message
-                    (send, vec->messages[index].payload,
-                     vec->messages[index].payload_len,
-                     message, &message_size),
+        noise_buffer_set_output(mbuf, message, sizeof(message));
+        noise_buffer_set_input(pbuf, vec->messages[index].payload,
+                               vec->messages[index].payload_len);
+        compare(noise_handshakestate_write_message(send, &mbuf, &pbuf),
                 NOISE_ERROR_NONE);
-        compare_blocks("ciphertext", message, message_size,
+        compare_blocks("ciphertext", mbuf.data, mbuf.size,
                        vec->messages[index].ciphertext,
                        vec->messages[index].ciphertext_len);
-        payload_size = sizeof(payload);
-        compare(noise_handshakestate_read_message
-                    (recv, message, message_size, payload, &payload_size),
+        noise_buffer_set_output(pbuf, payload, sizeof(payload));
+        compare(noise_handshakestate_read_message(recv, &mbuf, &pbuf),
                 NOISE_ERROR_NONE);
-        compare_blocks("plaintext", payload, payload_size,
+        compare_blocks("plaintext", pbuf.data, pbuf.size,
                        vec->messages[index].payload,
                        vec->messages[index].payload_len);
     }
@@ -384,22 +382,19 @@ static void test_connection(const TestVector *vec, int is_one_way)
             crecv = c2init;
             role = NOISE_ROLE_INITIATOR;
         }
-        message_size = sizeof(message);
-        verify(message_size >= (vec->messages[index].payload_len + mac_len));
+        verify(sizeof(message) >= (vec->messages[index].payload_len + mac_len));
         memcpy(message, vec->messages[index].payload,
                vec->messages[index].payload_len);
-        compare(noise_cipherstate_encrypt_with_ad
-                    (csend, 0, 0, message, vec->messages[index].payload_len,
-                     &message_size),
+        noise_buffer_set_inout(mbuf, message, vec->messages[index].payload_len,
+                               sizeof(message));
+        compare(noise_cipherstate_encrypt(csend, &mbuf),
                 NOISE_ERROR_NONE);
-        compare_blocks("ciphertext", message, message_size,
+        compare_blocks("ciphertext", mbuf.data, mbuf.size,
                        vec->messages[index].ciphertext,
                        vec->messages[index].ciphertext_len);
-        payload_size = sizeof(message);
-        compare(noise_cipherstate_decrypt_with_ad
-                    (crecv, 0, 0, message, message_size, &payload_size),
+        compare(noise_cipherstate_decrypt(crecv, &mbuf),
                 NOISE_ERROR_NONE);
-        compare_blocks("plaintext", message, payload_size,
+        compare_blocks("plaintext", mbuf.data, mbuf.size,
                        vec->messages[index].payload,
                        vec->messages[index].payload_len);
     }

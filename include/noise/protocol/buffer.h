@@ -20,20 +20,35 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_PROTOCOL_H
-#define NOISE_PROTOCOL_H
+#ifndef NOISE_BUFFER_H
+#define NOISE_BUFFER_H
 
-#include <noise/protocol/constants.h>
-#include <noise/protocol/errors.h>
-#include <noise/protocol/names.h>
-#include <noise/protocol/buffer.h>
-#include <noise/protocol/cipherstate.h>
-#include <noise/protocol/hashstate.h>
-#include <noise/protocol/dhstate.h>
-#include <noise/protocol/signstate.h>
-#include <noise/protocol/randstate.h>
-#include <noise/protocol/symmetricstate.h>
-#include <noise/protocol/handshakestate.h>
-#include <noise/protocol/util.h>
+#include <stddef.h>
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct
+{
+    uint8_t *data;      /**< Points to the data in the buffer */
+    size_t size;        /**< Current size of the data in the buffer */
+    size_t max_size;    /**< Maximum size of the data in the buffer */
+
+} NoiseBuffer;
+
+#define noise_buffer_init(buffer)   \
+    ((buffer).data = 0, (buffer).size = 0, (buffer).max_size = 0)
+#define noise_buffer_set_output(buffer, ptr, len) \
+    ((buffer).data = (ptr), (buffer).size = 0, (buffer).max_size = (len))
+#define noise_buffer_set_input(buffer, ptr, len) \
+    ((buffer).data = (ptr), (buffer).size = (buffer).max_size = (len))
+#define noise_buffer_set_inout(buffer, ptr, len, max) \
+    ((buffer).data = (ptr), (buffer).size = (len), (buffer).max_size = (max))
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

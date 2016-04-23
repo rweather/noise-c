@@ -174,13 +174,12 @@ int main(int argc, char *argv[])
     NoiseCipherState *send_cipher = 0;
     NoiseCipherState *recv_cipher = 0;
     NoiseRandState *rand = 0;
+    NoiseBuffer mbuf;
     EchoProtocolId id;
     int err, ok;
     int action;
     int fd;
     size_t message_size;
-    size_t payload_size;
-    size_t transmit_size;
     size_t max_line_len;
 
     /* Parse the command-line options */
@@ -235,17 +234,16 @@ int main(int argc, char *argv[])
         action = noise_handshakestate_get_action(handshake);
         if (action == NOISE_ACTION_WRITE_MESSAGE) {
             /* Write the next handshake message with a zero-length payload */
-            message_size = sizeof(message) - 2;
-            err = noise_handshakestate_write_message
-                (handshake, NULL, 0, message + 2, &message_size);
+            noise_buffer_set_output(mbuf, message + 2, sizeof(message) - 2);
+            err = noise_handshakestate_write_message(handshake, &mbuf, NULL);
             if (err != NOISE_ERROR_NONE) {
                 noise_perror("write handshake", err);
                 ok = 0;
                 break;
             }
-            message[0] = (uint8_t)(message_size >> 8);
-            message[1] = (uint8_t)message_size;
-            if (!echo_send(fd, message, message_size + 2)) {
+            message[0] = (uint8_t)(mbuf.size >> 8);
+            message[1] = (uint8_t)mbuf.size;
+            if (!echo_send(fd, message, mbuf.size + 2)) {
                 ok = 0;
                 break;
             }
@@ -256,10 +254,8 @@ int main(int argc, char *argv[])
                 ok = 0;
                 break;
             }
-            message_size -= 2;  /* Overhead of the packet length field */
-            payload_size = sizeof(message);
-            err = noise_handshakestate_read_message
-                (handshake, message + 2, message_size, NULL, &payload_size);
+            noise_buffer_set_input(mbuf, message + 2, message_size - 2);
+            err = noise_handshakestate_read_message(handshake, &mbuf, NULL);
             if (err != NOISE_ERROR_NONE) {
                 noise_perror("read handshake", err);
                 ok = 0;
@@ -322,17 +318,17 @@ int main(int argc, char *argv[])
         }
 
         /* Encrypt the message and send it */
-        transmit_size = sizeof(message) - 2;
-        err = noise_cipherstate_encrypt_with_ad
-            (send_cipher, NULL, 0, message + 2, message_size, &transmit_size);
+        noise_buffer_set_inout
+            (mbuf, message + 2, message_size, sizeof(message) - 2);
+        err = noise_cipherstate_encrypt(send_cipher, &mbuf);
         if (err != NOISE_ERROR_NONE) {
             noise_perror("write", err);
             ok = 0;
             break;
         }
-        message[0] = (uint8_t)(transmit_size >> 8);
-        message[1] = (uint8_t)transmit_size;
-        if (!echo_send(fd, message, transmit_size + 2)) {
+        message[0] = (uint8_t)(mbuf.size >> 8);
+        message[1] = (uint8_t)mbuf.size;
+        if (!echo_send(fd, message, mbuf.size + 2)) {
             ok = 0;
             break;
         }
@@ -344,11 +340,10 @@ int main(int argc, char *argv[])
             ok = 0;
             break;
         }
-        message_size -= 2;  /* Overhead of the packet length field */
 
         /* Decrypt the incoming message */
-        err = noise_cipherstate_decrypt_with_ad
-            (recv_cipher, NULL, 0, message + 2, message_size, &payload_size);
+        noise_buffer_set_input(mbuf, message + 2, message_size - 2);
+        err = noise_cipherstate_decrypt(recv_cipher, &mbuf);
         if (err != NOISE_ERROR_NONE) {
             noise_perror("read", err);
             ok = 0;
@@ -359,14 +354,14 @@ int main(int argc, char *argv[])
         if (padding) {
             /* Find the first '\n' and strip everything after it */
             const uint8_t *end = (const uint8_t *)
-                memchr(message + 2, '\n', payload_size);
+                memchr(mbuf.data, '\n', mbuf.size);
             if (end)
-                payload_size = end + 1 - (message + 2);
+                mbuf.size = end + 1 - mbuf.data;
         }
 
         /* Write the echo to standard output */
         fputs("Received: ", stdout);
-        fwrite(message + 2, 1, payload_size, stdout);
+        fwrite(mbuf.data, 1, mbuf.size, stdout);
     }
 
     /* Clean up and exit */

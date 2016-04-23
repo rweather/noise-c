@@ -44,11 +44,9 @@ int noise_symmetricstate_mix_key
 int noise_symmetricstate_mix_hash
     (NoiseSymmetricState *state, const uint8_t *input, size_t size);
 int noise_symmetricstate_encrypt_and_hash
-    (NoiseSymmetricState *state, uint8_t *data,
-     size_t in_data_len, size_t *out_data_len);
+    (NoiseSymmetricState *state, NoiseBuffer *buffer);
 int noise_symmetricstate_decrypt_and_hash
-    (NoiseSymmetricState *state, uint8_t *data,
-     size_t in_data_len, size_t *out_data_len);
+    (NoiseSymmetricState *state, NoiseBuffer *buffer);
 size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state);
 int noise_symmetricstate_split
     (NoiseSymmetricState *state, NoiseCipherState **c1, NoiseCipherState **c2);

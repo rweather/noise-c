@@ -56,11 +56,9 @@ int noise_handshakestate_start(NoiseHandshakeState *state);
 int noise_handshakestate_fallback(NoiseHandshakeState *state);
 int noise_handshakestate_get_action(const NoiseHandshakeState *state);
 int noise_handshakestate_write_message
-    (NoiseHandshakeState *state, const void *payload, size_t payload_size,
-     uint8_t *message, size_t *message_size);
+    (NoiseHandshakeState *state, NoiseBuffer *message, const NoiseBuffer *payload);
 int noise_handshakestate_read_message
-    (NoiseHandshakeState *state, uint8_t *message, size_t message_size,
-     void *payload, size_t *payload_size);
+    (NoiseHandshakeState *state, NoiseBuffer *message, NoiseBuffer *payload);
 int noise_handshakestate_split
     (NoiseHandshakeState *state, NoiseCipherState **c1, NoiseCipherState **c2);
 int noise_handshakestate_get_handshake_hash

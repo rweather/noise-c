@@ -247,60 +247,71 @@ int noise_cipherstate_has_key(const NoiseCipherState *state)
  * \param ad Points to the associated data, which can be NULL only if
  * \a ad_len is zero.
  * \param ad_len The length of the associated data in bytes.
- * \param data On entry, contains the plaintext.  On exit, contains the
- * ciphertext plus the MAC.
- * \param in_data_len The number of bytes of plaintext in \a data.
- * \param out_data_len Set to the number of bytes of ciphertext plus MAC
- * in \a data on exit.
+ * \param buffer The buffer containing the plaintext on entry and the
+ * ciphertext plus MAC on exit.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a ad is NULL and \a ad_len
+ * is not zero.
  * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
- * \return or NOISE_ERROR_INVALID_LENGTH if \a in_data_len is too large to
- * contain the ciphertext plus MAC and still remain within 65535 bytes.
+ * \return NOISE_ERROR_INVALID_LENGTH if the ciphertext plus MAC is
+ * too large to fit within the maximum size of \a buffer and to also
+ * remain within 65535 bytes.
  *
  * The plaintext is encrypted in-place with the ciphertext also written
- * to \a data.  There must be enough room on the end of \a data to hold
+ * to \a buffer.  There must be enough room on the end of \a buffer to hold
  * the extra MAC value that will be appended.  In other words, it is
  * assumed that the plaintext is in an output buffer ready to be
  * transmitted once the data has been encrypted and the final packet
- * length (\a out_data_len) has been determined.
+ * length has been determined.
+ *
+ * The following example demonstrates how to initialize a buffer for
+ * use with this function.  The <tt>message</tt> is a byte array containing
+ * <tt>plaintext_size</tt> bytes of plaintext on entry.  On exit,
+ * <tt>buffer.size</tt> will contain the number of bytes of ciphertext
+ * plus MAC to be transmitted:
+ *
+ * \code
+ * NoiseBuffer buffer;
+ * noise_buffer_set_inout(buffer, message, plaintext_size, sizeof(message));
+ * noise_cipherstate_encrypt_with_ad(state, ad, ad_len, &buffer);
+ * // Transmit the buffer.size bytes starting at buffer.data
+ * \endcode
  *
  * \sa noise_cipherstate_decrypt_with_ad(), noise_cipherstate_get_mac_length()
  */
 int noise_cipherstate_encrypt_with_ad
     (NoiseCipherState *state, const uint8_t *ad, size_t ad_len,
-     uint8_t *data, size_t in_data_len, size_t *out_data_len)
+     NoiseBuffer *buffer)
 {
     int err;
 
-    /* Set the output length to zero in case of error */
-    if (!out_data_len)
-        return NOISE_ERROR_INVALID_PARAM;
-    *out_data_len = 0;
-
     /* Validate the parameters */
-    if (!state || (!ad && ad_len) || !data)
+    if (!state || (!ad && ad_len) || !buffer || !(buffer->data))
         return NOISE_ERROR_INVALID_PARAM;
+    if (buffer->size > buffer->max_size)
+        return NOISE_ERROR_INVALID_LENGTH;
 
     /* If the key hasn't been set yet, return the plaintext as-is */
     if (!state->has_key) {
-        if (in_data_len > NOISE_MAX_PAYLOAD_LEN)
+        if (buffer->size > NOISE_MAX_PAYLOAD_LEN)
             return NOISE_ERROR_INVALID_LENGTH;
-        *out_data_len = in_data_len;
         return NOISE_ERROR_NONE;
     }
 
     /* Make sure that there is room for the MAC */
-    if (in_data_len > (size_t)(NOISE_MAX_PAYLOAD_LEN - state->mac_len))
+    if (buffer->size > (size_t)(NOISE_MAX_PAYLOAD_LEN - state->mac_len))
+        return NOISE_ERROR_INVALID_LENGTH;
+    if ((buffer->max_size - buffer->size) < state->mac_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
     /* If the nonce has overflowed, then further encryption is impossible */
     if (state->nonce_overflow)
         return NOISE_ERROR_INVALID_NONCE;
 
-    /* Encrypt the plaintext */
-    err = (*(state->encrypt))(state, ad, ad_len, data, in_data_len);
+    /* Encrypt the plaintext and authenticate it */
+    err = (*(state->encrypt))(state, ad, ad_len, buffer->data, buffer->size);
     if (state->n == 0xFFFFFFFFFFFFFFFFULL)
         state->nonce_overflow = 1;
     ++(state->n);
@@ -308,7 +319,7 @@ int noise_cipherstate_encrypt_with_ad
         return err;
 
     /* Adjust the output length for the MAC and return */
-    *out_data_len = in_data_len + state->mac_len;
+    buffer->size += state->mac_len;
     return NOISE_ERROR_NONE;
 }
 
@@ -319,60 +330,64 @@ int noise_cipherstate_encrypt_with_ad
  * \param ad Points to the associated data, which can be NULL only if
  * \a ad_len is zero.
  * \param ad_len The length of the associated data in bytes.
- * \param data On entry, contains the ciphertext plus MAC.  On exit,
- * contains the plaintext.
- * \param in_data_len The number of bytes in \a data, including both
- * the ciphertext and the MAC.
- * \param out_data_len Set to the number of plaintext bytes in \a data on exit.
+ * \param buffer The buffer containing the ciphertext plus MAC on entry
+ * and the plaintext on exit.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if the parameters are invalid.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a ad is NULL and \a ad_len
+ * is not zero.
  * \return NOISE_ERROR_MAC_FAILURE if the MAC check failed.
  * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
- * \return NOISE_ERROR_INVALID_LENGTH if \a in_data_len is larger than
- * 65535 bytes or too small to contain the MAC value.
+ * \return NOISE_ERROR_INVALID_LENGTH if the size of \a buffer is larger
+  than 65535 bytes or is too small to contain the MAC value.
  *
  * The ciphertext is decrypted in-place with the plaintext also written
- * to \a data.  In other words, it is assumed that the ciphertext plus
+ * to \a buffer.  In other words, it is assumed that the ciphertext plus
  * MAC is in an input buffer ready to be processed once the MAC has
  * been checked and the ciphertext has been decrypted.
+ *
+ * The following example demonstrates how to initialize a buffer for
+ * use with this function.  The <tt>message</tt> is a byte array containing
+ * <tt>ciphertext_size</tt> bytes of ciphertext plus MAC on entry.  On exit,
+ * <tt>buffer.size</tt> will contain the number of bytes of plaintext:
+ *
+ * \code
+ * NoiseBuffer buffer;
+ * noise_buffer_set_inout(buffer, message, ciphertext_size, sizeof(message));
+ * noise_cipherstate_decrypt_with_ad(state, ad, ad_len, &buffer);
+ * // The plaintext is the buffer.size bytes starting at buffer.data
+ * \endcode
  *
  * \sa noise_cipherstate_encrypt_with_ad(), noise_cipherstate_get_mac_length()
  */
 int noise_cipherstate_decrypt_with_ad
     (NoiseCipherState *state, const uint8_t *ad, size_t ad_len,
-     uint8_t *data, size_t in_data_len, size_t *out_data_len)
+     NoiseBuffer *buffer)
 {
     int err;
 
-    /* Set the output length to zero in case of error */
-    if (!out_data_len)
-        return NOISE_ERROR_INVALID_PARAM;
-    *out_data_len = 0;
-
     /* Validate the parameters */
-    if (!state || (!ad && ad_len) || !data)
+    if (!state || (!ad && ad_len) || !buffer || !(buffer->data))
         return NOISE_ERROR_INVALID_PARAM;
-    if (in_data_len > NOISE_MAX_PAYLOAD_LEN)
+    if (buffer->size > buffer->max_size || buffer->size > NOISE_MAX_PAYLOAD_LEN)
         return NOISE_ERROR_INVALID_LENGTH;
 
     /* If the key hasn't been set yet, return the ciphertext as-is */
-    if (!state->has_key) {
-        *out_data_len = in_data_len;
+    if (!state->has_key)
         return NOISE_ERROR_NONE;
-    }
 
     /* Make sure there are enough bytes for the MAC */
-    if (in_data_len < state->mac_len)
+    if (buffer->size < state->mac_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* If the nonce has overflowed, then further encryption is impossible */
+    /* If the nonce has overflowed, then further decryption is impossible */
     if (state->nonce_overflow)
         return NOISE_ERROR_INVALID_NONCE;
 
     /* Decrypt the ciphertext and check the MAC */
     err = (*(state->decrypt))
-        (state, ad, ad_len, data, in_data_len - state->mac_len);
+        (state, ad, ad_len, buffer->data, buffer->size - state->mac_len);
     if (state->n == 0xFFFFFFFFFFFFFFFFULL)
         state->nonce_overflow = 1;
     ++(state->n);
@@ -380,8 +395,95 @@ int noise_cipherstate_decrypt_with_ad
         return err;
 
     /* Adjust the output length for the MAC and return */
-    *out_data_len = in_data_len - state->mac_len;
+    buffer->size -= state->mac_len;
     return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Encrypts a block of data with this CipherState object.
+ *
+ * \param state The CipherState object.
+ * \param buffer The buffer containing the plaintext on entry and the
+ * ciphertext plus MAC on exit.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
+ * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
+ * \return NOISE_ERROR_INVALID_LENGTH if the ciphertext plus MAC is
+ * too large to fit within the maximum size of \a buffer and to also
+ * remain within 65535 bytes.
+ *
+ * This is a convenience function which encrypts the contents of a buffer
+ * without any associated data.  It is otherwise identical to
+ * noise_cipherstate_encrypt_with_ad().
+ *
+ * The plaintext is encrypted in-place with the ciphertext also written
+ * to \a buffer.  There must be enough room on the end of \a buffer to hold
+ * the extra MAC value that will be appended.  In other words, it is
+ * assumed that the plaintext is in an output buffer ready to be
+ * transmitted once the data has been encrypted and the final packet
+ * length has been determined.
+ *
+ * The following example demonstrates how to initialize a buffer for
+ * use with this function.  The <tt>message</tt> is a byte array containing
+ * <tt>plaintext_size</tt> bytes of plaintext on entry.  On exit,
+ * <tt>buffer.size</tt> will contain the number of bytes of ciphertext
+ * plus MAC to be transmitted:
+ *
+ * \code
+ * NoiseBuffer buffer;
+ * noise_buffer_set_inout(buffer, message, plaintext_size, sizeof(message));
+ * noise_cipherstate_encrypt(state, &buffer);
+ * // Transmit the buffer.size bytes starting at buffer.data
+ * \endcode
+ *
+ * \sa noise_cipherstate_encrypt_with_ad()
+ */
+int noise_cipherstate_encrypt(NoiseCipherState *state, NoiseBuffer *buffer)
+{
+    return noise_cipherstate_encrypt_with_ad(state, NULL, 0, buffer);
+}
+
+/**
+ * \brief Decrypts a block of data with this CipherState object.
+ *
+ * \param state The CipherState object.
+ * \param buffer The buffer containing the ciphertext plus MAC on entry
+ * and the plaintext on exit.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
+ * \return NOISE_ERROR_MAC_FAILURE if the MAC check failed.
+ * \return NOISE_ERROR_INVALID_NONCE if the nonce previously overflowed.
+ * \return NOISE_ERROR_INVALID_LENGTH if the size of \a buffer is larger
+  than 65535 bytes or is too small to contain the MAC value.
+ *
+ * This is a convenience function which decrypts the contents of a buffer
+ * without any associated data.  It is otherwise identical to
+ * noise_cipherstate_decrypt_with_ad().
+ *
+ * The ciphertext is decrypted in-place with the plaintext also written
+ * to \a buffer.  In other words, it is assumed that the ciphertext plus
+ * MAC is in an input buffer ready to be processed once the MAC has
+ * been checked and the ciphertext has been decrypted.
+ *
+ * The following example demonstrates how to initialize a buffer for
+ * use with this function.  The <tt>message</tt> is a byte array containing
+ * <tt>ciphertext_size</tt> bytes of ciphertext plus MAC on entry.  On exit,
+ * <tt>buffer.size</tt> will contain the number of bytes of plaintext:
+ *
+ * \code
+ * NoiseBuffer buffer;
+ * noise_buffer_set_inout(buffer, message, ciphertext_size, sizeof(message));
+ * noise_cipherstate_decrypt(state, &buffer);
+ * // The plaintext is the buffer.size bytes starting at buffer.data
+ * \endcode
+ *
+ * \sa noise_cipherstate_decrypt_with_ad()
+ */
+int noise_cipherstate_decrypt(NoiseCipherState *state, NoiseBuffer *buffer)
+{
+    return noise_cipherstate_decrypt_with_ad(state, NULL, 0, buffer);
 }
 
 /**

@@ -23,8 +23,7 @@
 #ifndef NOISE_CIPHERSTATE_H
 #define NOISE_CIPHERSTATE_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <noise/protocol/buffer.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,10 +42,12 @@ int noise_cipherstate_init_key
 int noise_cipherstate_has_key(const NoiseCipherState *state);
 int noise_cipherstate_encrypt_with_ad
     (NoiseCipherState *state, const uint8_t *ad, size_t ad_len,
-     uint8_t *data, size_t in_data_len, size_t *out_data_len);
+     NoiseBuffer *buffer);
 int noise_cipherstate_decrypt_with_ad
     (NoiseCipherState *state, const uint8_t *ad, size_t ad_len,
-     uint8_t *data, size_t in_data_len, size_t *out_data_len);
+     NoiseBuffer *buffer);
+int noise_cipherstate_encrypt(NoiseCipherState *state, NoiseBuffer *buffer);
+int noise_cipherstate_decrypt(NoiseCipherState *state, NoiseBuffer *buffer);
 int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce);
 
 #ifdef __cplusplus

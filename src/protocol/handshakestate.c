@@ -815,24 +815,18 @@ static int noise_handshake_mix_dh
  * \brief Internal implementation of noise_handshakestate_write_message().
  *
  * \param state The HandshakeState object.
- * \param payload Points to the message payload to be sent, which can
- * be NULL if \a payload_size is zero.
- * \param payload_size The size of the message payload in bytes.
  * \param message Points to the message buffer to be populated with
  * handshake details and the message payload.
- * \param message_size On exit, set to the number of bytes that were actually
- * written to \a message.
- * \param max_size The maximum size for the \a message buffer.
+ * \param payload Points to the message payload to be sent, which can
+ * be NULL if no payload is required.
  *
  * \sa noise_handshakestate_write_message()
  */
 static int noise_handshakestate_write
-    (NoiseHandshakeState *state, const void *payload, size_t payload_size,
-     uint8_t *message, size_t *message_size, size_t max_size)
+    (NoiseHandshakeState *state, NoiseBuffer *message, const NoiseBuffer *payload)
 {
-    size_t size = 0;
+    NoiseBuffer rest;
     size_t len;
-    size_t out_len;
     size_t mac_len;
     uint8_t token;
     int err;
@@ -851,6 +845,15 @@ static int noise_handshakestate_write
             state->action = NOISE_ACTION_READ_MESSAGE;
             break;
         }
+
+        /* Set "rest" to the rest of the "message" buffer after the
+           current size.  This is the space we have left to write
+           handshake values while processing this token. */
+        rest.data = message->data + message->size;
+        rest.size = 0;
+        rest.max_size = message->max_size - message->size;
+
+        /* Process the token */
         err = NOISE_ERROR_NONE;
         switch (token) {
         case NOISE_TOKEN_E:
@@ -873,12 +876,11 @@ static int noise_handshakestate_write
             }
             if (err != NOISE_ERROR_NONE)
                 break;
-            if ((max_size - size) < len)
+            if (rest.max_size < len)
                 return NOISE_ERROR_INVALID_LENGTH;
-            memcpy(message + size, state->dh_local_ephemeral->public_key, len);
-            noise_symmetricstate_mix_hash
-                (state->symmetric, message + size, len);
-            size += len;
+            memcpy(rest.data, state->dh_local_ephemeral->public_key, len);
+            noise_symmetricstate_mix_hash(state->symmetric, rest.data, len);
+            rest.size += len;
 
             /* If the protocol is using pre-shared keys, then also mix
                the local ephemeral key into the chaining key */
@@ -894,14 +896,13 @@ static int noise_handshakestate_write
                 return NOISE_ERROR_INVALID_STATE;
             len = state->dh_local_static->public_key_len;
             mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
-            if ((max_size - size) < (len + mac_len))
+            if (rest.max_size < (len + mac_len))
                 return NOISE_ERROR_INVALID_LENGTH;
-            memcpy(message + size, state->dh_local_static->public_key, len);
-            err = noise_symmetricstate_encrypt_and_hash
-                (state->symmetric, message + size, len, &out_len);
+            memcpy(rest.data, state->dh_local_static->public_key, len);
+            rest.size += len;
+            err = noise_symmetricstate_encrypt_and_hash(state->symmetric, &rest);
             if (err != NOISE_ERROR_NONE)
                 break;
-            size += out_len;
             break;
         case NOISE_TOKEN_DHEE:
             /* DH operation with local and remote ephemeral keys */
@@ -931,25 +932,32 @@ static int noise_handshakestate_write
         }
         if (err != NOISE_ERROR_NONE)
             return err;
+        message->size += rest.size;
         ++(state->tokens);
     }
 
-    /* Encrypt the payload and add it to the buffer */
+    /* Add the payload to the message buffer and encrypt it */
     mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
-    if ((max_size - size) < mac_len)
+    if ((message->max_size - message->size) < mac_len)
         return NOISE_ERROR_INVALID_LENGTH;
-    if ((max_size - size - mac_len) < payload_size)
-        return NOISE_ERROR_INVALID_LENGTH;
-    if (payload_size)
-        memcpy(message + size, payload, payload_size);
-    err = noise_symmetricstate_encrypt_and_hash
-        (state->symmetric, message + size, payload_size, &out_len);
+    if (payload) {
+        if ((message->max_size - message->size - mac_len) < payload->size)
+            return NOISE_ERROR_INVALID_LENGTH;
+        rest.data = message->data + message->size;
+        rest.size = payload->size;
+        rest.max_size = message->max_size - message->size;
+        memcpy(rest.data, payload->data, payload->size);
+    } else {
+        rest.data = message->data + message->size;
+        rest.size = 0;
+        rest.max_size = message->max_size - message->size;
+    }
+    err = noise_symmetricstate_encrypt_and_hash(state->symmetric, &rest);
     if (err != NOISE_ERROR_NONE)
         return err;
-    size += out_len;
 
     /* Return the final size to the caller */
-    *message_size = size;
+    message->size += rest.size;
     return NOISE_ERROR_NONE;
 }
 
@@ -957,78 +965,61 @@ static int noise_handshakestate_write
  * \brief Writes a message payload using a HandshakeState.
  *
  * \param state The HandshakeState object.
- * \param payload Points to the message payload to be sent, which can
- * be NULL if \a payload_size is zero.
- * \param payload_size The size of the message payload in bytes.
  * \param message Points to the message buffer to be populated with
  * handshake details and the message payload.
- * \param message_size On entry, set to the number of bytes of memory
- * that are available in \a message.  On exit, set to the number of
- * bytes that were actually written to \a message.
+ * \param payload Points to the message payload to be sent, which can
+ * be NULL if no payload is required.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state, \a message, or
- * \a message_size is NULL.
- * \return NOISE_ERROR_INVALID_PARAM if \a payload is NULL and \a payload_size
- * is not zero.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
  * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
  * not NOISE_ACTION_WRITE_MESSAGE.
- * \return NOISE_ERROR_INVALID_LENGTH if the \a message_size is too small
- * to contain all of the bytes that need to be written to \a message.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a message is too small to contain
+ * all of the bytes that need to be written to it.
  *
- * The \a payload and \a message buffers must not overlap in memory.
+ * The \a message and \a payload buffers must not overlap in memory.
+ *
+ * The following example demonstrates how to write a handshake message
+ * into the application's <tt>msgbuf</tt> array:
+ *
+ * \code
+ * NoiseBuffer payload;
+ * uint8_t payloadbuf[PAYLOAD_LEN];
+ * // Format the message payload into "payloadbuf".
+ * noise_buffer_set_input(payload, payloadbuf, sizeof(payloadbuf));
+ *
+ * uint8_t msgbuf[MSGBUF_MAX];
+ * NoiseBuffer message;
+ * noise_buffer_set_output(message, msgbuf, sizeof(msgbuf));
+ * err = noise_handshakestate_write_message(state, &message, &payload);
+ * // Transmit the message.size bytes starting at message.data if no error.
+ * \endcode
  *
  * \sa noise_handshakestate_read_message(), noise_handshakestate_get_action()
  */
 int noise_handshakestate_write_message
-    (NoiseHandshakeState *state, const void *payload, size_t payload_size,
-     uint8_t *message, size_t *message_size)
+    (NoiseHandshakeState *state, NoiseBuffer *message, const NoiseBuffer *payload)
 {
-    size_t max_size = 0;
-    int err = NOISE_ERROR_NONE;
+    int err;
 
-    /* Validate the message size and extract it.  We set the return size
-       to zero and clear the message buffer in case this function bails out
-       with an error later.  This is in case the caller forgets to check the
-       error return value, and simply transmits the contents of "message".
-       This will prevent the caller from accidentally leaking the previous
-       contents of "message" onto the transport. */
-    if (message_size) {
-        max_size = *message_size;
-        *message_size = 0;
-        if (message)
-            noise_clean(message, max_size);
-    } else {
-        err = NOISE_ERROR_INVALID_PARAM;
-    }
+    /* Validate the parameters */
+    if (!message)
+        return NOISE_ERROR_INVALID_PARAM;
+    message->size = 0;
+    if (!state || !(message->data))
+        return NOISE_ERROR_INVALID_PARAM;
+    if (payload && !(payload->data))
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->action != NOISE_ACTION_WRITE_MESSAGE)
+        return NOISE_ERROR_INVALID_STATE;
 
-    /* Validate the other parameters and state */
+    /* Perform the write */
+    err = noise_handshakestate_write(state, message, payload);
     if (err != NOISE_ERROR_NONE) {
-        if (!state || !message)
-            err = NOISE_ERROR_INVALID_PARAM;
-        else if (!payload && payload_size != 0)
-            err = NOISE_ERROR_INVALID_PARAM;
-        else if (state->action != NOISE_ACTION_WRITE_MESSAGE)
-            err = NOISE_ERROR_INVALID_STATE;
-    }
-
-    /* Perform the main write if no error so far */
-    if (err == NOISE_ERROR_NONE) {
-        err = noise_handshakestate_write
-            (state, payload, payload_size, message, message_size, max_size);
-    }
-
-    /* If an error occurred, then fail the HandshakeState completely */
-    if (err != NOISE_ERROR_NONE && state) {
+        /* Set the state to "failed" and empty the message buffer */
         state->action = NOISE_ACTION_FAILED;
-        if (message) {
-            /* Clear the message buffer again in case we wrote some
-               partial data to it before discovering the error */
-            noise_clean(message, max_size);
-        }
+        message->size = 0;
     }
-
-    /* Finished */
     return err;
 }
 
@@ -1047,14 +1038,18 @@ int noise_handshakestate_write_message
  * \sa noise_handshakestate_read_message()
  */
 static int noise_handshakestate_read
-    (NoiseHandshakeState *state, uint8_t *message, size_t message_size,
-     void *payload, size_t *payload_size, size_t max_size)
+    (NoiseHandshakeState *state, NoiseBuffer *message, NoiseBuffer *payload)
 {
+    NoiseBuffer msg;
+    NoiseBuffer msg2;
     size_t len;
-    size_t out_len;
     size_t mac_len;
     uint8_t token;
     int err;
+
+    /* Make a copy of the message buffer.  As we process tokens, the copy
+       will become shorter and shorter until only the payload is left. */
+    msg = *message;
 
     /* Process tokens until the direction changes or the pattern ends */
     for (;;) {
@@ -1077,13 +1072,14 @@ static int noise_handshakestate_read
             if (!state->dh_remote_ephemeral)
                 return NOISE_ERROR_INVALID_STATE;
             len = state->dh_remote_ephemeral->public_key_len;
-            if (message_size < len)
+            if (msg.size < len)
                 return NOISE_ERROR_INVALID_LENGTH;
-            err = noise_symmetricstate_mix_hash(state->symmetric, message, len);
+            err = noise_symmetricstate_mix_hash
+                (state->symmetric, msg.data, len);
             if (err != NOISE_ERROR_NONE)
                 break;
             err = noise_dhstate_set_public_key
-                (state->dh_remote_ephemeral, message, len);
+                (state->dh_remote_ephemeral, msg.data, len);
             if (err != NOISE_ERROR_NONE)
                 break;
             if (noise_dhstate_is_null_public_key(state->dh_remote_ephemeral)) {
@@ -1093,8 +1089,9 @@ static int noise_handshakestate_read
                    in some of the message patterns.  Reject all such keys. */
                 return NOISE_ERROR_INVALID_PUBLIC_KEY;
             }
-            message += len;
-            message_size -= len;
+            msg.data += len;
+            msg.size -= len;
+            msg.max_size -= len;
 
             /* If the protocol is using pre-shared keys, then also mix
                the remote ephemeral key into the chaining key */
@@ -1110,18 +1107,22 @@ static int noise_handshakestate_read
                 return NOISE_ERROR_INVALID_STATE;
             mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
             len = state->dh_remote_static->public_key_len + mac_len;
-            if (message_size < len)
+            if (msg.size < len)
                 return NOISE_ERROR_INVALID_LENGTH;
+            msg2.data = msg.data;
+            msg2.size = len;
+            msg2.max_size = len;
             err = noise_symmetricstate_decrypt_and_hash
-                (state->symmetric, message, len, &out_len);
+                (state->symmetric, &msg2);
             if (err != NOISE_ERROR_NONE)
                 break;
             err = noise_dhstate_set_public_key
-                (state->dh_remote_static, message, out_len);
+                (state->dh_remote_static, msg2.data, msg2.size);
             if (err != NOISE_ERROR_NONE)
                 break;
-            message += len;
-            message_size -= len;
+            msg.data += len;
+            msg.size -= len;
+            msg.max_size -= len;
             break;
         case NOISE_TOKEN_DHEE:
             /* DH operation with local and remote ephemeral keys */
@@ -1154,19 +1155,17 @@ static int noise_handshakestate_read
         ++(state->tokens);
     }
 
-    /* Decrypt the payload and return it in the payload buffer */
+    /* Decrypt the remaining bytes and return them in the payload buffer */
     mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
-    err = noise_symmetricstate_decrypt_and_hash
-        (state->symmetric, message, message_size, &len);
+    err = noise_symmetricstate_decrypt_and_hash(state->symmetric, &msg);
     if (err != NOISE_ERROR_NONE)
         return err;
-    if (len > max_size)
-        return NOISE_ERROR_INVALID_LENGTH;
-    if (payload)
-        memcpy(payload, message, len);
-
-    /* Return the final payload size to the caller */
-    *payload_size = len;
+    if (payload) {
+        if (msg.size > payload->max_size)
+            return NOISE_ERROR_INVALID_LENGTH;
+        memcpy(payload->data, msg.data, msg.size);
+        payload->size = msg.size;
+    }
     return NOISE_ERROR_NONE;
 }
 
@@ -1175,31 +1174,28 @@ static int noise_handshakestate_read
  *
  * \param state The HandshakeState object.
  * \param message Points to the incoming handshake message to be unpacked.
- * \param message_size The length of the incoming handshake message in bytes.
  * \param payload Points to the buffer to fill with the message payload.
  * This can be NULL if the application does not need the message payload.
- * \param payload_size On entry, set to the number of bytes of memory
- * that are available in \a payload.  On exit, set to the number of bytes
- * that were actually written to \a payload.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state, \a message, or
- * \a payload_size is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
  * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
  * not NOISE_ACTION_READ_MESSAGE.
- * \return NOISE_ERROR_INVALID_LENGTH if the \a payload_size is too small
- * to contain all of the bytes that need to be written to \a payload.
+ * \return NOISE_ERROR_INVALID_LENGTH if the size of \a message is incorrect
+ * for the type of handshake packet that we expect.
+ * \return NOISE_ERROR_INVALID_LENGTH if the size of \a payload is too small
+ * to contain all of the payload bytes that were present in the \a message.
  * \return NOISE_ERROR_MAC_FAILURE if the \a message failed to authenticate,
  * which terminates the handshake.
  * \return NOISE_ERROR_PUBLIC_KEY if an invalid remote public key is seen
  * during the processing of this message.
  *
- * If \a payload is NULL, then the message payload will be authenticated,
- * checked to be less than or equal to \a payload_size in length,
- * and then discarded.  If the application was expecting a zero-length
- * payload, then \a payload_size should be zero on entry.
+ * If \a payload is NULL, then the message payload will be authenticated
+ * and then discarded, regardless of its length.  If the application was
+ * expecting an empty payload and wants to verify that, then \a payload
+ * should point to a non-NULL zero-length buffer.
  *
- * The \a payload and \a message buffers must not overlap in memory.
+ * The \a mesaage and \a payload buffers must not overlap in memory.
  *
  * The \a message buffer will be modified by this function to decrypt
  * sub-components while it is being processed.  The contents will be
@@ -1209,51 +1205,28 @@ static int noise_handshakestate_read
  * \sa noise_handshakestate_write_message(), noise_handshakestate_get_action()
  */
 int noise_handshakestate_read_message
-    (NoiseHandshakeState *state, uint8_t *message, size_t message_size,
-     void *payload, size_t *payload_size)
+    (NoiseHandshakeState *state, NoiseBuffer *message, NoiseBuffer *payload)
 {
-    size_t max_size = 0;
-    int err = NOISE_ERROR_NONE;
+    int err;
 
-    /* Validate the payload size and extract it.  We set the return size
-       to zero and clear the payload buffer in case this function bails out
-       with an error later.  This is in case the caller forgets to check
-       the error return value and simply passes the payload bytes up to the
-       application.  This could lead to "replay attack" scenarios where the
-       previous payload contents can be re-fed into the application to
-       repeat a previous command. */
-    if (payload_size) {
-        max_size = *payload_size;
-        *payload_size = 0;
-        if (payload)
-            noise_clean(payload, max_size);
-    } else {
-        err = NOISE_ERROR_INVALID_PARAM;
+    /* Validate the parameters */
+    if (payload) {
+        if (!(payload->data))
+            return NOISE_ERROR_INVALID_PARAM;
+        payload->size = 0;
     }
+    if (!state || !message || !(message->data))
+        return NOISE_ERROR_INVALID_PARAM;
+    if (message->size > message->max_size)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (state->action != NOISE_ACTION_READ_MESSAGE)
+        return NOISE_ERROR_INVALID_STATE;
 
-    /* Validate the other parameters and state */
-    if (err == NOISE_ERROR_NONE) {
-        if (!state || !message)
-            err = NOISE_ERROR_INVALID_PARAM;
-        else if (state->action != NOISE_ACTION_READ_MESSAGE)
-            err = NOISE_ERROR_INVALID_STATE;
-    }
-
-    /* Perform the main read if no error so far */
-    if (err == NOISE_ERROR_NONE) {
-        err = noise_handshakestate_read
-            (state, message, message_size, payload, payload_size, max_size);
-    }
-
-    /* Clear the incoming message buffer to prevent leakage of decrypted data */
-    if (message)
-        noise_clean(message, message_size);
-
-    /* If an error occurred, then fail the HandshakeState completely */
-    if (err != NOISE_ERROR_NONE && state)
+    /* Perform the read */
+    err = noise_handshakestate_read(state, message, payload);
+    noise_clean(message->data, message->size);
+    if (err != NOISE_ERROR_NONE)
         state->action = NOISE_ACTION_FAILED;
-
-    /* Finished */
     return err;
 }
 

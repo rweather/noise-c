@@ -34,6 +34,7 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
                          const char *ciphertext, const char *mac)
 {
     NoiseCipherState *state;
+    NoiseBuffer mbuf;
     uint8_t k[MAX_KEY_LEN];
     uint8_t a[MAX_AD_LEN];
     uint8_t pt[MAX_CIPHER_DATA];
@@ -42,7 +43,6 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     uint8_t buffer[MAX_CIPHER_DATA];
     size_t pt_len;
     size_t ad_len;
-    size_t out_data_len;
 
     /* Convert the test strings into binary data */
     compare(string_to_data(k, sizeof(k), key), key_len);
@@ -60,50 +60,46 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
 
     /* Try to encrypt.  Because the key is not set yet, this will
        return the plaintext as-is */
-    out_data_len = (size_t)(-1);
     memcpy(buffer, pt, pt_len);
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, buffer, pt_len, &out_data_len),
+    noise_buffer_set_inout(mbuf, buffer, pt_len, sizeof(buffer));
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
-    compare(out_data_len, pt_len);
-    verify(!memcmp(buffer, pt, pt_len));
+    compare(mbuf.size, pt_len);
+    verify(!memcmp(mbuf.data, pt, pt_len));
 
     /* Try to encrypt again with no key.  This time specify a payload
        length that is too large */
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, buffer, NOISE_MAX_PAYLOAD_LEN + 1,
-                 &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, NOISE_MAX_PAYLOAD_LEN + 1);
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_INVALID_LENGTH);
 
-    /* On more plaintext encryption with a payload less than the MAC size */
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, buffer, mac_len / 2, &out_data_len),
+    /* One more plaintext encryption with a payload less than the MAC size */
+    noise_buffer_set_inout(mbuf, buffer, mac_len / 2, sizeof(buffer));
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
-    compare(out_data_len, mac_len / 2);
+    compare(mbuf.size, mac_len / 2);
 
     /* Try to decrypt.  Will return the ciphertext and MAC as-is */
-    out_data_len = (size_t)(-1);
     memcpy(buffer, ct, pt_len);
     memcpy(buffer + pt_len, tag, mac_len);
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, buffer, pt_len + mac_len, &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, pt_len + mac_len);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
-    compare(out_data_len, pt_len + mac_len);
-    verify(!memcmp(buffer, ct, pt_len));
-    verify(!memcmp(buffer + pt_len, tag, mac_len));
+    compare(mbuf.size, pt_len + mac_len);
+    verify(!memcmp(mbuf.data, ct, pt_len));
+    verify(!memcmp(mbuf.data + pt_len, tag, mac_len));
 
     /* Try to decrypt again with no key.  This time specify a payload
        length that is too large */
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, buffer, NOISE_MAX_PAYLOAD_LEN + 1,
-                 &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, NOISE_MAX_PAYLOAD_LEN + 1);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_INVALID_LENGTH);
 
     /* Plaintext decryption can work with data less than the MAC size */
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, buffer, mac_len / 2, &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, mac_len / 2);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
-    compare(out_data_len, mac_len / 2);
+    compare(mbuf.size, mac_len / 2);
 
     /* Cannot set the nonce before we set the key */
     compare(noise_cipherstate_set_nonce(state, nonce), NOISE_ERROR_INVALID_STATE);
@@ -115,24 +111,21 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     verify(noise_cipherstate_has_key(state));
 
     /* Encrypt the data */
-    out_data_len = (size_t)(-1);
     memcpy(buffer, pt, pt_len);
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, buffer, pt_len, &out_data_len),
+    noise_buffer_set_inout(mbuf, buffer, pt_len, sizeof(buffer));
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
-    compare(out_data_len, pt_len + mac_len);
+    compare(mbuf.size, pt_len + mac_len);
 
     /* Check the ciphertext and MAC that was generated */
-    verify(!memcmp(buffer, ct, pt_len));
-    verify(!memcmp(buffer + pt_len, tag, mac_len));
+    verify(!memcmp(mbuf.data, ct, pt_len));
+    verify(!memcmp(mbuf.data + pt_len, tag, mac_len));
 
     /* Try to decrypt.  The MAC check should fail because the internal
        nonce was incremented and no longer matches the parameter */
-    out_data_len = (size_t)(-1);
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, buffer, pt_len + mac_len, &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, pt_len + mac_len);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_MAC_FAILURE);
-    compare(out_data_len, 0);
 
     /* Try to reset the nonce.  Cannot go backwards */
     compare(noise_cipherstate_set_nonce(state, nonce), NOISE_ERROR_INVALID_NONCE);
@@ -141,11 +134,11 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
        to encrypt one more block, and then the next request will be rejected */
     compare(noise_cipherstate_set_nonce(state, 0xFFFFFFFFFFFFFFFFULL),
             NOISE_ERROR_NONE);
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, buffer, pt_len, &out_data_len),
+    noise_buffer_set_inout(mbuf, buffer, pt_len, sizeof(buffer));
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, buffer, pt_len, &out_data_len),
+    noise_buffer_set_inout(mbuf, buffer, pt_len, sizeof(buffer));
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_INVALID_NONCE);
 
     /* Reset the key and then we can reset the nonce */
@@ -153,26 +146,25 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     compare(noise_cipherstate_set_nonce(state, nonce), NOISE_ERROR_NONE);
 
     /* Decrypt the test ciphertext and MAC */
-    out_data_len = (size_t)(-1);
     memcpy(buffer, ct, pt_len);
     memcpy(buffer + pt_len, tag, mac_len);
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, buffer, pt_len + mac_len, &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, pt_len + mac_len);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
-    compare(out_data_len, pt_len);
+    compare(mbuf.size, pt_len);
 
     /* Check that we got back to the original plaintext */
-    verify(!memcmp(buffer, pt, pt_len));
+    verify(!memcmp(mbuf.data, pt, pt_len));
 
     /* Fast-forward the nonce to just before the rollover.  We will be able
        to decrypt one more block, and then the next request will be rejected */
     compare(noise_cipherstate_set_nonce(state, 0xFFFFFFFFFFFFFFFFULL),
             NOISE_ERROR_NONE);
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, buffer, pt_len + mac_len, &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, pt_len + mac_len);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_MAC_FAILURE);   /* MAC will fail, but that's OK */
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, buffer, pt_len + mac_len, &out_data_len),
+    noise_buffer_set_input(mbuf, buffer, pt_len + mac_len);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_INVALID_NONCE);
 
     /* Reset the key to clear the "invalid nonce" state */
@@ -188,30 +180,32 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     compare(noise_cipherstate_init_key(state, k, key_len + 1),
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_cipherstate_set_nonce(0, nonce), NOISE_ERROR_INVALID_PARAM);
-    compare(noise_cipherstate_encrypt_with_ad
-                (0, a, ad_len, buffer, pt_len, &out_data_len),
+    noise_buffer_set_inout(mbuf, buffer, pt_len, sizeof(buffer));
+    compare(noise_cipherstate_encrypt_with_ad(0, a, ad_len, &mbuf),
             NOISE_ERROR_INVALID_PARAM);
     if (ad_len) {
-        compare(noise_cipherstate_encrypt_with_ad
-                    (state, 0, ad_len, buffer, pt_len, &out_data_len),
+        compare(noise_cipherstate_encrypt_with_ad(state, 0, ad_len, &mbuf),
                 NOISE_ERROR_INVALID_PARAM);
     }
-    compare(noise_cipherstate_encrypt_with_ad
-                (state, a, ad_len, 0, pt_len, &out_data_len),
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, 0),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_cipherstate_decrypt_with_ad
-                (0, a, ad_len, buffer, pt_len, &out_data_len),
+    mbuf.data = 0;
+    compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
+            NOISE_ERROR_INVALID_PARAM);
+    noise_buffer_set_inout(mbuf, buffer, pt_len + mac_len, sizeof(buffer));
+    compare(noise_cipherstate_decrypt_with_ad(0, a, ad_len, &mbuf),
             NOISE_ERROR_INVALID_PARAM);
     if (ad_len) {
-        compare(noise_cipherstate_decrypt_with_ad
-                    (state, 0, ad_len, buffer, pt_len, &out_data_len),
+        compare(noise_cipherstate_decrypt_with_ad(state, 0, ad_len, &mbuf),
                 NOISE_ERROR_INVALID_PARAM);
     }
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, 0, pt_len, &out_data_len),
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, 0),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_cipherstate_decrypt_with_ad
-                (state, a, ad_len, buffer, mac_len / 2, &out_data_len),
+    mbuf.data = 0;
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
+            NOISE_ERROR_INVALID_PARAM);
+    noise_buffer_set_input(mbuf, buffer, mac_len / 2);
+    compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_INVALID_LENGTH);
 
     /* Re-create the object by name and check its properties again */

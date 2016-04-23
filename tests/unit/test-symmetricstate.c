@@ -107,7 +107,6 @@ static void check_symmetric_object
     HKDFValue temp;
     const uint8_t *data;
     size_t index, len;
-    size_t out_len;
     size_t key_len;
     size_t mac_len;
     uint8_t buffer[MAX_DATA_LEN];
@@ -116,6 +115,7 @@ static void check_symmetric_object
     NoiseCipherState *c1;
     NoiseCipherState *c2;
     NoiseProtocolId temp_id;
+    NoiseBuffer mbuf;
 
     /* We run two SymmetricState objects in parallel, state1 and state2.
        The state1 object is used to encrypt and state2 is used to decrypt. */
@@ -182,40 +182,44 @@ static void check_symmetric_object
         len = strlen(data_vals[index]);
         data = (const uint8_t *)(data_vals[index]);
         memcpy(buffer, data, len);
-        out_len = (size_t)(-1);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, buffer, len, &out_len), NOISE_ERROR_NONE);
-        compare(out_len, len);
-        verify(!memcmp(buffer, data, len));
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
+        compare(noise_symmetricstate_encrypt_and_hash(state1, &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len);
+        verify(!memcmp(mbuf.data, data, len));
         h = HASHTwo(h, buffer, len);
-        out_len = (size_t)(-1);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state2, buffer, len, &out_len), NOISE_ERROR_NONE);
-        compare(out_len, len);
-        verify(!memcmp(buffer, data, len));
+        noise_buffer_set_input(mbuf, buffer, len);
+        compare(noise_symmetricstate_decrypt_and_hash(state2, &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len);
+        verify(!memcmp(mbuf.data, data, len));
         verify(!memcmp(ck.hash, state1->ck, hash_len));
         verify(!memcmp(h.hash, state1->h, hash_len));
         verify(!memcmp(ck.hash, state2->ck, hash_len));
         verify(!memcmp(h.hash, state2->h, hash_len));
         compare(noise_symmetricstate_get_mac_length(state1), 0);
         compare(noise_symmetricstate_get_mac_length(state2), 0);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (0, buffer, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, 0, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, buffer, len, 0), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, buffer, NOISE_MAX_PAYLOAD_LEN + 1, &out_len),
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
+        compare(noise_symmetricstate_encrypt_and_hash(0, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        compare(noise_symmetricstate_encrypt_and_hash(state1, 0),
+                NOISE_ERROR_INVALID_PARAM);
+        mbuf.data = 0;
+        compare(noise_symmetricstate_encrypt_and_hash(state1, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        noise_buffer_set_input(mbuf, buffer, NOISE_MAX_PAYLOAD_LEN + 1);
+        compare(noise_symmetricstate_encrypt_and_hash(state1, &mbuf),
                 NOISE_ERROR_INVALID_LENGTH);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (0, buffer, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state1, 0, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state1, buffer, len, 0), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state1, buffer, NOISE_MAX_PAYLOAD_LEN + 1, &out_len),
+        noise_buffer_set_input(mbuf, buffer, len);
+        compare(noise_symmetricstate_decrypt_and_hash(0, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        compare(noise_symmetricstate_decrypt_and_hash(state1, 0),
+                NOISE_ERROR_INVALID_PARAM);
+        mbuf.data = 0;
+        compare(noise_symmetricstate_decrypt_and_hash(state1, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        noise_buffer_set_input(mbuf, buffer, NOISE_MAX_PAYLOAD_LEN + 1);
+        compare(noise_symmetricstate_decrypt_and_hash(state1, &mbuf),
                 NOISE_ERROR_INVALID_LENGTH);
     }
 
@@ -260,40 +264,43 @@ static void check_symmetric_object
         data = (const uint8_t *)(data_vals[index]);
         memcpy(buffer, data, len);
         memcpy(buffer2, data, len);
-        out_len = (size_t)(-1);
+        noise_buffer_set_inout(mbuf, buffer2, len, sizeof(buffer2));
         compare(noise_cipherstate_encrypt_with_ad
-                    (cipherstate, h.hash, hash_len, buffer2, len, &out_len),
+                    (cipherstate, h.hash, hash_len, &mbuf),
                 NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        out_len = (size_t)(-1);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, buffer, len, &out_len), NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        verify(!memcmp(buffer, buffer2, len + mac_len));
+        compare(mbuf.size, len + mac_len);
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
+        compare(noise_symmetricstate_encrypt_and_hash(state1, &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len + mac_len);
+        verify(!memcmp(mbuf.data, buffer2, len + mac_len));
         h = HASHTwo(h, buffer, len + mac_len);
-        out_len = (size_t)(-1);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state2, buffer, len + mac_len, &out_len),
+        noise_buffer_set_input(mbuf, buffer, len + mac_len);
+        compare(noise_symmetricstate_decrypt_and_hash(state2, &mbuf),
                 NOISE_ERROR_NONE);
-        compare(out_len, len);
-        verify(!memcmp(buffer, data, len));
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (0, buffer, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, 0, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, buffer, len, 0), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_encrypt_and_hash
-                    (state1, buffer, NOISE_MAX_PAYLOAD_LEN - mac_len + 1, &out_len),
+        compare(mbuf.size, len);
+        verify(!memcmp(mbuf.data, data, len));
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
+        compare(noise_symmetricstate_encrypt_and_hash(0, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        compare(noise_symmetricstate_encrypt_and_hash(state1, 0),
+                NOISE_ERROR_INVALID_PARAM);
+        mbuf.data = 0;
+        compare(noise_symmetricstate_encrypt_and_hash(state1, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        noise_buffer_set_input(mbuf, buffer, NOISE_MAX_PAYLOAD_LEN - mac_len + 1);
+        compare(noise_symmetricstate_encrypt_and_hash(state1, &mbuf),
                 NOISE_ERROR_INVALID_LENGTH);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (0, buffer, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state1, 0, len, &out_len), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state1, buffer, len, 0), NOISE_ERROR_INVALID_PARAM);
-        compare(noise_symmetricstate_decrypt_and_hash
-                    (state1, buffer, NOISE_MAX_PAYLOAD_LEN + 1, &out_len),
+        noise_buffer_set_input(mbuf, buffer, len);
+        compare(noise_symmetricstate_decrypt_and_hash(0, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        compare(noise_symmetricstate_decrypt_and_hash(state1, 0),
+                NOISE_ERROR_INVALID_PARAM);
+        mbuf.data = 0;
+        compare(noise_symmetricstate_decrypt_and_hash(state1, &mbuf),
+                NOISE_ERROR_INVALID_PARAM);
+        noise_buffer_set_input(mbuf, buffer, NOISE_MAX_PAYLOAD_LEN + 1);
+        compare(noise_symmetricstate_decrypt_and_hash(state1, &mbuf),
                 NOISE_ERROR_INVALID_LENGTH);
     }
 
@@ -324,18 +331,17 @@ static void check_symmetric_object
         data = (const uint8_t *)(data_vals[index]);
         memcpy(buffer, data, len);
         memcpy(buffer2, data, len);
-        out_len = (size_t)(-1);
+        noise_buffer_set_inout(mbuf, buffer2, len, sizeof(buffer2));
         compare(noise_cipherstate_encrypt_with_ad
-                    (cipherstate, (const uint8_t *)&index, sizeof(index),
-                     buffer2, len, &out_len),
+                   (cipherstate, (const uint8_t *)&index, sizeof(index), &mbuf),
                 NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        out_len = (size_t)(-1);
+        compare(mbuf.size, len + mac_len);
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
         compare(noise_cipherstate_encrypt_with_ad
-                    (c1, (const uint8_t *)&index, sizeof(index),
-                     buffer, len, &out_len), NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        verify(!memcmp(buffer, buffer2, len + mac_len));
+                    (c1, (const uint8_t *)&index, sizeof(index), &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len + mac_len);
+        verify(!memcmp(mbuf.data, buffer2, len + mac_len));
     }
     compare(noise_cipherstate_init_key(cipherstate, temp.v2.hash, key_len),
             NOISE_ERROR_NONE);
@@ -344,17 +350,17 @@ static void check_symmetric_object
         data = (const uint8_t *)(data_vals[index]);
         memcpy(buffer, data, len);
         memcpy(buffer2, data, len);
-        out_len = (size_t)(-1);
+        noise_buffer_set_inout(mbuf, buffer2, len, sizeof(buffer2));
         compare(noise_cipherstate_encrypt_with_ad
-                    (cipherstate, (const uint8_t *)&index, sizeof(index),
-                     buffer2, len, &out_len), NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        out_len = (size_t)(-1);
+                   (cipherstate, (const uint8_t *)&index, sizeof(index), &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len + mac_len);
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
         compare(noise_cipherstate_encrypt_with_ad
-                    (c2, (const uint8_t *)&index, sizeof(index),
-                     buffer, len, &out_len), NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        verify(!memcmp(buffer, buffer2, len + mac_len));
+                    (c2, (const uint8_t *)&index, sizeof(index), &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len + mac_len);
+        verify(!memcmp(mbuf.data, buffer2, len + mac_len));
     }
     compare(noise_cipherstate_free(c1), NOISE_ERROR_NONE);
     compare(noise_cipherstate_free(c2), NOISE_ERROR_NONE);
@@ -364,11 +370,10 @@ static void check_symmetric_object
             NOISE_ERROR_INVALID_STATE);
     compare(noise_symmetricstate_mix_key(state1, buffer, 8),
             NOISE_ERROR_INVALID_STATE);
-    compare(noise_symmetricstate_encrypt_and_hash
-                (state1, buffer, len, &out_len),
+    noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
+    compare(noise_symmetricstate_encrypt_and_hash(state1, &mbuf),
             NOISE_ERROR_INVALID_STATE);
-    compare(noise_symmetricstate_decrypt_and_hash
-                (state1, buffer, len, &out_len),
+    compare(noise_symmetricstate_decrypt_and_hash(state1, &mbuf),
             NOISE_ERROR_INVALID_STATE);
     compare(noise_symmetricstate_split(state1, &c1, &c2),
             NOISE_ERROR_INVALID_STATE);
@@ -391,18 +396,17 @@ static void check_symmetric_object
         data = (const uint8_t *)(data_vals[index]);
         memcpy(buffer, data, len);
         memcpy(buffer2, data, len);
-        out_len = (size_t)(-1);
+        noise_buffer_set_inout(mbuf, buffer2, len, sizeof(buffer2));
         compare(noise_cipherstate_encrypt_with_ad
-                    (cipherstate, (const uint8_t *)&index, sizeof(index),
-                     buffer2, len, &out_len),
+                   (cipherstate, (const uint8_t *)&index, sizeof(index), &mbuf),
                 NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        out_len = (size_t)(-1);
+        compare(mbuf.size, len + mac_len);
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
         compare(noise_cipherstate_encrypt_with_ad
-                    (c1, (const uint8_t *)&index, sizeof(index),
-                     buffer, len, &out_len), NOISE_ERROR_NONE);
-        compare(out_len, len + mac_len);
-        verify(!memcmp(buffer, buffer2, len + mac_len));
+                    (c1, (const uint8_t *)&index, sizeof(index), &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len + mac_len);
+        verify(!memcmp(mbuf.data, buffer2, len + mac_len));
     }
 
     /* Clean up */
