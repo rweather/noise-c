@@ -38,6 +38,7 @@ int main(int argc, char *argv[])
     test(cipherstate);
     test(dhstate);
     test(errors);
+    test(handshakestate);
     test(hashstate);
     test(names);
     test(patterns);

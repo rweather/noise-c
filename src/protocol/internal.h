@@ -558,7 +558,7 @@ struct NoiseHandshakeState_s
 #define NOISE_PAT_FLAG_REMOTE_STATIC    (1 << 4)
 /** Pattern requires a remote ephemeral public key */
 #define NOISE_PAT_FLAG_REMOTE_EMPEMERAL (1 << 5)
-/** Pattern requires that the local public key be provided
+/** Pattern requires that the remote public key be provided
     ahead of time to start the protocol.  That is, it is not
     sent as part of the protocol but is assumed to already be
     known to the other party. */

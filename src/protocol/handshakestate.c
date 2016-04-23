@@ -36,13 +36,8 @@
 /**
  * \defgroup handshakestate HandshakeState API
  *
- * \code
- * NoiseHandshakeState *state;
- * noise_handshakestate_new_by_name
- *      (&state, "NoisePSK_XX_25519_ChaChaPoly_BLAKE2s", NOISE_ROLE_INITIATOR);
- * noise_handshakestate_set_prologue(state, prologue, sizeof(prologue));
- * noise_handshakestate_set_psk(state, psk, sizeof(psk));
- * \endcode
+ * See the \ref example_echo "echo example" for an overview of how
+ * to use this API.
  */
 /**@{*/
 
@@ -377,6 +372,46 @@ NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
 }
 
 /**
+ * \brief Determine if a HandshakeState object requires a pre shared key.
+ *
+ * \param state The HandshakeState object.
+ *
+ * \return Returns 1 if \a state requires a pre shared key, zero if the
+ * pre shared key has already been supplied or it is not required.
+ *
+ * \sa noise_handshakestate_set_pre_shared_key(),
+ * noise_handshakestate_has_pre_shared_key()
+ */
+int noise_handshakestate_needs_pre_shared_key(const NoiseHandshakeState *state)
+{
+    if (!state)
+        return 0;
+    else
+        return (state->requirements & NOISE_REQ_PSK) != 0;
+}
+
+/**
+ * \brief Determine if a HandshakeState object has already been configured
+ * with a pre shared key.
+ *
+ * \param state The HandshakeState object.
+ *
+ * \return Returns 1 if \a state requires a pre shared key, zero if not.
+ *
+ * \sa noise_handshakestate_set_pre_shared_key(),
+ * noise_handshakestate_needs_pre_shared_key()
+ */
+int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
+{
+    if (!state)
+        return 0;
+    else if ((state->requirements & NOISE_REQ_PSK) != 0)
+        return 0;
+    else
+        return state->symmetric->id.prefix_id == NOISE_PREFIX_PSK;
+}
+
+/**
  * \brief Sets the pre shared key for a HandshakeState.
  *
  * \param state The HandshakeState object.
@@ -394,7 +429,9 @@ NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
  * implicitly set the prologue to the empty sequence and it will no longer
  * be possible to specify an explicit prologue.
  *
- * \sa noise_handshakestate_start(), noise_handshakestate_set_prologue()
+ * \sa noise_handshakestate_start(), noise_handshakestate_set_prologue(),
+ * noise_handshakestate_needs_pre_shared_key(),
+ * noise_handshakestate_has_pre_shared_key()
  */
 int noise_handshakestate_set_pre_shared_key
     (NoiseHandshakeState *state, const uint8_t *key, size_t key_len)

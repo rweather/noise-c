@@ -46,6 +46,8 @@ NoiseDHState *noise_handshakestate_get_remote_public_key_dh
     (const NoiseHandshakeState *state);
 NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
     (NoiseHandshakeState *state);
+int noise_handshakestate_needs_pre_shared_key(const NoiseHandshakeState *state);
+int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state);
 int noise_handshakestate_set_pre_shared_key
     (NoiseHandshakeState *state, const uint8_t *key, size_t key_len);
 int noise_handshakestate_set_prologue

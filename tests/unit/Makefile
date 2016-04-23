@@ -14,6 +14,7 @@ SOURCES = \
 	test-cipherstate.c \
 	test-dhstate.c \
 	test-errors.c \
+	test-handshakestate.c \
 	test-hashstate.c \
 	test-main.c \
 	test-names.c \
