@@ -36,6 +36,70 @@
 #include <endian.h>
 #endif
 
+#if defined(GHASH_WORD64)
+
+/* 64-bit version of GHASH */
+
+static uint64_t swapEndian(uint64_t x)
+{
+#if __BYTE_ORDER == __BIG_ENDIAN
+    return x;
+#else
+    return ((x >> 56) & 0x00000000000000FF) |
+           ((x >> 40) & 0x000000000000FF00) |
+           ((x >> 24) & 0x0000000000FF0000) |
+           ((x >>  8) & 0x00000000FF000000) |
+           ((x <<  8) & 0x000000FF00000000) |
+           ((x << 24) & 0x0000FF0000000000) |
+           ((x << 40) & 0x00FF000000000000) |
+           ((x << 56) & 0xFF00000000000000);
+#endif
+}
+
+static void GF128_mulInit(uint64_t H[2], const void *key)
+{
+    /* Copy the key into H and convert from big endian to host order */
+    memcpy(H, key, 16);
+    H[0] = swapEndian(H[0]);
+    H[1] = swapEndian(H[1]);
+}
+
+static void GF128_mul(uint64_t Y[2], const uint64_t H[2])
+{
+    uint64_t Z0 = 0;        /* Z = 0 */
+    uint64_t Z1 = 0;
+    uint64_t V0 = H[0];     /* V = H */
+    uint64_t V1 = H[1];
+
+    /* Multiply Z by V for the set bits in Y, starting at the top.
+       This is a very simple bit by bit version that may not be very
+       fast but it should be resistant to cache timing attacks. */
+    for (uint8_t posn = 0; posn < 16; ++posn) {
+        uint8_t value = ((const uint8_t *)Y)[posn];
+        for (uint8_t bit = 0; bit < 8; ++bit, value <<= 1) {
+            /* Extract the high bit of "value" and turn it into a mask */
+            uint64_t mask = (~((uint64_t)(value >> 7))) + 1;
+
+            /* XOR V with Z if the bit is 1 */
+            Z0 ^= (V0 & mask);
+            Z1 ^= (V1 & mask);
+
+            /* Rotate V right by 1 bit */
+            mask = ((~(V1 & 0x01)) + 1) & 0xE100000000000000ULL;
+            V1 = (V1 >> 1) | (V0 << 63);
+            V0 = (V0 >> 1) ^ mask;
+        }
+    }
+
+    /* We have finished the block so copy Z into Y and byte-swap */
+    Y[0] = swapEndian(Z0);
+    Y[1] = swapEndian(Z1);
+}
+
+#else /* GHASH_WORD32 */
+
+/* Default 32-bit version of GHASH */
+
 static uint32_t swapEndian(uint32_t x)
 {
 #if __BYTE_ORDER == __BIG_ENDIAN
@@ -99,6 +163,8 @@ static void GF128_mul(uint32_t Y[4], const uint32_t H[4])
     Y[2] = swapEndian(Z2);
     Y[3] = swapEndian(Z3);
 }
+
+#endif /* GHASH_WORD32 */
 
 void ghash_reset(ghash_state *state, const void *key)
 {

@@ -26,11 +26,27 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#if __WORDSIZE == 64 && !defined(GHASH_WORD64)
+#define GHASH_WORD64 1
+#endif
+
+#if defined(GHASH_WORD64)
+
+typedef struct {
+    uint64_t H[2];
+    uint64_t Y[2];
+    uint8_t posn;
+} ghash_state;
+
+#else
+
 typedef struct {
     uint32_t H[4];
     uint32_t Y[4];
     uint8_t posn;
 } ghash_state;
+
+#endif
 
 void ghash_reset(ghash_state *state, const void *key);
 void ghash_update(ghash_state *state, const void *data, size_t len);
