@@ -184,7 +184,7 @@ int echo_load_public_key(const char *filename, uint8_t *key, size_t len)
     FILE *file = fopen(filename, "rb");
     uint32_t group = 0;
     size_t group_size = 0;
-    uint32_t digit;
+    uint32_t digit = 0;
     size_t posn = 0;
     int ch;
     if (len > MAX_DH_KEY_LEN) {
