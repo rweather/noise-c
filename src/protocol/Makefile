@@ -46,10 +46,12 @@ BACKEND_REF_SOURCES = \
 	$(SRCDIR)/backend/ref/hash-sha512.c \
 	$(SRCDIR)/backend/ref/sign-ed25519.c
 
+#	$(SRCDIR)/crypto/blake2/blake2s-ref.c \
+
 CRYPTO_REF_SOURCES = \
 	$(SRCDIR)/crypto/aes/rijndael-alg-fst.c \
-	$(SRCDIR)/crypto/blake2/blake2s-ref.c \
-	$(SRCDIR)/crypto/blake2/blake2b-ref.c \
+	$(SRCDIR)/crypto/blake2/blake2s.c \
+	$(SRCDIR)/crypto/blake2/blake2b.c \
 	$(SRCDIR)/crypto/chacha/chacha.c \
 	$(SRCDIR)/crypto/curve448/curve448.c \
 	$(SRCDIR)/crypto/donna/poly1305-donna.c \

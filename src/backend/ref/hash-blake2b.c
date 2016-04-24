@@ -21,31 +21,31 @@
  */
 
 #include "internal.h"
-#include "crypto/blake2/blake2.h"
+#include "crypto/blake2/blake2b.h"
 
 typedef struct
 {
     struct NoiseHashState_s parent;
-    blake2b_state blake2;
+    BLAKE2b_context_t blake2;
 
 } NoiseBLAKE2bState;
 
 static void noise_blake2b_reset(NoiseHashState *state)
 {
     NoiseBLAKE2bState *st = (NoiseBLAKE2bState *)state;
-    blake2b_init(&(st->blake2), BLAKE2B_OUTBYTES);
+    BLAKE2b_reset(&(st->blake2));
 }
 
 static void noise_blake2b_update(NoiseHashState *state, const uint8_t *data, size_t len)
 {
     NoiseBLAKE2bState *st = (NoiseBLAKE2bState *)state;
-    blake2b_update(&(st->blake2), data, len);
+    BLAKE2b_update(&(st->blake2), data, len);
 }
 
 static void noise_blake2b_finalize(NoiseHashState *state, uint8_t *hash)
 {
     NoiseBLAKE2bState *st = (NoiseBLAKE2bState *)state;
-    blake2b_final(&(st->blake2), hash, BLAKE2B_OUTBYTES);
+    BLAKE2b_finish(&(st->blake2), hash);
 }
 
 NoiseHashState *noise_blake2b_new(void)

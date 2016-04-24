@@ -20,44 +20,31 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/blake2/blake2s.h"
+#ifndef BLAKE2b_H
+#define BLAKE2b_H
+
+#include <stdint.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct
 {
-    struct NoiseHashState_s parent;
-    BLAKE2s_context_t blake2;
+    uint64_t h[8];
+    uint8_t  m[128];
+    uint64_t length;    /* Limited to 2^64 - 1 bytes */
+    uint8_t  posn;
 
-} NoiseBLAKE2sState;
+} BLAKE2b_context_t;
 
-static void noise_blake2s_reset(NoiseHashState *state)
-{
-    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
-    BLAKE2s_reset(&(st->blake2));
-}
+void BLAKE2b_reset(BLAKE2b_context_t *context);
+void BLAKE2b_update(BLAKE2b_context_t *context, const void *data, size_t size);
+void BLAKE2b_finish(BLAKE2b_context_t *context, uint8_t *hash);
 
-static void noise_blake2s_update(NoiseHashState *state, const uint8_t *data, size_t len)
-{
-    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
-    BLAKE2s_update(&(st->blake2), data, len);
-}
+#ifdef __cplusplus
+};
+#endif
 
-static void noise_blake2s_finalize(NoiseHashState *state, uint8_t *hash)
-{
-    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
-    BLAKE2s_finish(&(st->blake2), hash);
-}
-
-NoiseHashState *noise_blake2s_new(void)
-{
-    NoiseBLAKE2sState *state = noise_new(NoiseBLAKE2sState);
-    if (!state)
-        return 0;
-    state->parent.hash_id = NOISE_HASH_BLAKE2s;
-    state->parent.hash_len = 32;
-    state->parent.block_len = 64;
-    state->parent.reset = noise_blake2s_reset;
-    state->parent.update = noise_blake2s_update;
-    state->parent.finalize = noise_blake2s_finalize;
-    return &(state->parent);
-}
+#endif

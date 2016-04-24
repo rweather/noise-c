@@ -13,16 +13,18 @@ chacha:
     Implementation specific to this distribution.  Supports plain C and SSE2.
     MIT license
 
-BLAKE2:
-    https://github.com/BLAKE2/BLAKE2.git
-    License: CC0, the OpenSSL, or the Apache Public License 2.0
+blake2:
+    Implementation of BLAKE2 from arduinolibs.  SSE2 support added to BLAKE2s.
+    https://github.com/rweather/arduinolibs
+    MIT license
 
 AES:
     http://web.cs.ucdavis.edu/~rogaway/ocb/ocb-ref/
     Public domain code from the original Rijndael authors.
 
 sha2:
-    Plain C implementation, MIT license
+    Plain C implementation specific to this distribution.
+    MIT license
 
 ghash:
     Implementation of GHASH from arduinolibs to support GCM.

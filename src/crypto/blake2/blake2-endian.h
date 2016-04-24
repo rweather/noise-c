@@ -20,44 +20,25 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/blake2/blake2s.h"
+#ifndef __BLAKE2_ENDIAN_H__
+#define __BLAKE2_ENDIAN_H__
 
-typedef struct
-{
-    struct NoiseHashState_s parent;
-    BLAKE2s_context_t blake2;
+#if defined(__WIN32__) || defined(WIN32)
+#ifndef __BIG_ENDIAN
+#define __BIG_ENDIAN 4321
+#endif
+#ifndef __LITTLE_ENDIAN
+#define __LITTLE_ENDIAN 1234
+#endif
+#ifndef __BYTE_ORDER
+#define __BYTE_ORDER __LITTLE_ENDIAN
+#endif
+#else
+#include <endian.h>
+#endif
 
-} NoiseBLAKE2sState;
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+#define BLAKE2_LITTLE_ENDIAN 1
+#endif
 
-static void noise_blake2s_reset(NoiseHashState *state)
-{
-    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
-    BLAKE2s_reset(&(st->blake2));
-}
-
-static void noise_blake2s_update(NoiseHashState *state, const uint8_t *data, size_t len)
-{
-    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
-    BLAKE2s_update(&(st->blake2), data, len);
-}
-
-static void noise_blake2s_finalize(NoiseHashState *state, uint8_t *hash)
-{
-    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
-    BLAKE2s_finish(&(st->blake2), hash);
-}
-
-NoiseHashState *noise_blake2s_new(void)
-{
-    NoiseBLAKE2sState *state = noise_new(NoiseBLAKE2sState);
-    if (!state)
-        return 0;
-    state->parent.hash_id = NOISE_HASH_BLAKE2s;
-    state->parent.hash_len = 32;
-    state->parent.block_len = 64;
-    state->parent.reset = noise_blake2s_reset;
-    state->parent.update = noise_blake2s_update;
-    state->parent.finalize = noise_blake2s_finalize;
-    return &(state->parent);
-}
+#endif
