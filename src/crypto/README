@@ -10,10 +10,8 @@ poly1305-donna:
     MIT license / public domain
 
 chacha:
-    Based on the reference code from D.J. Bernstein with modifications to
-    use 20 rounds and to have a better API that is compatible with OpenBSD's:
-    https://cr.yp.to/streamciphers/timings/estreambench/submissions/salsa20/chacha8/merged/chacha.c
-    Public domain
+    Implementation specific to this distribution.  Supports plain C and SSE2.
+    MIT license
 
 BLAKE2:
     https://github.com/BLAKE2/BLAKE2.git
