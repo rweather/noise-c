@@ -25,8 +25,8 @@
 
 /* We use ed25519's faster curved25519_scalarmult_basepoint() function
    when deriving a public key from a private key.  Unfortunately ed25519
-   doesn't have an equivalent function for general Curve25519 calculations
-   so we fall back to the donna implementation for that. */
+   doesn't have an equivalent function for general curve25519 calculations
+   so we fall back to the curve25519-donna implementation for that. */
 
 int curve25519_donna(uint8_t *mypublic, const uint8_t *secret, const uint8_t *basepoint);
 
@@ -103,3 +103,10 @@ NoiseDHState *noise_curve25519_new(void)
     state->parent.calculate = noise_curve25519_calculate;
     return &(state->parent);
 }
+
+/* Choose the version of curve25519-donna based on the word size */
+#if __WORDSIZE == 64 && defined(__GNUC__)
+#include "crypto/donna/curve25519-donna-c64.c"
+#else
+#include "crypto/donna/curve25519-donna.c"
+#endif

@@ -53,7 +53,6 @@ CRYPTO_REF_SOURCES = \
 	$(SRCDIR)/crypto/chacha/chacha.c \
 	$(SRCDIR)/crypto/curve448/curve448.c \
 	$(SRCDIR)/crypto/donna/poly1305-donna.c \
-	$(SRCDIR)/crypto/donna/curve25519-donna.c \
 	$(SRCDIR)/crypto/ghash/ghash.c \
 	$(SRCDIR)/crypto/sha2/sha256.c \
 	$(SRCDIR)/crypto/sha2/sha512.c \
