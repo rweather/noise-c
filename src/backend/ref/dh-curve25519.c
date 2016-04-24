@@ -21,6 +21,12 @@
  */
 
 #include "internal.h"
+#include "crypto/ed25519/ed25519.h"
+
+/* We use ed25519's faster curved25519_scalarmult_basepoint() function
+   when deriving a public key from a private key.  Unfortunately ed25519
+   doesn't have an equivalent function for general Curve25519 calculations
+   so we fall back to the donna implementation for that. */
 
 int curve25519_donna(uint8_t *mypublic, const uint8_t *secret, const uint8_t *basepoint);
 
@@ -32,16 +38,13 @@ typedef struct
 
 } NoiseCurve25519State;
 
-/* Curve25519 base point from RFC 7748, 9 in little-endian order */
-static uint8_t const basepoint[32] = {9};
-
 static void noise_curve25519_generate_keypair(NoiseDHState *state)
 {
     NoiseCurve25519State *st = (NoiseCurve25519State *)state;
     noise_rand_bytes(st->private_key, 32);
     st->private_key[0] &= 0xF8;
     st->private_key[31] = (st->private_key[31] & 0x7F) | 0x40;
-    curve25519_donna(st->public_key, st->private_key, basepoint);
+    curved25519_scalarmult_basepoint(st->public_key, st->private_key);
 }
 
 static int noise_curve25519_validate_keypair
@@ -51,7 +54,7 @@ static int noise_curve25519_validate_keypair
     /* Check that the public key actually corresponds to the private key */
     uint8_t temp[32];
     int equal;
-    curve25519_donna(temp, private_key, basepoint);
+    curved25519_scalarmult_basepoint(temp, private_key);
     equal = noise_is_equal(temp, public_key, 32);
     return NOISE_ERROR_INVALID_PUBLIC_KEY & (equal - 1);
 }
@@ -67,7 +70,7 @@ static int noise_curve25519_derive_public_key
         (const NoiseDHState *state, const uint8_t *private_key,
          uint8_t *public_key)
 {
-    curve25519_donna(public_key, private_key, basepoint);
+    curved25519_scalarmult_basepoint(public_key, private_key);
     return NOISE_ERROR_NONE;
 }
 
