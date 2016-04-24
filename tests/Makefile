@@ -1,7 +1,7 @@
 
 .PHONY: all clean check
 
-SUBDIRS = unit vector
+SUBDIRS = unit vector performance
 
 all:
 	@for dir in $(SUBDIRS) ; do \
