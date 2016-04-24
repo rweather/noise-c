@@ -7,7 +7,7 @@ SRCDIR = .
 TEST_APP = test-performance
 
 CPPFLAGS = -I$(TOPDIR)/include
-CFLAGS = -g -Wall $(CPPFLAGS)
+CFLAGS = -g -O2 -Wall $(CPPFLAGS)
 LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 
 SOURCES = \

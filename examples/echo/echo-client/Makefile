@@ -7,7 +7,7 @@ SRCDIR = ..
 TEST_APP = echo-client
 
 CPPFLAGS = -I$(TOPDIR)/include -I$(SRCDIR)/echo-server
-CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
+CFLAGS = -std=c99 -g -O2 -Wall $(CPPFLAGS)
 LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 
 SOURCES = \

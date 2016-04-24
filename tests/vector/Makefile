@@ -8,7 +8,7 @@ TEST_APP = test-vector
 TEST_VECTORS = $(SRCDIR)/cacophony.txt
 
 CPPFLAGS = -I$(TOPDIR)/include -I$(TOPDIR)/src
-CFLAGS = -std=c99 -g -Wall $(CPPFLAGS)
+CFLAGS = -std=c99 -g -O2 -Wall $(CPPFLAGS)
 LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 
 SOURCES = \
