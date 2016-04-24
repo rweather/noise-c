@@ -208,6 +208,106 @@ static void perf_dh_calculate(int id)
     noise_dhstate_free(dh2);
 }
 
+/* Measure the performance of a signing primitive when deriving keys */
+static void perf_sign_derive(int id)
+{
+    char name[64];
+    NoiseSignState *sign;
+    uint8_t private_key[64];
+    size_t key_len;
+    timestamp_t start, end;
+    int count;
+    double elapsed;
+
+    if (noise_signstate_new_by_id(&sign, id) != NOISE_ERROR_NONE)
+        return;
+    key_len = noise_signstate_get_private_key_length(sign);
+
+    memset(private_key, 0xAA, sizeof(private_key));
+    start = current_timestamp();
+    for (count = 0; count < DH_COUNT; ++count)
+        noise_signstate_set_keypair_private(sign, private_key, key_len);
+    end = current_timestamp();
+
+    elapsed = elapsed_to_seconds(start, end) / (double)DH_COUNT;
+    snprintf(name, sizeof(name), "%s derive key",
+             noise_id_to_name(NOISE_SIGN_CATEGORY, id));
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
+
+    noise_signstate_free(sign);
+}
+
+/* Measure the performance of a signing primitive when signing messages */
+static void perf_sign_sign(int id)
+{
+    char name[64];
+    NoiseSignState *sign;
+    uint8_t private_key[56];
+    uint8_t message[32];
+    uint8_t sig[56 * 2];
+    size_t key_len;
+    size_t sig_len;
+    timestamp_t start, end;
+    int count;
+    double elapsed;
+
+    if (noise_signstate_new_by_id(&sign, id) != NOISE_ERROR_NONE)
+        return;
+    key_len = noise_signstate_get_private_key_length(sign);
+    sig_len = noise_signstate_get_signature_length(sign);
+    memset(private_key, 0xAA, sizeof(private_key));
+    noise_signstate_set_keypair_private(sign, private_key, key_len);
+    memset(message, 0x66, sizeof(message));
+
+    start = current_timestamp();
+    for (count = 0; count < DH_COUNT; ++count)
+        noise_signstate_sign(sign, message, sizeof(message), sig, sig_len);
+    end = current_timestamp();
+
+    elapsed = elapsed_to_seconds(start, end) / (double)DH_COUNT;
+    snprintf(name, sizeof(name), "%s sign",
+             noise_id_to_name(NOISE_SIGN_CATEGORY, id));
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
+
+    noise_signstate_free(sign);
+}
+
+/* Measure the performance of a signing primitive when verifying messages */
+static void perf_sign_verify(int id)
+{
+    char name[64];
+    NoiseSignState *sign;
+    uint8_t private_key[56];
+    uint8_t message[32];
+    uint8_t sig[56 * 2];
+    size_t key_len;
+    size_t sig_len;
+    timestamp_t start, end;
+    int count;
+    double elapsed;
+
+    if (noise_signstate_new_by_id(&sign, id) != NOISE_ERROR_NONE)
+        return;
+    key_len = noise_signstate_get_private_key_length(sign);
+    sig_len = noise_signstate_get_signature_length(sign);
+    memset(private_key, 0xAA, sizeof(private_key));
+    noise_signstate_set_keypair_private(sign, private_key, key_len);
+    memset(message, 0x66, sizeof(message));
+    noise_signstate_sign(sign, message, sizeof(message), sig, sig_len);
+
+    start = current_timestamp();
+    for (count = 0; count < DH_COUNT; ++count)
+        noise_signstate_verify(sign, message, sizeof(message), sig, sig_len);
+    end = current_timestamp();
+
+    elapsed = elapsed_to_seconds(start, end) / (double)DH_COUNT;
+    snprintf(name, sizeof(name), "%s verify",
+             noise_id_to_name(NOISE_SIGN_CATEGORY, id));
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
+
+    noise_signstate_free(sign);
+}
+
 int main(int argc, char *argv[])
 {
     /* Print the header */
@@ -229,11 +329,16 @@ int main(int argc, char *argv[])
 
     /* Measure the performance of the DH primitives */
     printf("\n");
-    printf("DH algorithm         ops/sec         MD5 units\n");
+    printf("Pubkey algorithm     ops/sec         MD5 units\n");
     perf_dh_derive(NOISE_DH_CURVE25519);
     perf_dh_derive(NOISE_DH_CURVE448);
     perf_dh_calculate(NOISE_DH_CURVE25519);
     perf_dh_calculate(NOISE_DH_CURVE448);
+
+    /* Measure the performance of the signing primitives */
+    perf_sign_derive(NOISE_SIGN_ED25519);
+    perf_sign_sign(NOISE_SIGN_ED25519);
+    perf_sign_verify(NOISE_SIGN_ED25519);
 
     /* Done */
     return 0;
