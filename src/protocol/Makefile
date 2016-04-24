@@ -7,7 +7,7 @@ SRCDIR = $(TOPDIR)/src
 LIBRARY = libnoiseprotocol.a
 
 # Definitions for Ed448-Goldilocks (Curve448 reference implementation)
-GOLDILOCKS_ARCH = arch_32
+GOLDILOCKS_ARCH = arch_ref64
 GOLDILOCKS_SRCDIR = $(SRCDIR)/crypto/goldilocks/src
 GOLDILOCKS_CPPFLAGS = \
 	-I$(GOLDILOCKS_SRCDIR)/include \
