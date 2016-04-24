@@ -5,9 +5,20 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#if defined(__SSE2__) && defined(__GNUC__) && __GNUC__ >= 4
+#define USE_VECTOR_MATH 1
+typedef uint32_t VectorUInt32 __attribute__((__vector_size__(16)));
+#else
+#undef USE_VECTOR_MATH
+#endif
+
 typedef struct
 {
+#ifdef USE_VECTOR_MATH
+    VectorUInt32 input[4];
+#else
     uint32_t input[16];
+#endif
 
 } chacha_ctx;
 
