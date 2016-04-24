@@ -165,7 +165,7 @@ static void perf_dh_derive(int id)
     elapsed = elapsed_to_seconds(start, end) / (double)DH_COUNT;
     snprintf(name, sizeof(name), "%s derive key",
              noise_id_to_name(NOISE_DH_CATEGORY, id));
-    printf("%-20s%8.2f\n", name, 1.0 / elapsed);
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
 
     noise_dhstate_free(dh);
 }
@@ -202,7 +202,7 @@ static void perf_dh_calculate(int id)
     elapsed = elapsed_to_seconds(start, end) / (double)DH_COUNT;
     snprintf(name, sizeof(name), "%s calculate",
              noise_id_to_name(NOISE_DH_CATEGORY, id));
-    printf("%-20s%8.2f\n", name, 1.0 / elapsed);
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
 
     noise_dhstate_free(dh1);
     noise_dhstate_free(dh2);
@@ -229,7 +229,7 @@ int main(int argc, char *argv[])
 
     /* Measure the performance of the DH primitives */
     printf("\n");
-    printf("DH algorithm         ops/sec\n");
+    printf("DH algorithm         ops/sec         MD5 units\n");
     perf_dh_derive(NOISE_DH_CURVE25519);
     perf_dh_derive(NOISE_DH_CURVE448);
     perf_dh_calculate(NOISE_DH_CURVE25519);
