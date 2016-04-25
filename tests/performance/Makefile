@@ -10,6 +10,10 @@ CPPFLAGS = -I$(TOPDIR)/include
 CFLAGS = -g -O2 -Wall $(CPPFLAGS)
 LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 
+ifeq (,$(findstring mingw32,$(CC)))
+    LDFLAGS += -lrt
+endif
+
 SOURCES = \
 	test-performance.c \
 	md5.c

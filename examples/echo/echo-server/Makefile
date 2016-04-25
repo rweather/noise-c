@@ -10,6 +10,10 @@ CPPFLAGS = -I$(TOPDIR)/include
 CFLAGS = -std=c99 -g -O2 -Wall $(CPPFLAGS)
 LDFLAGS = -L$(TOPDIR)/src/protocol -lnoiseprotocol
 
+ifneq (,$(findstring mingw32,$(CC)))
+    LDFLAGS += -lws2_32
+endif
+
 SOURCES = \
 	echo-server.c \
 	echo-common.c

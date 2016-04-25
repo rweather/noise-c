@@ -24,6 +24,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#if defined(__WIN32__) || defined(WIN32)
+#include <winsock2.h>
+typedef int socklen_t;
+typedef BOOL sockopt_type;
+#define MSG_NOSIGNAL 0
+#else
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -35,6 +41,9 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <errno.h>
+#define closesocket(x)  close((x))
+typedef int sockopt_type;
+#endif
 
 int echo_verbose = 0;
 
@@ -258,7 +267,7 @@ int echo_connect(const char *hostname, int port)
     struct sockaddr_in addr;
     struct hostent *ent;
     int fd;
-    int opt;
+    sockopt_type opt;
 
     /* Look up the address of the remote party (IPv4 only at present) */
     memset(&addr, 0, sizeof(addr));
@@ -281,25 +290,29 @@ int echo_connect(const char *hostname, int port)
         return -1;
     }
     opt = 1;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt)) < 0) {
+    if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const void *)&opt, sizeof(opt)) < 0) {
         perror("setsockopt TCP_NODELAY");
-        close(fd);
+        closesocket(fd);
         return -1;
     }
 
     /* Connect to the remote party */
     if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("connect");
-        close(fd);
+        closesocket(fd);
         return -1;
     }
     return fd;
 }
 
+#if !(defined(__WIN32__) || defined(WIN32))
+
 static void sigchld_handler(int sig)
 {
     /* Nothing to do here */
 }
+
+#endif
 
 /* Accepts an incoming connection from an echo client.  Returns the file
    descriptor of the socket to use to communicate with the client.
@@ -311,14 +324,14 @@ int echo_accept(int port)
 {
     int listen_fd;
     int accept_fd;
-    int opt;
-    int status;
+    sockopt_type opt;
     struct sockaddr_in addr;
     socklen_t addrlen;
-    pid_t pid;
 
+#if !(defined(__WIN32__) || defined(WIN32))
     /* We will need SIGCHLD signals to clean up child processes */
     signal(SIGCHLD, sigchld_handler);
+#endif
 
     /* Create the listening socket and bind it to the port */
     listen_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -327,9 +340,9 @@ int echo_accept(int port)
         exit(1);
     }
     opt = 1;
-    if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+    if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, (const void *)&opt, sizeof(opt)) < 0) {
         perror("setsockopt SO_REUSEADDR");
-        close(listen_fd);
+        closesocket(listen_fd);
         exit(1);
     }
     memset(&addr, 0, sizeof(addr));
@@ -338,12 +351,12 @@ int echo_accept(int port)
     addr.sin_port = htons(port);
     if (bind(listen_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         perror("bind");
-        close(listen_fd);
+        closesocket(listen_fd);
         exit(1);
     }
     if (listen(listen_fd, 5) < 0) {
         perror("listen");
-        close(listen_fd);
+        closesocket(listen_fd);
         exit(1);
     }
 
@@ -353,39 +366,51 @@ int echo_accept(int port)
         memset(&addr, 0, sizeof(addr));
         addrlen = sizeof(addr);
         accept_fd = accept(listen_fd, (struct sockaddr *)&addr, &addrlen);
+#if defined(__WIN32__) || defined(WIN32)
+        if (accept_fd >= 0) {
+            /* Win32 doesn't have a direct equivalent to fork so merely
+               close the listening socket and return.  This means that
+               the server can only handle a single connection on Win32.
+               Fix this later by using threads to handle clients instead. */
+            closesocket(listen_fd);
+            break;
+        }
+#else
         if (accept_fd >= 0) {
             /* Fork and return the new socket in the child */
-            pid = fork();
+            pid_t pid = fork();
             if (pid < 0) {
                 perror("fork");
-                close(accept_fd);
-                close(listen_fd);
+                closesocket(accept_fd);
+                closesocket(listen_fd);
                 exit(1);
             } else if (pid == 0) {
                 /* In the child process */
-                close(listen_fd);
+                closesocket(listen_fd);
                 break;
             } else {
                 /* In the parent process */
-                close(accept_fd);
+                closesocket(accept_fd);
             }
         } else if (errno == EINTR) {
             /* Interrupted by a system call.  This is probably due to a
                child process terminating.  Clean up any waiting children. */
+            int status;
             while (waitpid(-1, &status, WNOHANG) >= 0)
                 ;   /* Do nothing */
         } else {
             perror("accept");
-            close(listen_fd);
+            closesocket(listen_fd);
             exit(1);
         }
+#endif
     }
 
     /* Add some useful options to the incoming socket and then return */
     opt = 1;
-    if (setsockopt(accept_fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt)) < 0) {
+    if (setsockopt(accept_fd, IPPROTO_TCP, TCP_NODELAY, (const void *)&opt, sizeof(opt)) < 0) {
         perror("setsockopt TCP_NODELAY");
-        close(accept_fd);
+        closesocket(accept_fd);
         exit(1);
     }
     return accept_fd;
@@ -409,12 +434,16 @@ static int echo_recv_exact_internal(int fd, uint8_t *packet, size_t len)
 {
     size_t received = 0;
     while (len > 0) {
-        int size = recv(fd, packet, len, 0);
+        int size = recv(fd, (void *)packet, len, 0);
         if (size < 0) {
+#if defined(__WIN32__) || defined(WIN32)
+            return 0;
+#else
             if (errno == EINTR || errno == EAGAIN)
                 continue;
             perror("recv");
             return 0;
+#endif
         } else if (size == 0) {
             return 0;
         } else {
@@ -468,8 +497,11 @@ int echo_send(int fd, const uint8_t *packet, size_t len)
     int size;
     if (echo_verbose)
         echo_print_packet("Tx", packet, len);
-    while ((size = send(fd, packet, len, MSG_NOSIGNAL)) != (int)len) {
+    while ((size = send(fd, (const void *)packet, len, MSG_NOSIGNAL)) != (int)len) {
         if (size < 0) {
+#if defined(__WIN32__) || defined(WIN32)
+            return 0;
+#else
             if (errno == EINTR || errno == EAGAIN) {
                 continue;
             } else if (errno == EPIPE || errno == ECONNRESET) {
@@ -478,6 +510,7 @@ int echo_send(int fd, const uint8_t *packet, size_t len)
                 perror("send");
                 return 0;
             }
+#endif
         } else {
             packet += size;
             len -= size;
@@ -489,5 +522,5 @@ int echo_send(int fd, const uint8_t *packet, size_t len)
 /* Closes a socket */
 void echo_close(int fd)
 {
-    close(fd);
+    closesocket(fd);
 }

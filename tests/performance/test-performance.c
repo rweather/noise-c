@@ -34,6 +34,9 @@
 #include <string.h>
 #include <time.h>
 #include "md5.h"
+#if defined(__WIN32__) || defined(WIN32)
+#include <windows.h>
+#endif
 
 #define BLOCK_SIZE      1024
 #define BLOCKS_PER_MB   1024
@@ -43,6 +46,20 @@
 typedef uint64_t timestamp_t;
 
 static double units;
+
+#if defined(__WIN32__) || defined(WIN32)
+
+static timestamp_t current_timestamp(void)
+{
+    return GetTickCount();
+}
+
+static double elapsed_to_seconds(timestamp_t start, timestamp_t end)
+{
+    return (end - start) / 1000.0;
+}
+
+#else
 
 static timestamp_t current_timestamp(void)
 {
@@ -55,6 +72,8 @@ static double elapsed_to_seconds(timestamp_t start, timestamp_t end)
 {
     return (end - start) / 1000000000.0;
 }
+
+#endif
 
 /* Calibrates the performance measurements to determine the "MD5 unit" */
 static void calibrate_md5(void)
