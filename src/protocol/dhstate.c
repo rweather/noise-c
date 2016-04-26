@@ -649,4 +649,77 @@ int noise_dhstate_calculate
     return err;
 }
 
+/**
+ * \brief Copies the keys from one DHState object to another.
+ *
+ * \param state The DHState to copy into.
+ * \param from The DHState to copy from.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a from is NULL.
+ * \return NOISE_ERROR_NOT_APPLICABLE if \a from does not have the same
+ * key type identifier as \a state.
+ */
+int noise_dhstate_copy(NoiseDHState *state, const NoiseDHState *from)
+{
+    /* Validate the parameters */
+    if (!state || !from)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->dh_id != from->dh_id)
+        return NOISE_ERROR_NOT_APPLICABLE;
+
+    /* Copy the key information across */
+    if (state != from) {
+        state->key_type = from->key_type;
+        memcpy(state->private_key, from->private_key, from->private_key_len);
+        memcpy(state->public_key, from->public_key, from->public_key_len);
+    }
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Formats the public key fingerprint for the key within a DHState.
+ *
+ * \param state The DHState object.
+ * \param fingerprint_type The type of fingerprint to format,
+ * NOISE_FINGERPRINT_BASIC or NOISE_FINGERPRINT_FULL.
+ * \param buffer The buffer to write the fingerprint string to, including a
+ * terminating NUL.
+ * \param len The length of \a buffer in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a buffer is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a fingerprint_type is not a
+ * supported fingerprint type.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a len is not large enough to
+ * hold the entire fingerprint string.
+ * \return NOISE_ERROR_INVALID_STATE if a public key has not been set
+ * on \a state yet.
+ *
+ * Fingerprints are created by hashing the public key with SHA256 and
+ * then formatting the value in hexadecimal with bytes separated by colons.
+ * If the \a fingerprint_type is NOISE_FINGERPRINT_BASIC, then the SHA256
+ * hash value is truncated to the first 16 bytes.  If the type is
+ * NOISE_FINGERPRINT_FULL, then the entire 32 byte hash value is formatted.
+ */
+int noise_dhstate_format_fingerprint
+    (const NoiseDHState *state, int fingerprint_type, char *buffer, size_t len)
+{
+    /* Validate the parameters */
+    if (!buffer)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (!len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    *buffer = '\0'; /* In case we bail out with an error later */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (state->key_type == NOISE_KEY_TYPE_NO_KEY)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Format the fingerprint */
+    return noise_format_fingerprint
+        (fingerprint_type, buffer, len,
+         state->public_key, state->public_key_len);
+}
+
 /**@}*/

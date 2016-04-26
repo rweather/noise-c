@@ -61,6 +61,10 @@ int noise_signstate_sign
 int noise_signstate_verify
     (const NoiseSignState *state, const uint8_t *message, size_t message_len,
      const uint8_t *signature, size_t signature_len);
+int noise_signstate_copy(NoiseSignState *state, const NoiseSignState *from);
+int noise_signstate_format_fingerprint
+    (const NoiseSignState *state, int fingerprint_type,
+     char *buffer, size_t len);
 
 #ifdef __cplusplus
 };

@@ -61,6 +61,9 @@ int noise_dhstate_calculate
     (const NoiseDHState *private_key_state,
      const NoiseDHState *public_key_state,
      uint8_t *shared_key, size_t shared_key_len);
+int noise_dhstate_copy(NoiseDHState *state, const NoiseDHState *from);
+int noise_dhstate_format_fingerprint
+    (const NoiseDHState *state, int fingerprint_type, char *buffer, size_t len);
 
 #ifdef __cplusplus
 };

@@ -368,6 +368,31 @@
 /**@}*/
 
 /**
+ * \defgroup fingerprint_types Fingerprint types
+ */
+/**@{*/
+
+/**
+ * \def NOISE_FINGERPRINT_BASIC
+ * \brief Fingerprint format is the hexadecimal encoding of the first
+ * 16 bytes of the SHA256 hash of the public key.
+ */
+
+/**
+ * \def NOISE_FINGERPRINT_FULL
+ * \brief Fingerprint format is the hexadecimal encoding of the entire
+ * 32 bytes of the SHA256 hash of the public key.
+ */
+
+/**
+ * \def NOISE_MAX_FINGERPRINT_LEN
+ * \brief Recommended maximum size for buffers to be passed to
+ * noise_format_fingerprint(), noise_dhstate_format_fingerprint(), etc.
+ */
+
+/**@}*/
+
+/**
  * \defgroup errors Error codes
  */
 /**@{*/

@@ -21,6 +21,7 @@
  */
 
 #include "internal.h"
+#include "crypto/sha2/sha256.h"
 #include <stdlib.h>
 
 /**
@@ -166,6 +167,78 @@ int noise_is_zero(const void *data, size_t size)
         --size;
     }
     return (0x0100 - (int)temp) >> 8;
+}
+
+/**
+ * \brief Formats the fingerprint for a raw public key value.
+ *
+ * \param fingerprint_type The type of fingerprint to format,
+ * NOISE_FINGERPRINT_BASIC or NOISE_FINGERPRINT_FULL.
+ * \param buffer The buffer to write the fingerprint string to, including a
+ * terminating NUL.
+ * \param len The length of \a buffer in bytes.
+ * \param public_key Points to the public key to be formatted.
+ * \param public_key_len Length of the \a public_key in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a buffer or \a public_key is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a fingerprint_type is not a
+ * supported fingerprint type.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a len is not large enough to
+ * hold the entire fingerprint string.
+ *
+ * This is a low-level formatting function.  It is usually better to
+ * call one of noise_dhstate_format_fingerprint(),
+ * noise_signstate_format_fingerprint(), or noise_keystate_format_fingerprint()
+ * instead.
+ */
+int noise_format_fingerprint
+    (int fingerprint_type, char *buffer, size_t len,
+     const uint8_t *public_key, size_t public_key_len)
+{
+    static char const hexchars[] = "0123456789abcdef";
+    sha256_context_t sha256;
+    uint8_t hash[32];
+    size_t f_len;
+    size_t posn;
+
+    /* Validate the parameters */
+    if (!buffer)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (!len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    *buffer = '\0'; /* In case we bail out with an error later */
+    if (!public_key)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Validate the fingerprint type and get the desired length */
+    if (fingerprint_type == NOISE_FINGERPRINT_BASIC)
+        f_len = 16;
+    else if (fingerprint_type == NOISE_FINGERPRINT_FULL)
+        f_len = 32;
+    else
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Check the length of the buffer */
+    if ((f_len * 3) > len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Hash the public key with SHA256 */
+    sha256_reset(&sha256);
+    sha256_update(&sha256, public_key, public_key_len);
+    sha256_finish(&sha256, hash);
+    noise_clean(&sha256, sizeof(sha256));
+
+    /* Format the fingerprint in hexadecimal within the buffer */
+    for (posn = 0; posn < f_len; ++posn) {
+        uint8_t byte = hash[posn];
+        buffer[posn * 3] = hexchars[(byte >> 4) & 0x0F];
+        buffer[posn * 3 + 1] = hexchars[byte & 0x0F];
+        buffer[posn * 3 + 2] = ':';
+    }
+    buffer[f_len * 3 - 1] = '\0';
+    noise_clean(hash, sizeof(hash));
+    return NOISE_ERROR_NONE;
 }
 
 /**@}*/

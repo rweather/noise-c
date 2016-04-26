@@ -98,6 +98,10 @@ extern "C" {
 #define NOISE_PADDING_ZERO              NOISE_ID('G', 1)
 #define NOISE_PADDING_RANDOM            NOISE_ID('G', 2)
 
+/* Key fingerprint types */
+#define NOISE_FINGERPRINT_BASIC         NOISE_ID('F', 1)
+#define NOISE_FINGERPRINT_FULL          NOISE_ID('F', 2)
+
 /* Error codes */
 #define NOISE_ERROR_NONE                0
 #define NOISE_ERROR_NO_MEMORY           NOISE_ID('E', 1)
@@ -123,6 +127,9 @@ extern "C" {
 
 /* Maximum length of a protocol name string */
 #define NOISE_MAX_PROTOCOL_NAME         128
+
+/* Recommended maximum length for fingerprint buffers */
+#define NOISE_MAX_FINGERPRINT_LEN       256
 
 #ifdef __cplusplus
 };

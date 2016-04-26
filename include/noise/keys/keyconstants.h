@@ -20,28 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_UTIL_H
-#define NOISE_UTIL_H
+#ifndef NOISE_KEYCONSTANTS_H
+#define NOISE_KEYCONSTANTS_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <noise/protocol/constants.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define noise_new(type) ((type *)noise_new_object(sizeof(type)))
-void *noise_new_object(size_t size);
-void noise_free(void *ptr, size_t size);
-
-void noise_clean(void *data, size_t size);
-
-int noise_is_equal(const void *s1, const void *s2, size_t size);
-int noise_is_zero(const void *data, size_t size);
-
-int noise_format_fingerprint
-    (int fingerprint_type, char *buffer, size_t len,
-     const uint8_t *public_key, size_t public_key_len);
+/* Key representations on secondary storage */
+#define NOISE_KEYREP_BINARY_PRIVATE     NOISE_ID('K', 1)
+#define NOISE_KEYREP_BINARY_PUBLIC      NOISE_ID('K', 2)
+#define NOISE_KEYREP_BASE64_PRIVATE     NOISE_ID('K', 3)
+#define NOISE_KEYREP_BASE64_PUBLIC      NOISE_ID('K', 4)
 
 #ifdef __cplusplus
 };
