@@ -59,6 +59,9 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     verify(!noise_dhstate_has_keypair(state1));
     verify(!noise_dhstate_has_public_key(state1));
     verify(!noise_dhstate_is_null_public_key(state1));
+    verify(private_key_len <= noise_dhstate_get_max_key_length());
+    verify(public_key_len <= noise_dhstate_get_max_key_length());
+    verify(shared_key_len <= noise_dhstate_get_max_key_length());
 
     /* Create the second DH object */
     compare(noise_dhstate_new_by_id(&state2, id), NOISE_ERROR_NONE);

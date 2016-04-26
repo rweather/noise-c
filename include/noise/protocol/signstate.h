@@ -65,6 +65,8 @@ int noise_signstate_copy(NoiseSignState *state, const NoiseSignState *from);
 int noise_signstate_format_fingerprint
     (const NoiseSignState *state, int fingerprint_type,
      char *buffer, size_t len);
+int noise_signstate_get_max_key_length(void);
+int noise_signstate_get_max_signature_length(void);
 
 #ifdef __cplusplus
 };

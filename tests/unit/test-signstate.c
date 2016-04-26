@@ -59,6 +59,9 @@ static void check_sign(int id, size_t private_key_len, size_t public_key_len,
     compare(noise_signstate_get_signature_length(state1), signature_len);
     verify(!noise_signstate_has_keypair(state1));
     verify(!noise_signstate_has_public_key(state1));
+    verify(private_key_len <= noise_signstate_get_max_key_length());
+    verify(public_key_len <= noise_signstate_get_max_key_length());
+    verify(signature_len <= noise_signstate_get_max_signature_length());
 
     /* Create a second signing object for verification */
     compare(noise_signstate_new_by_id(&state2, id), NOISE_ERROR_NONE);

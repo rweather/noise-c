@@ -524,4 +524,24 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
     return NOISE_ERROR_NONE;
 }
 
+/**
+ * \brief Gets the maximum key length for the supported algorithms.
+ *
+ * \sa noise_cipherstate_get_max_mac_length()
+ */
+int noise_cipherstate_get_max_key_length(void)
+{
+    return 32;
+}
+
+/**
+ * \brief Gets the maximum MAC length for the supported algorithms.
+ *
+ * \sa noise_cipherstate_get_max_key_length()
+ */
+int noise_cipherstate_get_max_mac_length(void)
+{
+    return 16;
+}
+
 /**@}*/

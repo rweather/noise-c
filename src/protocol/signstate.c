@@ -669,4 +669,24 @@ int noise_signstate_format_fingerprint
          state->public_key, state->public_key_len);
 }
 
+/**
+ * \brief Gets the maximum length of signing keys for the supported algorithms.
+ *
+ * \sa noise_signstate_get_max_signature_length()
+ */
+int noise_signstate_get_max_key_length(void)
+{
+    return 32;
+}
+
+/**
+ * \brief Gets the maximum length of signatures for the supported algorithms.
+ *
+ * \sa noise_signstate_get_max_key_length()
+ */
+int noise_signstate_get_max_signature_length(void)
+{
+    return 64;
+}
+
 /**@}*/

@@ -57,6 +57,8 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     compare(noise_cipherstate_get_key_length(state), key_len);
     compare(noise_cipherstate_get_mac_length(state), mac_len);
     verify(!noise_cipherstate_has_key(state));
+    verify(key_len <= noise_cipherstate_get_max_key_length());
+    verify(mac_len <= noise_cipherstate_get_max_mac_length());
 
     /* Try to encrypt.  Because the key is not set yet, this will
        return the plaintext as-is */

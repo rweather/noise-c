@@ -46,6 +46,8 @@ static void check_hash(int id, size_t hash_len, size_t block_len,
     compare(noise_hashstate_get_hash_id(state), id);
     compare(noise_hashstate_get_hash_length(state), hash_len);
     compare(noise_hashstate_get_block_length(state), block_len);
+    verify(hash_len <= noise_hashstate_get_max_hash_length());
+    verify(block_len <= noise_hashstate_get_max_block_length());
 
     /* Check hashing all data in one hit */
     memset(temp, 0xAA, sizeof(temp));

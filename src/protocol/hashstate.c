@@ -510,4 +510,24 @@ int noise_hashstate_hkdf
     return NOISE_ERROR_NONE;
 }
 
+/**
+ * \brief Gets the maximum hash length for the supported algorithms.
+ *
+ * \sa noise_hashstate_get_max_block_length()
+ */
+int noise_hashstate_get_max_hash_length(void)
+{
+    return NOISE_MAX_HASHLEN;
+}
+
+/**
+ * \brief Gets the maximum block length for the supported algorithms.
+ *
+ * \sa noise_hashstate_get_max_hash_length()
+ */
+int noise_hashstate_get_max_block_length(void)
+{
+    return 128;
+}
+
 /**@}*/

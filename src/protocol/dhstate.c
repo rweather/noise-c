@@ -722,4 +722,12 @@ int noise_dhstate_format_fingerprint
          state->public_key, state->public_key_len);
 }
 
+/**
+ * \brief Gets the maximum length of DH keys for the supported algorithms.
+ */
+int noise_dhstate_get_max_key_length(void)
+{
+    return 56;
+}
+
 /**@}*/

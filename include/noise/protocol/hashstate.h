@@ -54,6 +54,8 @@ int noise_hashstate_hkdf
      const uint8_t *data, size_t data_len,
      uint8_t *output1, size_t output1_len,
      uint8_t *output2, size_t output2_len);
+int noise_hashstate_get_max_hash_length(void);
+int noise_hashstate_get_max_block_length(void);
 
 #ifdef __cplusplus
 };
