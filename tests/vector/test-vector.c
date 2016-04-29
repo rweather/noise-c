@@ -23,6 +23,8 @@
 #include <noise/protocol.h>
 #include "json-reader.h"
 #include <setjmp.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define MAX_MESSAGES 32
 #define MAX_MESSAGE_SIZE 256
@@ -682,30 +684,44 @@ static void process_test_vectors(JSONReader *reader)
     }
 }
 
+static int process_file(const char *filename)
+{
+    int retval = 0;
+    FILE *file = fopen(filename, "r");
+    if (file) {
+        JSONReader reader;
+        json_init(&reader, filename, file);
+        process_test_vectors(&reader);
+        if (reader.errors > 0)
+            retval = 1;
+        json_free(&reader);
+        fclose(file);
+    } else {
+        perror(filename);
+        retval = 1;
+    }
+    return retval;
+}
+
 int main(int argc, char *argv[])
 {
-    FILE *file;
     int retval = 0;
-    if (argc <= 1) {
+    char *srcdir = getenv("srcdir");
+    if (argc <= 1 && !srcdir) {
         fprintf(stderr, "Usage: %s vectors1.txt vectors2.txt ...\n", argv[0]);
         return 1;
-    }
-    while (argc > 1) {
-        file = fopen(argv[1], "r");
-        if (file) {
-            JSONReader reader;
-            json_init(&reader, argv[1], file);
-            process_test_vectors(&reader);
-            if (reader.errors > 0)
-                retval = 1;
-            json_free(&reader);
-            fclose(file);
-        } else {
-            perror(argv[1]);
-            retval = 1;
+    } else if (argc > 1) {
+        while (argc > 1) {
+            retval |= process_file(argv[1]);
+            --argc;
+            ++argv;
         }
-        --argc;
-        ++argv;
+    } else {
+        if (chdir(srcdir) < 0) {
+            perror(srcdir);
+            return 1;
+        }
+        retval |= process_file("cacophony.txt");
     }
     return retval;
 }

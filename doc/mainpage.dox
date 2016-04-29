@@ -67,9 +67,10 @@ is my motto.
 \li <tt>src/protocol/</tt> - Source code for the core Noise protocol library.
 \li <tt>src/crypto/</tt> - Public domain and open source reference
     implementations of the cryptographic primitives.
-\li <tt>src/backend/ref/</tt> - Backends for \ref cipherstate "CipherState",
-    \ref hashstate "HashState", \ref dhstate "DHState", and
-    \ref signstate "SignState" that use the reference cryptographic primitives.
+\li <tt>src/backend/ref/</tt> - Backends for
+    \ref cipherstate "CipherState", \ref hashstate "HashState",
+    \ref dhstate "DHState", and \ref signstate "SignState" that use the
+    reference cryptographic primitives.
 \li <tt>src/backend/xyz/</tt> - Recommended location for alternative backends.
 \li <tt>tests/unit/</tt> - Unit tests to exercise the library's functionality.
 \li <tt>tests/vector/</tt> - Public JSON test vectors and test harness for
@@ -79,14 +80,16 @@ the Noise protocol.
 
 \section building Building
 
-The library currently uses a very simple Makefile structure, designed for
-use with gcc and gmake.  It may or may not work with other make systems.
-The plan is to shift to autoconf/automake eventually, but for now I have
-decided to keep the build system simple while getting the basics working.
+The library uses autoconf and automake for the Makefile structure.
+You will need to have these installed to build from the sources in the
+git repository.
 
 To build the library under GNU/Linux and run the tests, type the following:
 
 \code
+$ automake --add-missing
+$ autoreconf
+$ ./configure
 $ make
 $ make check
 \endcode

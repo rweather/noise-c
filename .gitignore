@@ -2,3 +2,17 @@
 *.a
 .depend
 .*.swp
+aclocal.m4
+autom4te.cache
+configure
+Makefile.in
+Makefile
+.deps
+config.*
+INSTALL
+compile
+depcomp
+install-sh
+missing
+test-driver
+.dirstamp
