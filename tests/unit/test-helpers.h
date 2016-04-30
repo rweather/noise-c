@@ -90,6 +90,28 @@ extern int verbose;
     } while (0)
 
 /**
+ * \brief Compares two memory blocks for equality.
+ *
+ * \param actual Points to the actual memory block from the code under test.
+ * \param actual_len The length of the actual memory block.
+ * \param expected Points to the expected memory block.
+ * \param expected_len The length of the expected memory block.
+ */
+#define compare_blocks(actual, actual_len, expected, expected_len) \
+    do { \
+        size_t _actual_len = (size_t)(actual_len); \
+        size_t _expected_len = (size_t)(expected_len); \
+        if (_actual_len != _expected_len || memcmp((actual), (expected), _actual_len) != 0) { \
+            if (data_name) \
+                printf("%s: ", data_name); \
+            printf(#actual " != " #expected " at " __FILE__ ":%d\n", __LINE__); \
+            print_block("    actual  ", (actual), _actual_len); \
+            print_block("    expected", (expected), _expected_len); \
+            longjmp(test_jump_back, 1); \
+        } \
+    } while (0)
+
+/**
  * \brief Runs a test function.
  *
  * \param func The name of the function to run, excluding the "test_" prefix.
@@ -124,6 +146,15 @@ extern int verbose;
  * than \a max_len.
  */
 size_t string_to_data(uint8_t *data, size_t max_len, const char *str);
+
+/**
+ * \brief Prints a memory block in hex.
+ *
+ * \param tag Tag string indicating "actual" vs "expected".
+ * \param data The data block to print.
+ * \param size The size of the \a data block in bytes.
+ */
+void print_block(const char *tag, const uint8_t *data, size_t size);
 
 #ifdef __cplusplus
 };

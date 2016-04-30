@@ -1,6 +1,7 @@
 
 noiseincludedir = $(includedir)/noise
 noiseinclude_HEADERS = \
-    protocol.h
+    protocol.h \
+    protobufs.h
 
 SUBDIRS = . protocol

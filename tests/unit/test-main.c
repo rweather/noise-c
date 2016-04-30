@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     test(hashstate);
     test(names);
     test(patterns);
+    test(protobufs);
     test(randstate);
     test(signstate);
     test(symmetricstate);
@@ -93,4 +94,15 @@ size_t string_to_data(uint8_t *data, size_t max_len, const char *str)
         memcpy(data, str, len);
         return len;
     }
+}
+
+void print_block(const char *tag, const uint8_t *data, size_t size)
+{
+    printf("%s:", tag);
+    while (size > 0) {
+        printf(" %02x", *data);
+        ++data;
+        --size;
+    }
+    printf("\n");
 }
