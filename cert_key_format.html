@@ -80,171 +80,239 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><li class="level1"><a href="#cert_design">Design principles</a></li>
-<li class="level1"><a href="#cert_format">Certificate format</a><ul><li class="level2"><a href="#cert_overall_format">Overall format of a certificate</a></li>
+<ul><li class="level1"><a href="#cert_examples">Certificate format examples</a></li>
+<li class="level1"><a href="#cert_format">Certificate format details</a><ul><li class="level2"><a href="#cert_overall_format">Top level of certificates and certificate chains</a></li>
 <li class="level2"><a href="#cert_subject">Subject information</a></li>
 <li class="level2"><a href="#cert_signature">Signature blocks</a></li>
 <li class="level2"><a href="#cert_other">Other issues</a></li>
 </ul>
 </li>
-<li class="level1"><a href="#key_format">Private key format</a></li>
+<li class="level1"><a href="#key_format">Encrypted private key format</a></li>
 <li class="level1"><a href="#fingerprints">Public key fingerprints</a></li>
 </ul>
 </div>
 <div class="textblock"><p>This document describes certificate and private key formats that are proposed for use in implementations of Noise.</p>
-<h1><a class="anchor" id="cert_design"></a>
-Design principles</h1>
-<p>The following principles were considered when designing this format:</p>
-<ul>
-<li>It should be a simple text-based format that can be viewed with ordinary text viewers and manipulated with oridinary text tools. </li>
-<li>Compact representation so that certificates chains of reasonable length can fit within a single Noise packet. </li>
-<li>Editing a certificate to add new signature blocks should be easy. </li>
-<li>Certificate chains are the simple concatenation of multiple certificates. </li>
-<li>No surprises. A human signer can read and understand the text format and decide whether they are willing to sign the certificate. Binary formats make it difficult to know what you are actually signing.</li>
-</ul>
-<h1><a class="anchor" id="cert_format"></a>
-Certificate format</h1>
-<p>The following is an example of a minimal certificate for "Jane Smith" that has been signed by "Trent Peoples":</p>
-<div class="fragment"><div class="line">-NOISE-CERT-V1-</div>
-<div class="line">Name: Jane Smith</div>
-<div class="line">Id: jane.smith@example.com</div>
-<div class="line">Enc-Role: client</div>
-<div class="line">Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=</div>
-<div class="line">-SIGNATURE-</div>
-<div class="line">Name: Trent Peoples</div>
-<div class="line">Id: tpeoples@example.org</div>
-<div class="line">Sign-Key: Ed25519,dS45RT8DNVhldxcHgsFHj6NA6pKs5dF2lUrda9lhoAb=</div>
-<div class="line">Nonce: Lya4LdMCDhAwVbJf8oKwFw==</div>
-<div class="line">Valid-From: 2016-03-15T00:00:00Z</div>
-<div class="line">Valid-To: 2026-03-15T23:59:59Z</div>
-<div class="line">Signature: BLAKE2b,28pgTWIJGGXIL5CJ4zSQoM9jLWQtzdTpqQ2wLFr1esmtdMakMJdDyQw3pkI1poyftCFEuAnJa7v8VAhpOzE+zg==</div>
-<div class="line">-END-NOISE-CERT-</div>
-</div><!-- fragment --><p>Here, Jane has declared that her Curve25519 encryption key will be used in the "client" role. Trent then accepted that role, hashed the certificate data with "BLAKE2b", and added his signature using the "Ed25519" algorithm.</p>
-<p>The signature covers all lines from <code>-NOISE-CERT-V1-</code> through to the line just before <code>-Signature-</code>. Line endings MUST be normalized to CRLF's when computing the signature.</p>
+<p>The certificate format is represented on the wire using <a href="https://developers.google.com/protocol-buffers/">Protocol Buffers</a> or "protobufs" for short. The full protocol description is contained in the <a class="el" href="noise_certificate_proto.html">noise-certificate.proto</a> file in the Noise-C distribution.</p>
+<h1><a class="anchor" id="cert_examples"></a>
+Certificate format examples</h1>
+<p>The following is an example of a certificate for "Jane Smith" that has been signed by "Trent Peoples". To make things easier, we will use a simplified text syntax for describing the contents of a protobuf message. The data is actually encoded in binary on the wire using the standard <a href="https://developers.google.com/protocol-buffers/docs/encoding">Protocol Buffers Encoding</a>.</p>
+<div class="fragment"><div class="line">Certificate {</div>
+<div class="line">    version: 1</div>
+<div class="line">    subject: SubjectInfo {</div>
+<div class="line">        <span class="keywordtype">id</span>: <span class="stringliteral">&quot;jane.smith@example.com&quot;</span></div>
+<div class="line">        name: <span class="stringliteral">&quot;Jane Smith&quot;</span></div>
+<div class="line">        role: <span class="stringliteral">&quot;foo-chat-user&quot;</span></div>
+<div class="line">        keys: [</div>
+<div class="line">            PublicKey {</div>
+<div class="line">                algorithm: <span class="stringliteral">&quot;25519&quot;</span></div>
+<div class="line">                key: <span class="stringliteral">&quot;0xf14a2dedf6e1dd879a3af47900eedf17ae56868a7849a370ca732a571ef19e0f&quot;</span></div>
+<div class="line">            }</div>
+<div class="line">            PublicKey {</div>
+<div class="line">                algorithm: <span class="stringliteral">&quot;448&quot;</span></div>
+<div class="line">                key: <span class="stringliteral">&quot;0xd414a46bed6231540306818bdab08d8b06a28d98d0bfca47bcea1faf1aca78d8aabc7d7c2073779bd84cf0950ae10247975266267eebb1c8&quot;</span></div>
+<div class="line">            }</div>
+<div class="line">        ]</div>
+<div class="line">    }</div>
+<div class="line">    signatures: [</div>
+<div class="line">        Signature {</div>
+<div class="line">            <span class="keywordtype">id</span>: <span class="stringliteral">&quot;tpeoples@example.org&quot;</span></div>
+<div class="line">            name: <span class="stringliteral">&quot;Trent Peoples&quot;</span></div>
+<div class="line">            signing_key: PublicKey {</div>
+<div class="line">                algorithm: <span class="stringliteral">&quot;Ed25519&quot;</span></div>
+<div class="line">                key: <span class="stringliteral">&quot;0x0fdde4a7a7cc91ec509a74bd5f2369ac768a14bb6388ceb2e1710a4b85bfe001&quot;</span></div>
+<div class="line">            }</div>
+<div class="line">            hash_algorithm: <span class="stringliteral">&quot;BLAKE2b&quot;</span></div>
+<div class="line">            extra_signed_info: ExtraSignedInfo {</div>
+<div class="line">                nonce: <span class="stringliteral">&quot;0xa2bf177b31bd60ee0e8e00097d88e48e&quot;</span></div>
+<div class="line">                valid_from: <span class="stringliteral">&quot;2016-03-15T00:00:00Z&quot;</span></div>
+<div class="line">                valid_to: <span class="stringliteral">&quot;2026-03-15T23:59:59Z&quot;</span></div>
+<div class="line">            }</div>
+<div class="line">            signature: <span class="stringliteral">&quot;0x40fa37936793009750ca45e9ef1eb246eaaded93ddd356e7120e0dc171cfa51ff26b7d7a95ba9498d717bff6b9e5d5eeb0a4bbdbf7bcd8c5c4b617da36a68ed9&quot;</span></div>
+<div class="line">        }</div>
+<div class="line">    ]</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>Here, Jane has declared that her Curve25519 and Curve448 Diffie-Hellman keys will be used in the "foo-chat-user" role. Trent then accepted that role, hashed the certificate data with "BLAKE2b", and added his signature using the "Ed25519" algorithm.</p>
+<p>The signature covers the contents of the "subject" and "extra_signed_info" fields, represented in the standard <a href="https://developers.google.com/protocol-buffers/docs/encoding">Protocol Buffers Encoding</a>. The encoding MUST be "canonical" in that all integer values, field tag numbers, and field lengths are represented using the minimum number of bytes for the value, and the fields are listed strictly in order of field tag number.</p>
 <p>Multiple signature blocks can be included from multiple signers:</p>
-<div class="fragment"><div class="line">-NOISE-CERT-V1-</div>
-<div class="line">Name: Jane Smith</div>
-<div class="line">Id: jane.smith@example.com</div>
-<div class="line">Enc-Role: client</div>
-<div class="line">Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=</div>
-<div class="line">Enc-Key: 448,fPgovvcg4ZEHZdAOnUP89KV39u87pDZtVqdLBWZWhCzy9DPWc76PmtgZZpn3EpXqiw4zJCadA6Y=</div>
-<div class="line">-SIGNATURE-</div>
-<div class="line">Name: Trent Peoples</div>
-<div class="line">Id: tpeoples@example.org</div>
-<div class="line">Sign-Key: Ed25519,dS45RT8DNVhldxcHgsFHj6NA6pKs5dF2lUrda9lhoAb=</div>
-<div class="line">Nonce: Lya4LdMCDhAwVbJf8oKwFw==</div>
-<div class="line">Valid-From: 2016-03-15T00:00:00Z</div>
-<div class="line">Valid-To: 2026-03-15T23:59:59Z</div>
-<div class="line">Signature: BLAKE2b,28pgTWIJGGXIL5CJ4zSQoM9jLWQtzdTpqQ2wLFr1esmtdMakMJdDyQw3pkI1poyftCFEuAnJa7v8VAhpOzE+zg==</div>
-<div class="line">-SIGNATURE-</div>
-<div class="line">Name: Mary Sue</div>
-<div class="line">Id: mary.sue@example.com</div>
-<div class="line">Sign-Key: Ed25519,GMzi9DASQiLw0t1sAvgCSwjddHEQs9Xkaq3x3g0iQin=</div>
-<div class="line">Nonce: z/doQzK8LEwAovegMZzDcw==</div>
-<div class="line">Valid-From: 2015-05-17T00:00:00Z</div>
-<div class="line">Valid-To: 2025-05-17T23:59:59Z</div>
-<div class="line">Signature: SHA512,JBUjGRz8KCLh1HnqWjZ9ayj/Fzc2WJcoZSu9o9aWZ8VX0X5Q1ETQ+SpJH1UwQRq90fcMv6T6zXbNj16qwQu1eg==</div>
-<div class="line">-END-NOISE-CERT-</div>
-</div><!-- fragment --><p>Each signature is independent, covering the subject information leading up to the first <code>-SIGNATURE-</code> line, and then continuing with the details for the specific signer. In the above example, Mary's signature does not include the details from Trent. The certificate would be equally valid with Mary's signature listed first.</p>
+<div class="fragment"><div class="line">signatures: [</div>
+<div class="line">    Signature {</div>
+<div class="line">        <span class="keywordtype">id</span>: <span class="stringliteral">&quot;tpeoples@example.org&quot;</span></div>
+<div class="line">        name: <span class="stringliteral">&quot;Trent Peoples&quot;</span></div>
+<div class="line">        signing_key: PublicKey {</div>
+<div class="line">            algorithm: <span class="stringliteral">&quot;Ed25519&quot;</span></div>
+<div class="line">            key: <span class="stringliteral">&quot;0x0fdde4a7a7cc91ec509a74bd5f2369ac768a14bb6388ceb2e1710a4b85bfe001&quot;</span></div>
+<div class="line">        }</div>
+<div class="line">        hash_algorithm: <span class="stringliteral">&quot;BLAKE2b&quot;</span></div>
+<div class="line">        extra_signed_info: ExtraSignedInfo {</div>
+<div class="line">            nonce: <span class="stringliteral">&quot;0xa2bf177b31bd60ee0e8e00097d88e48e&quot;</span></div>
+<div class="line">            valid_from: <span class="stringliteral">&quot;2016-03-15T00:00:00Z&quot;</span></div>
+<div class="line">            valid_to: <span class="stringliteral">&quot;2026-03-15T23:59:59Z&quot;</span></div>
+<div class="line">        }</div>
+<div class="line">        signature: <span class="stringliteral">&quot;0x40fa37936793009750ca45e9ef1eb246eaaded93ddd356e7120e0dc171cfa51ff26b7d7a95ba9498d717bff6b9e5d5eeb0a4bbdbf7bcd8c5c4b617da36a68ed9&quot;</span></div>
+<div class="line">    }</div>
+<div class="line">    Signature {</div>
+<div class="line">        <span class="keywordtype">id</span>: <span class="stringliteral">&quot;mary.sue@example.com&quot;</span></div>
+<div class="line">        name: <span class="stringliteral">&quot;Mary Sue&quot;</span></div>
+<div class="line">        signing_key: PublicKey {</div>
+<div class="line">            algorithm: <span class="stringliteral">&quot;Ed25519&quot;</span></div>
+<div class="line">            key: <span class="stringliteral">&quot;0x8e15998d97f9b43150f05d1b895f5272a2ff1453dbf40ee4ea90df81147db5c3&quot;</span></div>
+<div class="line">        }</div>
+<div class="line">        hash_algorithm: <span class="stringliteral">&quot;SHA512&quot;</span></div>
+<div class="line">        extra_signed_info: ExtraSignedInfo {</div>
+<div class="line">            nonce: <span class="stringliteral">&quot;0x024e95d2a060df2be5e1fbdfe8e31c58&quot;</span></div>
+<div class="line">            valid_from: <span class="stringliteral">&quot;2015-05-17T00:00:00Z&quot;</span></div>
+<div class="line">            valid_to: <span class="stringliteral">&quot;2025-05-17T23:59:59Z&quot;</span></div>
+<div class="line">        }</div>
+<div class="line">        signature: <span class="stringliteral">&quot;0x833243ed18ac609880446c1ea147f6322db98ef9d2eaba30ece46bf7cabe50cd822fbe369f4c9c6bd8a5a5f400fff732f1a29c4113e12cb23138733ca880126d&quot;</span></div>
+<div class="line">    }</div>
+<div class="line">]</div>
+</div><!-- fragment --><p>Each signature is independent, covering the "subject" information and continuing with the "extra_signed_info" details for the specific signer. In the above example, Mary's signature does not include the details from Trent. The certificate would be equally valid with Mary's signature listed first.</p>
 <p>Because the signatures are independent, new signatures can be added to the end of the certificate at any time. Or old signatures can be removed from the certificate at any time. Any remaining signatures will remain valid as they only vouch for Jane's identity, not the identity of the other signers.</p>
 <p>This approach also allows certificates to be trimmed when they are sent in Noise packets. If the client is communicating with a server that trusts Trent as a certificate authority, then there is no need to send the signature block for Mary. Certificates may also be trimmed to hide the identity of additional signers from remote parties that do not need to know about those signers.</p>
 <dl class="section note"><dt>Note</dt><dd>Signatures provide additional information that may help bind a key to an identity for specific use cases, but signatures are not necessary for secure communication to occur. Protocols should keep this in mind when using Noise certificates. The lack of a signature does not imply that the user is untrustworthy. It only implies that the user has not found anyone yet who they trust to sign their certificate. Other strategies such as "Trust On First Use" can be used to manage certificates that lack signatures.</dd></dl>
+<h1><a class="anchor" id="cert_format"></a>
+Certificate format details</h1>
+<p>The format details below are specified in the <a href="https://developers.google.com/protocol-buffers/docs/proto3">proto3</a> language.</p>
 <h2><a class="anchor" id="cert_overall_format"></a>
-Overall format of a certificate</h2>
-<p>Certificiates are represented in UTF-8, and consist of lines of UTF-8 text. Lines SHOULD be terminated with CRLF, and MAY be terminated with a single LF. LF line terminators MUST be converted into CRLF before hashing the data to sign it. There MUST NOT be any extra whitespace on the start or end of lines.</p>
-<p>Certificates MUST start with a line <code>-NOISE-CERT-V1-</code>, called the "certificate introducer". Certificates MUST end with a line <code>-END-NOISE-CERT-</code>, called the "certificate terminator".</p>
-<p>The certificate introducer is followed by the "subject information" fields. Each field consists of a name, followed by a colon and a space character, and then followed by the field's value.</p>
-<p>Field names are a sequence of printable US-ASCII characters chosen from the set A-Z, a-z, 0-9, and the minus sign. The field name MUST NOT start with a minus sign. Any other character before the colon other than those from the recommended set is considered an error. Field names starting with "X-" are reserved for private use.</p>
-<p>The field name SHOULD be made up of English words or abbreviations that are clear as to their meaning in the context of the larger protocol. The restriction to English words and abbreviations is motivated by the "No surprises" design principle. A human reading the field name should have no problem determining what the field is for, or finding an English speaker to explain what it is for. Non-English words or opaque abbreviations make this more difficult.</p>
-<p>Field values MUST be encoded in a single line of UTF-8 text, leading up to the terminating CRLF or LF sequence. There is no support for line continuations. Lines may be of arbitrary length. When a field value is displayed to a human user, it may be necessary to wrap strings to fit in the available screen space, and to filter out unprintable control characters. Such details are left up to the implementation.</p>
-<p>After the subject information, there may appear zero or more "signature blocks", each of which begins with the line <code>-SIGNATURE-</code>. The signature blocks are also a list of fields, formatted in the same way as the subject information. However, the set of allowable fields is different for signature blocks.</p>
+Top level of certificates and certificate chains</h2>
+<p>The top level of a certificate contains a version number, information about the subject, and any optional signatures:</p>
+ <div class="fragment"><div class="line">message Certificate {</div>
+<div class="line">    reserved 4 to 15;</div>
+<div class="line">    uint32 version = 1;</div>
+<div class="line">    SubjectInfo subject = 2;</div>
+<div class="line">    repeated Signature signatures = 3;</div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p>The version number MUST be 1 for this version of the format.</p>
+<p>In all of the definitions here, field tags 1 to 15 are intended for use by this format description (or future versions of it). Field tags 16 and higher are available for private use extensions, although this shouldn't be necessary because the "meta" field described later provides a standard way to add extensions.</p>
+<p>Certificate chains are a list of one or more certificates:</p>
+ <div class="fragment"><div class="line">message CertificateChain {</div>
+<div class="line">    reserved 1 to 7, 9 to 15;</div>
+<div class="line">    repeated Certificate cert = 8;</div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p>The field tag number on the certificates in a chain is deliberately set to 8, which is different than any of the field tags in "Certificate". This allows applications to quickly determine if the supplied data is a single certificate or a certificate chain.</p>
+<p>When a chain of certificates is given, the first is assumed to be the subject with the remainder of the certificates intended to provide additional information to verify the subject.</p>
 <h2><a class="anchor" id="cert_subject"></a>
 Subject information</h2>
-<p>This section lists the fields that MAY appear in a Subject information block. All fields are optional.</p>
-<p><code>Name</code> - The name of the subject for the certificate. This string is intended to be human-readable and MUST be encoded in UTF-8. If the <code>Name</code> is not present, <code>Id</code> can be displayed to the human user instead.</p>
-<p><code>Id</code> - The identity of the subject, formatted as "foo@domain". The <code>Id</code> may look like an e-mail address but it doesn't have to be. It only needs to be unique in the context of the larger Noise protocol.</p>
-<p>Both <code>Name</code> and <code>Id</code> are OPTIONAL. If neither are present, then the subject is identified by their public key fingerprint. This option is provided to protect the identity of anonymous users. A pseudonym could be used instead, but pseudonym use is not required.</p>
-<p><code>Enc-Key</code> - Specifies an encryption key for the subject. The field consists of an algoritm name, a comma, and the base64 encoding of the public key value. The format of the public key value is determined from the algorithm name. The currently defined algorithms are "25519" and "448", corresponding to the Diffie-Hellman algorithms in Noise of the same names.</p>
-<p><code>Enc-Role</code> - Specifies the role that the key in the next line can be used for. The currently defined values are "client" and "server", in lower case. If the same key can be used for both roles, then it must appear twice in the certificate:</p>
-<div class="fragment"><div class="line">Enc-Role: client</div>
-<div class="line">Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=</div>
-<div class="line">Enc-Role: server</div>
-<div class="line">Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=</div>
-</div><!-- fragment --><p>Using the same key for multiple roles is not recommended.</p>
-<p>There may be multiple <code>Enc-Key</code> lines, one for each public encryption key that the subject owns for a role. The first <code>Enc-Key</code> line SHOULD be preceded by a <code>Enc-Role</code> line defining the role. The default role is "client".</p>
-<div class="fragment"><div class="line">Enc-Role: client</div>
-<div class="line">Enc-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=</div>
-<div class="line">Enc-Key: 448,fPgovvcg4ZEHZdAOnUP89KV39u87pDZtVqdLBWZWhCzy9DPWc76PmtgZZpn3EpXqiw4zJCadA6Y=</div>
-</div><!-- fragment --><p><code>Sign-Key</code> - Specifies a signing key for the subject. The field consists of an algorithm name, a comma, and the base64 encoding of the public key value. The format of the public key value is determined from the algorithm name. The only currently defined algorithm is "Ed25519".</p>
-<p><code>Sign-Role</code> - Specifies the role that the signing key in the next line can be used for. The currently defined values are "certificate" and "identity", in lower case. A role of "certificate" indicates that the key can be used to sign certificates for other users. A role of "identity" indicates that the key is used to assert the identity of the user. If the same key can be used for both roles, then it should appear twice in the same way as <code>Enc-Role</code>. Using the same key for multiple roles is not recommended.</p>
-<p>There may be multiple <code>Sign-Key</code> lines, one for each public encryption key that the subject owns for a role. The first <code>Sign-Key</code> line SHOULD be preceded by a <code>Sign-Role</code> line defining the role. The default role is "certificate".</p>
-<p>While it would be possible to offer a comma-separated list of roles for a key, it was chosen not to do this. Certificate parsers can be simpler if they are checking for entire literal strings, compared with having to parse comma-separated fields. And since implementations SHOULD use different keys for different roles, different key blocks will probably be needed anyway.</p>
-<p>There may be other fields in the subject information block. Any field that is not understood should be ignored by implementations. However, when a certificate is signed, these fields SHOULD be shown to the signer so that they are not tricked into signing information they do not agree with.</p>
-<p>Field names that do not start with "X-" are reserved for future versions of this specification. Field names starting with "X-" may be assigned any local meaning by implementers. For example "X-Foo-Nickname" may be useful in a secure chat client called "Foo" to set the user's preferred nickname. Any information that could identify the user (such as a nickname) SHOULD be optional.</p>
+ <div class="fragment"><div class="line">message SubjectInfo {</div>
+<div class="line">    reserved 6 to 15;</div>
+<div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
+<div class="line">    <span class="keywordtype">string</span> name = 2;</div>
+<div class="line">    <span class="keywordtype">string</span> role = 3;</div>
+<div class="line">    repeated PublicKey keys = 4;</div>
+<div class="line">    repeated MetaInfo meta = 5;</div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p><code>id</code> - The identity of the subject, formatted as "foo@domain" and encoded in UTF-8. The <code>Id</code> may look like an e-mail address but it doesn't have to be. It only needs to be unique in the context of the larger Noise protocol.</p>
+<p><code>name</code> - The name of the subject for the certificate. This string is intended to be human-readable and MUST be encoded in UTF-8. If the <code>name</code> is not present, <code>id</code> can be displayed to the human user instead.</p>
+<p>Both <code>id</code> and <code>name</code> are OPTIONAL. If neither are present, then the subject is identified by their public key fingerprint. This option is provided to protect the identity of anonymous users. A pseudonym could be used instead, but pseudonym use is not required.</p>
+<p><code>role</code> - The role that the subject's keys are intended to be used for. There are no predefined roles yet and the field can be omitted. The role may be an application name; e.g. "foo-chat", or a sub-role within an application; e.g. "foo-chat-user" and "foo-chat-server".</p>
+<p><code>keys</code> - List of public keys for the subject.</p>
+ <div class="fragment"><div class="line">message PublicKey {</div>
+<div class="line">    reserved 3 to 15;</div>
+<div class="line">    <span class="keywordtype">string</span> algorithm = 1;       <span class="comment">// &quot;25519&quot;, &quot;448&quot;, &quot;Ed25519&quot;, etc.</span></div>
+<div class="line">    bytes key = 2;              <span class="comment">// Format depends upon the algorithm.</span></div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p><code>meta</code> - Extra meta information about the subject as a list of freeform name/value pairs:</p>
+ <div class="fragment"><div class="line">message MetaInfo {</div>
+<div class="line">    reserved 3 to 15;</div>
+<div class="line">    <span class="keywordtype">string</span> name = 1;</div>
+<div class="line">    <span class="keywordtype">string</span> value = 2;</div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p>MetaInfo blocks may be used to add extra information that is of interest to an application. For example, "Foo-Nickname" may convey the nickname of a user for the "foo-chat" application. For privacy reasons, any meta information that may identify the user MUST be OPTIONAL. Applications SHOULD use meta names that are obviously unique to that application to avoid conflict with other applications.</p>
 <h2><a class="anchor" id="cert_signature"></a>
 Signature blocks</h2>
-<p>This section lists the fields that MAY appear in a Subject information block.</p>
-<p><code>Name</code> and <code>Id</code> have the same format and meaning as for subject information blocks. In this case they identify the signer. Both fields can be omitted to hide the identity of the signer.</p>
-<p>There SHOULD be a single <code>Sign-Key</code> line which specifies the algorithm name and public key that was used to sign the certificate. This line can be omitted if the recipient has some other means to obtain the key for the signer.</p>
-<p><code>Nonce</code> is an extra pseudorandom value added by the signer, which ensures that multiple signatures for the same subject from the same signer will be different. The value should be considered opaque. It is recommended that it consist of at least 128 bits of pseudorandom data, encoded in base64. This field SHOULD be included. It MAY be omitted for anonymous users to avoid the watermarking problems described under <a class="el" href="cert_key_format.html#cert_other">Other issues</a> below. The <code>Valid-From</code> field SHOULD be included in this case to provide a fallback nonce that is different between signatures.</p>
-<p><code>Valid-From</code> and <code>Valid-To</code> are OPTIONAL fields that indicate the starting and ending times for the validity of the signature. Note: This is the validity of the signature, not of the certificate. The signer is not saying "this key is valid for this period" but rather "I do not vouch for this certificate outside this time period". The subject information may remain valid for much longer. The format MUST comply with <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> as profiled in <a href="https://tools.ietf.org/html/rfc3339">RFC 3339</a>.</p>
-<p><code>Signature</code> MUST be the last line in the signature block, and consists of a hash algorithm name and the actual signature produced with the <code>Sign-Key</code>.</p>
-<p>The signature is computed over the following lines:</p>
-<ul>
-<li>The line <code>-NOISE-CERT-V1-</code>, which binds the signature to the specific certificate version. </li>
-<li>All lines in the subject information block in the order in which they appear. </li>
-<li>The line <code>-SIGNATURE-</code>, which separates the subject information fields from the signature information fields. </li>
-<li>All lines in the signature block, excluding the final <code>Signature</code> line. </li>
-<li>The line <code>-END-NOISE-CERT-</code>, which terminates the certificate.</li>
-</ul>
-<p>If there were any existing <code>-SIGNATURE-</code> blocks in the certificate to be signed, they are ignored when calculating the hash.</p>
-<p>Lines that end in LF MUST be converted into lines ending in CRLF before applying the hash algorithm.</p>
-<p>The new signature block is inserted at the end of the certificate, starting with <code>-SIGNATURE-</code> and ending just before the existing <code>-END-NOISE-CERT-</code> line.</p>
+ <div class="fragment"><div class="line">message Signature {</div>
+<div class="line">    reserved 6 to 14;</div>
+<div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
+<div class="line">    <span class="keywordtype">string</span> name = 2;</div>
+<div class="line">    PublicKey signing_key = 3;</div>
+<div class="line">    <span class="keywordtype">string</span> hash_algorithm = 4;</div>
+<div class="line">    ExtraSignedInfo extra_signed_info = 5;</div>
+<div class="line">    bytes signature = 15;</div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p>The <code>id</code> and <code>name</code> fields have the same format and meaning as for subject information blocks. In this case they identify the signer. Both fields can be omitted to hide the identity of the signer.</p>
+<p>The <code>signing_key</code> field specifies the algorithm name and public key that was used to sign the certificate.</p>
+<p>The <code>hash_algorithm</code> indicates the algorithm that was used to hash the subject information and <code>extra_signed_info</code>. It should be one of <code>BLAKE2s</code>, <code>BLAKE2b</code>, <code>SHA256</code>, or <code>SHA512</code>. <code>BLAKE2b</code> or <code>SHA512</code> is recommended to ensure signature longevity.</p>
+<p>The <code>extra_signed_info</code> field contains information that is signed along with the subject information:</p>
+ <div class="fragment"><div class="line">message ExtraSignedInfo {</div>
+<div class="line">    reserved 5 to 15;</div>
+<div class="line">    bytes nonce = 1;</div>
+<div class="line">    <span class="keywordtype">string</span> valid_from = 2;      <span class="comment">// ISO 8601 format timestamp.</span></div>
+<div class="line">    <span class="keywordtype">string</span> valid_to = 3;        <span class="comment">// ISO 8601 format timestamp.</span></div>
+<div class="line">    repeated MetaInfo meta = 4;</div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p>The <code>nonce</code> is an extra pseudorandom value added by the signer, which ensures that multiple signatures for the same subject from the same signer will be different. The value should be considered opaque. It is recommended that it consist of at least 128 bits of pseudorandom data. This field SHOULD be included. It MAY be omitted for anonymous users to avoid the watermarking problems described under <a class="el" href="cert_key_format.html#cert_other">Other issues</a> below. The <code>valid_from</code> field SHOULD be included in this case to provide a fallback nonce that is different between signatures.</p>
+<p>The <code>valid_from</code> and <code>valid_to</code> OPTIONAL fields indicate the starting and ending times for the validity of the signature. Note: This is the validity of the signature, not of the certificate. The signer is not saying "this key is valid for this period" but rather "I do not vouch for this certificate outside this time period". The subject information may remain valid for much longer. The format MUST comply with <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> as profiled in <a href="https://tools.ietf.org/html/rfc3339">RFC 3339</a>.</p>
+<p>The <code>signature</code> field MUST be the last line in the <code>Signature</code> block, and contains the actual signature produced with the <code>signing_key</code> and <code>hash_algorithm</code>.</p>
+<p>If there were any existing <code>Signature</code> blocks in the certificate to be signed, they are ignored when calculating the hash. The new signature block is inserted at the end of the certificate.</p>
 <h2><a class="anchor" id="cert_other"></a>
 Other issues</h2>
-<p>Any strings that are read from a certificate and presented to a human user should be preprocessed to remove or transform control characters or other data that may be problematic for the output device.</p>
-<p>The <code>Nonce</code> value and implementation-specific fields could be used to watermark users who otherwise wish to remain anonymous. Once a certificate is signed, the subject will need to import the signature into their key ring. At this point the subject can see if any extra fields were inserted that concern them and reject the signature.</p>
-<p>The <code>Nonce</code> field is opaque and non-obvious but highly recommended to deal with duplicate signatures for the same subject key. The <code>Nonce</code> field MAY be omitted by a signer from certificates if they wish to provide some assurance to anonymous users that they have not watermarked the signature. The <code>Valid-From</code> field is used as a fallback nonce for this case.</p>
-<p>Anonymous users can choose to reject signatures that include a <code>Nonce</code>. They should also carefully inspect the <code>Valid-From</code> and <code>Valid-To</code> timestamps. Odd date or time values might provide another opportunity to include watermarking bits.</p>
+<p>Any strings that are read from a certificate and presented to a human user should be preprocessed to remove or transform control characters or other data that may be problematic for the output device. The security considerations from <a href="https://tools.ietf.org/html/rfc3629">RFC 3629</a> should be kept in mind to ensure that all strings are strict UTF-8.</p>
+<p>The <code>nonce</code> value and implementation-specific meta fields could be used to watermark users who otherwise wish to remain anonymous. Once a certificate is signed, the subject will need to import the signature into their key ring. At this point the subject can see if any extra fields were inserted that concern them and reject the signature.</p>
+<p>The <code>nonce</code> field is opaque and non-obvious but highly recommended to deal with duplicate signatures for the same subject key. The <code>nonce</code> field MAY be omitted by a signer from certificates if they wish to provide some assurance to anonymous users that they have not watermarked the signature. The <code>valid_from</code> field is used as a fallback nonce for this case.</p>
+<p>Anonymous users can choose to reject signatures that include a <code>nonce</code>. They should also carefully inspect the <code>valid_from</code> and <code>valid_to</code> timestamps. Odd date or time values might provide another opportunity to include watermarking bits.</p>
 <p>The main protection against this is disclosure. If it was discovered that well-known signing authorities were watermarking certificates, affected users can remove the offending signatures and seek new signers.</p>
-<p>Signers may require some kind of proof that the subject is in possession of the relevant key before adding a signature. For encryption keys, the Noise protocol itself provides handshake patterns that can prove key possession.</p>
+<p>Signers may require some kind of proof that the subject is in possession of the relevant key before adding a signature. For Diffie-Hellman keys, the Noise protocol itself provides handshake patterns that can prove key possession.</p>
 <p>A hypothetical certificate issuing protocol should check that the static public key for the session matches that in the supplied certificate. This does become more complex if the subject has multiple encryption keys or signing keys. Multiple requests may be necessary to prove ownership of the additional keys.</p>
 <h1><a class="anchor" id="key_format"></a>
-Private key format</h1>
-<p>The private key format is similar to the certificate format, with additional information about the key:</p>
-<div class="fragment"><div class="line">Name: Jane Smith</div>
-<div class="line">Id: jane.smith@example.com</div>
-<div class="line">Enc-Role: client</div>
-<div class="line">Enc-Private-Key: 25519,0bvYYwOPwdtcrove1ij37SbAhnuQ++4j2+/sELJaNUA=</div>
-<div class="line">Enc-Private-Key: 448,fPgovvcg4ZEHZdAOnUP89KV39u87pDZtVqdLBWZWhCzy9DPWc76PmtgZZpn3EpXqiw4zJCadA6Y=</div>
-</div><!-- fragment --><p>The <code>Enc-Private-Key</code> field is similar to <code>Enc-Key</code> except that contains the private key component of the keypair. The public key is derived from the private key at runtime. The counterpart for signing keys is <code>Sign-Private-Key</code>.</p>
-<p>The above example specifies the bare private key details. This information is not stored or transmitted in plaintext. Instead it is encrypted using a passphrase to generate data such as the following:</p>
-<div class="fragment"><div class="line">-NOISE-KEY-V1-</div>
-<div class="line">Algorithm: ChaChaPoly_BLAKE2b_PBKDF2</div>
-<div class="line">Salt: wo3KZvAoFdR9ek5oljNAJw==</div>
-<div class="line">Iterations: 30000</div>
-<div class="line">-KEY-DATA-</div>
-<div class="line">TmFtZTogSmFuZSBTbWl0aApJZDogamFuZS5zbWl0aEBleGFtcGxlLmNvbQpFbmMtUm9sZTogY2xp</div>
-<div class="line">ZW50CkVuYy1Qcml2LUtleTogMjU1MTksMGJ2WVl3T1B3ZHRjcm92ZTFpajM3U2JBaG51USsrNGoy</div>
-<div class="line">Ly9zRUxKYU5VQT0sZzZGNmpmM2o2VFB1NmM4QU51THhQZVpwOW9BdW9WaXNVR2pNV3V4a2crRT0K</div>
-<div class="line">RW5jLVByaXYtS2V5OiA0NDgsZlBnb3Z2Y2c0WkVIWmRBT25VUDg5S1YzOXU4N3BEWnRWcWRMQlda</div>
-<div class="line">V2hDenk5RFBXYzc2UG10Z1pacG4zRXBYcWl3NHpKQ2FkQTZZPSxvK2dyYXJrVW9LaDZmQUtCeC9R</div>
-<div class="line">RUY0QTVvM3pBSmlrVFV6bkQ3M0pyMXhGWWgvVCs4T3JGNE5wVExtQkxXbk5rMjFTVXlWSCtyRmc9</div>
-<div class="line">Cg==</div>
-<div class="line">-END-NOISE-KEY-</div>
-</div><!-- fragment --><p>Here, PBKDF2 (from <a href="https://www.ietf.org/rfc/rfc2898.txt">RFC 2898</a>) with the specified hash algorithm (BLAKE2b in this case) is used to generate an encryption key and nonce for ChaChaPoly. The first 32 bytes of the PBKDF2 output are used as the encryption key. The next 8 bytes of the PBKDF2 output are interpreted as a big-endian 64-bit value and used as the nonce. The entirety of the private key details are encrypted in a single request, which limits the size to 65535 bytes including the MAC.</p>
-<p>The <code>-KEY-DATA-</code> section is the base64 encoding of the outout of encrypting the bare private key details given earlier with ChaChaPoly. The final 16 bytes of the base64-encoded data is the MAC value which can be used to verify that the correct passphrase was supplied.</p>
-<p>The <code>Salt</code> and <code>Iterations</code> fields specify arguments to the PBKDF2 function. The salt SHOULD be at least 16 bytes in length, and MAY be longer at the implementation's discretion. The unsigned 32-bit iteration count should be large enough to make dictionary attacks on the private key file time-consuming on current hardware.</p>
+Encrypted private key format</h1>
+<p>The private key information is similar to the subject information from the certificate format:</p>
+ <div class="fragment"><div class="line">message PrivateSubjectInfo {</div>
+<div class="line">    reserved 6 to 15;</div>
+<div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
+<div class="line">    <span class="keywordtype">string</span> name = 2;</div>
+<div class="line">    <span class="keywordtype">string</span> role = 3;</div>
+<div class="line">    repeated PrivateKey keys = 4;</div>
+<div class="line">    repeated MetaInfo meta = 5;</div>
+<div class="line">}</div>
+<div class="line">message PrivateKey {</div>
+<div class="line">    reserved 3 to 15;</div>
+<div class="line">    <span class="keywordtype">string</span> algorithm = 1;       <span class="comment">// &quot;25519&quot;, &quot;448&quot;, &quot;Ed25519&quot;, etc.</span></div>
+<div class="line">    bytes key = 2;              <span class="comment">// Format depends upon the algorithm.</span></div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p>The format of "PrivateSubjectInfo" and "PrivateKey" are identical to "SubjectInfo" and "PublicKey", which may allow applications to share the format handling code between the two use cases if they so wish.</p>
+<p>The private key information is encrypted to protect it inside an "EncryptedPrivateKey" wrapper:</p>
+ <div class="fragment"><div class="line">message EncryptedPrivateKey {</div>
+<div class="line">    reserved 1 to 9, 14;</div>
+<div class="line">    uint32 version = 10;        <span class="comment">// 1 for this version of the format.</span></div>
+<div class="line">    <span class="keywordtype">string</span> algorithm = 11;      <span class="comment">// e.g. &quot;ChaChaPoly_BLAKE2b_PBKDF2&quot;.</span></div>
+<div class="line">    bytes salt = 12;            <span class="comment">// Salt value for input to the KDF.</span></div>
+<div class="line">    uint32 iterations = 13;     <span class="comment">// Iteration count for the KDF.</span></div>
+<div class="line">    bytes encrypted_data = 15;  <span class="comment">// Encrypted version of PrivateSubjectInfo.</span></div>
+<div class="line">}</div>
+</div><!-- fragment --></p>
+<p>For example:</p>
+<div class="fragment"><div class="line">EncryptedPrivateKey {</div>
+<div class="line">    version: 1</div>
+<div class="line">    algorithm: <span class="stringliteral">&quot;ChaChaPoly_BLAKE2b_PBKDF2&quot;</span></div>
+<div class="line">    salt: <span class="stringliteral">&quot;0x1621bb322ca96658eb6172d01031845f&quot;</span></div>
+<div class="line">    iterations: 50000</div>
+<div class="line">    encrypted_data: <span class="stringliteral">&quot;0x...&quot;</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><p>The <code>version</code> must be 1 for this version of the encrypted private key format.</p>
+<p>The <code>algorithm</code> indicates the cipher, hash, and KDF schemes that are used to protect the private key. Any Noise cipher or hash algorithm supported by the application can be used, although "ChaChaPoly_BLAKE2b_PBKDF2" is recommended for minimum interoperability.</p>
+<p>The only KDF algorithm that is defined at present is PBKDF2 from <a href="https://www.ietf.org/rfc/rfc2898.txt">RFC 2898</a>. The <code>salt</code> and <code>iterations</code> fields are two of the parameters to PBKDF2 (the other being the passphrase).</p>
+<p>Other KDF algorithms may be defined in the future. The <code>salt</code> and <code>iterations</code> fields can be repurposed to contain whatever parameters those KDF algorithms require.</p>
+<p>As an example, the algorithm identifier "ChaChaPoly_BLAKE2b_PBKDF2" is implemented as follows. PBKDF2 is used with BLAKE2b to generate an encryption key and nonce for ChaChaPoly. The first 32 bytes of the PBKDF2 output are used as the encryption key. The next 8 bytes of the PBKDF2 output are interpreted as a big-endian 64-bit value and used as the nonce. The entirety of the private key details are encrypted in a single request, which limits the size to 65535 bytes including the MAC.</p>
+<p>The <code>salt</code> SHOULD be at least 16 bytes in length, and MAY be longer at the implementation's discretion. The unsigned 32-bit <code>iteration</code> count should be large enough to make dictionary attacks on the private key file time-consuming on current hardware.</p>
 <p>Encrypted private keys can be a hassle for servers and other systems that run unattended. Such systems may need to use a static passphrase, even if only the empty passphrase.</p>
+<p>The field tag numbers on "EncryptedPrivateKey" are deliberately different than those for "Certificate" and "CertificateChain" so that an application can easily determine what type of data it is processing. Applications may use this to cross-check that a private key is not accidentally sent over the wire as a certificate.</p>
 <h1><a class="anchor" id="fingerprints"></a>
 Public key fingerprints</h1>
-<p>When displaying a public key to a human user, the public key SHOULD be hashed with SHA256 with first 16 bytes of the value formatted in hexadecimal, separated by colons. For example:</p>
+<p>When displaying a public key to a human user, the public key SHOULD be hashed with SHA256 with the first 16 bytes of the value formatted in hexadecimal, separated by colons. For example:</p>
 <div class="fragment"><div class="line">34:da:01:7b:07:e1:a0:0d:64:14:be:e9:af:cf:db:7b</div>
 </div><!-- fragment --><p>Fingerprints MAY be calculated with other hash algorithms or MAY include more than 16 bytes. However, SHA256 with truncation is RECOMMENDED to improve interoperability of fingerprints between implementations. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 23 2016 16:08:27 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

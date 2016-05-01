@@ -122,12 +122,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ga3667a7038035ae31cd7629ed13f99d39"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga3667a7038035ae31cd7629ed13f99d39">noise_handshakestate_has_local_keypair</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
 <tr class="memdesc:ga3667a7038035ae31cd7629ed13f99d39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if a HandshakeState has been configured with a local keypair.  <a href="#ga3667a7038035ae31cd7629ed13f99d39">More...</a><br/></td></tr>
 <tr class="separator:ga3667a7038035ae31cd7629ed13f99d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0cf8228683e002acff6690a000c12854"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga0cf8228683e002acff6690a000c12854">noise_handshakestate_has_pre_shared_key</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
+<tr class="memdesc:ga0cf8228683e002acff6690a000c12854"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if a HandshakeState object has already been configured with a pre shared key.  <a href="#ga0cf8228683e002acff6690a000c12854">More...</a><br/></td></tr>
+<tr class="separator:ga0cf8228683e002acff6690a000c12854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga46d077b55567c999bfda4662515e3154"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga46d077b55567c999bfda4662515e3154">noise_handshakestate_has_remote_public_key</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
 <tr class="memdesc:ga46d077b55567c999bfda4662515e3154"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if a HandshakeState has a remote public key.  <a href="#ga46d077b55567c999bfda4662515e3154">More...</a><br/></td></tr>
 <tr class="separator:ga46d077b55567c999bfda4662515e3154"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac7d3a6990a63b42f86109f5044c9f4d6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6">noise_handshakestate_needs_local_keypair</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
 <tr class="memdesc:gac7d3a6990a63b42f86109f5044c9f4d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if a HandshakeState still needs to be configured with a local keypair.  <a href="#gac7d3a6990a63b42f86109f5044c9f4d6">More...</a><br/></td></tr>
 <tr class="separator:gac7d3a6990a63b42f86109f5044c9f4d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7bf0e9e6b6d77262b579e5c3430f9a93"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga7bf0e9e6b6d77262b579e5c3430f9a93">noise_handshakestate_needs_pre_shared_key</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
+<tr class="memdesc:ga7bf0e9e6b6d77262b579e5c3430f9a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if a HandshakeState object requires a pre shared key.  <a href="#ga7bf0e9e6b6d77262b579e5c3430f9a93">More...</a><br/></td></tr>
+<tr class="separator:ga7bf0e9e6b6d77262b579e5c3430f9a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9d88e66873413c052b05f7ad35827f1b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga9d88e66873413c052b05f7ad35827f1b">noise_handshakestate_needs_remote_public_key</a> (const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
 <tr class="memdesc:ga9d88e66873413c052b05f7ad35827f1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if a HandshakeState still needs to be configured with a remote public key before the protocol can start.  <a href="#ga9d88e66873413c052b05f7ad35827f1b">More...</a><br/></td></tr>
 <tr class="separator:ga9d88e66873413c052b05f7ad35827f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -157,12 +163,8 @@ Functions</h2></td></tr>
 <tr class="separator:gafdb5b38ecaf77c7c39e0aad49cf880b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="fragment"><div class="line"><a class="code" href="internal_8h.html#structNoiseHandshakeState__s">NoiseHandshakeState</a> *state;</div>
-<div class="line"><a class="code" href="group__handshakestate.html#ga0e6235ea4b4c8c434417172a764bf76c">noise_handshakestate_new_by_name</a></div>
-<div class="line">     (&amp;state, <span class="stringliteral">&quot;NoisePSK_XX_25519_ChaChaPoly_BLAKE2s&quot;</span>, <a class="code" href="group__roles.html#gad6265b662278a9f9b1523c55b6d0080d">NOISE_ROLE_INITIATOR</a>);</div>
-<div class="line"><a class="code" href="group__handshakestate.html#gaaf1a461a40326f8db0b7a537dc63e6fa">noise_handshakestate_set_prologue</a>(state, prologue, <span class="keyword">sizeof</span>(prologue));</div>
-<div class="line">noise_handshakestate_set_psk(state, psk, <span class="keyword">sizeof</span>(psk));</div>
-</div><!-- fragment --> <h2 class="groupheader">Typedef Documentation</h2>
+<p>See the <a class="el" href="example_echo.html">echo example</a> for an overview of how to use this API. </p>
+<h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="ga00fef5d2b365025653ceea29f9fcd8d5"></a>
 <div class="memitem">
 <div class="memproto">
@@ -215,7 +217,7 @@ NOISE_ERROR_NOT_APPLICABLE if the handshake pattern in the original protocol nam
 <dl class="section note"><dt>Note</dt><dd>This function reverses the roles of initiator and responder, which will also affect the ordering of the final CipherState objects returned by <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a>, <a class="el" href="group__handshakestate.html#gae67e24a470c7f6a24f0aa24991114b92" title="Gets the role that a HandshakeState object is playing. ">noise_handshakestate_get_role()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00689">689</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00726">726</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -245,7 +247,7 @@ NOISE_ERROR_NOT_APPLICABLE if the handshake pattern in the original protocol nam
 NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gab0b47aa4e0577b68ad90848565c00a8b" title="Creates a new HandshakeState object by protocol identifier. ">noise_handshakestate_new_by_id()</a>, <a class="el" href="group__handshakestate.html#ga0e6235ea4b4c8c434417172a764bf76c" title="Creates a new HandshakeState object by protocol name. ">noise_handshakestate_new_by_name()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00247">247</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00242">242</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -281,7 +283,7 @@ NOISE_ACTION_FAILED if the handshake has failed with an error. The application s
 NOISE_ACTION_SPLIT if the handshake has finished successfully and the application should call <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> to obtain the CipherState objects for the data phase of the protocol.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafdb5b38ecaf77c7c39e0aad49cf880b6" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a>, <a class="el" href="group__handshakestate.html#ga5b86560fccec5c8d9051fa6e30e7cb20" title="Reads a message payload using a HandshakeState. ">noise_handshakestate_read_message()</a>, <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>, <a class="el" href="group__handshakestate.html#gaaaf2e6ef61771c7fa5c4f5d5e106c603" title="Falls back to the &quot;XXfallback&quot; handshake pattern. ">noise_handshakestate_fallback()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00794">794</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00831">831</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -310,7 +312,7 @@ NOISE_ACTION_SPLIT if the handshake has finished successfully and the applicatio
 <dl class="section note"><dt>Note</dt><dd>This function is intended for testing only. It can be used to establish a fixed ephemeral key for test vectors. This function should not be used in real applications.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00363">363</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00358">358</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -363,7 +365,7 @@ NOISE_ERROR_INVALID_STATE if the handshake has not successfully completed yet.</
 <dl class="section note"><dt>Note</dt><dd>The handshake hash is generated from publicly-known values in the handshake. If the application needs a unique secret identifier, then it should combine the handshake hash with other randomly generated data that is sent encrypted during the session.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01319">1319</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01356">1356</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -392,7 +394,7 @@ NOISE_ERROR_INVALID_STATE if the handshake has not successfully completed yet.</
 <p>The application uses the returned object to set the static keypair for the local end of the handshake if one is required.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00322">322</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00317">317</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -432,7 +434,7 @@ NOISE_ERROR_INVALID_STATE if the handshake has not successfully completed yet.</
 <dd>
 NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00297">297</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00292">292</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -461,7 +463,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <p>The application uses the returned object to set the public key for the remote end of the handshake if the key must be provided prior to the handshake. The returned object can also be used to obtain the public key value that was transmitted by the remote party during the handshake.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00343">343</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00338">338</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -488,7 +490,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns one of NOISE_ROLE_INITIATOR or NOISE_ROLE_RESPONDER if <em>state</em> is non-NULL, or zero if <em>state</em> is NULL. </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00280">280</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00275">275</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -516,7 +518,35 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns 1 if the <em>state</em> has already been configured with a local keypair, or 0 if the keypair is yet to be provided. Also returns zero if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6" title="Determine if a HandshakeState still needs to be configured with a local keypair. ">noise_handshakestate_needs_local_keypair()</a>, <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00507">507</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00544">544</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga0cf8228683e002acff6690a000c12854"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_handshakestate_has_pre_shared_key </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine if a HandshakeState object has already been configured with a pre shared key. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The HandshakeState object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns 1 if <em>state</em> requires a pre shared key, zero if not.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafca896117ad9a8697a3fe385deb3c280" title="Sets the pre shared key for a HandshakeState. ">noise_handshakestate_set_pre_shared_key()</a>, <a class="el" href="group__handshakestate.html#ga7bf0e9e6b6d77262b579e5c3430f9a93" title="Determine if a HandshakeState object requires a pre shared key. ">noise_handshakestate_needs_pre_shared_key()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00404">404</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -545,7 +575,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <p>A remote public key may either be provided ahead of time on the <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> object, or it may be provided by the remote party during the handshake.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga9d88e66873413c052b05f7ad35827f1b" title="Determine if a HandshakeState still needs to be configured with a remote public key before the protoc...">noise_handshakestate_needs_remote_public_key()</a>, noise_handshakestate_set_remote_public_key() </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00557">557</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00594">594</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -574,7 +604,35 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <p>The application configures the local keypair on the object returned by <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a>.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3667a7038035ae31cd7629ed13f99d39" title="Determine if a HandshakeState has been configured with a local keypair. ">noise_handshakestate_has_local_keypair()</a>, <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00485">485</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00522">522</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga7bf0e9e6b6d77262b579e5c3430f9a93"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_handshakestate_needs_pre_shared_key </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine if a HandshakeState object requires a pre shared key. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The HandshakeState object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns 1 if <em>state</em> requires a pre shared key, zero if the pre shared key has already been supplied or it is not required.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafca896117ad9a8697a3fe385deb3c280" title="Sets the pre shared key for a HandshakeState. ">noise_handshakestate_set_pre_shared_key()</a>, <a class="el" href="group__handshakestate.html#ga0cf8228683e002acff6690a000c12854" title="Determine if a HandshakeState object has already been configured with a pre shared key...">noise_handshakestate_has_pre_shared_key()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00385">385</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -603,7 +661,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <p>This function indicates that a remote public key must be supplied before the protocol starts. If it is possible for the remote public key to be provided by the remote party during the session, then the remote public key can be obtained at the end of the handshake using the <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> object.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga46d077b55567c999bfda4662515e3154" title="Determine if a HandshakeState has a remote public key. ">noise_handshakestate_has_remote_public_key()</a>, <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00533">533</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00570">570</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -659,7 +717,7 @@ NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output or the cipher key a
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new HandshakeState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga1ee4331d10a6c28bd336bfdf1017346d" title="Frees a HandshakeState object after destroying all sensitive material. ">noise_handshakestate_free()</a>, <a class="el" href="group__handshakestate.html#ga0e6235ea4b4c8c434417172a764bf76c" title="Creates a new HandshakeState object by protocol name. ">noise_handshakestate_new_by_name()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00168">168</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00163">163</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -713,7 +771,7 @@ NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output or the cipher key a
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new HandshakeState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga1ee4331d10a6c28bd336bfdf1017346d" title="Frees a HandshakeState object after destroying all sensitive material. ">noise_handshakestate_free()</a>, <a class="el" href="group__handshakestate.html#gab0b47aa4e0577b68ad90848565c00a8b" title="Creates a new HandshakeState object by protocol identifier. ">noise_handshakestate_new_by_id()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00214">214</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00209">209</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -774,7 +832,7 @@ NOISE_ERROR_PUBLIC_KEY if an invalid remote public key is seen during the proces
 <p>The <em>message</em> buffer will be modified by this function to decrypt sub-components while it is being processed. The contents will be cleared just before the function exits to avoid leaking decrypted message data other than the <em>payload</em>.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafdb5b38ecaf77c7c39e0aad49cf880b6" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a>, <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01216">1216</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01253">1253</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -825,9 +883,9 @@ NOISE_ERROR_NOT_APPLICABLE if the protocol name does not begin with "NoisePSK". 
 <dd>
 NOISE_ERROR_INVALID_STATE if this function is called afer the protocol has already started, or the pre shared key was already set.</dd></dl>
 <p>If the prologue has not been set yet, then calling this function will implicitly set the prologue to the empty sequence and it will no longer be possible to specify an explicit prologue.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a>, <a class="el" href="group__handshakestate.html#gaaf1a461a40326f8db0b7a537dc63e6fa" title="Sets the prologue for a HandshakeState. ">noise_handshakestate_set_prologue()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a>, <a class="el" href="group__handshakestate.html#gaaf1a461a40326f8db0b7a537dc63e6fa" title="Sets the prologue for a HandshakeState. ">noise_handshakestate_set_prologue()</a>, <a class="el" href="group__handshakestate.html#ga7bf0e9e6b6d77262b579e5c3430f9a93" title="Determine if a HandshakeState object requires a pre shared key. ">noise_handshakestate_needs_pre_shared_key()</a>, <a class="el" href="group__handshakestate.html#ga0cf8228683e002acff6690a000c12854" title="Determine if a HandshakeState object has already been configured with a pre shared key...">noise_handshakestate_has_pre_shared_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00400">400</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00437">437</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -878,7 +936,7 @@ NOISE_ERROR_INVALID_STATE if this function is called afer <a class="el" href="gr
 <p>This function must be called immediately after <a class="el" href="group__handshakestate.html#gab0b47aa4e0577b68ad90848565c00a8b" title="Creates a new HandshakeState object by protocol identifier. ">noise_handshakestate_new_by_id()</a> or <a class="el" href="group__handshakestate.html#ga0e6235ea4b4c8c434417172a764bf76c" title="Creates a new HandshakeState object by protocol name. ">noise_handshakestate_new_by_name()</a> if there is a prologue for the session. If the function is not called, then the prologue will be assumed to be empty when the protocol starts.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a>, <a class="el" href="group__handshakestate.html#gafca896117ad9a8697a3fe385deb3c280" title="Sets the pre shared key for a HandshakeState. ">noise_handshakestate_set_pre_shared_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00453">453</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00490">490</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -933,7 +991,7 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on <em>c2</em> as it will not be needed. Alternatively, the application can pass NULL to <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> as the <em>c2</em> argument and the second CipherState will not be created at all.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01275">1275</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01312">1312</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -974,7 +1032,7 @@ NOISE_ERROR_NOT_APPLICABLE if an attempt was made to start a "XXfallback" handsh
 <p>This function is called after all of the handshake parameters have been provided to the HandshakeState object. This function should be followed by calls to noise_handshake_write_message() or noise_handshake_read_message() to process the handshake messages. The <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> function indicates the action to take next.</p>
 <dl class="section see"><dt>See Also</dt><dd>noise_handshake_write_message(), noise_handshake_read_message(), <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a>, <a class="el" href="group__handshakestate.html#gaaaf2e6ef61771c7fa5c4f5d5e106c603" title="Falls back to the &quot;XXfallback&quot; handshake pattern. ">noise_handshakestate_fallback()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00607">607</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00644">644</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1038,14 +1096,14 @@ NOISE_ERROR_INVALID_LENGTH if <em>message</em> is too small to contain all of th
 <div class="line"><span class="comment">// Transmit the message.size bytes starting at message.data if no error.</span></div>
 </div><!-- fragment --><dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga5b86560fccec5c8d9051fa6e30e7cb20" title="Reads a message payload using a HandshakeState. ">noise_handshakestate_read_message()</a>, <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01009">1009</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01046">1046</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 23 2016 16:08:27 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

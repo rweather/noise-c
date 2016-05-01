@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['data',['data',['../group__buffer__management.html#a4b8ff8129f7cd924711a833235636c41',1,'NoiseBuffer']]],
+  ['data',['data',['../protobufs_8h.html#a84c5220eb1c3b5a723c4b40d345a746c',1,'NoiseProtobuf::data()'],['../group__buffer__management.html#a4b8ff8129f7cd924711a833235636c41',1,'NoiseBuffer::data()']]],
   ['decrypt',['decrypt',['../structNoiseCipherState__s.html#a465d41a66eb999d594e97f11cbbbcb00',1,'NoiseCipherState_s']]],
   ['derive_5fpublic_5fkey',['derive_public_key',['../structNoiseDHState__s.html#aa3abd0225f5cc1efa5fae5903a7b8948',1,'NoiseDHState_s::derive_public_key()'],['../structNoiseSignState__s.html#ad2b6f79f05e8f9789c16f50323c9bc0d',1,'NoiseSignState_s::derive_public_key()']]],
   ['destroy',['destroy',['../structNoiseCipherState__s.html#abd576b311efc077bcb296a3a7f82c45a',1,'NoiseCipherState_s::destroy()'],['../structNoiseHashState__s.html#add43fdc210ad2900cf23075081f1a601',1,'NoiseHashState_s::destroy()'],['../structNoiseDHState__s.html#a19deb64f0c9b893f8f736db347823c81',1,'NoiseDHState_s::destroy()'],['../structNoiseSignState__s.html#afd8b0aee61139a93aff4f11bc3e3d273',1,'NoiseSignState_s::destroy()']]],
