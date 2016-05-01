@@ -18,6 +18,7 @@ include/noise/protocol/Makefile
 src/Makefile
 src/protocol/Makefile
 src/protobufs/Makefile
+src/protoc/Makefile
 tests/Makefile
 tests/unit/Makefile
 tests/vector/Makefile

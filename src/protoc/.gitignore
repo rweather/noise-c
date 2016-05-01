@@ -1,0 +1,5 @@
+proto3-grammar.c
+proto3-grammar.h
+proto3-lexer.c
+noise-protoc
+noise-protoc.exe

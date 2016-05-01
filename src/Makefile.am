@@ -1,2 +1,2 @@
 
-SUBDIRS = protocol protobufs
+SUBDIRS = protocol protobufs protoc
