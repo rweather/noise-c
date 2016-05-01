@@ -1,0 +1,110 @@
+// This protobuf definition is placed into the public domain.
+//
+// Author: Rhys Weatherley <rhys.weatherley@gmail.com>
+
+syntax = "proto3";
+
+// The top-level definitions are "Certificate", "CertificateChain",
+// and "EncryptedPrivateKey".  The other definitions support these three.
+
+// Fields with tag numbers 1 to 15 are reserved for use in this format
+// and future versions of this format.  Fields with tag numbers 16 and
+// higher are available for private use extensions, although a "meta"
+// block is probably a better approach for extensions.
+
+// A certificate contains a version, information about the subject,
+// and zero of more signatures over the subject information.
+// The version must be 1 for this version of the format.
+message Certificate {
+    reserved 4 to 15;
+    uint32 version = 1;
+    SubjectInfo subject = 2;
+    repeated Signature signatures = 3;
+}
+
+// A certificate chain consists of one or more certificates appended
+// one after the other.  The field tag is set to 8 to distinguish it
+// from the fields in Certificate, which allows applications to detect
+// if they are parsing a single certificate or a certificate chain.
+// The first certificate is assumed to be the subject, with the remaining
+// certificates providing additional information for subject verification.
+message CertificateChain {
+    reserved 1 to 7, 9 to 15;
+    repeated Certificate cert = 8;
+}
+
+// Information about the subject/owner in a certificate and their public keys.
+message SubjectInfo {
+    reserved 6 to 15;
+    string id = 1;
+    string name = 2;
+    string role = 3;
+    repeated PublicKey keys = 4;
+    repeated MetaInfo meta = 5;
+}
+
+// Information about a single public key.
+message PublicKey {
+    reserved 3 to 15;
+    string algorithm = 1;       // "25519", "448", "Ed25519", etc.
+    bytes key = 2;              // Format depends upon the algorithm.
+}
+
+// Extra meta information in a certificate, for future extensions.
+message MetaInfo {
+    reserved 3 to 15;
+    string name = 1;
+    string value = 2;
+}
+
+// Information about a signature on a certificate.
+message Signature {
+    reserved 6 to 14;
+    string id = 1;
+    string name = 2;
+    PublicKey signing_key = 3;
+    string hash_algorithm = 4;
+    ExtraSignedInfo extra_signed_info = 5;
+    bytes signature = 15;
+}
+
+// Extra information that is included by a signer to be signed
+// along with the subject information for the certificate.
+message ExtraSignedInfo {
+    reserved 5 to 15;
+    bytes nonce = 1;
+    string valid_from = 2;      // ISO 8601 format timestamp.
+    string valid_to = 3;        // ISO 8601 format timestamp.
+    repeated MetaInfo meta = 4;
+}
+
+// Contents of an encrypted private key file.  The field tag numbers are
+// deliberately different from "Certificate" and "CertificateChain" to
+// allow the application to detect what type of data it is processing.
+message EncryptedPrivateKey {
+    reserved 1 to 9, 14;
+    uint32 version = 10;        // 1 for this version of the format.
+    string algorithm = 11;      // e.g. "ChaChaPoly_BLAKE2b_PBKDF2".
+    bytes salt = 12;            // Salt value for input to the KDF.
+    uint32 iterations = 13;     // Iteration count for the KDF.
+    bytes encrypted_data = 15;  // Encrypted version of PrivateSubjectInfo.
+}
+
+// Information about a subject's private keys.  Note that this is
+// identical in format to "SubjectInfo" except that the key values
+// are private keys rather than public keys.
+message PrivateSubjectInfo {
+    reserved 6 to 15;
+    string id = 1;
+    string name = 2;
+    string role = 3;
+    repeated PrivateKey keys = 4;
+    repeated MetaInfo meta = 5;
+}
+
+// Information about a single private key.
+message PrivateKey {
+    reserved 3 to 15;
+    string algorithm = 1;       // "25519", "448", "Ed25519", etc.
+    bytes key = 2;              // Format depends upon the algorithm.
+}

@@ -5,4 +5,6 @@ EXTRA_DIST = \
     constants.dox \
     example-echo.dox \
     mainpage.dox \
+    noise-certificate.dox \
+    noise-certificate.proto \
     Doxyfile
