@@ -1,6 +1,4 @@
 
-AUTOMAKE_OPTIONS = serial-tests
-
 noinst_PROGRAMS = test-noise
 
 test_noise_SOURCES = \
@@ -23,4 +21,5 @@ AM_CFLAGS = @WARNING_FLAGS@
 LDADD = ../../src/protocol/libnoiseprotocol.a \
         ../../src/protobufs/libnoiseprotobufs.a
 
-TESTS = $(noinst_PROGRAMS)
+check-local:
+	./test-noise

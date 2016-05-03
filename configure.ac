@@ -9,6 +9,9 @@ AC_PROG_LEX
 AC_PROG_YACC
 AC_PATH_PROG(DOXYGEN, doxygen)
 
+AC_CHECK_LIB(rt, clock_gettime)
+AC_CHECK_LIB(ws2_32, [_head_libws2_32_a])
+
 AC_SUBST([WARNING_FLAGS],[-Wall])
 
 AC_CONFIG_FILES([Makefile
