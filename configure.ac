@@ -10,7 +10,11 @@ AC_PROG_YACC
 AC_PATH_PROG(DOXYGEN, doxygen)
 
 AC_CHECK_LIB(rt, clock_gettime)
+
+dnl Try to detect winsock2 on mingw32/64 systems.
 AC_CHECK_LIB(ws2_32, [_head_libws2_32_a])
+AC_CHECK_LIB(ws2_32, [_head_lib32_libws2_32_a])
+AC_CHECK_LIB(ws2_32, [_head_lib64_libws2_32_a])
 
 AC_SUBST([WARNING_FLAGS],[-Wall])
 
