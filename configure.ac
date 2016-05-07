@@ -26,6 +26,7 @@ src/Makefile
 src/protocol/Makefile
 src/protobufs/Makefile
 src/protoc/Makefile
+src/keys/Makefile
 tests/Makefile
 tests/unit/Makefile
 tests/vector/Makefile
