@@ -18,8 +18,9 @@ test_noise_SOURCES = \
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
 AM_CFLAGS = @WARNING_FLAGS@
 
-LDADD = ../../src/protocol/libnoiseprotocol.a \
-        ../../src/protobufs/libnoiseprotobufs.a
+LDADD = ../../src/keys/libnoisekeys.a \
+        ../../src/protobufs/libnoiseprotobufs.a \
+        ../../src/protocol/libnoiseprotocol.a
 
 check-local:
 	./test-noise
