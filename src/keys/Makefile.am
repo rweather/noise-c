@@ -10,7 +10,7 @@ libnoisekeys_a_SOURCES = \
 	keystate.c
 
 protos:
-	$(top_builddir)/src/protoc/noise-protoc \
+	$(top_builddir)/tools/protoc/noise-protoc \
 		-c $(top_srcdir)/src/keys/certificate.c \
 		-h $(top_srcdir)/include/noise/keys/certificate.h \
 		-l $(top_srcdir)/COPYING \

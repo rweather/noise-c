@@ -25,12 +25,13 @@ include/noise/protocol/Makefile
 src/Makefile
 src/protocol/Makefile
 src/protobufs/Makefile
-src/protoc/Makefile
 src/keys/Makefile
 tests/Makefile
 tests/unit/Makefile
 tests/vector/Makefile
 tests/performance/Makefile
+tools/Makefile
+tools/protoc/Makefile
 examples/Makefile
 examples/echo/Makefile
 examples/echo/echo-client/Makefile

@@ -1,2 +1,2 @@
 
-SUBDIRS = protocol protobufs protoc keys
+SUBDIRS = protocol protobufs keys

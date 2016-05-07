@@ -1,5 +1,5 @@
 
-SUBDIRS = include src tests examples doc
+SUBDIRS = include src tools tests examples doc
 
 EXTRA_DIST = README.md
 
