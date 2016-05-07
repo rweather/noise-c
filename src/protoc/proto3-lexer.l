@@ -25,11 +25,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include "proto3-ast.h"
 #include "proto3-grammar.h"
 
 #define YY_NO_INPUT
-
-static char *token_string = 0;
 
 %}
 
@@ -75,12 +74,7 @@ STRCHAR     [^"\n]
 "false"     { return K_FALSE; }
 
 {ID}        {
-                if (token_string)
-                    free(token_string);
-                token_string = strdup(yytext);
-                if (!token_string)
-                    exit(1);
-                yylval.name = token_string;
+                yylval.name = proto3_basic_name(yytext);
                 return K_IDENTIFIER;
             }
 {NUMBER}    {
@@ -90,14 +84,7 @@ STRCHAR     [^"\n]
 
 {QUOTE}{STRCHAR}*{QUOTE} {
                 size_t len = strlen(yytext) - 2;
-                if (token_string)
-                    free(token_string);
-                token_string = malloc(len + 1);
-                if (!token_string)
-                    exit(1);
-                memcpy(token_string, yytext + 1, len);
-                token_string[len] = '\0';
-                yylval.string = token_string;
+                yylval.name = proto3_string(yytext + 1, len);
                 return K_STRING_LITERAL;
             }
 

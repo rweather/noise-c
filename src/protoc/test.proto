@@ -1,0 +1,90 @@
+
+// Test protobuf definition that has one of everything.
+
+syntax="proto3";
+
+message BasicFields {
+    int32 f_int32 = 1;
+    uint32 f_uint32 = 2;
+    int64 f_int64 = 3;
+    uint64 f_uint64 = 4;
+    sint32 f_sint32 = 5;
+    sint64 f_sint64 = 6;
+    fixed32 f_fixed32 = 7;
+    sfixed32 f_sfixed32 = 8;
+    fixed64 f_fixed64 = 9;
+    sfixed64 f_sfixed64 = 10;
+    float f_float = 11;
+    double f_double = 12;
+    bool f_bool = 13;
+    string f_string = 14;
+    bytes f_bytes = 15;
+    Object f_object = 16;
+}
+
+message RepeatedFields {
+    repeated int32 f_int32 = 1;
+    repeated uint32 f_uint32 = 2;
+    repeated int64 f_int64 = 3;
+    repeated uint64 f_uint64 = 4;
+    repeated sint32 f_sint32 = 5;
+    repeated sint64 f_sint64 = 6;
+    repeated fixed32 f_fixed32 = 7;
+    repeated sfixed32 f_sfixed32 = 8;
+    repeated fixed64 f_fixed64 = 9;
+    repeated sfixed64 f_sfixed64 = 10;
+    repeated float f_float = 11;
+    repeated double f_double = 12;
+    repeated bool f_bool = 13;
+    repeated string f_string = 14;
+    repeated bytes f_bytes = 15;
+    repeated Object f_object = 16;
+}
+
+message RepeatedFieldsUnpacked {
+    repeated int32 f_int32 = 1 [packed=false];
+    repeated uint32 f_uint32 = 2 [packed=false];
+    repeated int64 f_int64 = 3 [packed=false];
+    repeated uint64 f_uint64 = 4 [packed=false];
+    repeated sint32 f_sint32 = 5 [packed=false];
+    repeated sint64 f_sint64 = 6 [packed=false];
+    repeated fixed32 f_fixed32 = 7 [packed=false];
+    repeated sfixed32 f_sfixed32 = 8 [packed=false];
+    repeated fixed64 f_fixed64 = 9 [packed=false];
+    repeated sfixed64 f_sfixed64 = 10 [packed=false];
+    repeated float f_float = 11 [packed=false];
+    repeated double f_double = 12 [packed=false];
+    repeated bool f_bool = 13 [packed=false];
+    repeated string f_string = 14 [packed=false];
+    repeated bytes f_bytes = 15 [packed=false];
+    repeated Object f_object = 16 [packed=false];
+}
+
+message RequiredFields {
+    required int32 f_int32 = 1;
+    required uint32 f_uint32 = 2;
+    required int64 f_int64 = 3;
+    required uint64 f_uint64 = 4;
+    required sint32 f_sint32 = 5;
+    required sint64 f_sint64 = 6;
+    required fixed32 f_fixed32 = 7;
+    required sfixed32 f_sfixed32 = 8;
+    required fixed64 f_fixed64 = 9;
+    required sfixed64 f_sfixed64 = 10;
+    required float f_float = 11;
+    required double f_double = 12;
+    required bool f_bool = 13;
+    required string f_string = 14;
+    required bytes f_bytes = 15;
+    required Object f_object = 16;
+}
+
+message Object {
+    int32 x = 1;
+}
+
+enum Enum {
+    Default = 0;
+    Enum1 = 1;
+    Enum2 = 2;
+}

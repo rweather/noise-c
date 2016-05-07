@@ -21,7 +21,6 @@
  */
 
 #include <noise/protobufs.h>
-#include <noise/protocol/constants.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -53,6 +52,20 @@
  * and writing tasks.
  *
  * \section protobuf_compiling Compiling a protobuf description
+ *
+ * The <tt>noise-protoc</tt> program can be used to compile a protobuf
+ * description into C code.  There are some limitations in this program
+ * compared with the standard protobuf tools:
+ *
+ * \li Only "proto3" syntax is supported.  There is no support for "proto2".
+ * \li The "oneof", "service", and "map" keywords are not supported.
+ * \li The "import" and "reserved" keywords are recognized but ignored.
+ * \li The generated code is designed for reading and writing in-memory
+ * buffers, typically restricted to the Noise packet limit of 65535 bytes.
+ * \li File and stream based operations for arbitrary-length message
+ * structures are not supported.
+ *
+ * These limitations may be addressed in future versions.
  *
  * TODO
  *
@@ -814,22 +827,6 @@ int noise_protobuf_write_double(NoiseProtobuf *pbuf, int tag, double value)
 int noise_protobuf_write_bool(NoiseProtobuf *pbuf, int tag, int value)
 {
     return noise_protobuf_write_integer(pbuf, tag, value ? 1 : 0);
-}
-
-/**
- * \brief Writes a tagged enumerated value to a protobuf.
- *
- * \param pbuf The protobuf.
- * \param tag The tag value to write, or zero for no tag.
- * \param value The enumerated value to write.
- *
- * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a pbuf is NULL.
- * \return NOISE_ERROR_INVALID_LENGTH if the protobuf has insufficient space.
- */
-int noise_protobuf_write_enum(NoiseProtobuf *pbuf, int tag, int32_t value)
-{
-    return noise_protobuf_write_integer(pbuf, tag, (uint64_t)(int64_t)value);
 }
 
 /**
@@ -2022,6 +2019,163 @@ int noise_protobuf_read_skip(NoiseProtobuf *pbuf)
         break;
     }
     return err;
+}
+
+/**
+ * \brief Grows the size of a dynamically-sized array.
+ *
+ * \param max The current maximum size.
+ *
+ * \return The new maximum size.
+ */
+static size_t noise_protobuf_grow_array(size_t max)
+{
+    if (max >= 64)
+        max += 64;
+    else if (max)
+        max *= 2;
+    else
+        max = 4;
+    return max;
+}
+
+/**
+ * \brief Adds an element to an array of primitive values.
+ *
+ * \param array Points to the array to add to.
+ * \param count Points to the current size of the array.
+ * \param max Points to the current maximum size of the array.
+ * \param value Points to the value to add.
+ * \param size Size of the elements in the array.
+ *
+ * \return NOISE_ERROR_NONE on success or an error code otherwise.
+ *
+ * This function is intended as a helper for the output of the
+ * noise-protoc complier.
+ *
+ * \sa noise_protobuf_add_to_string_array(), noise_protobuf_add_to_bytes_array()
+ */
+int noise_protobuf_add_to_array
+    (void **array, size_t *count, size_t *max, const void *value, size_t size)
+{
+    if (*count >= *max) {
+        size_t new_max = noise_protobuf_grow_array(*max);
+        void *new_array = calloc(new_max, size);
+        if (!new_array)
+            return NOISE_ERROR_NO_MEMORY;
+        if (*count)
+            memcpy(new_array, *array, *count * size);
+        noise_protobuf_free_memory(*array, *max * size);
+        *array = new_array;
+        *max = new_max;
+    }
+    memcpy(((uint8_t *)(*array)) + *count * size, value, size);
+    ++(*count);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Internal implementation of noise_protobuf_add_to_string_array()
+ * and noise_protobuf_add_to_bytes_array()
+ */
+static int noise_protobuf_add_to_block_array
+    (void ***array, size_t **len_array, size_t *count, size_t *max,
+     const void *value, size_t size, int add_nul)
+{
+    void *data;
+
+    /* Bail out if the value to add is NULL and non-zero in size */
+    if (!value && size)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Make a copy of the value first */
+    data = malloc(size + (add_nul ? 1 : 0));
+    if (!data)
+        return NOISE_ERROR_NO_MEMORY;
+    if (size)
+        memcpy(data, value, size);
+    if (add_nul)
+        ((uint8_t *)data)[size] = 0;
+
+    /* Grow the size of the array if necessary */
+    if (*count >= *max) {
+        size_t new_max = noise_protobuf_grow_array(*max);
+        void **new_array = (void **)calloc(new_max, sizeof(void *));
+        size_t *new_len_array = (size_t *)calloc(new_max, sizeof(size_t));
+        if (!new_array || !new_len_array) {
+            if (new_array)
+                free(new_array);
+            if (new_len_array)
+                free(new_len_array);
+            noise_protobuf_free_memory(data, size);
+            return NOISE_ERROR_NO_MEMORY;
+        }
+        if (*count) {
+            memcpy(new_array, *array, *count * sizeof(void *));
+            memcpy(new_len_array, *len_array, *count * sizeof(size_t));
+        }
+        noise_protobuf_free_memory(*array, *max * sizeof(void *));
+        noise_protobuf_free_memory(*len_array, *max * sizeof(size_t));
+        *array = new_array;
+        *len_array = new_len_array;
+        *max = new_max;
+    }
+
+    /* Add the new element to the array */
+    (*array)[*count] = data;
+    (*len_array)[*count] = size;
+    ++(*count);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Adds a string to a dynamically-sized array.
+ *
+ * \param array Points to the array to add to.
+ * \param len_array Points to the array of length values to add to.
+ * \param count Points to the current size of the array.
+ * \param max Points to the current maximum size of the array.
+ * \param value Points to the string value to add.
+ * \param size Size of the string value to add.
+ *
+ * \return NOISE_ERROR_NONE on success or an error code otherwise.
+ *
+ * This function is intended as a helper for the output of the
+ * noise-protoc complier.
+ *
+ * \sa noise_protobuf_add_to_array(), noise_protobuf_add_to_bytes_array()
+ */
+int noise_protobuf_add_to_string_array
+    (char ***array, size_t **len_array, size_t *count, size_t *max,
+     const char *value, size_t size)
+{
+    return noise_protobuf_add_to_block_array
+        ((void ***)array, len_array, count, max, value, size, 1);
+}
+
+/**
+ * \brief Adds a byte string to a dynamically-sized array.
+ *
+ * \param array Points to the array to add to.
+ * \param len_array Points to the array of length values to add to.
+ * \param count Points to the current size of the array.
+ * \param max Points to the current maximum size of the array.
+ * \param value Points to the byte string value to add.
+ * \param size Size of the byte string value to add.
+ *
+ * \return NOISE_ERROR_NONE on success or an error code otherwise.
+ *
+ * This function is intended as a helper for the output of the
+ * noise-protoc complier.
+ *
+ * \sa noise_protobuf_add_to_array(), noise_protobuf_add_to_string_array()
+ */
+int noise_protobuf_add_to_bytes_array
+    (void ***array, size_t **len_array, size_t *count, size_t *max,
+     const void *value, size_t size)
+{
+    return noise_protobuf_add_to_block_array
+        (array, len_array, count, max, value, size, size ? 0 : 1);
 }
 
 /**

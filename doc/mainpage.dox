@@ -64,7 +64,9 @@ is my motto.
 
 \li <tt>include/noise/</tt> - Public API definitions for inclusion
     into applications.
-\li <tt>src/protocol/</tt> - Source code for the core Noise protocol library.
+\li <tt>src/protocol/</tt> - Source code for the core Noise-C protocol library.
+\li <tt>src/protobufs/</tt> - Source code for the Noise-C protobufs library.
+\li <tt>src/protoc/</tt> - Source code for the Noise-C protobufs compiler.
 \li <tt>src/crypto/</tt> - Public domain and open source reference
     implementations of the cryptographic primitives.
 \li <tt>src/backend/ref/</tt> - Backends for

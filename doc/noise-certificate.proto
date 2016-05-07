@@ -4,6 +4,8 @@
 
 syntax = "proto3";
 
+package Noise;
+
 // The top-level definitions are "Certificate", "CertificateChain",
 // and "EncryptedPrivateKey".  The other definitions support these three.
 
@@ -30,7 +32,7 @@ message Certificate {
 // certificates providing additional information for subject verification.
 message CertificateChain {
     reserved 1 to 7, 9 to 15;
-    repeated Certificate cert = 8;
+    repeated Certificate certs = 8;
 }
 
 // Information about the subject/owner in a certificate and their public keys.

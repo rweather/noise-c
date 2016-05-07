@@ -23,6 +23,7 @@
 #ifndef NOISE_PROTOBUFS_H
 #define NOISE_PROTOBUFS_H
 
+#include <noise/protocol/constants.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -65,7 +66,6 @@ int noise_protobuf_write_fixed64(NoiseProtobuf *pbuf, int tag, uint64_t value);
 int noise_protobuf_write_float(NoiseProtobuf *pbuf, int tag, float value);
 int noise_protobuf_write_double(NoiseProtobuf *pbuf, int tag, double value);
 int noise_protobuf_write_bool(NoiseProtobuf *pbuf, int tag, int value);
-int noise_protobuf_write_enum(NoiseProtobuf *pbuf, int tag, int32_t value);
 int noise_protobuf_write_string
     (NoiseProtobuf *pbuf, int tag, const char *str, size_t size);
 int noise_protobuf_write_bytes
@@ -104,6 +104,15 @@ int noise_protobuf_read_at_end_element
     (const NoiseProtobuf *pbuf, size_t end_posn);
 int noise_protobuf_read_stop(NoiseProtobuf *pbuf);
 int noise_protobuf_read_skip(NoiseProtobuf *pbuf);
+
+int noise_protobuf_add_to_array
+    (void **array, size_t *count, size_t *max, const void *value, size_t size);
+int noise_protobuf_add_to_string_array
+    (char ***array, size_t **len_array, size_t *count, size_t *max,
+     const char *value, size_t size);
+int noise_protobuf_add_to_bytes_array
+    (void ***array, size_t **len_array, size_t *count, size_t *max,
+     const void *value, size_t size);
 
 void noise_protobuf_free_memory(void *ptr, size_t size);
 
