@@ -1,2 +1,2 @@
 
-SUBDIRS = protoc
+SUBDIRS = keytool protoc

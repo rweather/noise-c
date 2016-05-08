@@ -31,6 +31,7 @@ tests/unit/Makefile
 tests/vector/Makefile
 tests/performance/Makefile
 tools/Makefile
+tools/keytool/Makefile
 tools/protoc/Makefile
 examples/Makefile
 examples/echo/Makefile
