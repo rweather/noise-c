@@ -1026,6 +1026,8 @@ int noise_protobuf_write_start_element
     int err;
     if (!pbuf || end_posn < pbuf->posn || end_posn > pbuf->size)
         return NOISE_ERROR_INVALID_PARAM;
+    if (!tag)
+        return pbuf->error; /* No tag or size field necessary */
     err = noise_protobuf_write_varint(pbuf, end_posn - pbuf->posn);
     if (err != NOISE_ERROR_NONE)
         return err;
@@ -1882,14 +1884,19 @@ int noise_protobuf_read_start_element
     err = noise_protobuf_read_tag(pbuf, tag, NOISE_PROTOBUF_WIRE_DELIM);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_read_varint(pbuf, &size);
-    if (err != NOISE_ERROR_NONE)
-        return err;
-    if (size > (pbuf->size - pbuf->posn)) {
-        pbuf->error = NOISE_ERROR_INVALID_FORMAT;
-        return pbuf->error;
+    if (tag) {
+        err = noise_protobuf_read_varint(pbuf, &size);
+        if (err != NOISE_ERROR_NONE)
+            return err;
+        if (size > (pbuf->size - pbuf->posn)) {
+            pbuf->error = NOISE_ERROR_INVALID_FORMAT;
+            return pbuf->error;
+        }
+        *end_posn = pbuf->posn + size;
+    } else {
+        /* No tag, so the element continues until the end of the buffer */
+        *end_posn = pbuf->size;
     }
-    *end_posn = pbuf->posn + size;
     return NOISE_ERROR_NONE;
 }
 
@@ -2176,6 +2183,57 @@ int noise_protobuf_add_to_bytes_array
 {
     return noise_protobuf_add_to_block_array
         (array, len_array, count, max, value, size, size ? 0 : 1);
+}
+
+/**
+ * \brief Inserts an item into a dynamically-sized array.
+ *
+ * \param array Points to the array to add to.
+ * \param len_array Points to the array of length values to add to.
+ * \param count Points to the current size of the array.
+ * \param max Points to the current maximum size of the array.
+ * \param index The index within the array to insert at.  If this is
+ * greater than the size of the array, the value will be appended.
+ * \param value Points to the value to add.
+ * \param size Size of the elements in the array.
+ *
+ * \return NOISE_ERROR_NONE on success or an error code otherwise.
+ *
+ * This function is intended as a helper for the output of the
+ * noise-protoc complier.
+ */
+int noise_protobuf_insert_into_array
+    (void **array, size_t *count, size_t *max, size_t index,
+     const void *value, size_t size)
+{
+    uint8_t *base;
+
+    /* Handle the easy case first - inserting at the end of the array */
+    if (index >= *count) {
+        return noise_protobuf_add_to_array
+            (array, count, max, value, size);
+    }
+
+    /* Grow the array size if necessary */
+    if (*count >= *max) {
+        size_t new_max = noise_protobuf_grow_array(*max);
+        void *new_array = calloc(new_max, size);
+        if (!new_array)
+            return NOISE_ERROR_NO_MEMORY;
+        if (*count)
+            memcpy(new_array, *array, *count * size);
+        noise_protobuf_free_memory(*array, *max * size);
+        *array = new_array;
+        *max = new_max;
+    }
+
+    /* Move existing items out of the way and insert the new one */
+    base = (uint8_t *)(*array);
+    memmove(base + (index + 1) * size, base + index * size,
+            (*count - index) * size);
+    memcpy(base + index * size, value, size);
+    ++(*count);
+    return NOISE_ERROR_NONE;
 }
 
 /**

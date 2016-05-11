@@ -41,12 +41,12 @@ message SubjectInfo {
     string id = 1;
     string name = 2;
     string role = 3;
-    repeated PublicKey keys = 4;
+    repeated PublicKeyInfo keys = 4;
     repeated MetaInfo meta = 5;
 }
 
 // Information about a single public key.
-message PublicKey {
+message PublicKeyInfo {
     reserved 3 to 15;
     string algorithm = 1;       // "25519", "448", "Ed25519", etc.
     bytes key = 2;              // Format depends upon the algorithm.
@@ -64,7 +64,7 @@ message Signature {
     reserved 6 to 14;
     string id = 1;
     string name = 2;
-    PublicKey signing_key = 3;
+    PublicKeyInfo signing_key = 3;
     string hash_algorithm = 4;
     ExtraSignedInfo extra_signed_info = 5;
     bytes signature = 15;
@@ -89,23 +89,23 @@ message EncryptedPrivateKey {
     string algorithm = 11;      // e.g. "ChaChaPoly_BLAKE2b_PBKDF2".
     bytes salt = 12;            // Salt value for input to the KDF.
     uint32 iterations = 13;     // Iteration count for the KDF.
-    bytes encrypted_data = 15;  // Encrypted version of PrivateSubjectInfo.
+    bytes encrypted_data = 15;  // Encrypted version of PrivateKey.
 }
 
 // Information about a subject's private keys.  Note that this is
 // identical in format to "SubjectInfo" except that the key values
 // are private keys rather than public keys.
-message PrivateSubjectInfo {
+message PrivateKey {
     reserved 6 to 15;
     string id = 1;
     string name = 2;
     string role = 3;
-    repeated PrivateKey keys = 4;
+    repeated PrivateKeyInfo keys = 4;
     repeated MetaInfo meta = 5;
 }
 
 // Information about a single private key.
-message PrivateKey {
+message PrivateKeyInfo {
     reserved 3 to 15;
     string algorithm = 1;       // "25519", "448", "Ed25519", etc.
     bytes key = 2;              // Format depends upon the algorithm.

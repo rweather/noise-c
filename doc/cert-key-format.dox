@@ -52,11 +52,11 @@ Certificate {
         name: "Jane Smith"
         role: "foo-chat-user"
         keys: [
-            PublicKey {
+            PublicKeyInfo {
                 algorithm: "25519"
                 key: "0xf14a2dedf6e1dd879a3af47900eedf17ae56868a7849a370ca732a571ef19e0f"
             }
-            PublicKey {
+            PublicKeyInfo {
                 algorithm: "448"
                 key: "0xd414a46bed6231540306818bdab08d8b06a28d98d0bfca47bcea1faf1aca78d8aabc7d7c2073779bd84cf0950ae10247975266267eebb1c8"
             }
@@ -66,7 +66,7 @@ Certificate {
         Signature {
             id: "tpeoples@example.org"
             name: "Trent Peoples"
-            signing_key: PublicKey {
+            signing_key: PublicKeyInfo {
                 algorithm: "Ed25519"
                 key: "0x0fdde4a7a7cc91ec509a74bd5f2369ac768a14bb6388ceb2e1710a4b85bfe001"
             }
@@ -102,7 +102,7 @@ signatures: [
     Signature {
         id: "tpeoples@example.org"
         name: "Trent Peoples"
-        signing_key: PublicKey {
+        signing_key: PublicKeyInfo {
             algorithm: "Ed25519"
             key: "0x0fdde4a7a7cc91ec509a74bd5f2369ac768a14bb6388ceb2e1710a4b85bfe001"
         }
@@ -117,7 +117,7 @@ signatures: [
     Signature {
         id: "mary.sue@example.com"
         name: "Mary Sue"
-        signing_key: PublicKey {
+        signing_key: PublicKeyInfo {
             algorithm: "Ed25519"
             key: "0x8e15998d97f9b43150f05d1b895f5272a2ff1453dbf40ee4ea90df81147db5c3"
         }
@@ -227,7 +227,7 @@ application; e.g. "foo-chat-user" and "foo-chat-server".
 <tt>keys</tt> - List of public keys for the subject.
 
 \dontinclude noise-certificate.proto
-\skip message PublicKey
+\skip message PublicKeyInfo
 \until }
 
 <tt>meta</tt> - Extra meta information about the subject as a list of
@@ -344,14 +344,14 @@ The private key information is similar to the subject information from the
 certificate format:
 
 \dontinclude noise-certificate.proto
-\skip message PrivateSubjectInfo
-\until }
 \skip message PrivateKey
 \until }
+\skip message PrivateKeyInfo
+\until }
 
-The format of "PrivateSubjectInfo" and "PrivateKey" are identical to
-"SubjectInfo" and "PublicKey", which may allow applications to share the
-format handling code between the two use cases if they so wish.
+The format of "PrivateKey" and "PrivateKeyInfo" are identical to
+"SubjectInfo" and "PublicKeyInfo", which may allow applications to
+share the format handling code between the two use cases if they so wish.
 
 The private key information is encrypted to protect it inside an
 "EncryptedPrivateKey" wrapper:

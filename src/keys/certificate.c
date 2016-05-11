@@ -45,7 +45,7 @@ struct _Noise_SubjectInfo {
     size_t name_size_;
     char *role;
     size_t role_size_;
-    Noise_PublicKey **keys;
+    Noise_PublicKeyInfo **keys;
     size_t keys_count_;
     size_t keys_max_;
     Noise_MetaInfo **meta;
@@ -53,7 +53,7 @@ struct _Noise_SubjectInfo {
     size_t meta_max_;
 };
 
-struct _Noise_PublicKey {
+struct _Noise_PublicKeyInfo {
     char *algorithm;
     size_t algorithm_size_;
     void *key;
@@ -72,7 +72,7 @@ struct _Noise_Signature {
     size_t id_size_;
     char *name;
     size_t name_size_;
-    Noise_PublicKey *signing_key;
+    Noise_PublicKeyInfo *signing_key;
     char *hash_algorithm;
     size_t hash_algorithm_size_;
     Noise_ExtraSignedInfo *extra_signed_info;
@@ -103,14 +103,14 @@ struct _Noise_EncryptedPrivateKey {
     size_t encrypted_data_size_;
 };
 
-struct _Noise_PrivateSubjectInfo {
+struct _Noise_PrivateKey {
     char *id;
     size_t id_size_;
     char *name;
     size_t name_size_;
     char *role;
     size_t role_size_;
-    Noise_PrivateKey **keys;
+    Noise_PrivateKeyInfo **keys;
     size_t keys_count_;
     size_t keys_max_;
     Noise_MetaInfo **meta;
@@ -118,7 +118,7 @@ struct _Noise_PrivateSubjectInfo {
     size_t meta_max_;
 };
 
-struct _Noise_PrivateKey {
+struct _Noise_PrivateKeyInfo {
     char *algorithm;
     size_t algorithm_size_;
     void *key;
@@ -316,13 +316,20 @@ int Noise_Certificate_add_signatures(Noise_Certificate *obj, Noise_Signature **v
     err = Noise_Signature_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_add_to_array((void **)&(obj->signatures), &(obj->signatures_count_), &(obj->signatures_max_), *value, sizeof(*value));
+    err = noise_protobuf_add_to_array((void **)&(obj->signatures), &(obj->signatures_count_), &(obj->signatures_max_), value, sizeof(*value));
     if (err != NOISE_ERROR_NONE) {
         Noise_Signature_free(*value);
         *value = 0;
         return err;
     }
     return NOISE_ERROR_NONE;
+}
+
+int Noise_Certificate_insert_signatures(Noise_Certificate *obj, size_t index, Noise_Signature *value)
+{
+    if (!obj || !value)
+        return NOISE_ERROR_INVALID_PARAM;
+    return noise_protobuf_insert_into_array((void **)&(obj->signatures), &(obj->signatures_count_), &(obj->signatures_max_), index, &value, sizeof(value));
 }
 
 int Noise_CertificateChain_new(Noise_CertificateChain **obj)
@@ -439,13 +446,20 @@ int Noise_CertificateChain_add_certs(Noise_CertificateChain *obj, Noise_Certific
     err = Noise_Certificate_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_add_to_array((void **)&(obj->certs), &(obj->certs_count_), &(obj->certs_max_), *value, sizeof(*value));
+    err = noise_protobuf_add_to_array((void **)&(obj->certs), &(obj->certs_count_), &(obj->certs_max_), value, sizeof(*value));
     if (err != NOISE_ERROR_NONE) {
         Noise_Certificate_free(*value);
         *value = 0;
         return err;
     }
     return NOISE_ERROR_NONE;
+}
+
+int Noise_CertificateChain_insert_certs(Noise_CertificateChain *obj, size_t index, Noise_Certificate *value)
+{
+    if (!obj || !value)
+        return NOISE_ERROR_INVALID_PARAM;
+    return noise_protobuf_insert_into_array((void **)&(obj->certs), &(obj->certs_count_), &(obj->certs_max_), index, &value, sizeof(value));
 }
 
 int Noise_SubjectInfo_new(Noise_SubjectInfo **obj)
@@ -467,8 +481,8 @@ int Noise_SubjectInfo_free(Noise_SubjectInfo *obj)
     noise_protobuf_free_memory(obj->name, obj->name_size_);
     noise_protobuf_free_memory(obj->role, obj->role_size_);
     for (index = 0; index < obj->keys_count_; ++index)
-        Noise_PublicKey_free(obj->keys[index]);
-    noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PublicKey *));
+        Noise_PublicKeyInfo_free(obj->keys[index]);
+    noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PublicKeyInfo *));
     for (index = 0; index < obj->meta_count_; ++index)
         Noise_MetaInfo_free(obj->meta[index]);
     noise_protobuf_free_memory(obj->meta, obj->meta_max_ * sizeof(Noise_MetaInfo *));
@@ -486,7 +500,7 @@ int Noise_SubjectInfo_write(NoiseProtobuf *pbuf, int tag, const Noise_SubjectInf
     for (index = obj->meta_count_; index > 0; --index)
         Noise_MetaInfo_write(pbuf, 5, obj->meta[index - 1]);
     for (index = obj->keys_count_; index > 0; --index)
-        Noise_PublicKey_write(pbuf, 4, obj->keys[index - 1]);
+        Noise_PublicKeyInfo_write(pbuf, 4, obj->keys[index - 1]);
     if (obj->role)
         noise_protobuf_write_string(pbuf, 3, obj->role, obj->role_size_);
     if (obj->name)
@@ -530,9 +544,9 @@ int Noise_SubjectInfo_read(NoiseProtobuf *pbuf, int tag, Noise_SubjectInfo **obj
                 noise_protobuf_read_alloc_string(pbuf, 3, &((*obj)->role), 0, &((*obj)->role_size_));
             } break;
             case 4: {
-                Noise_PublicKey *value = 0;
+                Noise_PublicKeyInfo *value = 0;
                 int err;
-                Noise_PublicKey_read(pbuf, 4, &value);
+                Noise_PublicKeyInfo_read(pbuf, 4, &value);
                 err = noise_protobuf_add_to_array((void **)&((*obj)->keys), &((*obj)->keys_count_), &((*obj)->keys_max_), &value, sizeof(value));
                 if (err != NOISE_ERROR_NONE && pbuf->error != NOISE_ERROR_NONE)
                    pbuf->error = err;
@@ -695,8 +709,8 @@ int Noise_SubjectInfo_clear_keys(Noise_SubjectInfo *obj)
     size_t index;
     if (obj) {
         for (index = 0; index < obj->keys_count_; ++index)
-            Noise_PublicKey_free(obj->keys[index]);
-        noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PublicKey *));
+            Noise_PublicKeyInfo_free(obj->keys[index]);
+        noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PublicKeyInfo *));
         obj->keys = 0;
         obj->keys_count_ = 0;
         obj->keys_max_ = 0;
@@ -715,7 +729,7 @@ size_t Noise_SubjectInfo_count_keys(const Noise_SubjectInfo *obj)
     return obj ? obj->keys_count_ : 0;
 }
 
-Noise_PublicKey *Noise_SubjectInfo_get_at_keys(const Noise_SubjectInfo *obj, size_t index)
+Noise_PublicKeyInfo *Noise_SubjectInfo_get_at_keys(const Noise_SubjectInfo *obj, size_t index)
 {
     if (obj && index < obj->keys_count_)
         return obj->keys[index];
@@ -723,7 +737,7 @@ Noise_PublicKey *Noise_SubjectInfo_get_at_keys(const Noise_SubjectInfo *obj, siz
         return 0;
 }
 
-int Noise_SubjectInfo_add_keys(Noise_SubjectInfo *obj, Noise_PublicKey **value)
+int Noise_SubjectInfo_add_keys(Noise_SubjectInfo *obj, Noise_PublicKeyInfo **value)
 {
     int err;
     if (!value)
@@ -731,16 +745,23 @@ int Noise_SubjectInfo_add_keys(Noise_SubjectInfo *obj, Noise_PublicKey **value)
     *value = 0;
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
-    err = Noise_PublicKey_new(value);
+    err = Noise_PublicKeyInfo_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_add_to_array((void **)&(obj->keys), &(obj->keys_count_), &(obj->keys_max_), *value, sizeof(*value));
+    err = noise_protobuf_add_to_array((void **)&(obj->keys), &(obj->keys_count_), &(obj->keys_max_), value, sizeof(*value));
     if (err != NOISE_ERROR_NONE) {
-        Noise_PublicKey_free(*value);
+        Noise_PublicKeyInfo_free(*value);
         *value = 0;
         return err;
     }
     return NOISE_ERROR_NONE;
+}
+
+int Noise_SubjectInfo_insert_keys(Noise_SubjectInfo *obj, size_t index, Noise_PublicKeyInfo *value)
+{
+    if (!obj || !value)
+        return NOISE_ERROR_INVALID_PARAM;
+    return noise_protobuf_insert_into_array((void **)&(obj->keys), &(obj->keys_count_), &(obj->keys_max_), index, &value, sizeof(value));
 }
 
 int Noise_SubjectInfo_clear_meta(Noise_SubjectInfo *obj)
@@ -787,7 +808,7 @@ int Noise_SubjectInfo_add_meta(Noise_SubjectInfo *obj, Noise_MetaInfo **value)
     err = Noise_MetaInfo_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_add_to_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), *value, sizeof(*value));
+    err = noise_protobuf_add_to_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), value, sizeof(*value));
     if (err != NOISE_ERROR_NONE) {
         Noise_MetaInfo_free(*value);
         *value = 0;
@@ -796,27 +817,34 @@ int Noise_SubjectInfo_add_meta(Noise_SubjectInfo *obj, Noise_MetaInfo **value)
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PublicKey_new(Noise_PublicKey **obj)
+int Noise_SubjectInfo_insert_meta(Noise_SubjectInfo *obj, size_t index, Noise_MetaInfo *value)
+{
+    if (!obj || !value)
+        return NOISE_ERROR_INVALID_PARAM;
+    return noise_protobuf_insert_into_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), index, &value, sizeof(value));
+}
+
+int Noise_PublicKeyInfo_new(Noise_PublicKeyInfo **obj)
 {
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
-    *obj = (Noise_PublicKey *)calloc(1, sizeof(Noise_PublicKey));
+    *obj = (Noise_PublicKeyInfo *)calloc(1, sizeof(Noise_PublicKeyInfo));
     if (!(*obj))
         return NOISE_ERROR_NO_MEMORY;
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PublicKey_free(Noise_PublicKey *obj)
+int Noise_PublicKeyInfo_free(Noise_PublicKeyInfo *obj)
 {
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
     noise_protobuf_free_memory(obj->algorithm, obj->algorithm_size_);
     noise_protobuf_free_memory(obj->key, obj->key_size_);
-    noise_protobuf_free_memory(obj, sizeof(Noise_PublicKey));
+    noise_protobuf_free_memory(obj, sizeof(Noise_PublicKeyInfo));
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PublicKey_write(NoiseProtobuf *pbuf, int tag, const Noise_PublicKey *obj)
+int Noise_PublicKeyInfo_write(NoiseProtobuf *pbuf, int tag, const Noise_PublicKeyInfo *obj)
 {
     size_t end_posn;
     if (!pbuf || !obj)
@@ -829,7 +857,7 @@ int Noise_PublicKey_write(NoiseProtobuf *pbuf, int tag, const Noise_PublicKey *o
     return noise_protobuf_write_start_element(pbuf, tag, end_posn);
 }
 
-int Noise_PublicKey_read(NoiseProtobuf *pbuf, int tag, Noise_PublicKey **obj)
+int Noise_PublicKeyInfo_read(NoiseProtobuf *pbuf, int tag, Noise_PublicKeyInfo **obj)
 {
     int err;
     size_t end_posn;
@@ -838,7 +866,7 @@ int Noise_PublicKey_read(NoiseProtobuf *pbuf, int tag, Noise_PublicKey **obj)
     *obj = 0;
     if (!pbuf)
         return NOISE_ERROR_INVALID_PARAM;
-    err = Noise_PublicKey_new(obj);
+    err = Noise_PublicKeyInfo_new(obj);
     if (err != NOISE_ERROR_NONE)
         return err;
     noise_protobuf_read_start_element(pbuf, tag, &end_posn);
@@ -863,13 +891,13 @@ int Noise_PublicKey_read(NoiseProtobuf *pbuf, int tag, Noise_PublicKey **obj)
     }
     err = noise_protobuf_read_end_element(pbuf, end_posn);
     if (err != NOISE_ERROR_NONE) {
-        Noise_PublicKey_free(*obj);
+        Noise_PublicKeyInfo_free(*obj);
         *obj = 0;
     }
     return err;
 }
 
-int Noise_PublicKey_clear_algorithm(Noise_PublicKey *obj)
+int Noise_PublicKeyInfo_clear_algorithm(Noise_PublicKeyInfo *obj)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->algorithm, obj->algorithm_size_);
@@ -880,22 +908,22 @@ int Noise_PublicKey_clear_algorithm(Noise_PublicKey *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PublicKey_has_algorithm(const Noise_PublicKey *obj)
+int Noise_PublicKeyInfo_has_algorithm(const Noise_PublicKeyInfo *obj)
 {
     return obj ? (obj->algorithm != 0) : 0;
 }
 
-const char *Noise_PublicKey_get_algorithm(const Noise_PublicKey *obj)
+const char *Noise_PublicKeyInfo_get_algorithm(const Noise_PublicKeyInfo *obj)
 {
     return obj ? obj->algorithm : 0;
 }
 
-size_t Noise_PublicKey_get_size_algorithm(const Noise_PublicKey *obj)
+size_t Noise_PublicKeyInfo_get_size_algorithm(const Noise_PublicKeyInfo *obj)
 {
     return obj ? obj->algorithm_size_ : 0;
 }
 
-int Noise_PublicKey_set_algorithm(Noise_PublicKey *obj, const char *value, size_t size)
+int Noise_PublicKeyInfo_set_algorithm(Noise_PublicKeyInfo *obj, const char *value, size_t size)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->algorithm, obj->algorithm_size_);
@@ -913,7 +941,7 @@ int Noise_PublicKey_set_algorithm(Noise_PublicKey *obj, const char *value, size_
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PublicKey_clear_key(Noise_PublicKey *obj)
+int Noise_PublicKeyInfo_clear_key(Noise_PublicKeyInfo *obj)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->key, obj->key_size_);
@@ -924,22 +952,22 @@ int Noise_PublicKey_clear_key(Noise_PublicKey *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PublicKey_has_key(const Noise_PublicKey *obj)
+int Noise_PublicKeyInfo_has_key(const Noise_PublicKeyInfo *obj)
 {
     return obj ? (obj->key != 0) : 0;
 }
 
-const void *Noise_PublicKey_get_key(const Noise_PublicKey *obj)
+const void *Noise_PublicKeyInfo_get_key(const Noise_PublicKeyInfo *obj)
 {
     return obj ? obj->key : 0;
 }
 
-size_t Noise_PublicKey_get_size_key(const Noise_PublicKey *obj)
+size_t Noise_PublicKeyInfo_get_size_key(const Noise_PublicKeyInfo *obj)
 {
     return obj ? obj->key_size_ : 0;
 }
 
-int Noise_PublicKey_set_key(Noise_PublicKey *obj, const void *value, size_t size)
+int Noise_PublicKeyInfo_set_key(Noise_PublicKeyInfo *obj, const void *value, size_t size)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->key, obj->key_size_);
@@ -1133,7 +1161,7 @@ int Noise_Signature_free(Noise_Signature *obj)
         return NOISE_ERROR_INVALID_PARAM;
     noise_protobuf_free_memory(obj->id, obj->id_size_);
     noise_protobuf_free_memory(obj->name, obj->name_size_);
-    Noise_PublicKey_free(obj->signing_key);
+    Noise_PublicKeyInfo_free(obj->signing_key);
     noise_protobuf_free_memory(obj->hash_algorithm, obj->hash_algorithm_size_);
     Noise_ExtraSignedInfo_free(obj->extra_signed_info);
     noise_protobuf_free_memory(obj->signature, obj->signature_size_);
@@ -1154,7 +1182,7 @@ int Noise_Signature_write(NoiseProtobuf *pbuf, int tag, const Noise_Signature *o
     if (obj->hash_algorithm)
         noise_protobuf_write_string(pbuf, 4, obj->hash_algorithm, obj->hash_algorithm_size_);
     if (obj->signing_key)
-        Noise_PublicKey_write(pbuf, 3, obj->signing_key);
+        Noise_PublicKeyInfo_write(pbuf, 3, obj->signing_key);
     if (obj->name)
         noise_protobuf_write_string(pbuf, 2, obj->name, obj->name_size_);
     if (obj->id)
@@ -1190,9 +1218,9 @@ int Noise_Signature_read(NoiseProtobuf *pbuf, int tag, Noise_Signature **obj)
                 noise_protobuf_read_alloc_string(pbuf, 2, &((*obj)->name), 0, &((*obj)->name_size_));
             } break;
             case 3: {
-                Noise_PublicKey_free((*obj)->signing_key);
+                Noise_PublicKeyInfo_free((*obj)->signing_key);
                 (*obj)->signing_key = 0;
-                Noise_PublicKey_read(pbuf, 3, &((*obj)->signing_key));
+                Noise_PublicKeyInfo_read(pbuf, 3, &((*obj)->signing_key));
             } break;
             case 4: {
                 noise_protobuf_free_memory((*obj)->hash_algorithm, (*obj)->hash_algorithm_size_);
@@ -1315,7 +1343,7 @@ int Noise_Signature_set_name(Noise_Signature *obj, const char *value, size_t siz
 int Noise_Signature_clear_signing_key(Noise_Signature *obj)
 {
     if (obj) {
-        Noise_PublicKey_free(obj->signing_key);
+        Noise_PublicKeyInfo_free(obj->signing_key);
         obj->signing_key = 0;
         return NOISE_ERROR_NONE;
     }
@@ -1327,12 +1355,12 @@ int Noise_Signature_has_signing_key(const Noise_Signature *obj)
     return obj ? (obj->signing_key != 0) : 0;
 }
 
-Noise_PublicKey *Noise_Signature_get_signing_key(const Noise_Signature *obj)
+Noise_PublicKeyInfo *Noise_Signature_get_signing_key(const Noise_Signature *obj)
 {
     return obj ? obj->signing_key : 0;
 }
 
-int Noise_Signature_get_new_signing_key(Noise_Signature *obj, Noise_PublicKey **value)
+int Noise_Signature_get_new_signing_key(Noise_Signature *obj, Noise_PublicKeyInfo **value)
 {
     int err;
     if (!value)
@@ -1340,10 +1368,10 @@ int Noise_Signature_get_new_signing_key(Noise_Signature *obj, Noise_PublicKey **
     *value = 0;
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
-    err = Noise_PublicKey_new(value);
+    err = Noise_PublicKeyInfo_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    Noise_PublicKey_free(obj->signing_key);
+    Noise_PublicKeyInfo_free(obj->signing_key);
     obj->signing_key = *value;
     return NOISE_ERROR_NONE;
 }
@@ -1743,13 +1771,20 @@ int Noise_ExtraSignedInfo_add_meta(Noise_ExtraSignedInfo *obj, Noise_MetaInfo **
     err = Noise_MetaInfo_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_add_to_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), *value, sizeof(*value));
+    err = noise_protobuf_add_to_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), value, sizeof(*value));
     if (err != NOISE_ERROR_NONE) {
         Noise_MetaInfo_free(*value);
         *value = 0;
         return err;
     }
     return NOISE_ERROR_NONE;
+}
+
+int Noise_ExtraSignedInfo_insert_meta(Noise_ExtraSignedInfo *obj, size_t index, Noise_MetaInfo *value)
+{
+    if (!obj || !value)
+        return NOISE_ERROR_INVALID_PARAM;
+    return noise_protobuf_insert_into_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), index, &value, sizeof(value));
 }
 
 int Noise_EncryptedPrivateKey_new(Noise_EncryptedPrivateKey **obj)
@@ -2030,17 +2065,17 @@ int Noise_EncryptedPrivateKey_set_encrypted_data(Noise_EncryptedPrivateKey *obj,
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_new(Noise_PrivateSubjectInfo **obj)
+int Noise_PrivateKey_new(Noise_PrivateKey **obj)
 {
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
-    *obj = (Noise_PrivateSubjectInfo *)calloc(1, sizeof(Noise_PrivateSubjectInfo));
+    *obj = (Noise_PrivateKey *)calloc(1, sizeof(Noise_PrivateKey));
     if (!(*obj))
         return NOISE_ERROR_NO_MEMORY;
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PrivateSubjectInfo_free(Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_free(Noise_PrivateKey *obj)
 {
     size_t index;
     if (!obj)
@@ -2049,16 +2084,16 @@ int Noise_PrivateSubjectInfo_free(Noise_PrivateSubjectInfo *obj)
     noise_protobuf_free_memory(obj->name, obj->name_size_);
     noise_protobuf_free_memory(obj->role, obj->role_size_);
     for (index = 0; index < obj->keys_count_; ++index)
-        Noise_PrivateKey_free(obj->keys[index]);
-    noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PrivateKey *));
+        Noise_PrivateKeyInfo_free(obj->keys[index]);
+    noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PrivateKeyInfo *));
     for (index = 0; index < obj->meta_count_; ++index)
         Noise_MetaInfo_free(obj->meta[index]);
     noise_protobuf_free_memory(obj->meta, obj->meta_max_ * sizeof(Noise_MetaInfo *));
-    noise_protobuf_free_memory(obj, sizeof(Noise_PrivateSubjectInfo));
+    noise_protobuf_free_memory(obj, sizeof(Noise_PrivateKey));
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PrivateSubjectInfo_write(NoiseProtobuf *pbuf, int tag, const Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_write(NoiseProtobuf *pbuf, int tag, const Noise_PrivateKey *obj)
 {
     size_t end_posn;
     size_t index;
@@ -2068,7 +2103,7 @@ int Noise_PrivateSubjectInfo_write(NoiseProtobuf *pbuf, int tag, const Noise_Pri
     for (index = obj->meta_count_; index > 0; --index)
         Noise_MetaInfo_write(pbuf, 5, obj->meta[index - 1]);
     for (index = obj->keys_count_; index > 0; --index)
-        Noise_PrivateKey_write(pbuf, 4, obj->keys[index - 1]);
+        Noise_PrivateKeyInfo_write(pbuf, 4, obj->keys[index - 1]);
     if (obj->role)
         noise_protobuf_write_string(pbuf, 3, obj->role, obj->role_size_);
     if (obj->name)
@@ -2078,7 +2113,7 @@ int Noise_PrivateSubjectInfo_write(NoiseProtobuf *pbuf, int tag, const Noise_Pri
     return noise_protobuf_write_start_element(pbuf, tag, end_posn);
 }
 
-int Noise_PrivateSubjectInfo_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateSubjectInfo **obj)
+int Noise_PrivateKey_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateKey **obj)
 {
     int err;
     size_t end_posn;
@@ -2087,7 +2122,7 @@ int Noise_PrivateSubjectInfo_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateSub
     *obj = 0;
     if (!pbuf)
         return NOISE_ERROR_INVALID_PARAM;
-    err = Noise_PrivateSubjectInfo_new(obj);
+    err = Noise_PrivateKey_new(obj);
     if (err != NOISE_ERROR_NONE)
         return err;
     noise_protobuf_read_start_element(pbuf, tag, &end_posn);
@@ -2112,9 +2147,9 @@ int Noise_PrivateSubjectInfo_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateSub
                 noise_protobuf_read_alloc_string(pbuf, 3, &((*obj)->role), 0, &((*obj)->role_size_));
             } break;
             case 4: {
-                Noise_PrivateKey *value = 0;
+                Noise_PrivateKeyInfo *value = 0;
                 int err;
-                Noise_PrivateKey_read(pbuf, 4, &value);
+                Noise_PrivateKeyInfo_read(pbuf, 4, &value);
                 err = noise_protobuf_add_to_array((void **)&((*obj)->keys), &((*obj)->keys_count_), &((*obj)->keys_max_), &value, sizeof(value));
                 if (err != NOISE_ERROR_NONE && pbuf->error != NOISE_ERROR_NONE)
                    pbuf->error = err;
@@ -2134,13 +2169,13 @@ int Noise_PrivateSubjectInfo_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateSub
     }
     err = noise_protobuf_read_end_element(pbuf, end_posn);
     if (err != NOISE_ERROR_NONE) {
-        Noise_PrivateSubjectInfo_free(*obj);
+        Noise_PrivateKey_free(*obj);
         *obj = 0;
     }
     return err;
 }
 
-int Noise_PrivateSubjectInfo_clear_id(Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_clear_id(Noise_PrivateKey *obj)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->id, obj->id_size_);
@@ -2151,22 +2186,22 @@ int Noise_PrivateSubjectInfo_clear_id(Noise_PrivateSubjectInfo *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_has_id(const Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_has_id(const Noise_PrivateKey *obj)
 {
     return obj ? (obj->id != 0) : 0;
 }
 
-const char *Noise_PrivateSubjectInfo_get_id(const Noise_PrivateSubjectInfo *obj)
+const char *Noise_PrivateKey_get_id(const Noise_PrivateKey *obj)
 {
     return obj ? obj->id : 0;
 }
 
-size_t Noise_PrivateSubjectInfo_get_size_id(const Noise_PrivateSubjectInfo *obj)
+size_t Noise_PrivateKey_get_size_id(const Noise_PrivateKey *obj)
 {
     return obj ? obj->id_size_ : 0;
 }
 
-int Noise_PrivateSubjectInfo_set_id(Noise_PrivateSubjectInfo *obj, const char *value, size_t size)
+int Noise_PrivateKey_set_id(Noise_PrivateKey *obj, const char *value, size_t size)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->id, obj->id_size_);
@@ -2184,7 +2219,7 @@ int Noise_PrivateSubjectInfo_set_id(Noise_PrivateSubjectInfo *obj, const char *v
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_clear_name(Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_clear_name(Noise_PrivateKey *obj)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->name, obj->name_size_);
@@ -2195,22 +2230,22 @@ int Noise_PrivateSubjectInfo_clear_name(Noise_PrivateSubjectInfo *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_has_name(const Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_has_name(const Noise_PrivateKey *obj)
 {
     return obj ? (obj->name != 0) : 0;
 }
 
-const char *Noise_PrivateSubjectInfo_get_name(const Noise_PrivateSubjectInfo *obj)
+const char *Noise_PrivateKey_get_name(const Noise_PrivateKey *obj)
 {
     return obj ? obj->name : 0;
 }
 
-size_t Noise_PrivateSubjectInfo_get_size_name(const Noise_PrivateSubjectInfo *obj)
+size_t Noise_PrivateKey_get_size_name(const Noise_PrivateKey *obj)
 {
     return obj ? obj->name_size_ : 0;
 }
 
-int Noise_PrivateSubjectInfo_set_name(Noise_PrivateSubjectInfo *obj, const char *value, size_t size)
+int Noise_PrivateKey_set_name(Noise_PrivateKey *obj, const char *value, size_t size)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->name, obj->name_size_);
@@ -2228,7 +2263,7 @@ int Noise_PrivateSubjectInfo_set_name(Noise_PrivateSubjectInfo *obj, const char 
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_clear_role(Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_clear_role(Noise_PrivateKey *obj)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->role, obj->role_size_);
@@ -2239,22 +2274,22 @@ int Noise_PrivateSubjectInfo_clear_role(Noise_PrivateSubjectInfo *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_has_role(const Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_has_role(const Noise_PrivateKey *obj)
 {
     return obj ? (obj->role != 0) : 0;
 }
 
-const char *Noise_PrivateSubjectInfo_get_role(const Noise_PrivateSubjectInfo *obj)
+const char *Noise_PrivateKey_get_role(const Noise_PrivateKey *obj)
 {
     return obj ? obj->role : 0;
 }
 
-size_t Noise_PrivateSubjectInfo_get_size_role(const Noise_PrivateSubjectInfo *obj)
+size_t Noise_PrivateKey_get_size_role(const Noise_PrivateKey *obj)
 {
     return obj ? obj->role_size_ : 0;
 }
 
-int Noise_PrivateSubjectInfo_set_role(Noise_PrivateSubjectInfo *obj, const char *value, size_t size)
+int Noise_PrivateKey_set_role(Noise_PrivateKey *obj, const char *value, size_t size)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->role, obj->role_size_);
@@ -2272,13 +2307,13 @@ int Noise_PrivateSubjectInfo_set_role(Noise_PrivateSubjectInfo *obj, const char 
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_clear_keys(Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_clear_keys(Noise_PrivateKey *obj)
 {
     size_t index;
     if (obj) {
         for (index = 0; index < obj->keys_count_; ++index)
-            Noise_PrivateKey_free(obj->keys[index]);
-        noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PrivateKey *));
+            Noise_PrivateKeyInfo_free(obj->keys[index]);
+        noise_protobuf_free_memory(obj->keys, obj->keys_max_ * sizeof(Noise_PrivateKeyInfo *));
         obj->keys = 0;
         obj->keys_count_ = 0;
         obj->keys_max_ = 0;
@@ -2287,17 +2322,17 @@ int Noise_PrivateSubjectInfo_clear_keys(Noise_PrivateSubjectInfo *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_has_keys(const Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_has_keys(const Noise_PrivateKey *obj)
 {
     return obj ? (obj->keys_count_ != 0) : 0;
 }
 
-size_t Noise_PrivateSubjectInfo_count_keys(const Noise_PrivateSubjectInfo *obj)
+size_t Noise_PrivateKey_count_keys(const Noise_PrivateKey *obj)
 {
     return obj ? obj->keys_count_ : 0;
 }
 
-Noise_PrivateKey *Noise_PrivateSubjectInfo_get_at_keys(const Noise_PrivateSubjectInfo *obj, size_t index)
+Noise_PrivateKeyInfo *Noise_PrivateKey_get_at_keys(const Noise_PrivateKey *obj, size_t index)
 {
     if (obj && index < obj->keys_count_)
         return obj->keys[index];
@@ -2305,7 +2340,7 @@ Noise_PrivateKey *Noise_PrivateSubjectInfo_get_at_keys(const Noise_PrivateSubjec
         return 0;
 }
 
-int Noise_PrivateSubjectInfo_add_keys(Noise_PrivateSubjectInfo *obj, Noise_PrivateKey **value)
+int Noise_PrivateKey_add_keys(Noise_PrivateKey *obj, Noise_PrivateKeyInfo **value)
 {
     int err;
     if (!value)
@@ -2313,19 +2348,26 @@ int Noise_PrivateSubjectInfo_add_keys(Noise_PrivateSubjectInfo *obj, Noise_Priva
     *value = 0;
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
-    err = Noise_PrivateKey_new(value);
+    err = Noise_PrivateKeyInfo_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_add_to_array((void **)&(obj->keys), &(obj->keys_count_), &(obj->keys_max_), *value, sizeof(*value));
+    err = noise_protobuf_add_to_array((void **)&(obj->keys), &(obj->keys_count_), &(obj->keys_max_), value, sizeof(*value));
     if (err != NOISE_ERROR_NONE) {
-        Noise_PrivateKey_free(*value);
+        Noise_PrivateKeyInfo_free(*value);
         *value = 0;
         return err;
     }
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PrivateSubjectInfo_clear_meta(Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_insert_keys(Noise_PrivateKey *obj, size_t index, Noise_PrivateKeyInfo *value)
+{
+    if (!obj || !value)
+        return NOISE_ERROR_INVALID_PARAM;
+    return noise_protobuf_insert_into_array((void **)&(obj->keys), &(obj->keys_count_), &(obj->keys_max_), index, &value, sizeof(value));
+}
+
+int Noise_PrivateKey_clear_meta(Noise_PrivateKey *obj)
 {
     size_t index;
     if (obj) {
@@ -2340,17 +2382,17 @@ int Noise_PrivateSubjectInfo_clear_meta(Noise_PrivateSubjectInfo *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateSubjectInfo_has_meta(const Noise_PrivateSubjectInfo *obj)
+int Noise_PrivateKey_has_meta(const Noise_PrivateKey *obj)
 {
     return obj ? (obj->meta_count_ != 0) : 0;
 }
 
-size_t Noise_PrivateSubjectInfo_count_meta(const Noise_PrivateSubjectInfo *obj)
+size_t Noise_PrivateKey_count_meta(const Noise_PrivateKey *obj)
 {
     return obj ? obj->meta_count_ : 0;
 }
 
-Noise_MetaInfo *Noise_PrivateSubjectInfo_get_at_meta(const Noise_PrivateSubjectInfo *obj, size_t index)
+Noise_MetaInfo *Noise_PrivateKey_get_at_meta(const Noise_PrivateKey *obj, size_t index)
 {
     if (obj && index < obj->meta_count_)
         return obj->meta[index];
@@ -2358,7 +2400,7 @@ Noise_MetaInfo *Noise_PrivateSubjectInfo_get_at_meta(const Noise_PrivateSubjectI
         return 0;
 }
 
-int Noise_PrivateSubjectInfo_add_meta(Noise_PrivateSubjectInfo *obj, Noise_MetaInfo **value)
+int Noise_PrivateKey_add_meta(Noise_PrivateKey *obj, Noise_MetaInfo **value)
 {
     int err;
     if (!value)
@@ -2369,7 +2411,7 @@ int Noise_PrivateSubjectInfo_add_meta(Noise_PrivateSubjectInfo *obj, Noise_MetaI
     err = Noise_MetaInfo_new(value);
     if (err != NOISE_ERROR_NONE)
         return err;
-    err = noise_protobuf_add_to_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), *value, sizeof(*value));
+    err = noise_protobuf_add_to_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), value, sizeof(*value));
     if (err != NOISE_ERROR_NONE) {
         Noise_MetaInfo_free(*value);
         *value = 0;
@@ -2378,27 +2420,34 @@ int Noise_PrivateSubjectInfo_add_meta(Noise_PrivateSubjectInfo *obj, Noise_MetaI
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PrivateKey_new(Noise_PrivateKey **obj)
+int Noise_PrivateKey_insert_meta(Noise_PrivateKey *obj, size_t index, Noise_MetaInfo *value)
+{
+    if (!obj || !value)
+        return NOISE_ERROR_INVALID_PARAM;
+    return noise_protobuf_insert_into_array((void **)&(obj->meta), &(obj->meta_count_), &(obj->meta_max_), index, &value, sizeof(value));
+}
+
+int Noise_PrivateKeyInfo_new(Noise_PrivateKeyInfo **obj)
 {
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
-    *obj = (Noise_PrivateKey *)calloc(1, sizeof(Noise_PrivateKey));
+    *obj = (Noise_PrivateKeyInfo *)calloc(1, sizeof(Noise_PrivateKeyInfo));
     if (!(*obj))
         return NOISE_ERROR_NO_MEMORY;
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PrivateKey_free(Noise_PrivateKey *obj)
+int Noise_PrivateKeyInfo_free(Noise_PrivateKeyInfo *obj)
 {
     if (!obj)
         return NOISE_ERROR_INVALID_PARAM;
     noise_protobuf_free_memory(obj->algorithm, obj->algorithm_size_);
     noise_protobuf_free_memory(obj->key, obj->key_size_);
-    noise_protobuf_free_memory(obj, sizeof(Noise_PrivateKey));
+    noise_protobuf_free_memory(obj, sizeof(Noise_PrivateKeyInfo));
     return NOISE_ERROR_NONE;
 }
 
-int Noise_PrivateKey_write(NoiseProtobuf *pbuf, int tag, const Noise_PrivateKey *obj)
+int Noise_PrivateKeyInfo_write(NoiseProtobuf *pbuf, int tag, const Noise_PrivateKeyInfo *obj)
 {
     size_t end_posn;
     if (!pbuf || !obj)
@@ -2411,7 +2460,7 @@ int Noise_PrivateKey_write(NoiseProtobuf *pbuf, int tag, const Noise_PrivateKey 
     return noise_protobuf_write_start_element(pbuf, tag, end_posn);
 }
 
-int Noise_PrivateKey_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateKey **obj)
+int Noise_PrivateKeyInfo_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateKeyInfo **obj)
 {
     int err;
     size_t end_posn;
@@ -2420,7 +2469,7 @@ int Noise_PrivateKey_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateKey **obj)
     *obj = 0;
     if (!pbuf)
         return NOISE_ERROR_INVALID_PARAM;
-    err = Noise_PrivateKey_new(obj);
+    err = Noise_PrivateKeyInfo_new(obj);
     if (err != NOISE_ERROR_NONE)
         return err;
     noise_protobuf_read_start_element(pbuf, tag, &end_posn);
@@ -2445,13 +2494,13 @@ int Noise_PrivateKey_read(NoiseProtobuf *pbuf, int tag, Noise_PrivateKey **obj)
     }
     err = noise_protobuf_read_end_element(pbuf, end_posn);
     if (err != NOISE_ERROR_NONE) {
-        Noise_PrivateKey_free(*obj);
+        Noise_PrivateKeyInfo_free(*obj);
         *obj = 0;
     }
     return err;
 }
 
-int Noise_PrivateKey_clear_algorithm(Noise_PrivateKey *obj)
+int Noise_PrivateKeyInfo_clear_algorithm(Noise_PrivateKeyInfo *obj)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->algorithm, obj->algorithm_size_);
@@ -2462,22 +2511,22 @@ int Noise_PrivateKey_clear_algorithm(Noise_PrivateKey *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateKey_has_algorithm(const Noise_PrivateKey *obj)
+int Noise_PrivateKeyInfo_has_algorithm(const Noise_PrivateKeyInfo *obj)
 {
     return obj ? (obj->algorithm != 0) : 0;
 }
 
-const char *Noise_PrivateKey_get_algorithm(const Noise_PrivateKey *obj)
+const char *Noise_PrivateKeyInfo_get_algorithm(const Noise_PrivateKeyInfo *obj)
 {
     return obj ? obj->algorithm : 0;
 }
 
-size_t Noise_PrivateKey_get_size_algorithm(const Noise_PrivateKey *obj)
+size_t Noise_PrivateKeyInfo_get_size_algorithm(const Noise_PrivateKeyInfo *obj)
 {
     return obj ? obj->algorithm_size_ : 0;
 }
 
-int Noise_PrivateKey_set_algorithm(Noise_PrivateKey *obj, const char *value, size_t size)
+int Noise_PrivateKeyInfo_set_algorithm(Noise_PrivateKeyInfo *obj, const char *value, size_t size)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->algorithm, obj->algorithm_size_);
@@ -2495,7 +2544,7 @@ int Noise_PrivateKey_set_algorithm(Noise_PrivateKey *obj, const char *value, siz
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateKey_clear_key(Noise_PrivateKey *obj)
+int Noise_PrivateKeyInfo_clear_key(Noise_PrivateKeyInfo *obj)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->key, obj->key_size_);
@@ -2506,22 +2555,22 @@ int Noise_PrivateKey_clear_key(Noise_PrivateKey *obj)
     return NOISE_ERROR_INVALID_PARAM;
 }
 
-int Noise_PrivateKey_has_key(const Noise_PrivateKey *obj)
+int Noise_PrivateKeyInfo_has_key(const Noise_PrivateKeyInfo *obj)
 {
     return obj ? (obj->key != 0) : 0;
 }
 
-const void *Noise_PrivateKey_get_key(const Noise_PrivateKey *obj)
+const void *Noise_PrivateKeyInfo_get_key(const Noise_PrivateKeyInfo *obj)
 {
     return obj ? obj->key : 0;
 }
 
-size_t Noise_PrivateKey_get_size_key(const Noise_PrivateKey *obj)
+size_t Noise_PrivateKeyInfo_get_size_key(const Noise_PrivateKeyInfo *obj)
 {
     return obj ? obj->key_size_ : 0;
 }
 
-int Noise_PrivateKey_set_key(Noise_PrivateKey *obj, const void *value, size_t size)
+int Noise_PrivateKeyInfo_set_key(Noise_PrivateKeyInfo *obj, const void *value, size_t size)
 {
     if (obj) {
         noise_protobuf_free_memory(obj->key, obj->key_size_);

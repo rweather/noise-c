@@ -968,7 +968,7 @@ static void type_named_declare_field_ops
             fprintf(output, "    err = noise_protobuf_add_to_array(");
             fprintf(output, "(void **)&(obj->%s), &(obj->%s_count_), ",
                     field->name.name, field->name.name);
-            fprintf(output, "&(obj->%s_max_), *value, sizeof(*value));\n",
+            fprintf(output, "&(obj->%s_max_), value, sizeof(*value));\n",
                     field->name.name);
             fprintf(output, "    if (err != NOISE_ERROR_NONE) {\n");
             fprintf(output, "        ");
@@ -978,6 +978,28 @@ static void type_named_declare_field_ops
             fprintf(output, "        return err;\n");
             fprintf(output, "    }\n");
             fprintf(output, "    return NOISE_ERROR_NONE;\n");
+            fprintf(output, "}\n\n");
+        }
+
+        /* Output the insert() method */
+        fprintf(output, "int ");
+        generate_name(output, message->name.name);
+        fprintf(output, "_insert_%s(", field->name.name);
+        generate_name(output, message->name.name);
+        fprintf(output, " *obj, size_t index, ");
+        generate_name(output, field->type.name.name);
+        fprintf(output, " *value)");
+        if (header_only) {
+            fprintf(output, ";\n");
+        } else {
+            fprintf(output, "\n{\n");
+            fprintf(output, "    if (!obj || !value)\n");
+            fprintf(output, "        return NOISE_ERROR_INVALID_PARAM;\n");
+            fprintf(output, "    return noise_protobuf_insert_into_array(");
+            fprintf(output, "(void **)&(obj->%s), &(obj->%s_count_), ",
+                    field->name.name, field->name.name);
+            fprintf(output, "&(obj->%s_max_), index, &value, sizeof(value));\n",
+                    field->name.name);
             fprintf(output, "}\n\n");
         }
     } else {

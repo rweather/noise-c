@@ -26,5 +26,6 @@
 #include <noise/keys/keyconstants.h>
 #include <noise/keys/keystate.h>
 #include <noise/keys/certificate.h>
+#include <noise/keys/keyloader.h>
 
 #endif

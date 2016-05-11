@@ -114,6 +114,10 @@ int noise_protobuf_add_to_bytes_array
     (void ***array, size_t **len_array, size_t *count, size_t *max,
      const void *value, size_t size);
 
+int noise_protobuf_insert_into_array
+    (void **array, size_t *count, size_t *max, size_t index,
+     const void *value, size_t size);
+
 void noise_protobuf_free_memory(void *ptr, size_t size);
 
 #ifdef __cplusplus
