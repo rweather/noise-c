@@ -416,7 +416,8 @@ int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
  *
  * \param state The HandshakeState object.
  * \param key Points to the pre shared key.
- * \param key_len The length of the \a key in bytes.
+ * \param key_len The length of the \a key in bytes.  This should be 32
+ * to comply with the requirements from the Noise protocol specification.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a key is NULL.
