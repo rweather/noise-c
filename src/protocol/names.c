@@ -78,7 +78,6 @@ static NoiseIdMapping const algorithm_names[] = {
     {NOISE_PATTERN_XN,          "XN",            2},
     {NOISE_PATTERN_XK,          "XK",            2},
     {NOISE_PATTERN_XX,          "XX",            2},
-    {NOISE_PATTERN_XR,          "XR",            2},
     {NOISE_PATTERN_KN,          "KN",            2},
     {NOISE_PATTERN_KK,          "KK",            2},
     {NOISE_PATTERN_KX,          "KX",            2},

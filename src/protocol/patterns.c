@@ -246,36 +246,6 @@ static uint8_t const noise_pattern_XX[] = {
 };
 
 /**
- * \brief Token sequence for handshake pattern "XR".
- *
- * @code
- * Noise_XR(s, rs):
- *   -> e
- *   <- e, dhee
- *   -> s, dhse
- *   <- s, dhse
- * @endcode
- */
-static uint8_t const noise_pattern_XR[] = {
-    NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
-    NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
-
-    NOISE_TOKEN_E,
-    NOISE_TOKEN_FLIP_DIR,
-    NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FLIP_DIR,
-    NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
-    NOISE_TOKEN_FLIP_DIR,
-    NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
-    NOISE_TOKEN_END
-};
-
-/**
  * \brief Token sequence for handshake pattern "KN".
  *
  * @code
@@ -487,7 +457,6 @@ const uint8_t *noise_pattern_lookup(int id)
     case NOISE_PATTERN_XN:          return noise_pattern_XN;
     case NOISE_PATTERN_XK:          return noise_pattern_XK;
     case NOISE_PATTERN_XX:          return noise_pattern_XX;
-    case NOISE_PATTERN_XR:          return noise_pattern_XR;
     case NOISE_PATTERN_KN:          return noise_pattern_KN;
     case NOISE_PATTERN_KK:          return noise_pattern_KK;
     case NOISE_PATTERN_KX:          return noise_pattern_KX;

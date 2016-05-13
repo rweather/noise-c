@@ -63,14 +63,13 @@ extern "C" {
 #define NOISE_PATTERN_XN                NOISE_ID('P', 7)
 #define NOISE_PATTERN_XK                NOISE_ID('P', 8)
 #define NOISE_PATTERN_XX                NOISE_ID('P', 9)
-#define NOISE_PATTERN_XR                NOISE_ID('P', 10)
-#define NOISE_PATTERN_KN                NOISE_ID('P', 11)
-#define NOISE_PATTERN_KK                NOISE_ID('P', 12)
-#define NOISE_PATTERN_KX                NOISE_ID('P', 13)
-#define NOISE_PATTERN_IN                NOISE_ID('P', 14)
-#define NOISE_PATTERN_IK                NOISE_ID('P', 15)
-#define NOISE_PATTERN_IX                NOISE_ID('P', 16)
-#define NOISE_PATTERN_XX_FALLBACK       NOISE_ID('P', 17)
+#define NOISE_PATTERN_KN                NOISE_ID('P', 10)
+#define NOISE_PATTERN_KK                NOISE_ID('P', 11)
+#define NOISE_PATTERN_KX                NOISE_ID('P', 12)
+#define NOISE_PATTERN_IN                NOISE_ID('P', 13)
+#define NOISE_PATTERN_IK                NOISE_ID('P', 14)
+#define NOISE_PATTERN_IX                NOISE_ID('P', 15)
+#define NOISE_PATTERN_XX_FALLBACK       NOISE_ID('P', 16)
 
 /* Protocol name prefixes */
 #define NOISE_PREFIX_NONE               0

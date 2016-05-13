@@ -358,14 +358,6 @@ void test_patterns(void)
                   "<- e, dhee, s, dhse\n"
                   "-> s, dhse\n");
 
-    check_pattern(NOISE_PATTERN_XR,
-                  "Noise_XR(s, rs)",
-                  "",
-                  "-> e\n"
-                  "<- e, dhee\n"
-                  "-> s, dhse\n"
-                  "<- s, dhse\n");
-
     check_pattern(NOISE_PATTERN_KN,
                   "Noise_KN(s)",
                   "-> s\n",

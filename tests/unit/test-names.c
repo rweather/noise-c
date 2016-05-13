@@ -74,7 +74,6 @@ static void test_id_mappings(void)
     check_id("XN", NOISE_PATTERN_XN);
     check_id("XK", NOISE_PATTERN_XK);
     check_id("XX", NOISE_PATTERN_XX);
-    check_id("XR", NOISE_PATTERN_XR);
     check_id("KN", NOISE_PATTERN_KN);
     check_id("KK", NOISE_PATTERN_KK);
     check_id("KX", NOISE_PATTERN_KX);

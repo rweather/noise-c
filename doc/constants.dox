@@ -201,11 +201,6 @@
  */
 
 /**
- * \def NOISE_PATTERN_XR
- * \brief Handshake pattern identifier for "XR".
- */
-
-/**
  * \def NOISE_PATTERN_KN
  * \brief Handshake pattern identifier for "KN".
  */

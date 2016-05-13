@@ -23,6 +23,7 @@ libnoiseprotocol_a_SOURCES = \
 	errors.c \
 	handshakestate.c \
 	hashstate.c \
+        internal.h \
 	names.c \
 	patterns.c \
 	randstate.c \
