@@ -6,9 +6,7 @@ AM_CFLAGS = @WARNING_FLAGS@
 
 libnoisekeys_a_SOURCES = \
 	certificate.c \
-	keyinternal.c \
-	keyloader.c \
-	keystate.c
+	loader.c
 
 protos:
 	$(top_builddir)/tools/protoc/noise-protoc \

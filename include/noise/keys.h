@@ -23,9 +23,7 @@
 #ifndef NOISE_KEYS_H
 #define NOISE_KEYS_H
 
-#include <noise/keys/keyconstants.h>
-#include <noise/keys/keystate.h>
 #include <noise/keys/certificate.h>
-#include <noise/keys/keyloader.h>
+#include <noise/keys/loader.h>
 
 #endif

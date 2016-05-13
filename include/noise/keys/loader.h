@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_KEYLOADER_H
-#define NOISE_KEYLOADER_H
+#ifndef NOISE_KEYS_LOADER_H
+#define NOISE_KEYS_LOADER_H
 
 #include <noise/keys/certificate.h>
 

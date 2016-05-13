@@ -23,12 +23,12 @@
 #include <noise/keys.h>
 
 /**
- * \file keyloader.h
+ * \file loader.h
  * \brief Key loading and saving interface
  */
 
 /**
- * \file keyloader.c
+ * \file loader.c
  * \brief Key loading and saving implementation
  */
 

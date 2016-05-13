@@ -54,7 +54,6 @@ is my motto.
 \li \ref dhstate "DHState"
 \li \ref signstate "SignState"
 \li \ref randstate "RandState"
-\li \ref keystate "KeyState"
 
 \section other_info Other information
 

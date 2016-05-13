@@ -22,6 +22,7 @@ AC_CONFIG_FILES([Makefile
 include/Makefile
 include/noise/Makefile
 include/noise/protocol/Makefile
+include/noise/keys/Makefile
 src/Makefile
 src/protocol/Makefile
 src/protobufs/Makefile

@@ -4,4 +4,4 @@ noiseinclude_HEADERS = \
     protocol.h \
     protobufs.h
 
-SUBDIRS = . protocol
+SUBDIRS = . protocol keys
