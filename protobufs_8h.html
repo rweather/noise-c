@@ -92,7 +92,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="title">protobufs.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;stddef.h&gt;</code><br/>
+<div class="textblock"><code>#include &lt;<a class="el" href="constants_8h_source.html">noise/protocol/constants.h</a>&gt;</code><br/>
+<code>#include &lt;stddef.h&gt;</code><br/>
 <code>#include &lt;stdint.h&gt;</code><br/>
 </div>
 <p><a href="protobufs_8h_source.html">Go to the source code of this file.</a></p>
@@ -104,6 +105,12 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a216fedd000a9fcdd755966eabf9bc127"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#a216fedd000a9fcdd755966eabf9bc127">noise_protobuf_add_to_array</a> (void **array, size_t *count, size_t *max, const void *value, size_t size)</td></tr>
+<tr class="separator:a216fedd000a9fcdd755966eabf9bc127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa28d6ae2b7b5cbc3490c01907bf3d587"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#aa28d6ae2b7b5cbc3490c01907bf3d587">noise_protobuf_add_to_bytes_array</a> (void ***array, size_t **len_array, size_t *count, size_t *max, const void *value, size_t size)</td></tr>
+<tr class="separator:aa28d6ae2b7b5cbc3490c01907bf3d587"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab47d9a0be40ae088045278380954d4c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#ab47d9a0be40ae088045278380954d4c0">noise_protobuf_add_to_string_array</a> (char ***array, size_t **len_array, size_t *count, size_t *max, const char *value, size_t size)</td></tr>
+<tr class="separator:ab47d9a0be40ae088045278380954d4c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a904a242ed471ca745fe3f718eee39ddd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#a904a242ed471ca745fe3f718eee39ddd">noise_protobuf_finish_input</a> (<a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf)</td></tr>
 <tr class="separator:a904a242ed471ca745fe3f718eee39ddd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7241854f61cc8d4be7b8aaee8dd2ca8a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#a7241854f61cc8d4be7b8aaee8dd2ca8a">noise_protobuf_finish_measure</a> (<a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf, size_t *size)</td></tr>
@@ -114,6 +121,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2e27081ca6e38848b97a3d8ca0b62d9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3e9b301cd3e6b6ea1561da224e8695a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#af3e9b301cd3e6b6ea1561da224e8695a">noise_protobuf_free_memory</a> (void *ptr, size_t size)</td></tr>
 <tr class="separator:af3e9b301cd3e6b6ea1561da224e8695a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47b7bd85422b6c85fe5ec91c16e85af3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#a47b7bd85422b6c85fe5ec91c16e85af3">noise_protobuf_insert_into_array</a> (void **array, size_t *count, size_t *max, size_t index, const void *value, size_t size)</td></tr>
+<tr class="separator:a47b7bd85422b6c85fe5ec91c16e85af3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aedd8fc057a2835ee02db1692fdabb45e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#aedd8fc057a2835ee02db1692fdabb45e">noise_protobuf_peek_size</a> (const <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf)</td></tr>
 <tr class="separator:aedd8fc057a2835ee02db1692fdabb45e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc7876b295b39f416c626609c64daac3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#afc7876b295b39f416c626609c64daac3">noise_protobuf_peek_tag</a> (const <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf)</td></tr>
@@ -176,8 +185,6 @@ Functions</h2></td></tr>
 <tr class="separator:ae45f0b4710473c26600574c3d2209d54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd0c18e601c3d974ad76a4e0c9068862"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#abd0c18e601c3d974ad76a4e0c9068862">noise_protobuf_write_end_element</a> (<a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf, size_t *end_posn)</td></tr>
 <tr class="separator:abd0c18e601c3d974ad76a4e0c9068862"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca4169e72455e0028b7544e0d4f1dc5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#aca4169e72455e0028b7544e0d4f1dc5a">noise_protobuf_write_enum</a> (<a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf, int tag, int32_t value)</td></tr>
-<tr class="separator:aca4169e72455e0028b7544e0d4f1dc5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d591209da052221f12e662aa53768dc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#a0d591209da052221f12e662aa53768dc">noise_protobuf_write_fixed32</a> (<a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf, int tag, uint32_t value)</td></tr>
 <tr class="separator:a0d591209da052221f12e662aa53768dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d1332817605be85ba3b7a5bc050c739"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="protobufs_8h.html#a9d1332817605be85ba3b7a5bc050c739">noise_protobuf_write_fixed64</a> (<a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf, int tag, uint64_t value)</td></tr>
@@ -216,7 +223,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <div class="textblock">
-<p>Definition at line <a class="el" href="protobufs_8h_source.html#l00033">33</a> of file <a class="el" href="protobufs_8h_source.html">protobufs.h</a>.</p>
+<p>Definition at line <a class="el" href="protobufs_8h_source.html#l00034">34</a> of file <a class="el" href="protobufs_8h_source.html">protobufs.h</a>.</p>
 </div><table class="fieldtable">
 <tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
@@ -248,6 +255,150 @@ size</td>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a class="anchor" id="a216fedd000a9fcdd755966eabf9bc127"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_protobuf_add_to_array </td>
+          <td>(</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="aa28d6ae2b7b5cbc3490c01907bf3d587"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_protobuf_add_to_bytes_array </td>
+          <td>(</td>
+          <td class="paramtype">void ***&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t **&#160;</td>
+          <td class="paramname"><em>len_array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="ab47d9a0be40ae088045278380954d4c0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_protobuf_add_to_string_array </td>
+          <td>(</td>
+          <td class="paramtype">char ***&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t **&#160;</td>
+          <td class="paramname"><em>len_array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a class="anchor" id="a904a242ed471ca745fe3f718eee39ddd"></a>
 <div class="memitem">
 <div class="memproto">
@@ -363,6 +514,56 @@ size</td>
           <td>(</td>
           <td class="paramtype">void *&#160;</td>
           <td class="paramname"><em>ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a class="anchor" id="a47b7bd85422b6c85fe5ec91c16e85af3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_protobuf_insert_into_array </td>
+          <td>(</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>array</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t *&#160;</td>
+          <td class="paramname"><em>max</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>value</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -1338,38 +1539,6 @@ size</td>
 
 </div>
 </div>
-<a class="anchor" id="aca4169e72455e0028b7544e0d4f1dc5a"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int noise_protobuf_write_enum </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *&#160;</td>
-          <td class="paramname"><em>pbuf</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>tag</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int32_t&#160;</td>
-          <td class="paramname"><em>value</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a class="anchor" id="a0d591209da052221f12e662aa53768dc"></a>
 <div class="memitem">
 <div class="memproto">
@@ -1795,7 +1964,7 @@ size</td>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

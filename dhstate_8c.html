@@ -107,6 +107,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gac8166b90a31317f33c940fc82aa7b2ce"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gac8166b90a31317f33c940fc82aa7b2ce">noise_dhstate_clear_key</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:gac8166b90a31317f33c940fc82aa7b2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the key in a DHState object.  <a href="group__dhstate.html#gac8166b90a31317f33c940fc82aa7b2ce">More...</a><br/></td></tr>
 <tr class="separator:gac8166b90a31317f33c940fc82aa7b2ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5a950deb50cd6ca5c25ef2b6404ddf48"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga5a950deb50cd6ca5c25ef2b6404ddf48">noise_dhstate_copy</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *from)</td></tr>
+<tr class="memdesc:ga5a950deb50cd6ca5c25ef2b6404ddf48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies the keys from one DHState object to another.  <a href="group__dhstate.html#ga5a950deb50cd6ca5c25ef2b6404ddf48">More...</a><br/></td></tr>
+<tr class="separator:ga5a950deb50cd6ca5c25ef2b6404ddf48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3ced2bdae2849e0062f8723556c4da69"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga3ced2bdae2849e0062f8723556c4da69">noise_dhstate_format_fingerprint</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, int fingerprint_type, char *buffer, size_t len)</td></tr>
+<tr class="memdesc:ga3ced2bdae2849e0062f8723556c4da69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the public key fingerprint for the key within a DHState.  <a href="group__dhstate.html#ga3ced2bdae2849e0062f8723556c4da69">More...</a><br/></td></tr>
+<tr class="separator:ga3ced2bdae2849e0062f8723556c4da69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga05b705a292e82c508ab8a337c4f8aea3">noise_dhstate_free</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga05b705a292e82c508ab8a337c4f8aea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a DHState object after destroying all sensitive material.  <a href="group__dhstate.html#ga05b705a292e82c508ab8a337c4f8aea3">More...</a><br/></td></tr>
 <tr class="separator:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,6 +125,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gacfb68c245cadc7f4c420ccb6ec9a08f5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gacfb68c245cadc7f4c420ccb6ec9a08f5">noise_dhstate_get_keypair</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, uint8_t *private_key, size_t private_key_len, uint8_t *public_key, size_t public_key_len)</td></tr>
 <tr class="memdesc:gacfb68c245cadc7f4c420ccb6ec9a08f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the keypair from within a DHState object.  <a href="group__dhstate.html#gacfb68c245cadc7f4c420ccb6ec9a08f5">More...</a><br/></td></tr>
 <tr class="separator:gacfb68c245cadc7f4c420ccb6ec9a08f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa9ce3f0c17a3d9feb52bdb81fabdc968"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gaa9ce3f0c17a3d9feb52bdb81fabdc968">noise_dhstate_get_max_key_length</a> (void)</td></tr>
+<tr class="memdesc:gaa9ce3f0c17a3d9feb52bdb81fabdc968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the maximum length of DH keys for the supported algorithms.  <a href="group__dhstate.html#gaa9ce3f0c17a3d9feb52bdb81fabdc968">More...</a><br/></td></tr>
+<tr class="separator:gaa9ce3f0c17a3d9feb52bdb81fabdc968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gada42ef950369824e089cd6fbb32b1438"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gada42ef950369824e089cd6fbb32b1438">noise_dhstate_get_private_key_length</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:gada42ef950369824e089cd6fbb32b1438"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the private key for a DHState object.  <a href="group__dhstate.html#gada42ef950369824e089cd6fbb32b1438">More...</a><br/></td></tr>
 <tr class="separator:gada42ef950369824e089cd6fbb32b1438"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,7 +175,7 @@ Functions</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

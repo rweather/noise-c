@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['utilities',['Utilities',['../group__utils.html',1,'']]]
+  ['randstate_20api',['RandState API',['../group__randstate.html',1,'']]]
 ];

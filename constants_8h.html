@@ -192,6 +192,12 @@ Macros</h2></td></tr>
 <tr class="memitem:ga33189e26987e7b318cddb161b93365dc"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__errors.html#ga33189e26987e7b318cddb161b93365dc">NOISE_ERROR_UNKNOWN_NAME</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('E', 3)</td></tr>
 <tr class="memdesc:ga33189e26987e7b318cddb161b93365dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Algorithm name is unknown.  <a href="group__errors.html#ga33189e26987e7b318cddb161b93365dc">More...</a><br/></td></tr>
 <tr class="separator:ga33189e26987e7b318cddb161b93365dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa8a60e927531fa7a3f7cdb8aaa569977"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fingerprint__types.html#gaa8a60e927531fa7a3f7cdb8aaa569977">NOISE_FINGERPRINT_BASIC</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('F', 1)</td></tr>
+<tr class="memdesc:gaa8a60e927531fa7a3f7cdb8aaa569977"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fingerprint format is the hexadecimal encoding of the first 16 bytes of the SHA256 hash of the public key.  <a href="group__fingerprint__types.html#gaa8a60e927531fa7a3f7cdb8aaa569977">More...</a><br/></td></tr>
+<tr class="separator:gaa8a60e927531fa7a3f7cdb8aaa569977"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga54882ba35bd2f45ea41c48660f245a73"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fingerprint__types.html#ga54882ba35bd2f45ea41c48660f245a73">NOISE_FINGERPRINT_FULL</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('F', 2)</td></tr>
+<tr class="memdesc:ga54882ba35bd2f45ea41c48660f245a73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fingerprint format is the hexadecimal encoding of the entire 32 bytes of the SHA256 hash of the public key.  <a href="group__fingerprint__types.html#ga54882ba35bd2f45ea41c48660f245a73">More...</a><br/></td></tr>
+<tr class="separator:ga54882ba35bd2f45ea41c48660f245a73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1e61a610ff2f9628723ae2bbac01f7c9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hash__id.html#ga1e61a610ff2f9628723ae2bbac01f7c9">NOISE_HASH_BLAKE2b</a>&#160;&#160;&#160;<a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>('H', 2)</td></tr>
 <tr class="memdesc:ga1e61a610ff2f9628723ae2bbac01f7c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hash identifier for "BLAKE2b".  <a href="group__hash__id.html#ga1e61a610ff2f9628723ae2bbac01f7c9">More...</a><br/></td></tr>
 <tr class="separator:ga1e61a610ff2f9628723ae2bbac01f7c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -213,6 +219,9 @@ Macros</h2></td></tr>
 <tr class="memitem:ad48917247492a63be0a48658cd0d626c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#ad48917247492a63be0a48658cd0d626c">NOISE_ID</a>(ch, num)&#160;&#160;&#160;((((int)(ch)) &lt;&lt; 8) | ((int)(num)))</td></tr>
 <tr class="memdesc:ad48917247492a63be0a48658cd0d626c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Builds an algorithm identifier for the library.  <a href="#ad48917247492a63be0a48658cd0d626c">More...</a><br/></td></tr>
 <tr class="separator:ad48917247492a63be0a48658cd0d626c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga05cbe9cd1c7d9310330409ff65bc1854"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fingerprint__types.html#ga05cbe9cd1c7d9310330409ff65bc1854">NOISE_MAX_FINGERPRINT_LEN</a>&#160;&#160;&#160;256</td></tr>
+<tr class="memdesc:ga05cbe9cd1c7d9310330409ff65bc1854"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recommended maximum size for buffers to be passed to <a class="el" href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90" title="Formats the fingerprint for a raw public key value. ">noise_format_fingerprint()</a>, <a class="el" href="group__dhstate.html#ga3ced2bdae2849e0062f8723556c4da69" title="Formats the public key fingerprint for the key within a DHState. ">noise_dhstate_format_fingerprint()</a>, etc.  <a href="group__fingerprint__types.html#ga05cbe9cd1c7d9310330409ff65bc1854">More...</a><br/></td></tr>
+<tr class="separator:ga05cbe9cd1c7d9310330409ff65bc1854"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a706be47390a8b57968e60fd8719b98f3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="constants_8h.html#a706be47390a8b57968e60fd8719b98f3">NOISE_MAX_PAYLOAD_LEN</a>&#160;&#160;&#160;65535</td></tr>
 <tr class="memdesc:a706be47390a8b57968e60fd8719b98f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum payload length for Noise packets.  <a href="#a706be47390a8b57968e60fd8719b98f3">More...</a><br/></td></tr>
 <tr class="separator:a706be47390a8b57968e60fd8719b98f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -384,7 +393,7 @@ Macros</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

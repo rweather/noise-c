@@ -1,16 +1,14 @@
 var searchData=
 [
-  ['shared_5fkey_5flen',['shared_key_len',['../structNoiseDHState__s.html#ab1b932dd8f0412288ffebfdcda429b75',1,'NoiseDHState_s']]],
-  ['sign',['sign',['../structNoiseSignState__s.html#a4b76230985723a19a6563c5c672b66c0',1,'NoiseSignState_s']]],
-  ['sign_5fid',['sign_id',['../structNoiseSignState__s.html#a7021e66ac834cb6ce601063f5fc80806',1,'NoiseSignState_s']]],
-  ['signature_20algorithm_20identifiers',['Signature algorithm identifiers',['../group__signature__id.html',1,'']]],
-  ['signature_5flen',['signature_len',['../structNoiseSignState__s.html#a5c4df96d60c9e7c5b26fd08ac11f7617',1,'NoiseSignState_s']]],
-  ['signstate_20api',['SignState API',['../group__signstate.html',1,'']]],
-  ['signstate_2ec',['signstate.c',['../signstate_8c.html',1,'']]],
-  ['signstate_2eh',['signstate.h',['../signstate_8h.html',1,'']]],
-  ['size',['size',['../structNoiseCipherState__s.html#acca6bed643d8fa0fb1831630b155d419',1,'NoiseCipherState_s::size()'],['../structNoiseHashState__s.html#a24034088ea44d4c99abb85edcd5ced82',1,'NoiseHashState_s::size()'],['../structNoiseDHState__s.html#a64f3d76f67f9479425903d418b0f7627',1,'NoiseDHState_s::size()'],['../structNoiseSignState__s.html#ac023f204e4a3f692789355bca54095e9',1,'NoiseSignState_s::size()'],['../internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4',1,'NoiseSymmetricState_s::size()'],['../internal_8h.html#a4365c4b1a1475b721c6f32a1105f1331',1,'NoiseHandshakeState_s::size()'],['../protobufs_8h.html#a09a22f524a941edde6f18551049c9e36',1,'NoiseProtobuf::size()'],['../group__buffer__management.html#ae00e68214aa8cd7ba4b841243a0e704d',1,'NoiseBuffer::size()']]],
-  ['symmetric',['symmetric',['../internal_8h.html#a9f633dec6fadfe5cecd9c46d682cc22e',1,'NoiseHandshakeState_s']]],
-  ['symmetricstate_20api',['SymmetricState API',['../group__symmetricstate.html',1,'']]],
-  ['symmetricstate_2ec',['symmetricstate.c',['../symmetricstate_8c.html',1,'']]],
-  ['symmetricstate_2eh',['symmetricstate.h',['../symmetricstate_8h.html',1,'']]]
+  ['padding_20modes',['Padding modes',['../group__padding__modes.html',1,'']]],
+  ['pattern_5fid',['pattern_id',['../group__names.html#a03585bc8d03a3f0cbc6dcc18f5feed02',1,'NoiseProtocolId']]],
+  ['patterns_2ec',['patterns.c',['../patterns_8c.html',1,'']]],
+  ['posn',['posn',['../protobufs_8h.html#a833ce6722434b7290cb291368a4856fd',1,'NoiseProtobuf']]],
+  ['prefix_5fid',['prefix_id',['../group__names.html#a28ed86d8adce5c81d2a47fa1e93ec74d',1,'NoiseProtocolId::prefix_id()'],['../group__prefix__id.html',1,'(Global Namespace)']]],
+  ['private_5fkey',['private_key',['../structNoiseDHState__s.html#aacb825aedaa140d12fab37b897da06f0',1,'NoiseDHState_s::private_key()'],['../structNoiseSignState__s.html#a1e65cf0f1989366df94f328d65619a1d',1,'NoiseSignState_s::private_key()']]],
+  ['private_5fkey_5flen',['private_key_len',['../structNoiseDHState__s.html#ad70fed9dc7645821fbf40bb89f4ab6df',1,'NoiseDHState_s::private_key_len()'],['../structNoiseSignState__s.html#abbeec938bf1948fec924cb80c36f5e81',1,'NoiseSignState_s::private_key_len()']]],
+  ['protobufs_2eh',['protobufs.h',['../protobufs_8h.html',1,'']]],
+  ['protocol_2eh',['protocol.h',['../protocol_8h.html',1,'']]],
+  ['public_5fkey',['public_key',['../structNoiseDHState__s.html#a63a30c2d7fc0b31b9082f4b706194b2a',1,'NoiseDHState_s::public_key()'],['../structNoiseSignState__s.html#abee6d6fc74d5a90bf771088345b9a7e5',1,'NoiseSignState_s::public_key()']]],
+  ['public_5fkey_5flen',['public_key_len',['../structNoiseDHState__s.html#ab5a28a815c35396a971ee4ae533686fd',1,'NoiseDHState_s::public_key_len()'],['../structNoiseSignState__s.html#a7fe1b60adec20b128efd94601e624eb4',1,'NoiseSignState_s::public_key_len()']]]
 ];

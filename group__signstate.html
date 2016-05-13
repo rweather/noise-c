@@ -94,6 +94,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gada9a88e272159c052becfa0dd227e7c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#gada9a88e272159c052becfa0dd227e7c3">noise_signstate_clear_key</a> (<a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state)</td></tr>
 <tr class="memdesc:gada9a88e272159c052becfa0dd227e7c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the key in a SignState object.  <a href="#gada9a88e272159c052becfa0dd227e7c3">More...</a><br/></td></tr>
 <tr class="separator:gada9a88e272159c052becfa0dd227e7c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9bf725ef190d92e255e59dcffa619f08"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga9bf725ef190d92e255e59dcffa619f08">noise_signstate_copy</a> (<a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state, const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *from)</td></tr>
+<tr class="memdesc:ga9bf725ef190d92e255e59dcffa619f08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies the keys from one SignState object to another.  <a href="#ga9bf725ef190d92e255e59dcffa619f08">More...</a><br/></td></tr>
+<tr class="separator:ga9bf725ef190d92e255e59dcffa619f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga837e41c302bfadae34e3c4d4fba18d52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga837e41c302bfadae34e3c4d4fba18d52">noise_signstate_format_fingerprint</a> (const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state, int fingerprint_type, char *buffer, size_t len)</td></tr>
+<tr class="memdesc:ga837e41c302bfadae34e3c4d4fba18d52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the public key fingerprint for the key within a SignState.  <a href="#ga837e41c302bfadae34e3c4d4fba18d52">More...</a><br/></td></tr>
+<tr class="separator:ga837e41c302bfadae34e3c4d4fba18d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf20cffb202ff1b8d90a203ccced8774f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#gaf20cffb202ff1b8d90a203ccced8774f">noise_signstate_free</a> (<a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state)</td></tr>
 <tr class="memdesc:gaf20cffb202ff1b8d90a203ccced8774f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a SignState object after destroying all sensitive material.  <a href="#gaf20cffb202ff1b8d90a203ccced8774f">More...</a><br/></td></tr>
 <tr class="separator:gaf20cffb202ff1b8d90a203ccced8774f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,6 +109,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gaf5b80010cd8e931a57f8b9e2e378ebe5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#gaf5b80010cd8e931a57f8b9e2e378ebe5">noise_signstate_get_keypair</a> (const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state, uint8_t *private_key, size_t private_key_len, uint8_t *public_key, size_t public_key_len)</td></tr>
 <tr class="memdesc:gaf5b80010cd8e931a57f8b9e2e378ebe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the keypair from within a SignState object.  <a href="#gaf5b80010cd8e931a57f8b9e2e378ebe5">More...</a><br/></td></tr>
 <tr class="separator:gaf5b80010cd8e931a57f8b9e2e378ebe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga521baf6675022c154c76ddc87d13542b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga521baf6675022c154c76ddc87d13542b">noise_signstate_get_max_key_length</a> (void)</td></tr>
+<tr class="memdesc:ga521baf6675022c154c76ddc87d13542b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the maximum length of signing keys for the supported algorithms.  <a href="#ga521baf6675022c154c76ddc87d13542b">More...</a><br/></td></tr>
+<tr class="separator:ga521baf6675022c154c76ddc87d13542b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga72f02f28520e2f6574032428335d4f33"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga72f02f28520e2f6574032428335d4f33">noise_signstate_get_max_signature_length</a> (void)</td></tr>
+<tr class="memdesc:ga72f02f28520e2f6574032428335d4f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the maximum length of signatures for the supported algorithms.  <a href="#ga72f02f28520e2f6574032428335d4f33">More...</a><br/></td></tr>
+<tr class="separator:ga72f02f28520e2f6574032428335d4f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga039d2b214b5f0abdc9a91bd77272e416"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga039d2b214b5f0abdc9a91bd77272e416">noise_signstate_get_private_key_length</a> (const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state)</td></tr>
 <tr class="memdesc:ga039d2b214b5f0abdc9a91bd77272e416"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the private key for a SignState object.  <a href="#ga039d2b214b5f0abdc9a91bd77272e416">More...</a><br/></td></tr>
 <tr class="separator:ga039d2b214b5f0abdc9a91bd77272e416"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,6 +205,109 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__signstate.html#gaa94dbd72fa85348538e0deeb65e69809" title="Determine if a SignState object contains a keypair. ">noise_signstate_has_keypair()</a>, <a class="el" href="group__signstate.html#ga16aecc49cc9309a6016d72cb9b4ed07a" title="Determine if a SignState object contains a public key. ">noise_signstate_has_public_key()</a> </dd></dl>
 
 <p>Definition at line <a class="el" href="signstate_8c_source.html#l00507">507</a> of file <a class="el" href="signstate_8c_source.html">signstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga9bf725ef190d92e255e59dcffa619f08"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_signstate_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *&#160;</td>
+          <td class="paramname"><em>from</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copies the keys from one SignState object to another. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The SignState to copy into. </td></tr>
+    <tr><td class="paramname">from</td><td>The SignState to copy from.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>from</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_NOT_APPLICABLE if <em>from</em> does not have the same key type identifier as <em>state</em>. </dd></dl>
+
+<p>Definition at line <a class="el" href="signstate_8c_source.html#l00609">609</a> of file <a class="el" href="signstate_8c_source.html">signstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga837e41c302bfadae34e3c4d4fba18d52"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_signstate_format_fingerprint </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>fingerprint_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Formats the public key fingerprint for the key within a SignState. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The SignState object. </td></tr>
+    <tr><td class="paramname">fingerprint_type</td><td>The type of fingerprint to format, NOISE_FINGERPRINT_BASIC or NOISE_FINGERPRINT_FULL. </td></tr>
+    <tr><td class="paramname">buffer</td><td>The buffer to write the fingerprint string to, including a terminating NUL. </td></tr>
+    <tr><td class="paramname">len</td><td>The length of <em>buffer</em> in bytes.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>buffer</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>fingerprint_type</em> is not a supported fingerprint type. </dd>
+<dd>
+NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entire fingerprint string. </dd>
+<dd>
+NOISE_ERROR_INVALID_STATE if a public key has not been set on <em>state</em> yet.</dd></dl>
+<p>Fingerprints are created by hashing the public key with SHA256 and then formatting the value in hexadecimal with bytes separated by colons. If the <em>fingerprint_type</em> is NOISE_FINGERPRINT_BASIC, then the SHA256 hash value is truncated to the first 16 bytes. If the type is NOISE_FINGERPRINT_FULL, then the entire 32 byte hash value is formatted. </p>
+
+<p>Definition at line <a class="el" href="signstate_8c_source.html#l00652">652</a> of file <a class="el" href="signstate_8c_source.html">signstate.c</a>.</p>
 
 </div>
 </div>
@@ -320,6 +435,48 @@ NOISE_ERROR_INVALID_STATE if <em>state</em> does not contain a keypair.</dd></dl
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__signstate.html#ga9ce3bf872428bcd55657498845d07316" title="Sets the keypair within a SignState object. ">noise_signstate_set_keypair()</a>, <a class="el" href="group__signstate.html#ga867e361cf8da8e303f44fde26d076055" title="Gets the public key value from a SignState object. ">noise_signstate_get_public_key()</a> </dd></dl>
 
 <p>Definition at line <a class="el" href="signstate_8c_source.html#l00395">395</a> of file <a class="el" href="signstate_8c_source.html">signstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga521baf6675022c154c76ddc87d13542b"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_signstate_get_max_key_length </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the maximum length of signing keys for the supported algorithms. </p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__signstate.html#ga72f02f28520e2f6574032428335d4f33" title="Gets the maximum length of signatures for the supported algorithms. ">noise_signstate_get_max_signature_length()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="signstate_8c_source.html#l00677">677</a> of file <a class="el" href="signstate_8c_source.html">signstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga72f02f28520e2f6574032428335d4f33"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_signstate_get_max_signature_length </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the maximum length of signatures for the supported algorithms. </p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__signstate.html#ga521baf6675022c154c76ddc87d13542b" title="Gets the maximum length of signing keys for the supported algorithms. ">noise_signstate_get_max_key_length()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="signstate_8c_source.html#l00687">687</a> of file <a class="el" href="signstate_8c_source.html">signstate.c</a>.</p>
 
 </div>
 </div>
@@ -950,7 +1107,7 @@ NOISE_ERROR_INVALID_SIGNATURE if the <em>signature</em> is not valid for the <em
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

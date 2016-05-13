@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['randstate_20api',['RandState API',['../group__randstate.html',1,'']]]
+  ['key_20loading_20and_20saving_20api',['Key loading and saving API',['../group__keyloader.html',1,'']]]
 ];

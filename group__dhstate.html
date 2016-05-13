@@ -97,6 +97,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gac8166b90a31317f33c940fc82aa7b2ce"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gac8166b90a31317f33c940fc82aa7b2ce">noise_dhstate_clear_key</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:gac8166b90a31317f33c940fc82aa7b2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the key in a DHState object.  <a href="#gac8166b90a31317f33c940fc82aa7b2ce">More...</a><br/></td></tr>
 <tr class="separator:gac8166b90a31317f33c940fc82aa7b2ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5a950deb50cd6ca5c25ef2b6404ddf48"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga5a950deb50cd6ca5c25ef2b6404ddf48">noise_dhstate_copy</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *from)</td></tr>
+<tr class="memdesc:ga5a950deb50cd6ca5c25ef2b6404ddf48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies the keys from one DHState object to another.  <a href="#ga5a950deb50cd6ca5c25ef2b6404ddf48">More...</a><br/></td></tr>
+<tr class="separator:ga5a950deb50cd6ca5c25ef2b6404ddf48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3ced2bdae2849e0062f8723556c4da69"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga3ced2bdae2849e0062f8723556c4da69">noise_dhstate_format_fingerprint</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, int fingerprint_type, char *buffer, size_t len)</td></tr>
+<tr class="memdesc:ga3ced2bdae2849e0062f8723556c4da69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the public key fingerprint for the key within a DHState.  <a href="#ga3ced2bdae2849e0062f8723556c4da69">More...</a><br/></td></tr>
+<tr class="separator:ga3ced2bdae2849e0062f8723556c4da69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga05b705a292e82c508ab8a337c4f8aea3">noise_dhstate_free</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga05b705a292e82c508ab8a337c4f8aea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a DHState object after destroying all sensitive material.  <a href="#ga05b705a292e82c508ab8a337c4f8aea3">More...</a><br/></td></tr>
 <tr class="separator:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,6 +115,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gacfb68c245cadc7f4c420ccb6ec9a08f5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gacfb68c245cadc7f4c420ccb6ec9a08f5">noise_dhstate_get_keypair</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, uint8_t *private_key, size_t private_key_len, uint8_t *public_key, size_t public_key_len)</td></tr>
 <tr class="memdesc:gacfb68c245cadc7f4c420ccb6ec9a08f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the keypair from within a DHState object.  <a href="#gacfb68c245cadc7f4c420ccb6ec9a08f5">More...</a><br/></td></tr>
 <tr class="separator:gacfb68c245cadc7f4c420ccb6ec9a08f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa9ce3f0c17a3d9feb52bdb81fabdc968"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gaa9ce3f0c17a3d9feb52bdb81fabdc968">noise_dhstate_get_max_key_length</a> (void)</td></tr>
+<tr class="memdesc:gaa9ce3f0c17a3d9feb52bdb81fabdc968"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the maximum length of DH keys for the supported algorithms.  <a href="#gaa9ce3f0c17a3d9feb52bdb81fabdc968">More...</a><br/></td></tr>
+<tr class="separator:gaa9ce3f0c17a3d9feb52bdb81fabdc968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gada42ef950369824e089cd6fbb32b1438"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gada42ef950369824e089cd6fbb32b1438">noise_dhstate_get_private_key_length</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:gada42ef950369824e089cd6fbb32b1438"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the private key for a DHState object.  <a href="#gada42ef950369824e089cd6fbb32b1438">More...</a><br/></td></tr>
 <tr class="separator:gada42ef950369824e089cd6fbb32b1438"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -263,6 +272,109 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 
 </div>
 </div>
+<a class="anchor" id="ga5a950deb50cd6ca5c25ef2b6404ddf48"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_dhstate_copy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td>
+          <td class="paramname"><em>from</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Copies the keys from one DHState object to another. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The DHState to copy into. </td></tr>
+    <tr><td class="paramname">from</td><td>The DHState to copy from.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>from</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_NOT_APPLICABLE if <em>from</em> does not have the same key type identifier as <em>state</em>. </dd></dl>
+
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00663">663</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga3ced2bdae2849e0062f8723556c4da69"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_dhstate_format_fingerprint </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>fingerprint_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Formats the public key fingerprint for the key within a DHState. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The DHState object. </td></tr>
+    <tr><td class="paramname">fingerprint_type</td><td>The type of fingerprint to format, NOISE_FINGERPRINT_BASIC or NOISE_FINGERPRINT_FULL. </td></tr>
+    <tr><td class="paramname">buffer</td><td>The buffer to write the fingerprint string to, including a terminating NUL. </td></tr>
+    <tr><td class="paramname">len</td><td>The length of <em>buffer</em> in bytes.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>buffer</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>fingerprint_type</em> is not a supported fingerprint type. </dd>
+<dd>
+NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entire fingerprint string. </dd>
+<dd>
+NOISE_ERROR_INVALID_STATE if a public key has not been set on <em>state</em> yet.</dd></dl>
+<p>Fingerprints are created by hashing the public key with SHA256 and then formatting the value in hexadecimal with bytes separated by colons. If the <em>fingerprint_type</em> is NOISE_FINGERPRINT_BASIC, then the SHA256 hash value is truncated to the first 16 bytes. If the type is NOISE_FINGERPRINT_FULL, then the entire 32 byte hash value is formatted. </p>
+
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00706">706</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="ga05b705a292e82c508ab8a337c4f8aea3"></a>
 <div class="memitem">
 <div class="memproto">
@@ -414,6 +526,26 @@ NOISE_ERROR_INVALID_STATE if <em>state</em> does not contain a keypair.</dd></dl
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gaba2d5df7a3e727e479a297c231383dcc" title="Sets the keypair within a DHState object. ">noise_dhstate_set_keypair()</a>, <a class="el" href="group__dhstate.html#gaf3f309448ef895b037fdf8a6b812fe40" title="Gets the public key value from a DHState object. ">noise_dhstate_get_public_key()</a> </dd></dl>
 
 <p>Definition at line <a class="el" href="dhstate_8c_source.html#l00399">399</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gaa9ce3f0c17a3d9feb52bdb81fabdc968"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_dhstate_get_max_key_length </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the maximum length of DH keys for the supported algorithms. </p>
+
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00728">728</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -937,7 +1069,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if <em>public_key</em> is not valid and it is not
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

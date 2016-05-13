@@ -1,5 +1,15 @@
 var searchData=
 [
+  ['noise_5fcertificate',['Noise_Certificate',['../certificate_8h.html#acc27282cd9f98d740595df5e56b44b8c',1,'certificate.h']]],
+  ['noise_5fcertificatechain',['Noise_CertificateChain',['../certificate_8h.html#a4017b7d8ad320542726ef5f75ed97a62',1,'certificate.h']]],
+  ['noise_5fencryptedprivatekey',['Noise_EncryptedPrivateKey',['../certificate_8h.html#a3bac541d9911ad3da7decd687a582f40',1,'certificate.h']]],
+  ['noise_5fextrasignedinfo',['Noise_ExtraSignedInfo',['../certificate_8h.html#ae62dfd0b3d8f986121375b0c9e72bfd1',1,'certificate.h']]],
+  ['noise_5fmetainfo',['Noise_MetaInfo',['../certificate_8h.html#a789e599a7e1a9f48cf8eebb8fda932d9',1,'certificate.h']]],
+  ['noise_5fprivatekey',['Noise_PrivateKey',['../certificate_8h.html#a03890699234e7310e5976cca65bab8c9',1,'certificate.h']]],
+  ['noise_5fprivatekeyinfo',['Noise_PrivateKeyInfo',['../certificate_8h.html#ad68e04186c6e1ccc97e7fd5d7900dcce',1,'certificate.h']]],
+  ['noise_5fpublickeyinfo',['Noise_PublicKeyInfo',['../certificate_8h.html#aeba54413bc465a639851d48ab4e70dcc',1,'certificate.h']]],
+  ['noise_5fsignature',['Noise_Signature',['../certificate_8h.html#a4d57a4dfc77a22a9d70402d4a300fd13',1,'certificate.h']]],
+  ['noise_5fsubjectinfo',['Noise_SubjectInfo',['../certificate_8h.html#a80bc41e5ba62b0cd5067ae8906d38a35',1,'certificate.h']]],
   ['noisecipherstate',['NoiseCipherState',['../group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1',1,'cipherstate.h']]],
   ['noisedhstate',['NoiseDHState',['../group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956',1,'dhstate.h']]],
   ['noisehandshakestate',['NoiseHandshakeState',['../group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5',1,'handshakestate.h']]],

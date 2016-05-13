@@ -85,6 +85,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"></div>
 <div class="line">syntax = <span class="stringliteral">&quot;proto3&quot;</span>;</div>
 <div class="line"></div>
+<div class="line"><span class="keyword">package </span>Noise;</div>
+<div class="line"></div>
 <div class="line"><span class="comment">// The top-level definitions are &quot;Certificate&quot;, &quot;CertificateChain&quot;,</span></div>
 <div class="line"><span class="comment">// and &quot;EncryptedPrivateKey&quot;.  The other definitions support these three.</span></div>
 <div class="line"></div>
@@ -111,7 +113,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><span class="comment">// certificates providing additional information for subject verification.</span></div>
 <div class="line">message CertificateChain {</div>
 <div class="line">    reserved 1 to 7, 9 to 15;</div>
-<div class="line">    repeated Certificate cert = 8;</div>
+<div class="line">    repeated Certificate certs = 8;</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Information about the subject/owner in a certificate and their public keys.</span></div>
@@ -120,12 +122,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
 <div class="line">    <span class="keywordtype">string</span> name = 2;</div>
 <div class="line">    <span class="keywordtype">string</span> role = 3;</div>
-<div class="line">    repeated PublicKey keys = 4;</div>
+<div class="line">    repeated PublicKeyInfo keys = 4;</div>
 <div class="line">    repeated MetaInfo meta = 5;</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Information about a single public key.</span></div>
-<div class="line">message PublicKey {</div>
+<div class="line">message PublicKeyInfo {</div>
 <div class="line">    reserved 3 to 15;</div>
 <div class="line">    <span class="keywordtype">string</span> algorithm = 1;       <span class="comment">// &quot;25519&quot;, &quot;448&quot;, &quot;Ed25519&quot;, etc.</span></div>
 <div class="line">    bytes key = 2;              <span class="comment">// Format depends upon the algorithm.</span></div>
@@ -143,7 +145,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">    reserved 6 to 14;</div>
 <div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
 <div class="line">    <span class="keywordtype">string</span> name = 2;</div>
-<div class="line">    PublicKey signing_key = 3;</div>
+<div class="line">    PublicKeyInfo signing_key = 3;</div>
 <div class="line">    <span class="keywordtype">string</span> hash_algorithm = 4;</div>
 <div class="line">    ExtraSignedInfo extra_signed_info = 5;</div>
 <div class="line">    bytes signature = 15;</div>
@@ -168,23 +170,23 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">    <span class="keywordtype">string</span> algorithm = 11;      <span class="comment">// e.g. &quot;ChaChaPoly_BLAKE2b_PBKDF2&quot;.</span></div>
 <div class="line">    bytes salt = 12;            <span class="comment">// Salt value for input to the KDF.</span></div>
 <div class="line">    uint32 iterations = 13;     <span class="comment">// Iteration count for the KDF.</span></div>
-<div class="line">    bytes encrypted_data = 15;  <span class="comment">// Encrypted version of PrivateSubjectInfo.</span></div>
+<div class="line">    bytes encrypted_data = 15;  <span class="comment">// Encrypted version of PrivateKey.</span></div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Information about a subject&#39;s private keys.  Note that this is</span></div>
 <div class="line"><span class="comment">// identical in format to &quot;SubjectInfo&quot; except that the key values</span></div>
 <div class="line"><span class="comment">// are private keys rather than public keys.</span></div>
-<div class="line">message PrivateSubjectInfo {</div>
+<div class="line">message PrivateKey {</div>
 <div class="line">    reserved 6 to 15;</div>
 <div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
 <div class="line">    <span class="keywordtype">string</span> name = 2;</div>
 <div class="line">    <span class="keywordtype">string</span> role = 3;</div>
-<div class="line">    repeated PrivateKey keys = 4;</div>
+<div class="line">    repeated PrivateKeyInfo keys = 4;</div>
 <div class="line">    repeated MetaInfo meta = 5;</div>
 <div class="line">}</div>
 <div class="line"></div>
 <div class="line"><span class="comment">// Information about a single private key.</span></div>
-<div class="line">message PrivateKey {</div>
+<div class="line">message PrivateKeyInfo {</div>
 <div class="line">    reserved 3 to 15;</div>
 <div class="line">    <span class="keywordtype">string</span> algorithm = 1;       <span class="comment">// &quot;25519&quot;, &quot;448&quot;, &quot;Ed25519&quot;, etc.</span></div>
 <div class="line">    bytes key = 2;              <span class="comment">// Format depends upon the algorithm.</span></div>
@@ -192,7 +194,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

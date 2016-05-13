@@ -103,11 +103,11 @@ Certificate format examples</h1>
 <div class="line">        name: <span class="stringliteral">&quot;Jane Smith&quot;</span></div>
 <div class="line">        role: <span class="stringliteral">&quot;foo-chat-user&quot;</span></div>
 <div class="line">        keys: [</div>
-<div class="line">            PublicKey {</div>
+<div class="line">            PublicKeyInfo {</div>
 <div class="line">                algorithm: <span class="stringliteral">&quot;25519&quot;</span></div>
 <div class="line">                key: <span class="stringliteral">&quot;0xf14a2dedf6e1dd879a3af47900eedf17ae56868a7849a370ca732a571ef19e0f&quot;</span></div>
 <div class="line">            }</div>
-<div class="line">            PublicKey {</div>
+<div class="line">            PublicKeyInfo {</div>
 <div class="line">                algorithm: <span class="stringliteral">&quot;448&quot;</span></div>
 <div class="line">                key: <span class="stringliteral">&quot;0xd414a46bed6231540306818bdab08d8b06a28d98d0bfca47bcea1faf1aca78d8aabc7d7c2073779bd84cf0950ae10247975266267eebb1c8&quot;</span></div>
 <div class="line">            }</div>
@@ -117,7 +117,7 @@ Certificate format examples</h1>
 <div class="line">        Signature {</div>
 <div class="line">            <span class="keywordtype">id</span>: <span class="stringliteral">&quot;tpeoples@example.org&quot;</span></div>
 <div class="line">            name: <span class="stringliteral">&quot;Trent Peoples&quot;</span></div>
-<div class="line">            signing_key: PublicKey {</div>
+<div class="line">            signing_key: PublicKeyInfo {</div>
 <div class="line">                algorithm: <span class="stringliteral">&quot;Ed25519&quot;</span></div>
 <div class="line">                key: <span class="stringliteral">&quot;0x0fdde4a7a7cc91ec509a74bd5f2369ac768a14bb6388ceb2e1710a4b85bfe001&quot;</span></div>
 <div class="line">            }</div>
@@ -138,7 +138,7 @@ Certificate format examples</h1>
 <div class="line">    Signature {</div>
 <div class="line">        <span class="keywordtype">id</span>: <span class="stringliteral">&quot;tpeoples@example.org&quot;</span></div>
 <div class="line">        name: <span class="stringliteral">&quot;Trent Peoples&quot;</span></div>
-<div class="line">        signing_key: PublicKey {</div>
+<div class="line">        signing_key: PublicKeyInfo {</div>
 <div class="line">            algorithm: <span class="stringliteral">&quot;Ed25519&quot;</span></div>
 <div class="line">            key: <span class="stringliteral">&quot;0x0fdde4a7a7cc91ec509a74bd5f2369ac768a14bb6388ceb2e1710a4b85bfe001&quot;</span></div>
 <div class="line">        }</div>
@@ -153,7 +153,7 @@ Certificate format examples</h1>
 <div class="line">    Signature {</div>
 <div class="line">        <span class="keywordtype">id</span>: <span class="stringliteral">&quot;mary.sue@example.com&quot;</span></div>
 <div class="line">        name: <span class="stringliteral">&quot;Mary Sue&quot;</span></div>
-<div class="line">        signing_key: PublicKey {</div>
+<div class="line">        signing_key: PublicKeyInfo {</div>
 <div class="line">            algorithm: <span class="stringliteral">&quot;Ed25519&quot;</span></div>
 <div class="line">            key: <span class="stringliteral">&quot;0x8e15998d97f9b43150f05d1b895f5272a2ff1453dbf40ee4ea90df81147db5c3&quot;</span></div>
 <div class="line">        }</div>
@@ -188,7 +188,7 @@ Top level of certificates and certificate chains</h2>
 <p>Certificate chains are a list of one or more certificates:</p>
  <div class="fragment"><div class="line">message CertificateChain {</div>
 <div class="line">    reserved 1 to 7, 9 to 15;</div>
-<div class="line">    repeated Certificate cert = 8;</div>
+<div class="line">    repeated Certificate certs = 8;</div>
 <div class="line">}</div>
 </div><!-- fragment --></p>
 <p>The field tag number on the certificates in a chain is deliberately set to 8, which is different than any of the field tags in "Certificate". This allows applications to quickly determine if the supplied data is a single certificate or a certificate chain.</p>
@@ -200,7 +200,7 @@ Subject information</h2>
 <div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
 <div class="line">    <span class="keywordtype">string</span> name = 2;</div>
 <div class="line">    <span class="keywordtype">string</span> role = 3;</div>
-<div class="line">    repeated PublicKey keys = 4;</div>
+<div class="line">    repeated PublicKeyInfo keys = 4;</div>
 <div class="line">    repeated MetaInfo meta = 5;</div>
 <div class="line">}</div>
 </div><!-- fragment --></p>
@@ -209,7 +209,7 @@ Subject information</h2>
 <p>Both <code>id</code> and <code>name</code> are OPTIONAL. If neither are present, then the subject is identified by their public key fingerprint. This option is provided to protect the identity of anonymous users. A pseudonym could be used instead, but pseudonym use is not required.</p>
 <p><code>role</code> - The role that the subject's keys are intended to be used for. There are no predefined roles yet and the field can be omitted. The role may be an application name; e.g. "foo-chat", or a sub-role within an application; e.g. "foo-chat-user" and "foo-chat-server".</p>
 <p><code>keys</code> - List of public keys for the subject.</p>
- <div class="fragment"><div class="line">message PublicKey {</div>
+ <div class="fragment"><div class="line">message PublicKeyInfo {</div>
 <div class="line">    reserved 3 to 15;</div>
 <div class="line">    <span class="keywordtype">string</span> algorithm = 1;       <span class="comment">// &quot;25519&quot;, &quot;448&quot;, &quot;Ed25519&quot;, etc.</span></div>
 <div class="line">    bytes key = 2;              <span class="comment">// Format depends upon the algorithm.</span></div>
@@ -229,7 +229,7 @@ Signature blocks</h2>
 <div class="line">    reserved 6 to 14;</div>
 <div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
 <div class="line">    <span class="keywordtype">string</span> name = 2;</div>
-<div class="line">    PublicKey signing_key = 3;</div>
+<div class="line">    PublicKeyInfo signing_key = 3;</div>
 <div class="line">    <span class="keywordtype">string</span> hash_algorithm = 4;</div>
 <div class="line">    ExtraSignedInfo extra_signed_info = 5;</div>
 <div class="line">    bytes signature = 15;</div>
@@ -263,21 +263,21 @@ Other issues</h2>
 <h1><a class="anchor" id="key_format"></a>
 Encrypted private key format</h1>
 <p>The private key information is similar to the subject information from the certificate format:</p>
- <div class="fragment"><div class="line">message PrivateSubjectInfo {</div>
+ <div class="fragment"><div class="line">message PrivateKey {</div>
 <div class="line">    reserved 6 to 15;</div>
 <div class="line">    <span class="keywordtype">string</span> <span class="keywordtype">id</span> = 1;</div>
 <div class="line">    <span class="keywordtype">string</span> name = 2;</div>
 <div class="line">    <span class="keywordtype">string</span> role = 3;</div>
-<div class="line">    repeated PrivateKey keys = 4;</div>
+<div class="line">    repeated PrivateKeyInfo keys = 4;</div>
 <div class="line">    repeated MetaInfo meta = 5;</div>
 <div class="line">}</div>
-<div class="line">message PrivateKey {</div>
+<div class="line">message PrivateKeyInfo {</div>
 <div class="line">    reserved 3 to 15;</div>
 <div class="line">    <span class="keywordtype">string</span> algorithm = 1;       <span class="comment">// &quot;25519&quot;, &quot;448&quot;, &quot;Ed25519&quot;, etc.</span></div>
 <div class="line">    bytes key = 2;              <span class="comment">// Format depends upon the algorithm.</span></div>
 <div class="line">}</div>
 </div><!-- fragment --></p>
-<p>The format of "PrivateSubjectInfo" and "PrivateKey" are identical to "SubjectInfo" and "PublicKey", which may allow applications to share the format handling code between the two use cases if they so wish.</p>
+<p>The format of "PrivateKey" and "PrivateKeyInfo" are identical to "SubjectInfo" and "PublicKeyInfo", which may allow applications to share the format handling code between the two use cases if they so wish.</p>
 <p>The private key information is encrypted to protect it inside an "EncryptedPrivateKey" wrapper:</p>
  <div class="fragment"><div class="line">message EncryptedPrivateKey {</div>
 <div class="line">    reserved 1 to 9, 14;</div>
@@ -285,7 +285,7 @@ Encrypted private key format</h1>
 <div class="line">    <span class="keywordtype">string</span> algorithm = 11;      <span class="comment">// e.g. &quot;ChaChaPoly_BLAKE2b_PBKDF2&quot;.</span></div>
 <div class="line">    bytes salt = 12;            <span class="comment">// Salt value for input to the KDF.</span></div>
 <div class="line">    uint32 iterations = 13;     <span class="comment">// Iteration count for the KDF.</span></div>
-<div class="line">    bytes encrypted_data = 15;  <span class="comment">// Encrypted version of PrivateSubjectInfo.</span></div>
+<div class="line">    bytes encrypted_data = 15;  <span class="comment">// Encrypted version of PrivateKey.</span></div>
 <div class="line">}</div>
 </div><!-- fragment --></p>
 <p>For example:</p>
@@ -312,7 +312,7 @@ Public key fingerprints</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

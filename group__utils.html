@@ -94,6 +94,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga4d7440ace7a148437e229969490f6162"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a> (void *data, size_t size)</td></tr>
 <tr class="memdesc:ga4d7440ace7a148437e229969490f6162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans a block of memory to destroy its contents.  <a href="#ga4d7440ace7a148437e229969490f6162">More...</a><br/></td></tr>
 <tr class="separator:ga4d7440ace7a148437e229969490f6162"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga73effdcce60bbf5d91dcf0bdccb7ca90"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">noise_format_fingerprint</a> (int fingerprint_type, char *buffer, size_t len, const uint8_t *public_key, size_t public_key_len)</td></tr>
+<tr class="memdesc:ga73effdcce60bbf5d91dcf0bdccb7ca90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the fingerprint for a raw public key value.  <a href="#ga73effdcce60bbf5d91dcf0bdccb7ca90">More...</a><br/></td></tr>
+<tr class="separator:ga73effdcce60bbf5d91dcf0bdccb7ca90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a> (void *ptr, size_t size)</td></tr>
 <tr class="memdesc:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the contents of a block of memory and free it.  <a href="#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">More...</a><br/></td></tr>
 <tr class="separator:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -136,7 +139,7 @@ Functions</h2></td></tr>
 <p>The object is assumed to start with a size_t field, which will be initialized with the size of <em>type</em>. This is intended for use with <a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb" title="Destroys the contents of a block of memory and free it. ">noise_free()</a> to destroy the object's contents when it is deallocated. The remaining bytes are initialized to zero.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d" title="Allocates memory from the system for an object. ">noise_new_object()</a>, <a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb" title="Destroys the contents of a block of memory and free it. ">noise_free()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8h_source.html#l00032">32</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p>Definition at line <a class="el" href="util_8h_source.html#l00033">33</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -175,7 +178,73 @@ Functions</h2></td></tr>
 </dl>
 <p>This function tries to perform the operation in a way that should work around compilers and linkers that optimize away memset() calls for memory that the compiler thinks is no longer live. </p>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00119">119</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00120">120</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga73effdcce60bbf5d91dcf0bdccb7ca90"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_format_fingerprint </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>fingerprint_type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>public_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>public_key_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Formats the fingerprint for a raw public key value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fingerprint_type</td><td>The type of fingerprint to format, NOISE_FINGERPRINT_BASIC or NOISE_FINGERPRINT_FULL. </td></tr>
+    <tr><td class="paramname">buffer</td><td>The buffer to write the fingerprint string to, including a terminating NUL. </td></tr>
+    <tr><td class="paramname">len</td><td>The length of <em>buffer</em> in bytes. </td></tr>
+    <tr><td class="paramname">public_key</td><td>Points to the public key to be formatted. </td></tr>
+    <tr><td class="paramname">public_key_len</td><td>Length of the <em>public_key</em> in bytes.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>buffer</em> or <em>public_key</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>fingerprint_type</em> is not a supported fingerprint type. </dd>
+<dd>
+NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entire fingerprint string.</dd></dl>
+<p>This is a low-level formatting function. It is usually better to call one of <a class="el" href="group__dhstate.html#ga3ced2bdae2849e0062f8723556c4da69" title="Formats the public key fingerprint for the key within a DHState. ">noise_dhstate_format_fingerprint()</a>, <a class="el" href="group__signstate.html#ga837e41c302bfadae34e3c4d4fba18d52" title="Formats the public key fingerprint for the key within a SignState. ">noise_signstate_format_fingerprint()</a>, or noise_keystate_format_fingerprint() instead. </p>
+
+<p>Definition at line <a class="el" href="util_8c_source.html#l00196">196</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -213,7 +282,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__utils.html#gaa8403b5d2d468366eaed8ecf8b7eea24" title="Allocates an object from the system and initializes it. ">noise_new()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00101">101</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00102">102</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -258,7 +327,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns 1 if the blocks are equal, 0 if they are not. </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00137">137</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00138">138</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -296,7 +365,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns 1 if all bytes of <em>data</em> are zero, or 0 if any of the bytes are non-zero. </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00160">160</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00161">161</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -326,14 +395,14 @@ Functions</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>If the caller is allocating a structure, then <a class="el" href="group__utils.html#gaa8403b5d2d468366eaed8ecf8b7eea24" title="Allocates an object from the system and initializes it. ">noise_new()</a> is a better option to ensure type-safety.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__utils.html#gaa8403b5d2d468366eaed8ecf8b7eea24" title="Allocates an object from the system and initializes it. ">noise_new()</a>, <a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb" title="Destroys the contents of a block of memory and free it. ">noise_free()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00084">84</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00085">85</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

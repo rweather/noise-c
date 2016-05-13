@@ -104,6 +104,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gada9a88e272159c052becfa0dd227e7c3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#gada9a88e272159c052becfa0dd227e7c3">noise_signstate_clear_key</a> (<a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state)</td></tr>
 <tr class="memdesc:gada9a88e272159c052becfa0dd227e7c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears the key in a SignState object.  <a href="group__signstate.html#gada9a88e272159c052becfa0dd227e7c3">More...</a><br/></td></tr>
 <tr class="separator:gada9a88e272159c052becfa0dd227e7c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9bf725ef190d92e255e59dcffa619f08"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga9bf725ef190d92e255e59dcffa619f08">noise_signstate_copy</a> (<a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state, const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *from)</td></tr>
+<tr class="memdesc:ga9bf725ef190d92e255e59dcffa619f08"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies the keys from one SignState object to another.  <a href="group__signstate.html#ga9bf725ef190d92e255e59dcffa619f08">More...</a><br/></td></tr>
+<tr class="separator:ga9bf725ef190d92e255e59dcffa619f08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga837e41c302bfadae34e3c4d4fba18d52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga837e41c302bfadae34e3c4d4fba18d52">noise_signstate_format_fingerprint</a> (const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state, int fingerprint_type, char *buffer, size_t len)</td></tr>
+<tr class="memdesc:ga837e41c302bfadae34e3c4d4fba18d52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the public key fingerprint for the key within a SignState.  <a href="group__signstate.html#ga837e41c302bfadae34e3c4d4fba18d52">More...</a><br/></td></tr>
+<tr class="separator:ga837e41c302bfadae34e3c4d4fba18d52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf20cffb202ff1b8d90a203ccced8774f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#gaf20cffb202ff1b8d90a203ccced8774f">noise_signstate_free</a> (<a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state)</td></tr>
 <tr class="memdesc:gaf20cffb202ff1b8d90a203ccced8774f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a SignState object after destroying all sensitive material.  <a href="group__signstate.html#gaf20cffb202ff1b8d90a203ccced8774f">More...</a><br/></td></tr>
 <tr class="separator:gaf20cffb202ff1b8d90a203ccced8774f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -113,6 +119,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gaf5b80010cd8e931a57f8b9e2e378ebe5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#gaf5b80010cd8e931a57f8b9e2e378ebe5">noise_signstate_get_keypair</a> (const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state, uint8_t *private_key, size_t private_key_len, uint8_t *public_key, size_t public_key_len)</td></tr>
 <tr class="memdesc:gaf5b80010cd8e931a57f8b9e2e378ebe5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the keypair from within a SignState object.  <a href="group__signstate.html#gaf5b80010cd8e931a57f8b9e2e378ebe5">More...</a><br/></td></tr>
 <tr class="separator:gaf5b80010cd8e931a57f8b9e2e378ebe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga521baf6675022c154c76ddc87d13542b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga521baf6675022c154c76ddc87d13542b">noise_signstate_get_max_key_length</a> (void)</td></tr>
+<tr class="memdesc:ga521baf6675022c154c76ddc87d13542b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the maximum length of signing keys for the supported algorithms.  <a href="group__signstate.html#ga521baf6675022c154c76ddc87d13542b">More...</a><br/></td></tr>
+<tr class="separator:ga521baf6675022c154c76ddc87d13542b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga72f02f28520e2f6574032428335d4f33"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga72f02f28520e2f6574032428335d4f33">noise_signstate_get_max_signature_length</a> (void)</td></tr>
+<tr class="memdesc:ga72f02f28520e2f6574032428335d4f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the maximum length of signatures for the supported algorithms.  <a href="group__signstate.html#ga72f02f28520e2f6574032428335d4f33">More...</a><br/></td></tr>
+<tr class="separator:ga72f02f28520e2f6574032428335d4f33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga039d2b214b5f0abdc9a91bd77272e416"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__signstate.html#ga039d2b214b5f0abdc9a91bd77272e416">noise_signstate_get_private_key_length</a> (const <a class="el" href="group__signstate.html#ga4eb12a851f6c331997e1f550aa779f9b">NoiseSignState</a> *state)</td></tr>
 <tr class="memdesc:ga039d2b214b5f0abdc9a91bd77272e416"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the private key for a SignState object.  <a href="group__signstate.html#ga039d2b214b5f0abdc9a91bd77272e416">More...</a><br/></td></tr>
 <tr class="separator:ga039d2b214b5f0abdc9a91bd77272e416"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -163,7 +175,7 @@ Functions</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

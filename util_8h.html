@@ -96,6 +96,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Utility function interface.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stddef.h&gt;</code><br/>
+<code>#include &lt;stdint.h&gt;</code><br/>
 </div>
 <p><a href="util_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -110,6 +111,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga4d7440ace7a148437e229969490f6162"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a> (void *data, size_t size)</td></tr>
 <tr class="memdesc:ga4d7440ace7a148437e229969490f6162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cleans a block of memory to destroy its contents.  <a href="group__utils.html#ga4d7440ace7a148437e229969490f6162">More...</a><br/></td></tr>
 <tr class="separator:ga4d7440ace7a148437e229969490f6162"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga73effdcce60bbf5d91dcf0bdccb7ca90"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">noise_format_fingerprint</a> (int fingerprint_type, char *buffer, size_t len, const uint8_t *public_key, size_t public_key_len)</td></tr>
+<tr class="memdesc:ga73effdcce60bbf5d91dcf0bdccb7ca90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formats the fingerprint for a raw public key value.  <a href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">More...</a><br/></td></tr>
+<tr class="separator:ga73effdcce60bbf5d91dcf0bdccb7ca90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a> (void *ptr, size_t size)</td></tr>
 <tr class="memdesc:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the contents of a block of memory and free it.  <a href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">More...</a><br/></td></tr>
 <tr class="separator:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -130,7 +134,7 @@ Functions</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun May 1 2016 12:07:21 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

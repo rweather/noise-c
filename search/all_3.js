@@ -1,16 +1,20 @@
 var searchData=
 [
-  ['data',['data',['../protobufs_8h.html#a84c5220eb1c3b5a723c4b40d345a746c',1,'NoiseProtobuf::data()'],['../group__buffer__management.html#a4b8ff8129f7cd924711a833235636c41',1,'NoiseBuffer::data()']]],
-  ['decrypt',['decrypt',['../structNoiseCipherState__s.html#a465d41a66eb999d594e97f11cbbbcb00',1,'NoiseCipherState_s']]],
-  ['derive_5fpublic_5fkey',['derive_public_key',['../structNoiseDHState__s.html#aa3abd0225f5cc1efa5fae5903a7b8948',1,'NoiseDHState_s::derive_public_key()'],['../structNoiseSignState__s.html#ad2b6f79f05e8f9789c16f50323c9bc0d',1,'NoiseSignState_s::derive_public_key()']]],
-  ['destroy',['destroy',['../structNoiseCipherState__s.html#abd576b311efc077bcb296a3a7f82c45a',1,'NoiseCipherState_s::destroy()'],['../structNoiseHashState__s.html#add43fdc210ad2900cf23075081f1a601',1,'NoiseHashState_s::destroy()'],['../structNoiseDHState__s.html#a19deb64f0c9b893f8f736db347823c81',1,'NoiseDHState_s::destroy()'],['../structNoiseSignState__s.html#afd8b0aee61139a93aff4f11bc3e3d273',1,'NoiseSignState_s::destroy()']]],
-  ['dh_5ffixed_5fephemeral',['dh_fixed_ephemeral',['../internal_8h.html#aff8cee2a4e22872a86b625248098dc68',1,'NoiseHandshakeState_s']]],
-  ['dh_5fid',['dh_id',['../structNoiseDHState__s.html#aa92d90f9b82e88e7d7976d2e86cc2fca',1,'NoiseDHState_s::dh_id()'],['../group__names.html#a4376a3caecc734701bd5a67c865ccfb5',1,'NoiseProtocolId::dh_id()'],['../group__dh__id.html',1,'(Global Namespace)']]],
-  ['dh_5flocal_5fephemeral',['dh_local_ephemeral',['../internal_8h.html#ac46bdefb4470eacb5e5d013bd3eb1d6b',1,'NoiseHandshakeState_s']]],
-  ['dh_5flocal_5fstatic',['dh_local_static',['../internal_8h.html#afc890615228276fa796aaf9368c0f1d7',1,'NoiseHandshakeState_s']]],
-  ['dh_5fremote_5fephemeral',['dh_remote_ephemeral',['../internal_8h.html#afc6e0119033e8921c1024d189f35f049',1,'NoiseHandshakeState_s']]],
-  ['dh_5fremote_5fstatic',['dh_remote_static',['../internal_8h.html#aaae70a348550678734f35f6bb488f5ae',1,'NoiseHandshakeState_s']]],
-  ['dhstate_20api',['DHState API',['../group__dhstate.html',1,'']]],
-  ['dhstate_2ec',['dhstate.c',['../dhstate_8c.html',1,'']]],
-  ['dhstate_2eh',['dhstate.h',['../dhstate_8h.html',1,'']]]
+  ['calculate',['calculate',['../structNoiseDHState__s.html#aec63c22f14213fff9a0db0ebc3047f2c',1,'NoiseDHState_s']]],
+  ['cert_2dkey_2dformat_2edox',['cert-key-format.dox',['../cert-key-format_8dox.html',1,'']]],
+  ['certificate_20and_20private_20key_20format',['Certificate and private key format',['../cert_key_format.html',1,'']]],
+  ['certificate_2ec',['certificate.c',['../certificate_8c.html',1,'']]],
+  ['certificate_2eh',['certificate.h',['../certificate_8h.html',1,'']]],
+  ['certs',['certs',['../certificate_8c.html#a30a2f1b9ad413dff205a80f7b0f35980',1,'_Noise_CertificateChain']]],
+  ['certs_5fcount_5f',['certs_count_',['../certificate_8c.html#ab1791e43cc45beddaee3e29e7bcbb783',1,'_Noise_CertificateChain']]],
+  ['certs_5fmax_5f',['certs_max_',['../certificate_8c.html#a317d987048fd746346491c7339a24a0d',1,'_Noise_CertificateChain']]],
+  ['cipher',['cipher',['../internal_8h.html#abdaa0815b889e88f06814eb5f49c181e',1,'NoiseSymmetricState_s']]],
+  ['cipher_5fid',['cipher_id',['../structNoiseCipherState__s.html#a7294ecca5a1b225a590f8d693a79c28b',1,'NoiseCipherState_s::cipher_id()'],['../group__names.html#ab0759596d7a806fd1aabd96824e35627',1,'NoiseProtocolId::cipher_id()'],['../group__cipher__id.html',1,'(Global Namespace)']]],
+  ['cipherstate_20api',['CipherState API',['../group__cipherstate.html',1,'']]],
+  ['cipherstate_2ec',['cipherstate.c',['../cipherstate_8c.html',1,'']]],
+  ['cipherstate_2eh',['cipherstate.h',['../cipherstate_8h.html',1,'']]],
+  ['ck',['ck',['../internal_8h.html#a1a61d4b68f39148b1bdf56fee5f5e627',1,'NoiseSymmetricState_s']]],
+  ['constants_2edox',['constants.dox',['../constants_8dox.html',1,'']]],
+  ['constants_2eh',['constants.h',['../constants_8h.html',1,'']]],
+  ['create',['create',['../structNoiseCipherState__s.html#a2d42882b9ebb8451531ee365b08cabd6',1,'NoiseCipherState_s']]]
 ];
