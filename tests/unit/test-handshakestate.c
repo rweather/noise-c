@@ -58,6 +58,23 @@ static uint8_t const resp_private_448[56] = {
     0xad, 0x05, 0xce, 0x03, 0xeb, 0xd2, 0x7c, 0x7c
 };
 static uint8_t resp_public_448[56];
+static uint8_t const resp_private_25519_alt[32] = {
+    0xbb, 0xdb, 0x4c, 0xdb, 0xd3, 0x09, 0xf1, 0xa1,
+    0xf2, 0xe1, 0x45, 0x69, 0x67, 0xfe, 0x28, 0x8c,
+    0xad, 0xd6, 0xf7, 0x12, 0xd6, 0x5d, 0xc7, 0xb7,
+    0x79, 0x3d, 0x5e, 0x63, 0xda, 0x6b, 0x37, 0x5b
+};
+static uint8_t resp_public_25519_alt[32];
+static uint8_t const resp_private_448_alt[56] = {
+    0x3f, 0xac, 0xf7, 0x50, 0x3e, 0xbe, 0xe2, 0x52,
+    0x46, 0x56, 0x89, 0xf1, 0xd4, 0xe3, 0xb1, 0xdd,
+    0x21, 0x96, 0x39, 0xef, 0x9d, 0xe4, 0xff, 0xd6,
+    0x04, 0x9d, 0x6d, 0x71, 0xa0, 0xf6, 0x21, 0x26,
+    0x84, 0x0f, 0xeb, 0xb9, 0x90, 0x42, 0x42, 0x1c,
+    0xe1, 0x2a, 0xf6, 0x62, 0x6d, 0x98, 0xd9, 0x17,
+    0x02, 0x60, 0x39, 0x0f, 0xbc, 0x83, 0x99, 0xa5
+};
+static uint8_t resp_public_448_alt[56];
 static uint8_t const psk[32] = {
     0xf3, 0xd9, 0x4d, 0xa3, 0x74, 0x53, 0x90, 0x36,
     0x62, 0xf7, 0xd2, 0x16, 0xfc, 0xd2, 0x0f, 0xd9,
@@ -85,6 +102,12 @@ static void handshakestate_derive_keys(void)
     compare(noise_dhstate_get_public_key
                 (dh, resp_public_25519, sizeof(resp_public_25519)),
             NOISE_ERROR_NONE);
+    compare(noise_dhstate_set_keypair_private
+                (dh, resp_private_25519_alt, sizeof(resp_private_25519_alt)),
+            NOISE_ERROR_NONE);
+    compare(noise_dhstate_get_public_key
+                (dh, resp_public_25519_alt, sizeof(resp_public_25519_alt)),
+            NOISE_ERROR_NONE);
     compare(noise_dhstate_free(dh), NOISE_ERROR_NONE);
 
     /* Curve448 keys */
@@ -102,6 +125,12 @@ static void handshakestate_derive_keys(void)
     compare(noise_dhstate_get_public_key
                 (dh, resp_public_448, sizeof(resp_public_448)),
             NOISE_ERROR_NONE);
+    compare(noise_dhstate_set_keypair_private
+                (dh, resp_private_448_alt, sizeof(resp_private_448_alt)),
+            NOISE_ERROR_NONE);
+    compare(noise_dhstate_get_public_key
+                (dh, resp_public_448_alt, sizeof(resp_public_448_alt)),
+            NOISE_ERROR_NONE);
     compare(noise_dhstate_free(dh), NOISE_ERROR_NONE);
 }
 
@@ -109,7 +138,7 @@ static void handshakestate_derive_keys(void)
    whether the initiator and responder can talk to each other via the
    protocol but they do not check for correct bytes on the wire.  Wire checks
    are done by the separate vector tests. */
-static void check_handshake_protocol(const char *name, int is_one_way)
+static void check_handshake_protocol(const char *name)
 {
     NoiseHandshakeState *initiator;
     NoiseHandshakeState *responder;
@@ -125,6 +154,7 @@ static void check_handshake_protocol(const char *name, int is_one_way)
     NoiseBuffer mbuf;
     NoiseBuffer pbuf;
     int action;
+    int index;
 
     /* Set the name of this test for error reporting */
     data_name = name;
@@ -216,7 +246,10 @@ static void check_handshake_protocol(const char *name, int is_one_way)
         compare(noise_handshakestate_has_remote_public_key(initiator), 1);
     } else {
         dh = noise_handshakestate_get_remote_public_key_dh(initiator);
-        verify(dh == 0);
+        if ((init_flags & NOISE_PAT_FLAG_REMOTE_STATIC) != 0)
+            verify(dh != 0);
+        else
+            verify(dh == 0);
     }
     compare(noise_handshakestate_has_local_keypair(responder), 0);
     if (noise_handshakestate_needs_local_keypair(responder)) {
@@ -254,7 +287,10 @@ static void check_handshake_protocol(const char *name, int is_one_way)
         compare(noise_handshakestate_has_remote_public_key(responder), 1);
     } else {
         dh = noise_handshakestate_get_remote_public_key_dh(responder);
-        verify(dh == 0);
+        if ((init_flags & NOISE_PAT_FLAG_LOCAL_STATIC) != 0)
+            verify(dh != 0);
+        else
+            verify(dh == 0);
     }
     compare(noise_handshakestate_has_pre_shared_key(initiator), 0);
     if (noise_handshakestate_needs_pre_shared_key(initiator)) {
@@ -362,10 +398,31 @@ static void check_handshake_protocol(const char *name, int is_one_way)
     compare(noise_handshakestate_get_action(initiator), NOISE_ACTION_SPLIT);
     compare(noise_handshakestate_get_action(responder), NOISE_ACTION_SPLIT);
 
+    /* Check that the handshake hashes are identical */
+    compare(noise_handshakestate_get_handshake_hash(initiator, message, 64),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_get_handshake_hash(responder, message + 64, 64),
+            NOISE_ERROR_NONE);
+    verify(!memcmp(message, message + 64, 64));
+
+    /* Check handshake hash truncation */
+    memset(message, 0xAA, sizeof(message));
+    compare(noise_handshakestate_get_handshake_hash(initiator, message, 16),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_get_handshake_hash(responder, message + 64, 16),
+            NOISE_ERROR_NONE);
+    verify(!memcmp(message, message + 64, 16));
+    for (index = 16; index < 64; ++index)
+        compare(message[index], 0xAA);
+
     /* Check for various error conditions */
     compare(noise_handshakestate_get_protocol_id(0, &id2),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_handshakestate_get_protocol_id(initiator, 0),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_handshakestate_get_handshake_hash(0, message, 64),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_handshakestate_get_handshake_hash(initiator, 0, 64),
             NOISE_ERROR_INVALID_PARAM);
 
     /* Clean up */
@@ -375,7 +432,238 @@ static void check_handshake_protocol(const char *name, int is_one_way)
 
 static void handshakestate_check_protocols(void)
 {
-    check_handshake_protocol("Noise_NN_25519_ChaChaPoly_BLAKE2s", 0);
+    check_handshake_protocol("Noise_N_25519_ChaChaPoly_BLAKE2s");
+    check_handshake_protocol("Noise_K_25519_AESGCM_SHA256");
+    check_handshake_protocol("Noise_X_448_AESGCM_SHA512");
+
+    check_handshake_protocol("NoisePSK_N_25519_ChaChaPoly_BLAKE2s");
+    check_handshake_protocol("NoisePSK_K_25519_AESGCM_SHA256");
+    check_handshake_protocol("NoisePSK_X_448_AESGCM_SHA512");
+
+    check_handshake_protocol("Noise_NN_25519_ChaChaPoly_BLAKE2s");
+    check_handshake_protocol("Noise_NK_448_ChaChaPoly_BLAKE2b");
+    check_handshake_protocol("Noise_NX_25519_AESGCM_BLAKE2b");
+
+    check_handshake_protocol("NoisePSK_NN_25519_ChaChaPoly_BLAKE2s");
+    check_handshake_protocol("NoisePSK_NK_448_ChaChaPoly_BLAKE2b");
+    check_handshake_protocol("NoisePSK_NX_25519_AESGCM_BLAKE2b");
+
+    check_handshake_protocol("Noise_XN_448_AESGCM_BLAKE2s");
+    check_handshake_protocol("Noise_XK_25519_AESGCM_SHA256");
+    check_handshake_protocol("Noise_XX_25519_ChaChaPoly_SHA512");
+
+    check_handshake_protocol("NoisePSK_XN_448_AESGCM_BLAKE2s");
+    check_handshake_protocol("NoisePSK_XK_25519_AESGCM_SHA256");
+    check_handshake_protocol("NoisePSK_XX_25519_ChaChaPoly_SHA512");
+
+    check_handshake_protocol("Noise_KN_448_ChaChaPoly_SHA512");
+    check_handshake_protocol("Noise_KK_25519_AESGCM_BLAKE2b");
+    check_handshake_protocol("Noise_KX_448_ChaChaPoly_SHA256");
+
+    check_handshake_protocol("NoisePSK_KN_448_ChaChaPoly_SHA512");
+    check_handshake_protocol("NoisePSK_KK_25519_AESGCM_BLAKE2b");
+    check_handshake_protocol("NoisePSK_KX_448_ChaChaPoly_SHA256");
+
+    check_handshake_protocol("Noise_IN_25519_ChaChaPoly_BLAKE2s");
+    check_handshake_protocol("Noise_IK_25519_AESGCM_BLAKE2b");
+    check_handshake_protocol("Noise_IX_448_AESGCM_SHA512");
+
+    check_handshake_protocol("NoisePSK_IN_25519_ChaChaPoly_BLAKE2s");
+    check_handshake_protocol("NoisePSK_IK_25519_AESGCM_BLAKE2b");
+    check_handshake_protocol("NoisePSK_IX_448_AESGCM_SHA512");
+}
+
+/* Check that "IK" correctly falls back to "XXfallback" */
+static void check_fallback_protocol
+    (const char *name, int fallback_anyway, int trial_initiator_decrypt)
+{
+    NoiseHandshakeState *initiator;
+    NoiseHandshakeState *responder;
+    NoiseDHState *dh;
+    uint8_t message[4096];
+    uint8_t message2[4096];
+    uint8_t payload[23];
+    NoiseBuffer mbuf;
+    NoiseBuffer pbuf;
+
+    /* Set the name of this test for error reporting */
+    data_name = name;
+
+    /* Create the two objects for an initial "IK" handshake */
+    compare(noise_handshakestate_new_by_name
+                (&initiator, name, NOISE_ROLE_INITIATOR),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_new_by_name
+                (&responder, name, NOISE_ROLE_RESPONDER),
+            NOISE_ERROR_NONE);
+
+    /* Set up the keys.  The responder uses an alternate key that is
+       different from the one expected by the initiator */
+    compare(noise_handshakestate_set_prologue(initiator, "Hello", 5),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_set_prologue(responder, "Hello", 5),
+            NOISE_ERROR_NONE);
+    dh = noise_handshakestate_get_local_keypair_dh(initiator);
+    if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
+        compare(noise_dhstate_set_keypair_private
+                    (dh, init_private_25519, sizeof(init_private_25519)),
+                NOISE_ERROR_NONE);
+    } else {
+        compare(noise_dhstate_set_keypair_private
+                    (dh, init_private_448, sizeof(init_private_448)),
+                NOISE_ERROR_NONE);
+    }
+    dh = noise_handshakestate_get_remote_public_key_dh(initiator);
+    if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
+        compare(noise_dhstate_set_public_key
+                    (dh, resp_public_25519, sizeof(resp_public_25519)),
+                NOISE_ERROR_NONE);
+    } else {
+        compare(noise_dhstate_set_public_key
+                    (dh, resp_public_448, sizeof(resp_public_448)),
+                NOISE_ERROR_NONE);
+    }
+    dh = noise_handshakestate_get_local_keypair_dh(responder);
+    if (!fallback_anyway) {
+        if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
+            compare(noise_dhstate_set_keypair_private
+                        (dh, resp_private_25519_alt, sizeof(resp_private_25519_alt)),
+                    NOISE_ERROR_NONE);
+        } else {
+            compare(noise_dhstate_set_keypair_private
+                        (dh, resp_private_448_alt, sizeof(resp_private_448_alt)),
+                    NOISE_ERROR_NONE);
+        }
+    } else {
+        /* Matching keys, but the responder will fallback anyway */
+        if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
+            compare(noise_dhstate_set_keypair_private
+                        (dh, resp_private_25519, sizeof(resp_private_25519)),
+                    NOISE_ERROR_NONE);
+        } else {
+            compare(noise_dhstate_set_keypair_private
+                        (dh, resp_private_448, sizeof(resp_private_448)),
+                    NOISE_ERROR_NONE);
+        }
+    }
+    if (noise_handshakestate_needs_pre_shared_key(initiator)) {
+        compare(noise_handshakestate_set_pre_shared_key
+                    (initiator, psk, sizeof(psk)),
+                NOISE_ERROR_NONE);
+        compare(noise_handshakestate_set_pre_shared_key
+                    (responder, psk, sizeof(psk)),
+                NOISE_ERROR_NONE);
+    }
+
+    /* Start the handshakes running */
+    compare(noise_handshakestate_start(initiator), NOISE_ERROR_NONE);
+    compare(noise_handshakestate_start(responder), NOISE_ERROR_NONE);
+
+    /* Create the first outgoing "IK" packet from the initiator */
+    memset(message, 0, sizeof(message));
+    memset(payload, 0x66, sizeof(payload));
+    noise_buffer_set_output(mbuf, message, sizeof(message));
+    noise_buffer_set_input(pbuf, payload, sizeof(payload));
+    compare(noise_handshakestate_write_message(initiator, &mbuf, &pbuf),
+            NOISE_ERROR_NONE);
+
+    /* Read the message on the responder side */
+    if (!fallback_anyway) {
+        noise_buffer_set_output(pbuf, payload, sizeof(payload));
+        compare(noise_handshakestate_read_message(responder, &mbuf, &pbuf),
+                NOISE_ERROR_MAC_FAILURE);
+    } else {
+        /* The "IK" handshake was successful, but we decide to ignore that
+           and change to "XXfallback" anyway */
+        noise_buffer_set_output(pbuf, payload, sizeof(payload));
+        compare(noise_handshakestate_read_message(responder, &mbuf, &pbuf),
+                NOISE_ERROR_NONE);
+    }
+
+    /* Fallback on the responder side */
+    compare(noise_handshakestate_fallback(responder), NOISE_ERROR_NONE);
+    compare(noise_handshakestate_get_role(initiator), NOISE_ROLE_INITIATOR);
+    compare(noise_handshakestate_get_role(responder), NOISE_ROLE_INITIATOR);
+
+    /* Supply the prologue and the PSK again to the responder */
+    compare(noise_handshakestate_set_prologue(responder, "Hello", 5),
+            NOISE_ERROR_NONE);
+    if (noise_handshakestate_needs_pre_shared_key(responder)) {
+        compare(noise_handshakestate_set_pre_shared_key
+                    (responder, psk, sizeof(psk)),
+                NOISE_ERROR_NONE);
+    }
+    compare(noise_handshakestate_start(responder), NOISE_ERROR_NONE);
+
+    /* Write a new message back to the initiator */
+    memset(payload, 0xAA, sizeof(payload));
+    noise_buffer_set_output(mbuf, message, sizeof(message));
+    noise_buffer_set_input(pbuf, payload, sizeof(payload));
+    compare(noise_handshakestate_write_message(responder, &mbuf, &pbuf),
+            NOISE_ERROR_NONE);
+
+    /* Optionally perform a trial decryption first, which will fail */
+    if (trial_initiator_decrypt) {
+        memcpy(message2, message, sizeof(message));
+        noise_buffer_set_output(pbuf, payload, sizeof(payload));
+        compare(noise_handshakestate_read_message(initiator, &mbuf, &pbuf),
+                NOISE_ERROR_MAC_FAILURE);
+        memcpy(message, message2, sizeof(message));
+    }
+
+    /* Fallback on the initiator side */
+    compare(noise_handshakestate_fallback(initiator), NOISE_ERROR_NONE);
+    compare(noise_handshakestate_get_role(initiator), NOISE_ROLE_RESPONDER);
+    compare(noise_handshakestate_get_role(responder), NOISE_ROLE_INITIATOR);
+
+    /* Supply the prologue and the PSK again to the initiator */
+    compare(noise_handshakestate_set_prologue(initiator, "Hello", 5),
+            NOISE_ERROR_NONE);
+    if (noise_handshakestate_needs_pre_shared_key(initiator)) {
+        compare(noise_handshakestate_set_pre_shared_key
+                    (initiator, psk, sizeof(psk)),
+                NOISE_ERROR_NONE);
+    }
+    compare(noise_handshakestate_start(initiator), NOISE_ERROR_NONE);
+
+    /* Read the message on the initiator side */
+    noise_buffer_set_output(pbuf, payload, sizeof(payload));
+    compare(noise_handshakestate_read_message(initiator, &mbuf, &pbuf),
+            NOISE_ERROR_NONE);
+
+    /* Send the next "XXfallback" message from the initiator side */
+    memset(payload, 0x66, sizeof(payload));
+    noise_buffer_set_output(mbuf, message, sizeof(message));
+    noise_buffer_set_input(pbuf, payload, sizeof(payload));
+    compare(noise_handshakestate_write_message(initiator, &mbuf, &pbuf),
+            NOISE_ERROR_NONE);
+
+    /* Receive the message on the responder side */
+    noise_buffer_set_output(pbuf, payload, sizeof(payload));
+    compare(noise_handshakestate_read_message(responder, &mbuf, &pbuf),
+            NOISE_ERROR_NONE);
+
+    /* Both sides should now be in the "split" condition */
+    compare(noise_handshakestate_get_action(initiator), NOISE_ACTION_SPLIT);
+    compare(noise_handshakestate_get_action(responder), NOISE_ACTION_SPLIT);
+
+    /* Check that the handshake hashes are identical */
+    compare(noise_handshakestate_get_handshake_hash(initiator, message, 64),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_get_handshake_hash(responder, message + 64, 64),
+            NOISE_ERROR_NONE);
+    verify(!memcmp(message, message + 64, 64));
+
+    /* Clean up */
+    compare(noise_handshakestate_free(initiator), NOISE_ERROR_NONE);
+    compare(noise_handshakestate_free(responder), NOISE_ERROR_NONE);
+}
+
+static void handshakestate_check_fallback(void)
+{
+    check_fallback_protocol("Noise_IK_25519_ChaChaPoly_BLAKE2s", 0, 0);
+    check_fallback_protocol("Noise_IK_448_AESGCM_SHA512", 1, 0);
+    check_fallback_protocol("Noise_IK_448_ChaChaPoly_BLAKE2b", 0, 1);
 }
 
 static void handshakestate_check_errors(void)
@@ -429,5 +717,6 @@ void test_handshakestate(void)
 {
     handshakestate_derive_keys();
     handshakestate_check_protocols();
+    handshakestate_check_fallback();
     handshakestate_check_errors();
 }

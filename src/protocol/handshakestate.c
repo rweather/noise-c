@@ -765,7 +765,8 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
        responder to fallback after processing the first message
        successfully; it decides to always fall back anyway. */
     if (state->role == NOISE_ROLE_INITIATOR) {
-        if (state->action != NOISE_ACTION_READ_MESSAGE)
+        if (state->action != NOISE_ACTION_FAILED &&
+                state->action != NOISE_ACTION_READ_MESSAGE)
             return NOISE_ERROR_INVALID_STATE;
         if (!noise_dhstate_has_public_key(state->dh_local_ephemeral))
             return NOISE_ERROR_INVALID_STATE;
