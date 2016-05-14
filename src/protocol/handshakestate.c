@@ -47,6 +47,42 @@
  */
 
 /**
+ * \brief Gets the initial requirements for a handshake pattern.
+ *
+ * \param flags The flags from the handshake pattern.
+ * \param prefix_id The prefix identifier from the protocol name.
+ * \param role The role, either initiator or responder.
+ * \param is_fallback Non-zero if the pattern is "XXfallback".
+ *
+ * \return The key requirements for the handshake pattern.
+ */
+static int noise_handshakestate_requirements
+    (uint8_t flags, int prefix_id, int role, int is_fallback)
+{
+    int requirements = NOISE_REQ_PROLOGUE;
+    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
+        requirements |= NOISE_REQ_LOCAL_REQUIRED;
+    }
+    if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
+        requirements |= NOISE_REQ_LOCAL_REQUIRED;
+        requirements |= NOISE_REQ_LOCAL_PREMSG;
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
+        requirements |= NOISE_REQ_REMOTE_REQUIRED;
+        requirements |= NOISE_REQ_REMOTE_PREMSG;
+    }
+    if (flags & (NOISE_PAT_FLAG_REMOTE_EMPEM_REQ |
+                 NOISE_PAT_FLAG_LOCAL_EMPEM_REQ)) {
+        if (is_fallback)
+            requirements |= NOISE_REQ_FALLBACK_PREMSG;
+    }
+    if (prefix_id == NOISE_PREFIX_PSK) {
+        requirements |= NOISE_REQ_PSK;
+    }
+    return requirements;
+}
+
+/**
  * \brief Creates a new HandshakeState object.
  *
  * \param state Points to the variable where to store the pointer to
@@ -66,7 +102,6 @@ static int noise_handshakestate_new
     (NoiseHandshakeState **state, NoiseSymmetricState *symmetric, int role)
 {
     const uint8_t *pattern;
-    int requirements;
     int dh_id;
     uint8_t flags;
     int err;
@@ -90,25 +125,9 @@ static int noise_handshakestate_new
         return NOISE_ERROR_NO_MEMORY;
     }
 
-    /* What keys do we require to be able to start the protocol? */
-    requirements = 0;
-    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
-        requirements |= NOISE_REQ_LOCAL_REQUIRED;
-    } if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
-        requirements |= NOISE_REQ_LOCAL_REQUIRED;
-        requirements |= NOISE_REQ_LOCAL_PREMSG;
-    }
-    if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
-        requirements |= NOISE_REQ_REMOTE_REQUIRED;
-        requirements |= NOISE_REQ_REMOTE_PREMSG;
-    }
-    if (symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
-        requirements |= NOISE_REQ_PSK;
-    }
-    requirements |= NOISE_REQ_PROLOGUE;
-
     /* Initialize the HandshakeState */
-    (*state)->requirements = requirements;
+    (*state)->requirements = noise_handshakestate_requirements
+        (flags, symmetric->id.prefix_id, role, 0);
     (*state)->action = NOISE_ACTION_NONE;
     (*state)->tokens = pattern + 1;
     (*state)->role = role;
@@ -730,6 +749,8 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
     size_t hash_len;
     size_t name_len;
     NoiseProtocolId id;
+    const uint8_t *pattern;
+    uint8_t flags;
     int err;
 
     /* Validate the parameter */
@@ -768,14 +789,24 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
     noise_dhstate_clear_key(state->dh_remote_static);
     if (state->role == NOISE_ROLE_INITIATOR) {
         noise_dhstate_clear_key(state->dh_remote_ephemeral);
-        state->action = NOISE_ACTION_READ_MESSAGE;
         state->role = NOISE_ROLE_RESPONDER;
     } else {
         noise_dhstate_clear_key(state->dh_local_ephemeral);
-        state->action = NOISE_ACTION_WRITE_MESSAGE;
         state->role = NOISE_ROLE_INITIATOR;
     }
-    state->requirements |= NOISE_REQ_FALLBACK_PREMSG;
+
+    /* Start a new token pattern for "XXfallback" */
+    pattern = noise_pattern_lookup(id.pattern_id);
+    state->tokens = pattern + 1;
+    state->action = NOISE_ACTION_NONE;
+
+    /* Set up the key requirements for "XXfallback" */
+    flags = pattern[0];
+    if (state->role == NOISE_ROLE_RESPONDER) {
+        flags = noise_pattern_reverse_flags(flags);
+    }
+    state->requirements = noise_handshakestate_requirements
+        (flags, id.prefix_id, state->role, 1);
 
     /* Re-initialize the chaining key "ck" and the handshake hash "h" from
        the new protocol name.  If the name is too long, hash it down first */
