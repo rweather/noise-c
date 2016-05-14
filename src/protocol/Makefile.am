@@ -4,12 +4,11 @@ AUTOMAKE_OPTIONS = subdir-objects
 lib_LIBRARIES = libnoiseprotocol.a
 
 # Definitions for Ed448-Goldilocks (Curve448 reference implementation)
-GOLDILOCKS_ARCH = arch_32
 GOLDILOCKS_SRCDIR = $(top_srcdir)/src/crypto/goldilocks/src
 GOLDILOCKS_CPPFLAGS = \
 	-I$(GOLDILOCKS_SRCDIR)/include \
 	-I$(GOLDILOCKS_SRCDIR)/p448 \
-	-I$(GOLDILOCKS_SRCDIR)/p448/$(GOLDILOCKS_ARCH)
+	-I$(GOLDILOCKS_SRCDIR)/p448/@GOLDILOCKS_ARCH@
 
 # Definitions for ed25519-donna (Ed25519 reference implementation)
 ED25519_CPPFLAGS = -DED25519_CUSTOMHASH -DED25519_CUSTOMRANDOM
@@ -49,5 +48,5 @@ libnoiseprotocol_a_SOURCES = \
 	../crypto/ghash/ghash.c \
 	../crypto/sha2/sha256.c \
 	../crypto/sha2/sha512.c \
-	../crypto/goldilocks/src/p448/arch_32/p448.c \
+	../crypto/goldilocks/src/p448/@GOLDILOCKS_ARCH@/p448.c \
 	../crypto/ed25519/ed25519.c
