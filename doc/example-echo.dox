@@ -189,12 +189,6 @@ into two CipherState objects, one for sending and the other for receiving:
 err = noise_handshakestate_split(handshake, &send_cipher, &recv_cipher);
 \endcode
 
-On the server side, the CipherState objects are reversed:
-
-\code
-err = noise_handshakestate_split(handshake, &recv_cipher, &send_cipher);
-\endcode
-
 If the remote side provided its public key during the handshake,
 then noise_handshakestate_get_remote_public_key_dh() and
 noise_dhstate_get_public_key() can be used to retrieve it at this point.

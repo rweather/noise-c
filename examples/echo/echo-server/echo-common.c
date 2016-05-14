@@ -76,7 +76,6 @@ int echo_get_protocol_id(EchoProtocolId *id, const char *name)
     case NOISE_PATTERN_IK:          id->pattern = ECHO_PATTERN_IK; break;
     case NOISE_PATTERN_XX:          id->pattern = ECHO_PATTERN_XX; break;
     case NOISE_PATTERN_IX:          id->pattern = ECHO_PATTERN_IX; break;
-    case NOISE_PATTERN_XR:          id->pattern = ECHO_PATTERN_XR; break;
     default:                        ok = 0; break;
     }
 
@@ -129,7 +128,6 @@ int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id)
     case ECHO_PATTERN_IK:           nid->pattern_id = NOISE_PATTERN_IK; break;
     case ECHO_PATTERN_XX:           nid->pattern_id = NOISE_PATTERN_XX; break;
     case ECHO_PATTERN_IX:           nid->pattern_id = NOISE_PATTERN_IX; break;
-    case ECHO_PATTERN_XR:           nid->pattern_id = NOISE_PATTERN_XR; break;
     default:                        ok = 0;
     }
 

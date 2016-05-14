@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
 
     /* Split out the two CipherState objects for send and receive */
     if (ok) {
-        err = noise_handshakestate_split(handshake, &recv_cipher, &send_cipher);
+        err = noise_handshakestate_split(handshake, &send_cipher, &recv_cipher);
         if (err != NOISE_ERROR_NONE) {
             noise_perror("split to start data transfer", err);
             ok = 0;

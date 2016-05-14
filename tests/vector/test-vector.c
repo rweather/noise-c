@@ -364,7 +364,7 @@ static void test_connection(const TestVector *vec, int is_one_way)
     /* Handshake finished.  Now handle the data transport */
     compare(noise_handshakestate_split(initiator, &c1init, &c2init),
             NOISE_ERROR_NONE);
-    compare(noise_handshakestate_split(responder, &c1resp, &c2resp),
+    compare(noise_handshakestate_split(responder, &c2resp, &c1resp),
             NOISE_ERROR_NONE);
     mac_len = noise_cipherstate_get_mac_length(c1init);
     for (; index < vec->num_messages; ++index) {

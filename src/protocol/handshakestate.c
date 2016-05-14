@@ -1281,16 +1281,16 @@ int noise_handshakestate_read_message
  * this HandshakeState object.
  *
  * \param state The HandshakeState object.
- * \param c1 Points to the variable where to place the pointer to the
- * first CipherState object.  This can be NULL if the application is
- * using a one-way handshake pattern.
- * \param c2 Points to the variable where to place the pointer to the
- * second CipherState object.  This can be NULL if the application is
- * using a one-way handshake pattern.
+ * \param send Points to the variable where to place the pointer to the
+ * CipherState object to use to send packets from local to remote.
+ * This can be NULL if the application is using a one-way handshake pattern.
+ * \param receive Points to the variable where to place the pointer to the
+ * CipherState object to use to receive packets from the remote to local.
+ * This can be NULL if the application is using a one-way handshake pattern.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
- * \return NOISE_ERROR_INVALID_PARAM if both \a c1 and \a c2 are NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if both \a send and \a receive are NULL.
  * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split
  * or the handshake protocol has not completed successfully yet.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to create
@@ -1300,23 +1300,23 @@ int noise_handshakestate_read_message
  * cannot be used for future handshake operations.  If those operations are
  * invoked, the relevant functions will return NOISE_ERROR_INVALID_STATE.
  *
- * The \a c1 object should be used to protect messages from the initiator to
- * the responder, and the \a c2 object should be used to protect messages
- * from the responder to the initiator.
+ * The \a send object should be used to protect messages from the local
+ * side to the remote side, and the \a receive object should be used to
+ * protect messages from the remote side to the local side.
  *
  * If the handshake pattern is one-way, then the application should call
  * noise_cipherstate_free() on the object that is not needed.  Alternatively,
  * the application can pass NULL to noise_symmetricstate_split() as the
- * \a c1 or \a c2 argument and the second CipherState will not be created
- * at all.
+ * \a send or \a receive argument and the second CipherState will not be
+ * created at all.
  *
  * \sa noise_handshakestate_split_with_key(),
  * noise_handshakestate_get_handshake_hash()
  */
 int noise_handshakestate_split
-    (NoiseHandshakeState *state, NoiseCipherState **c1, NoiseCipherState **c2)
+    (NoiseHandshakeState *state, NoiseCipherState **send, NoiseCipherState **receive)
 {
-    return noise_handshakestate_split_with_key(state, c1, c2, 0, 0);
+    return noise_handshakestate_split_with_key(state, send, receive, 0, 0);
 }
 
 /**
@@ -1324,12 +1324,12 @@ int noise_handshakestate_split
  * this HandshakeState object, with a secondary symmetric key.
  *
  * \param state The HandshakeState object.
- * \param c1 Points to the variable where to place the pointer to the
- * first CipherState object.  This can be NULL if the application is
- * using a one-way handshake pattern.
- * \param c2 Points to the variable where to place the pointer to the
- * second CipherState object.  This can be NULL if the application is
- * using a one-way handshake pattern.
+ * \param send Points to the variable where to place the pointer to the
+ * CipherState object to use to send packets from local to remote.
+ * This can be NULL if the application is using a one-way handshake pattern.
+ * \param receive Points to the variable where to place the pointer to the
+ * CipherState object to use to receive packets from the remote to local.
+ * This can be NULL if the application is using a one-way handshake pattern.
  * \param secondary_key Points to an optional "secondary symmetric key"
  * from a parallel non-DH handshake to mix into the final cipher keys.
  * This may be NULL if \a secondary_key_len is zero.
@@ -1339,7 +1339,7 @@ int noise_handshakestate_split
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
- * \return NOISE_ERROR_INVALID_PARAM if both \a c1 and \a c2 are NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if both \a send and \a receive are NULL.
  * \return NOISE_ERROR_INVALID_PARAM if \a secondary_key is NULL and
  * \a secondary_key_len is not zero.
  * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split
@@ -1351,26 +1351,28 @@ int noise_handshakestate_split
  * cannot be used for future handshake operations.  If those operations are
  * invoked, the relevant functions will return NOISE_ERROR_INVALID_STATE.
  *
- * The \a c1 object should be used to protect messages from the initiator to
- * the responder, and the \a c2 object should be used to protect messages
- * from the responder to the initiator.
+ * The \a send object should be used to protect messages from the local
+ * side to the remote side, and the \a receive object should be used to
+ * protect messages from the remote side to the local side.
  *
  * If the handshake pattern is one-way, then the application should call
  * noise_cipherstate_free() on the object that is not needed.  Alternatively,
  * the application can pass NULL to noise_symmetricstate_split() as the
- * \a c1 or \a c2 argument and the second CipherState will not be created
- * at all.
+ * \a send or \a receive argument and the second CipherState will not be
+ * created at all.
  *
  * \sa noise_handshakestate_split(), noise_handshakestate_get_handshake_hash()
  */
 int noise_handshakestate_split_with_key
-    (NoiseHandshakeState *state, NoiseCipherState **c1, NoiseCipherState **c2,
+    (NoiseHandshakeState *state, NoiseCipherState **send, NoiseCipherState **receive,
      const uint8_t *secondary_key, size_t secondary_key_len)
 {
+    int swap;
+
     /* Validate the parameters */
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
-    if (!c1 && !c2)
+    if (!send && !receive)
         return NOISE_ERROR_INVALID_PARAM;
     if (!secondary_key && secondary_key_len)
         return NOISE_ERROR_INVALID_PARAM;
@@ -1379,9 +1381,20 @@ int noise_handshakestate_split_with_key
     if (!state->symmetric->cipher)
         return NOISE_ERROR_INVALID_STATE;
 
-    /* Split the cipher objects out of the SymmetricState */
-    return noise_symmetricstate_split
-        (state->symmetric, c1, c2, secondary_key, secondary_key_len);
+    /* Do we need to swap the CipherState objects for the role/pattern? */
+    if (state->role == NOISE_ROLE_INITIATOR)
+        swap = (state->symmetric->id.pattern_id == NOISE_PATTERN_XX_FALLBACK);
+    else
+        swap = (state->symmetric->id.pattern_id != NOISE_PATTERN_XX_FALLBACK);
+
+    /* Split the CipherState objects out of the SymmetricState */
+    if (swap) {
+        return noise_symmetricstate_split
+            (state->symmetric, receive, send, secondary_key, secondary_key_len);
+    } else {
+        return noise_symmetricstate_split
+            (state->symmetric, send, receive, secondary_key, secondary_key_len);
+    }
 }
 
 /**
