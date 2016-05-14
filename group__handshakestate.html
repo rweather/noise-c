@@ -152,9 +152,12 @@ Functions</h2></td></tr>
 <tr class="memitem:gaaf1a461a40326f8db0b7a537dc63e6fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#gaaf1a461a40326f8db0b7a537dc63e6fa">noise_handshakestate_set_prologue</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state, const void *prologue, size_t prologue_len)</td></tr>
 <tr class="memdesc:gaaf1a461a40326f8db0b7a537dc63e6fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the prologue for a HandshakeState.  <a href="#gaaf1a461a40326f8db0b7a537dc63e6fa">More...</a><br/></td></tr>
 <tr class="separator:gaaf1a461a40326f8db0b7a537dc63e6fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae8480d1f1782d27eb6187075f1170dfb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb">noise_handshakestate_split</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **c1, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **c2)</td></tr>
-<tr class="memdesc:gae8480d1f1782d27eb6187075f1170dfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits the transport encryption CipherState objects out of this HandshakeState object.  <a href="#gae8480d1f1782d27eb6187075f1170dfb">More...</a><br/></td></tr>
-<tr class="separator:gae8480d1f1782d27eb6187075f1170dfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d4bdfb7865f69e456bb5b3e895c6d0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a">noise_handshakestate_split</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **send, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **receive)</td></tr>
+<tr class="memdesc:ga3d4bdfb7865f69e456bb5b3e895c6d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits the transport encryption CipherState objects out of this HandshakeState object.  <a href="#ga3d4bdfb7865f69e456bb5b3e895c6d0a">More...</a><br/></td></tr>
+<tr class="separator:ga3d4bdfb7865f69e456bb5b3e895c6d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0aae736fc4a04df2cbfdd24973aeb8ae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga0aae736fc4a04df2cbfdd24973aeb8ae">noise_handshakestate_split_with_key</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **send, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **receive, const uint8_t *secondary_key, size_t secondary_key_len)</td></tr>
+<tr class="memdesc:ga0aae736fc4a04df2cbfdd24973aeb8ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key.  <a href="#ga0aae736fc4a04df2cbfdd24973aeb8ae">More...</a><br/></td></tr>
+<tr class="separator:ga0aae736fc4a04df2cbfdd24973aeb8ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf76831b18d6d95f7f47986d2c8f873c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0">noise_handshakestate_start</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
 <tr class="memdesc:gaf76831b18d6d95f7f47986d2c8f873c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the handshake on a HandshakeState object.  <a href="#gaf76831b18d6d95f7f47986d2c8f873c0">More...</a><br/></td></tr>
 <tr class="separator:gaf76831b18d6d95f7f47986d2c8f873c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -214,10 +217,10 @@ NOISE_ERROR_INVALID_LENGTH if the new protocol name is too long. </dd>
 NOISE_ERROR_NOT_APPLICABLE if the handshake pattern in the original protocol name was not "IK".</dd></dl>
 <p>This function is used to help implement the "Noise Pipes" protocol. It resets a HandshakeState object with the handshake pattern "IK", converting it into an object with the handshake pattern "XXfallback". Information from the previous session such as the local keypair and the initiator's ephemeral key are passed to the new session.</p>
 <p>Once the fallback has been initiated, the application must call <a class="el" href="group__handshakestate.html#gaaf1a461a40326f8db0b7a537dc63e6fa" title="Sets the prologue for a HandshakeState. ">noise_handshakestate_set_prologue()</a> and <a class="el" href="group__handshakestate.html#gafca896117ad9a8697a3fe385deb3c280" title="Sets the pre shared key for a HandshakeState. ">noise_handshakestate_set_pre_shared_key()</a> again to re-establish the early handshake details. The application can then call <a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a> to restart the handshake from where it left off before the fallback.</p>
-<dl class="section note"><dt>Note</dt><dd>This function reverses the roles of initiator and responder, which will also affect the ordering of the final CipherState objects returned by <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This function reverses the roles of initiator and responder, which will also affect the ordering of the final CipherState objects returned by <a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a>, <a class="el" href="group__handshakestate.html#gae67e24a470c7f6a24f0aa24991114b92" title="Gets the role that a HandshakeState object is playing. ">noise_handshakestate_get_role()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00726">726</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00727">727</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -280,10 +283,10 @@ NOISE_ACTION_READ_MESSAGE if the application is expected wait for an incoming ha
 <dd>
 NOISE_ACTION_FAILED if the handshake has failed with an error. The application should destroy the HandshakeState by calling <a class="el" href="group__handshakestate.html#ga1ee4331d10a6c28bd336bfdf1017346d" title="Frees a HandshakeState object after destroying all sensitive material. ">noise_handshakestate_free()</a> and terminate the connection. If the application is using Noise Pipes, then it may be able to continue by calling <a class="el" href="group__handshakestate.html#gaaaf2e6ef61771c7fa5c4f5d5e106c603" title="Falls back to the &quot;XXfallback&quot; handshake pattern. ">noise_handshakestate_fallback()</a> depending upon where in the protocol the failure occurred. </dd>
 <dd>
-NOISE_ACTION_SPLIT if the handshake has finished successfully and the application should call <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> to obtain the CipherState objects for the data phase of the protocol.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafdb5b38ecaf77c7c39e0aad49cf880b6" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a>, <a class="el" href="group__handshakestate.html#ga5b86560fccec5c8d9051fa6e30e7cb20" title="Reads a message payload using a HandshakeState. ">noise_handshakestate_read_message()</a>, <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>, <a class="el" href="group__handshakestate.html#gaaaf2e6ef61771c7fa5c4f5d5e106c603" title="Falls back to the &quot;XXfallback&quot; handshake pattern. ">noise_handshakestate_fallback()</a> </dd></dl>
+NOISE_ACTION_SPLIT if the handshake has finished successfully and the application should call <a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> to obtain the CipherState objects for the data phase of the protocol.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafdb5b38ecaf77c7c39e0aad49cf880b6" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a>, <a class="el" href="group__handshakestate.html#ga5b86560fccec5c8d9051fa6e30e7cb20" title="Reads a message payload using a HandshakeState. ">noise_handshakestate_read_message()</a>, <a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>, <a class="el" href="group__handshakestate.html#gaaaf2e6ef61771c7fa5c4f5d5e106c603" title="Falls back to the &quot;XXfallback&quot; handshake pattern. ">noise_handshakestate_fallback()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00831">831</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00832">832</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -363,9 +366,9 @@ NOISE_ERROR_INVALID_STATE if the handshake has not successfully completed yet.</
 <p>If <em>max_len</em> is greater than the length of the handshake hash, then the extra bytes will be filled with zeroes. If <em>max_len</em> is less than the length of the handshake hash, then the value will be truncated to the first <em>max_len</em> bytes. Handshake hashes are typically 32 or 64 bytes in length, depending upon the hash algorithm that was used during the protocol.</p>
 <p>The handshake hash can be used to implement "channel binding". The value will be a unique identifier for the session.</p>
 <dl class="section note"><dt>Note</dt><dd>The handshake hash is generated from publicly-known values in the handshake. If the application needs a unique secret identifier, then it should combine the handshake hash with other randomly generated data that is sent encrypted during the session.</dd></dl>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01356">1356</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01430">1430</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -518,7 +521,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns 1 if the <em>state</em> has already been configured with a local keypair, or 0 if the keypair is yet to be provided. Also returns zero if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6" title="Determine if a HandshakeState still needs to be configured with a local keypair. ">noise_handshakestate_needs_local_keypair()</a>, <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00544">544</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00545">545</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -575,7 +578,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <p>A remote public key may either be provided ahead of time on the <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> object, or it may be provided by the remote party during the handshake.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga9d88e66873413c052b05f7ad35827f1b" title="Determine if a HandshakeState still needs to be configured with a remote public key before the protoc...">noise_handshakestate_needs_remote_public_key()</a>, noise_handshakestate_set_remote_public_key() </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00594">594</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00595">595</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -604,7 +607,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <p>The application configures the local keypair on the object returned by <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a>.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3667a7038035ae31cd7629ed13f99d39" title="Determine if a HandshakeState has been configured with a local keypair. ">noise_handshakestate_has_local_keypair()</a>, <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00522">522</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00523">523</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -661,7 +664,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>id</em> is NULL. </dd></dl>
 <p>This function indicates that a remote public key must be supplied before the protocol starts. If it is possible for the remote public key to be provided by the remote party during the session, then the remote public key can be obtained at the end of the handshake using the <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> object.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga46d077b55567c999bfda4662515e3154" title="Determine if a HandshakeState has a remote public key. ">noise_handshakestate_has_remote_public_key()</a>, <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00570">570</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00571">571</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -832,7 +835,7 @@ NOISE_ERROR_PUBLIC_KEY if an invalid remote public key is seen during the proces
 <p>The <em>message</em> buffer will be modified by this function to decrypt sub-components while it is being processed. The contents will be cleared just before the function exits to avoid leaking decrypted message data other than the <em>payload</em>.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafdb5b38ecaf77c7c39e0aad49cf880b6" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a>, <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01253">1253</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01254">1254</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -871,7 +874,7 @@ NOISE_ERROR_PUBLIC_KEY if an invalid remote public key is seen during the proces
   <table class="params">
     <tr><td class="paramname">state</td><td>The HandshakeState object. </td></tr>
     <tr><td class="paramname">key</td><td>Points to the pre shared key. </td></tr>
-    <tr><td class="paramname">key_len</td><td>The length of the <em>key</em> in bytes.</td></tr>
+    <tr><td class="paramname">key_len</td><td>The length of the <em>key</em> in bytes. This should be 32 to comply with the requirements from the Noise protocol specification.</td></tr>
   </table>
   </dd>
 </dl>
@@ -885,7 +888,7 @@ NOISE_ERROR_INVALID_STATE if this function is called afer the protocol has alrea
 <p>If the prologue has not been set yet, then calling this function will implicitly set the prologue to the empty sequence and it will no longer be possible to specify an explicit prologue.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a>, <a class="el" href="group__handshakestate.html#gaaf1a461a40326f8db0b7a537dc63e6fa" title="Sets the prologue for a HandshakeState. ">noise_handshakestate_set_prologue()</a>, <a class="el" href="group__handshakestate.html#ga7bf0e9e6b6d77262b579e5c3430f9a93" title="Determine if a HandshakeState object requires a pre shared key. ">noise_handshakestate_needs_pre_shared_key()</a>, <a class="el" href="group__handshakestate.html#ga0cf8228683e002acff6690a000c12854" title="Determine if a HandshakeState object has already been configured with a pre shared key...">noise_handshakestate_has_pre_shared_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00437">437</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00438">438</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -936,11 +939,11 @@ NOISE_ERROR_INVALID_STATE if this function is called afer <a class="el" href="gr
 <p>This function must be called immediately after <a class="el" href="group__handshakestate.html#gab0b47aa4e0577b68ad90848565c00a8b" title="Creates a new HandshakeState object by protocol identifier. ">noise_handshakestate_new_by_id()</a> or <a class="el" href="group__handshakestate.html#ga0e6235ea4b4c8c434417172a764bf76c" title="Creates a new HandshakeState object by protocol name. ">noise_handshakestate_new_by_name()</a> if there is a prologue for the session. If the function is not called, then the prologue will be assumed to be empty when the protocol starts.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0" title="Starts the handshake on a HandshakeState object. ">noise_handshakestate_start()</a>, <a class="el" href="group__handshakestate.html#gafca896117ad9a8697a3fe385deb3c280" title="Sets the pre shared key for a HandshakeState. ">noise_handshakestate_set_pre_shared_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00490">490</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00491">491</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="gae8480d1f1782d27eb6187075f1170dfb"></a>
+<a class="anchor" id="ga3d4bdfb7865f69e456bb5b3e895c6d0a"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -954,13 +957,13 @@ NOISE_ERROR_INVALID_STATE if this function is called afer <a class="el" href="gr
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **&#160;</td>
-          <td class="paramname"><em>c1</em>, </td>
+          <td class="paramname"><em>send</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **&#160;</td>
-          <td class="paramname"><em>c2</em>&#160;</td>
+          <td class="paramname"><em>receive</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -974,24 +977,99 @@ NOISE_ERROR_INVALID_STATE if this function is called afer <a class="el" href="gr
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>The HandshakeState object. </td></tr>
-    <tr><td class="paramname">c1</td><td>Points to the variable where to place the pointer to the first CipherState object. Must not be NULL. </td></tr>
-    <tr><td class="paramname">c2</td><td>Points to the variable where to place the pointer to the second CipherState object. This can be NULL if the application is using a one-way handshake pattern.</td></tr>
+    <tr><td class="paramname">send</td><td>Points to the variable where to place the pointer to the CipherState object to use to send packets from local to remote. This can be NULL if the application is using a one-way handshake pattern. </td></tr>
+    <tr><td class="paramname">receive</td><td>Points to the variable where to place the pointer to the CipherState object to use to receive packets from the remote to local. This can be NULL if the application is using a one-way handshake pattern.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
 <dd>
-NOISE_ERROR_INVALID_PARAM if one of <em>state</em> or <em>c1</em> is NULL. </dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if both <em>send</em> and <em>receive</em> are NULL. </dd>
 <dd>
 NOISE_ERROR_INVALID_STATE if the <em>state</em> has already been split or the handshake protocol has not completed successfully yet. </dd>
 <dd>
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherState objects.</dd></dl>
 <p>Once a HandshakeState has been split, it is effectively finished and cannot be used for future handshake operations. If those operations are invoked, the relevant functions will return NOISE_ERROR_INVALID_STATE.</p>
-<p>The <em>c1</em> object should be used to protect messages from the initiator to the responder, and the <em>c2</em> object should be used to protect messages from the responder to the initiator.</p>
-<p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on <em>c2</em> as it will not be needed. Alternatively, the application can pass NULL to <a class="el" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> as the <em>c2</em> argument and the second CipherState will not be created at all.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
+<p>The <em>send</em> object should be used to protect messages from the local side to the remote side, and the <em>receive</em> object should be used to protect messages from the remote side to the local side.</p>
+<p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on the object that is not needed. Alternatively, the application can pass NULL to <a class="el" href="group__symmetricstate.html#gadcb03d5b22400016e003a8d62d0790e1" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> as the <em>send</em> or <em>receive</em> argument and the second CipherState will not be created at all.</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga0aae736fc4a04df2cbfdd24973aeb8ae" title="Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key. ">noise_handshakestate_split_with_key()</a>, <a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01312">1312</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01317">1317</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga0aae736fc4a04df2cbfdd24973aeb8ae"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_handshakestate_split_with_key </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **&#160;</td>
+          <td class="paramname"><em>send</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **&#160;</td>
+          <td class="paramname"><em>receive</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>secondary_key</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>secondary_key_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The HandshakeState object. </td></tr>
+    <tr><td class="paramname">send</td><td>Points to the variable where to place the pointer to the CipherState object to use to send packets from local to remote. This can be NULL if the application is using a one-way handshake pattern. </td></tr>
+    <tr><td class="paramname">receive</td><td>Points to the variable where to place the pointer to the CipherState object to use to receive packets from the remote to local. This can be NULL if the application is using a one-way handshake pattern. </td></tr>
+    <tr><td class="paramname">secondary_key</td><td>Points to an optional "secondary symmetric key" from a parallel non-DH handshake to mix into the final cipher keys. This may be NULL if <em>secondary_key_len</em> is zero. </td></tr>
+    <tr><td class="paramname">secondary_key_len</td><td>Length of <em>secondary_key</em> in bytes. This should be 32 to comply with the requirements from the Noise protocol specification.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if both <em>send</em> and <em>receive</em> are NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>secondary_key</em> is NULL and <em>secondary_key_len</em> is not zero. </dd>
+<dd>
+NOISE_ERROR_INVALID_STATE if the <em>state</em> has already been split or the handshake protocol has not completed successfully yet. </dd>
+<dd>
+NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherState objects.</dd></dl>
+<p>Once a HandshakeState has been split, it is effectively finished and cannot be used for future handshake operations. If those operations are invoked, the relevant functions will return NOISE_ERROR_INVALID_STATE.</p>
+<p>The <em>send</em> object should be used to protect messages from the local side to the remote side, and the <em>receive</em> object should be used to protect messages from the remote side to the local side.</p>
+<p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on the object that is not needed. Alternatively, the application can pass NULL to <a class="el" href="group__symmetricstate.html#gadcb03d5b22400016e003a8d62d0790e1" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> as the <em>send</em> or <em>receive</em> argument and the second CipherState will not be created at all.</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>, <a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01367">1367</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1032,7 +1110,7 @@ NOISE_ERROR_NOT_APPLICABLE if an attempt was made to start a "XXfallback" handsh
 <p>This function is called after all of the handshake parameters have been provided to the HandshakeState object. This function should be followed by calls to noise_handshake_write_message() or noise_handshake_read_message() to process the handshake messages. The <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> function indicates the action to take next.</p>
 <dl class="section see"><dt>See Also</dt><dd>noise_handshake_write_message(), noise_handshake_read_message(), <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a>, <a class="el" href="group__handshakestate.html#gaaaf2e6ef61771c7fa5c4f5d5e106c603" title="Falls back to the &quot;XXfallback&quot; handshake pattern. ">noise_handshakestate_fallback()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00644">644</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l00645">645</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1096,14 +1174,14 @@ NOISE_ERROR_INVALID_LENGTH if <em>message</em> is too small to contain all of th
 <div class="line"><span class="comment">// Transmit the message.size bytes starting at message.data if no error.</span></div>
 </div><!-- fragment --><dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga5b86560fccec5c8d9051fa6e30e7cb20" title="Reads a message payload using a HandshakeState. ">noise_handshakestate_read_message()</a>, <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01046">1046</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01047">1047</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 12:07:59 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

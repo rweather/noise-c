@@ -163,9 +163,7 @@ Running the handshake phase</h2>
 <h2><a class="anchor" id="example_echo_run_transport"></a>
 Running the data transport phase</h2>
 <p>Once the handshake completes successfully, we can "split" the HandshakeState into two CipherState objects, one for sending and the other for receiving:</p>
-<div class="fragment"><div class="line">err = <a class="code" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb">noise_handshakestate_split</a>(handshake, &amp;send_cipher, &amp;recv_cipher);</div>
-</div><!-- fragment --><p>On the server side, the CipherState objects are reversed:</p>
-<div class="fragment"><div class="line">err = <a class="code" href="group__handshakestate.html#gae8480d1f1782d27eb6187075f1170dfb">noise_handshakestate_split</a>(handshake, &amp;recv_cipher, &amp;send_cipher);</div>
+<div class="fragment"><div class="line">err = <a class="code" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a">noise_handshakestate_split</a>(handshake, &amp;send_cipher, &amp;recv_cipher);</div>
 </div><!-- fragment --><p>If the remote side provided its public key during the handshake, then <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> and <a class="el" href="group__dhstate.html#gaf3f309448ef895b037fdf8a6b812fe40" title="Gets the public key value from a DHState object. ">noise_dhstate_get_public_key()</a> can be used to retrieve it at this point.</p>
 <p>The HandshakeState is now no longer required and we can discard it:</p>
 <div class="fragment"><div class="line"><a class="code" href="group__handshakestate.html#ga1ee4331d10a6c28bd336bfdf1017346d">noise_handshakestate_free</a>(handshake);</div>
@@ -219,7 +217,7 @@ Running the echo client</h2>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 14 2016 08:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 14 2016 12:07:59 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
