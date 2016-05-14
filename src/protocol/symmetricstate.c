@@ -483,13 +483,23 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  *
  * \param state The SymmetricState object.
  * \param c1 Points to the variable where to place the pointer to the
- * first CipherState object.  Must not be NULL.
+ * first CipherState object.  This can be NULL if the application is
+ * using a one-way handshake pattern.
  * \param c2 Points to the variable where to place the pointer to the
  * second CipherState object.  This can be NULL if the application is
  * using a one-way handshake pattern.
+ * \param secondary_key Points to an optional "secondary symmetric key"
+ * from a parallel non-DH handshake to mix into the final cipher keys.
+ * This may be NULL if \a secondary_key_len is zero.
+ * \param secondary_key_len Length of \a secondary_key in bytes.
+ * This should be 32 to comply with the requirements from the Noise
+ * protocol specification.
  *
  * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if one of \a state or \a c1 is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if both \a c1 and \a c2 are NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a secondary_key is NULL and
+ * \a secondary_key_len is not zero.
  * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to create
  * the new CipherState objects.
@@ -504,12 +514,14 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  * from the responder to the initiator.
  *
  * If the handshake pattern is one-way, then the application should call
- * noise_cipherstate_free() on \a c2 as it will not be needed.  Alternatively,
+ * noise_cipherstate_free() on the object that is not needed.  Alternatively,
  * the application can pass NULL to noise_symmetricstate_split() as the
- * \a c2 argument and the second CipherState will not be created at all.
+ * \a c1 or \a c2 argument and the second CipherState will not be created
+ * at all.
  */
 int noise_symmetricstate_split
-    (NoiseSymmetricState *state, NoiseCipherState **c1, NoiseCipherState **c2)
+    (NoiseSymmetricState *state, NoiseCipherState **c1, NoiseCipherState **c2,
+     const uint8_t *secondary_key, size_t secondary_key_len)
 {
     uint8_t temp_k1[NOISE_MAX_HASHLEN];
     uint8_t temp_k2[NOISE_MAX_HASHLEN];
@@ -517,9 +529,14 @@ int noise_symmetricstate_split
     size_t key_len;
 
     /* Validate the parameters */
-    if (!state || !c1)
+    if (!state)
         return NOISE_ERROR_INVALID_PARAM;
-    *c1 = 0;
+    if (!c1 && !c2)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (!secondary_key && secondary_key_len)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (c1)
+        *c1 = 0;
     if (c2)
         *c2 = 0;
 
@@ -530,9 +547,26 @@ int noise_symmetricstate_split
     /* Generate the two encryption keys with HKDF */
     hash_len = noise_hashstate_get_hash_length(state->hash);
     key_len = noise_cipherstate_get_key_length(state->cipher);
-    noise_hashstate_hkdf
-        (state->hash, state->ck, hash_len, state->ck, 0,
-         temp_k1, key_len, temp_k2, key_len);
+    if (!secondary_key) {
+        noise_hashstate_hkdf
+            (state->hash, state->ck, hash_len, state->ck, 0,
+             temp_k1, key_len, temp_k2, key_len);
+    } else {
+        noise_hashstate_hkdf
+            (state->hash, state->ck, hash_len, secondary_key, secondary_key_len,
+             temp_k1, key_len, temp_k2, key_len);
+    }
+
+    /* If we only need c2, then re-initialize the key in the internal
+       cipher and copy it to c2 */
+    if (!c1 && c2) {
+        noise_cipherstate_init_key(state->cipher, temp_k2, key_len);
+        *c2 = state->cipher;
+        state->cipher = 0;
+        noise_clean(temp_k1, sizeof(temp_k1));
+        noise_clean(temp_k2, sizeof(temp_k2));
+        return NOISE_ERROR_NONE;
+    }
 
     /* Split a copy out of the cipher and give it the second key.
        We don't need to do this if the second CipherSuite is not required */

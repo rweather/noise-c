@@ -95,12 +95,19 @@ static HKDFValue HKDF(const HashValue key, const uint8_t *data, size_t data_len)
    second SymmetricState implementation here which we bounce off the first. */
 static void check_symmetric_object
     (NoiseSymmetricState *state1, NoiseSymmetricState *state2,
-     const NoiseProtocolId *id, const char *protocol)
+     NoiseSymmetricState *state3, const NoiseProtocolId *id,
+     const char *protocol, int with_secondary)
 {
     static const char *data_vals[] = {
         "abcdefghijklmnopqrstuvwxyz",
         "0123456789",
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    };
+    static const uint8_t secondary_key[32] = {
+        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+        0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F
     };
     size_t num_data_vals = sizeof(data_vals) / sizeof(data_vals[0]);
     HashValue ck, h;
@@ -111,11 +118,14 @@ static void check_symmetric_object
     size_t mac_len;
     uint8_t buffer[MAX_DATA_LEN];
     uint8_t buffer2[MAX_DATA_LEN];
+    uint8_t buffer3[MAX_DATA_LEN];
     NoiseCipherState *cipherstate;
     NoiseCipherState *c1;
     NoiseCipherState *c2;
     NoiseProtocolId temp_id;
     NoiseBuffer mbuf;
+    const uint8_t *ssk = (with_secondary ? secondary_key : 0);
+    size_t ssk_len = (with_secondary ? sizeof(secondary_key) : 0);
 
     /* We run two SymmetricState objects in parallel, state1 and state2.
        The state1 object is used to encrypt and state2 is used to decrypt. */
@@ -129,12 +139,17 @@ static void check_symmetric_object
     compare(noise_symmetricstate_get_protocol_id(state2, &temp_id),
             NOISE_ERROR_NONE);
     verify(!memcmp(&temp_id, id, sizeof(temp_id)));
+    memset(&temp_id, 0x66, sizeof(temp_id));
+    compare(noise_symmetricstate_get_protocol_id(state3, &temp_id),
+            NOISE_ERROR_NONE);
+    verify(!memcmp(&temp_id, id, sizeof(temp_id)));
     compare(noise_symmetricstate_get_protocol_id(0, &temp_id),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_symmetricstate_get_protocol_id(state1, 0),
             NOISE_ERROR_INVALID_PARAM);
     compare(noise_symmetricstate_get_mac_length(state1), 0);
     compare(noise_symmetricstate_get_mac_length(state2), 0);
+    compare(noise_symmetricstate_get_mac_length(state3), 0);
 
     /* Create a HashState and CipherState to simulate expected behaviour */
     compare(noise_hashstate_new_by_id(&hashstate, id->hash_id),
@@ -152,10 +167,13 @@ static void check_symmetric_object
     verify(!memcmp(h.hash, state1->h, hash_len));
     verify(!memcmp(ck.hash, state2->ck, hash_len));
     verify(!memcmp(h.hash, state2->h, hash_len));
+    verify(!memcmp(ck.hash, state3->ck, hash_len));
+    verify(!memcmp(h.hash, state3->h, hash_len));
 
     /* The encryption key should not currently be set */
     verify(!noise_cipherstate_has_key(state1->cipher));
     verify(!noise_cipherstate_has_key(state2->cipher));
+    verify(!noise_cipherstate_has_key(state3->cipher));
 
     /* Mix data into the handshake hash */
     for (index = 0; index < num_data_vals; ++index) {
@@ -166,17 +184,21 @@ static void check_symmetric_object
                 NOISE_ERROR_NONE);
         compare(noise_symmetricstate_mix_hash(state2, data, len),
                 NOISE_ERROR_NONE);
+        compare(noise_symmetricstate_mix_hash(state3, data, len),
+                NOISE_ERROR_NONE);
         verify(!memcmp(ck.hash, state1->ck, hash_len));
         verify(!memcmp(h.hash, state1->h, hash_len));
         verify(!memcmp(ck.hash, state2->ck, hash_len));
         verify(!memcmp(h.hash, state2->h, hash_len));
+        verify(!memcmp(ck.hash, state3->ck, hash_len));
+        verify(!memcmp(h.hash, state3->h, hash_len));
         compare(noise_symmetricstate_mix_hash(0, data, len),
                 NOISE_ERROR_INVALID_PARAM);
         compare(noise_symmetricstate_mix_hash(state1, 0, len),
                 NOISE_ERROR_INVALID_PARAM);
     }
 
-    /* Encrypt with state1 and decrypt with state2.  The encryption
+    /* Encrypt with state1 and decrypt with state2/state3.  The encryption
        key has not been set yet, so the messages should be in plaintext. */
     for (index = 0; index < num_data_vals; ++index) {
         len = strlen(data_vals[index]);
@@ -187,9 +209,15 @@ static void check_symmetric_object
                 NOISE_ERROR_NONE);
         compare(mbuf.size, len);
         verify(!memcmp(mbuf.data, data, len));
+        memcpy(buffer2, buffer, len);
         h = HASHTwo(h, buffer, len);
         noise_buffer_set_input(mbuf, buffer, len);
         compare(noise_symmetricstate_decrypt_and_hash(state2, &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len);
+        verify(!memcmp(mbuf.data, data, len));
+        noise_buffer_set_input(mbuf, buffer2, len);
+        compare(noise_symmetricstate_decrypt_and_hash(state3, &mbuf),
                 NOISE_ERROR_NONE);
         compare(mbuf.size, len);
         verify(!memcmp(mbuf.data, data, len));
@@ -197,8 +225,11 @@ static void check_symmetric_object
         verify(!memcmp(h.hash, state1->h, hash_len));
         verify(!memcmp(ck.hash, state2->ck, hash_len));
         verify(!memcmp(h.hash, state2->h, hash_len));
+        verify(!memcmp(ck.hash, state3->ck, hash_len));
+        verify(!memcmp(h.hash, state3->h, hash_len));
         compare(noise_symmetricstate_get_mac_length(state1), 0);
         compare(noise_symmetricstate_get_mac_length(state2), 0);
+        compare(noise_symmetricstate_get_mac_length(state3), 0);
         noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
         compare(noise_symmetricstate_encrypt_and_hash(0, &mbuf),
                 NOISE_ERROR_INVALID_PARAM);
@@ -226,6 +257,7 @@ static void check_symmetric_object
     /* The encryption key should still not be set */
     verify(!noise_cipherstate_has_key(state1->cipher));
     verify(!noise_cipherstate_has_key(state2->cipher));
+    verify(!noise_cipherstate_has_key(state3->cipher));
 
     /* Mix data into the chaining key */
     memset(&temp, 0, sizeof(temp));
@@ -237,13 +269,18 @@ static void check_symmetric_object
                 NOISE_ERROR_NONE);
         compare(noise_symmetricstate_mix_key(state2, data, len),
                 NOISE_ERROR_NONE);
+        compare(noise_symmetricstate_mix_key(state3, data, len),
+                NOISE_ERROR_NONE);
         ck = temp.v1;
         verify(!memcmp(ck.hash, state1->ck, hash_len));
         verify(!memcmp(h.hash, state1->h, hash_len));
         verify(!memcmp(ck.hash, state2->ck, hash_len));
         verify(!memcmp(h.hash, state2->h, hash_len));
+        verify(!memcmp(ck.hash, state3->ck, hash_len));
+        verify(!memcmp(h.hash, state3->h, hash_len));
         compare(noise_symmetricstate_get_mac_length(state1), mac_len);
         compare(noise_symmetricstate_get_mac_length(state2), mac_len);
+        compare(noise_symmetricstate_get_mac_length(state3), mac_len);
         compare(noise_symmetricstate_mix_key(0, data, len),
                 NOISE_ERROR_INVALID_PARAM);
         compare(noise_symmetricstate_mix_key(state1, 0, len),
@@ -253,6 +290,7 @@ static void check_symmetric_object
     /* We should have an encryption key now.  Set on the simulated objects. */
     verify(noise_cipherstate_has_key(state1->cipher));
     verify(noise_cipherstate_has_key(state2->cipher));
+    verify(noise_cipherstate_has_key(state3->cipher));
     compare(noise_cipherstate_init_key(cipherstate, temp.v2.hash, key_len),
             NOISE_ERROR_NONE);
 
@@ -274,9 +312,15 @@ static void check_symmetric_object
                 NOISE_ERROR_NONE);
         compare(mbuf.size, len + mac_len);
         verify(!memcmp(mbuf.data, buffer2, len + mac_len));
+        memcpy(buffer3, buffer, len + mac_len);
         h = HASHTwo(h, buffer, len + mac_len);
         noise_buffer_set_input(mbuf, buffer, len + mac_len);
         compare(noise_symmetricstate_decrypt_and_hash(state2, &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len);
+        verify(!memcmp(mbuf.data, data, len));
+        noise_buffer_set_input(mbuf, buffer3, len + mac_len);
+        compare(noise_symmetricstate_decrypt_and_hash(state3, &mbuf),
                 NOISE_ERROR_NONE);
         compare(mbuf.size, len);
         verify(!memcmp(mbuf.data, data, len));
@@ -309,21 +353,29 @@ static void check_symmetric_object
     verify(!memcmp(h.hash, state1->h, hash_len));
     verify(!memcmp(ck.hash, state2->ck, hash_len));
     verify(!memcmp(h.hash, state2->h, hash_len));
+    verify(!memcmp(ck.hash, state3->ck, hash_len));
+    verify(!memcmp(h.hash, state3->h, hash_len));
 
     /* Split the SymmetricState */
-    compare(noise_symmetricstate_split(0, &c1, &c2),
+    compare(noise_symmetricstate_split(0, &c1, &c2, ssk, ssk_len),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_symmetricstate_split(state1, 0, &c2),
+    compare(noise_symmetricstate_split(state1, 0, 0, ssk, ssk_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_symmetricstate_split(state1, &c1, &c2, 0, 1),
             NOISE_ERROR_INVALID_PARAM);
     c1 = c2 = 0;
-    compare(noise_symmetricstate_split(state1, &c1, &c2), NOISE_ERROR_NONE);
+    compare(noise_symmetricstate_split(state1, &c1, &c2, ssk, ssk_len),
+            NOISE_ERROR_NONE);
     verify(c1 != 0);
     verify(c2 != 0);
     verify(noise_cipherstate_has_key(c1));
     verify(noise_cipherstate_has_key(c2));
 
     /* Check that the encryption keys in c1 and c2 are as expected */
-    temp = HKDF(ck, buffer, 0);
+    if (with_secondary)
+        temp = HKDF(ck, ssk, ssk_len);
+    else
+        temp = HKDF(ck, buffer, 0);
     compare(noise_cipherstate_init_key(cipherstate, temp.v1.hash, key_len),
             NOISE_ERROR_NONE);
     for (index = 0; index < num_data_vals; ++index) {
@@ -375,13 +427,18 @@ static void check_symmetric_object
             NOISE_ERROR_INVALID_STATE);
     compare(noise_symmetricstate_decrypt_and_hash(state1, &mbuf),
             NOISE_ERROR_INVALID_STATE);
-    compare(noise_symmetricstate_split(state1, &c1, &c2),
+    compare(noise_symmetricstate_split(state1, &c1, &c2, ssk, ssk_len),
+            NOISE_ERROR_INVALID_STATE);
+    compare(noise_symmetricstate_split(state1, 0, &c2, ssk, ssk_len),
+            NOISE_ERROR_INVALID_STATE);
+    compare(noise_symmetricstate_split(state1, &c1, 0, ssk, ssk_len),
             NOISE_ERROR_INVALID_STATE);
 
     /* Split the second SymmetricState, with c2 optional */
     c1 = 0;
     c2 = (NoiseCipherState *)(-1);
-    compare(noise_symmetricstate_split(state2, &c1, 0), NOISE_ERROR_NONE);
+    compare(noise_symmetricstate_split(state2, &c1, 0, ssk, ssk_len),
+            NOISE_ERROR_NONE);
     verify(c1 != 0);
     verify(c2 == (NoiseCipherState *)(-1));
     c2 = 0;
@@ -408,20 +465,55 @@ static void check_symmetric_object
         compare(mbuf.size, len + mac_len);
         verify(!memcmp(mbuf.data, buffer2, len + mac_len));
     }
+    compare(noise_cipherstate_free(c1), NOISE_ERROR_NONE);
+    compare(noise_cipherstate_free(c2), NOISE_ERROR_INVALID_PARAM);
+
+    /* Split the third SymmetricState, with c1 optional */
+    c1 = (NoiseCipherState *)(-1);
+    c2 = 0;
+    compare(noise_symmetricstate_split(state3, 0, &c2, ssk, ssk_len),
+            NOISE_ERROR_NONE);
+    verify(c1 == (NoiseCipherState *)(-1));
+    verify(c2 != 0);
+    c1 = 0;
+    verify(!noise_cipherstate_has_key(c1));
+    verify(noise_cipherstate_has_key(c2));
+
+    /* Check that c2 encrypts in the same way as before */
+    compare(noise_cipherstate_init_key(cipherstate, temp.v2.hash, key_len),
+            NOISE_ERROR_NONE);
+    for (index = 0; index < num_data_vals; ++index) {
+        len = strlen(data_vals[index]);
+        data = (const uint8_t *)(data_vals[index]);
+        memcpy(buffer, data, len);
+        memcpy(buffer2, data, len);
+        noise_buffer_set_inout(mbuf, buffer2, len, sizeof(buffer2));
+        compare(noise_cipherstate_encrypt_with_ad
+                   (cipherstate, (const uint8_t *)&index, sizeof(index), &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len + mac_len);
+        noise_buffer_set_inout(mbuf, buffer, len, sizeof(buffer));
+        compare(noise_cipherstate_encrypt_with_ad
+                    (c2, (const uint8_t *)&index, sizeof(index), &mbuf),
+                NOISE_ERROR_NONE);
+        compare(mbuf.size, len + mac_len);
+        verify(!memcmp(mbuf.data, buffer2, len + mac_len));
+    }
 
     /* Clean up */
     compare(noise_hashstate_free(hashstate), NOISE_ERROR_NONE);
     compare(noise_cipherstate_free(cipherstate), NOISE_ERROR_NONE);
-    compare(noise_cipherstate_free(c1), NOISE_ERROR_NONE);
-    compare(noise_cipherstate_free(c2), NOISE_ERROR_INVALID_PARAM);
+    compare(noise_cipherstate_free(c1), NOISE_ERROR_INVALID_PARAM);
+    compare(noise_cipherstate_free(c2), NOISE_ERROR_NONE);
     hashstate = 0;
 }
 
 /* Create SymmetricState objects by id or name and check their behaviour */
-static void check_symmetric(const char *protocol)
+static void check_symmetric(const char *protocol, int with_secondary)
 {
     NoiseSymmetricState *state1;
     NoiseSymmetricState *state2;
+    NoiseSymmetricState *state3;
     NoiseProtocolId id;
 
     /* Set the name of the protocol for reporting test failures */
@@ -436,7 +528,9 @@ static void check_symmetric(const char *protocol)
             NOISE_ERROR_NONE);
     compare(noise_symmetricstate_new_by_id(&state2, &id),
             NOISE_ERROR_NONE);
-    check_symmetric_object(state1, state2, &id, protocol);
+    compare(noise_symmetricstate_new_by_id(&state3, &id),
+            NOISE_ERROR_NONE);
+    check_symmetric_object(state1, state2, state3, &id, protocol, with_secondary);
     compare(noise_symmetricstate_free(state1), NOISE_ERROR_NONE);
     compare(noise_symmetricstate_free(state2), NOISE_ERROR_NONE);
 
@@ -445,22 +539,35 @@ static void check_symmetric(const char *protocol)
             NOISE_ERROR_NONE);
     compare(noise_symmetricstate_new_by_name(&state2, protocol),
             NOISE_ERROR_NONE);
-    check_symmetric_object(state1, state2, &id, protocol);
+    compare(noise_symmetricstate_new_by_name(&state3, protocol),
+            NOISE_ERROR_NONE);
+    check_symmetric_object(state1, state2, state3, &id, protocol, with_secondary);
     compare(noise_symmetricstate_free(state1), NOISE_ERROR_NONE);
     compare(noise_symmetricstate_free(state2), NOISE_ERROR_NONE);
+    compare(noise_symmetricstate_free(state3), NOISE_ERROR_NONE);
 }
 
 static void symmetricstate_check_protocols(void)
 {
-    check_symmetric("Noise_XX_25519_AESGCM_SHA256");
-    check_symmetric("Noise_N_25519_ChaChaPoly_BLAKE2s");
-    check_symmetric("Noise_XXfallback_448_AESGCM_SHA512");
-    check_symmetric("Noise_IK_448_ChaChaPoly_BLAKE2b");
+    check_symmetric("Noise_XX_25519_AESGCM_SHA256", 0);
+    check_symmetric("Noise_N_25519_ChaChaPoly_BLAKE2s", 0);
+    check_symmetric("Noise_XXfallback_448_AESGCM_SHA512", 0);
+    check_symmetric("Noise_IK_448_ChaChaPoly_BLAKE2b", 0);
 
-    check_symmetric("NoisePSK_XX_25519_AESGCM_SHA256");
-    check_symmetric("NoisePSK_N_25519_ChaChaPoly_BLAKE2s");
-    check_symmetric("NoisePSK_XXfallback_448_AESGCM_SHA512");
-    check_symmetric("NoisePSK_IK_448_ChaChaPoly_BLAKE2b");
+    check_symmetric("NoisePSK_XX_25519_AESGCM_SHA256", 0);
+    check_symmetric("NoisePSK_N_25519_ChaChaPoly_BLAKE2s", 0);
+    check_symmetric("NoisePSK_XXfallback_448_AESGCM_SHA512", 0);
+    check_symmetric("NoisePSK_IK_448_ChaChaPoly_BLAKE2b", 0);
+
+    check_symmetric("Noise_XX_25519_AESGCM_SHA256", 1);
+    check_symmetric("Noise_N_25519_ChaChaPoly_BLAKE2s", 1);
+    check_symmetric("Noise_XXfallback_448_AESGCM_SHA512", 1);
+    check_symmetric("Noise_IK_448_ChaChaPoly_BLAKE2b", 1);
+
+    check_symmetric("NoisePSK_XX_25519_AESGCM_SHA256", 1);
+    check_symmetric("NoisePSK_N_25519_ChaChaPoly_BLAKE2s", 1);
+    check_symmetric("NoisePSK_XXfallback_448_AESGCM_SHA512", 1);
+    check_symmetric("NoisePSK_IK_448_ChaChaPoly_BLAKE2b", 1);
 }
 
 /* Check other error conditions that can be reported by the functions */
