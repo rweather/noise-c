@@ -779,6 +779,8 @@ int main(int argc, char *argv[])
             return 1;
         }
         retval |= process_file("cacophony.txt");
+        retval |= process_file("noise-c-basic.txt");
+        retval |= process_file("noise-c-ssk.txt");
     }
     return retval;
 }
