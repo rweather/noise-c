@@ -50,6 +50,7 @@ src/keys/Makefile
 tests/Makefile
 tests/unit/Makefile
 tests/vector/Makefile
+tests/vector-gen/Makefile
 tests/performance/Makefile
 tools/Makefile
 tools/keytool/Makefile

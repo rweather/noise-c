@@ -1,0 +1,12 @@
+
+This directory contains a very simple implementation of the Noise
+protocol independent of that in the library's SymmetricState and
+HandshakeState objects.  It is used to cross-check the smarter
+versions in the library.
+
+We assume that the CipherState, DHState, and HashState implementations
+in the library work correctly as basic low-level primitives.
+
+This simple implementation is not very efficient, is not very strict
+about checking buffer lengths, and has a limited packet size.  It is not
+recommended for any purpose except offline generation of test vectors.

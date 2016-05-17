@@ -35,7 +35,8 @@
 typedef struct
 {
     long line_number;               /**< Line number for the "name" */
-    char *name;                     /**< Full name of the protocol */
+    char *name;                     /**< Full name of the test case */
+    char *protocol_name;            /**< Full name of the protocol */
     char *pattern;                  /**< Name of the handshake pattern */
     char *dh;                       /**< Name of the DH algorithm */
     char *cipher;                   /**< Name of the cipher algorithm */
@@ -60,6 +61,12 @@ typedef struct
     size_t init_psk_len;            /**< Length of init_psk in bytes */
     uint8_t *resp_psk;              /**< Responder's pre shared key */
     size_t resp_psk_len;            /**< Length of resp_psk in bytes */
+    uint8_t *init_ssk;              /**< Initiator's secondary shared key */
+    size_t init_ssk_len;            /**< Length of init_ssk in bytes */
+    uint8_t *resp_ssk;              /**< Responder's secondary shared key */
+    size_t resp_ssk_len;            /**< Length of resp_ssk in bytes */
+    uint8_t *handshake_hash;        /**< Hash at the end of the handshake */
+    size_t handshake_hash_len;      /**< Length of handshake_hash in bytes */
     struct {
         uint8_t *payload;           /**< Payload for this message */
         size_t payload_len;         /**< Length of payload in bytes */
@@ -80,6 +87,7 @@ static void test_vector_free(TestVector *vec)
     size_t index;
     #define free_field(name) do { if (vec->name) free(vec->name); } while (0)
     free_field(name);
+    free_field(protocol_name);
     free_field(pattern);
     free_field(dh);
     free_field(cipher);
@@ -94,6 +102,9 @@ static void test_vector_free(TestVector *vec)
     free_field(resp_prologue);
     free_field(init_psk);
     free_field(resp_psk);
+    free_field(init_ssk);
+    free_field(resp_ssk);
+    free_field(handshake_hash);
     for (index = 0; index < vec->num_messages; ++index) {
         if (vec->messages[index].payload)
             free(vec->messages[index].payload);
@@ -205,7 +216,8 @@ static void check_id(int id, int category, const char *name)
 static int test_name_parsing(const TestVector *vec)
 {
     NoiseProtocolId id;
-    compare(noise_protocol_name_to_id(&id, vec->name, strlen(vec->name)),
+    compare(noise_protocol_name_to_id
+                (&id, vec->protocol_name, strlen(vec->protocol_name)),
             NOISE_ERROR_NONE);
     if (vec->init_psk || vec->resp_psk)
         compare(id.prefix_id, NOISE_PREFIX_PSK);
@@ -250,10 +262,10 @@ static void test_connection(const TestVector *vec, int is_one_way)
 
     /* Create the two ends of the connection */
     compare(noise_handshakestate_new_by_name
-                (&initiator, vec->name, NOISE_ROLE_INITIATOR),
+                (&initiator, vec->protocol_name, NOISE_ROLE_INITIATOR),
             NOISE_ERROR_NONE);
     compare(noise_handshakestate_new_by_name
-                (&responder, vec->name, NOISE_ROLE_RESPONDER),
+                (&responder, vec->protocol_name, NOISE_ROLE_RESPONDER),
             NOISE_ERROR_NONE);
 
     /* Set all keys that we need to use */
@@ -361,11 +373,41 @@ static void test_connection(const TestVector *vec, int is_one_way)
                        vec->messages[index].payload_len);
     }
 
-    /* Handshake finished.  Now handle the data transport */
-    compare(noise_handshakestate_split(initiator, &c1init, &c2init),
-            NOISE_ERROR_NONE);
-    compare(noise_handshakestate_split(responder, &c2resp, &c1resp),
-            NOISE_ERROR_NONE);
+    /* Handshake finished.  Check the handshake hash values */
+    if (vec->handshake_hash_len) {
+        memset(payload, 0xAA, sizeof(payload));
+        compare(noise_handshakestate_get_handshake_hash
+                    (initiator, payload, vec->handshake_hash_len),
+                NOISE_ERROR_NONE);
+        compare_blocks("handshake_hash", payload, vec->handshake_hash_len,
+                       vec->handshake_hash, vec->handshake_hash_len);
+        memset(payload, 0xAA, sizeof(payload));
+        compare(noise_handshakestate_get_handshake_hash
+                    (responder, payload, vec->handshake_hash_len),
+                NOISE_ERROR_NONE);
+        compare_blocks("handshake_hash", payload, vec->handshake_hash_len,
+                       vec->handshake_hash, vec->handshake_hash_len);
+    }
+
+    /* Now handle the data transport */
+    if (vec->init_ssk_len) {
+        compare(noise_handshakestate_split_with_key
+                    (initiator, &c1init, &c2init,
+                     vec->init_ssk, vec->init_ssk_len),
+                NOISE_ERROR_NONE);
+    } else {
+        compare(noise_handshakestate_split(initiator, &c1init, &c2init),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->resp_ssk_len) {
+        compare(noise_handshakestate_split_with_key
+                    (responder, &c2resp, &c1resp,
+                     vec->resp_ssk, vec->resp_ssk_len),
+                NOISE_ERROR_NONE);
+    } else {
+        compare(noise_handshakestate_split(responder, &c2resp, &c1resp),
+                NOISE_ERROR_NONE);
+    }
     mac_len = noise_cipherstate_get_mac_length(c1init);
     for (; index < vec->num_messages; ++index) {
         if (role == NOISE_ROLE_INITIATOR) {
@@ -561,8 +603,14 @@ static int process_test_vector(JSONReader *reader)
     memset(&vec, 0, sizeof(TestVector));
     while (!reader->errors && reader->token == JSON_TOKEN_STRING) {
         if (json_is_name(reader, "name")) {
+            char *colon;
             vec.line_number = reader->line_number;
             expect_string_field(reader, &(vec.name));
+            vec.protocol_name = strdup(vec.name);
+            colon = vec.protocol_name;
+            while (*colon != '\0' && *colon != ':')
+                ++colon;
+            *colon = '\0';
         } else if (json_is_name(reader, "pattern")) {
             expect_string_field(reader, &(vec.pattern));
         } else if (json_is_name(reader, "dh")) {
@@ -605,6 +653,15 @@ static int process_test_vector(JSONReader *reader)
         } else if (json_is_name(reader, "resp_psk")) {
             vec.resp_psk_len =
                 expect_binary_field(reader, &(vec.resp_psk));
+        } else if (json_is_name(reader, "init_ssk")) {
+            vec.init_ssk_len =
+                expect_binary_field(reader, &(vec.init_ssk));
+        } else if (json_is_name(reader, "resp_ssk")) {
+            vec.resp_ssk_len =
+                expect_binary_field(reader, &(vec.resp_ssk));
+        } else if (json_is_name(reader, "handshake_hash")) {
+            vec.handshake_hash_len =
+                expect_binary_field(reader, &(vec.handshake_hash));
         } else if (json_is_name(reader, "messages")) {
             json_next_token(reader);
             expect_token(reader, JSON_TOKEN_COLON, ":");

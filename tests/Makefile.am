@@ -1,2 +1,2 @@
 
-SUBDIRS = unit vector performance
+SUBDIRS = unit vector vector-gen performance
