@@ -599,18 +599,13 @@ static size_t expect_binary_field(JSONReader *reader, uint8_t **value)
 static int process_test_vector(JSONReader *reader)
 {
     TestVector vec;
+    char protocol_name[NOISE_MAX_PROTOCOL_NAME];
     int retval = 1;
     memset(&vec, 0, sizeof(TestVector));
     while (!reader->errors && reader->token == JSON_TOKEN_STRING) {
         if (json_is_name(reader, "name")) {
-            char *colon;
             vec.line_number = reader->line_number;
             expect_string_field(reader, &(vec.name));
-            vec.protocol_name = strdup(vec.name);
-            colon = vec.protocol_name;
-            while (*colon != '\0' && *colon != ':')
-                ++colon;
-            *colon = '\0';
         } else if (json_is_name(reader, "pattern")) {
             expect_string_field(reader, &(vec.pattern));
         } else if (json_is_name(reader, "dh")) {
@@ -702,6 +697,10 @@ static int process_test_vector(JSONReader *reader)
             json_error(reader, "Unknown field '%s'", reader->str_value);
         }
     }
+    snprintf(protocol_name, sizeof(protocol_name), "Noise%s_%s_%s_%s_%s",
+             (vec.init_psk || vec.resp_psk) ? "PSK" : "",
+             vec.pattern, vec.dh, vec.cipher, vec.hash);
+    vec.protocol_name = strdup(protocol_name);
     if (!reader->errors) {
         retval = test_vector_run(reader, &vec);
     }
