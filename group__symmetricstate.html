@@ -583,7 +583,7 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new Symmet
     <tr><td class="paramname">c1</td><td>Points to the variable where to place the pointer to the first CipherState object. This can be NULL if the application is using a one-way handshake pattern. </td></tr>
     <tr><td class="paramname">c2</td><td>Points to the variable where to place the pointer to the second CipherState object. This can be NULL if the application is using a one-way handshake pattern. </td></tr>
     <tr><td class="paramname">secondary_key</td><td>Points to an optional "secondary symmetric key" from a parallel non-DH handshake to mix into the final cipher keys. This may be NULL if <em>secondary_key_len</em> is zero. </td></tr>
-    <tr><td class="paramname">secondary_key_len</td><td>Length of <em>secondary_key</em> in bytes. This should be 32 to comply with the requirements from the Noise protocol specification.</td></tr>
+    <tr><td class="paramname">secondary_key_len</td><td>Length of <em>secondary_key</em> in bytes. This must be either zero or 32 to comply with the requirements from the Noise protocol specification.</td></tr>
   </table>
   </dd>
 </dl>
@@ -595,6 +595,8 @@ NOISE_ERROR_INVALID_PARAM if both <em>c1</em> and <em>c2</em> are NULL. </dd>
 <dd>
 NOISE_ERROR_INVALID_PARAM if <em>secondary_key</em> is NULL and <em>secondary_key_len</em> is not zero. </dd>
 <dd>
+NOISE_ERROR_INVALID_LENGTH if <em>secondary_key_len</em> is not zero or 32. </dd>
+<dd>
 NOISE_ERROR_INVALID_STATE if the <em>state</em> has already been split. </dd>
 <dd>
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherState objects.</dd></dl>
@@ -602,14 +604,14 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>The <em>c1</em> object should be used to protect messages from the initiator to the responder, and the <em>c2</em> object should be used to protect messages from the responder to the initiator.</p>
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on the object that is not needed. Alternatively, the application can pass NULL to <a class="el" href="group__symmetricstate.html#gadcb03d5b22400016e003a8d62d0790e1" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> as the <em>c1</em> or <em>c2</em> argument and the second CipherState will not be created at all. </p>
 
-<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00523">523</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
+<p>Definition at line <a class="el" href="symmetricstate_8c_source.html#l00524">524</a> of file <a class="el" href="symmetricstate_8c_source.html">symmetricstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 17 2016 18:35:58 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

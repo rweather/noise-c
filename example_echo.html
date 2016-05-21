@@ -118,10 +118,9 @@ Creating the HandshakeState</h2>
 Setting keys</h2>
 <p>After the HandshakeState object has been created, the next step is to specify the prologue, pre shared key, and any public or private keys that are needed for the handshake. We start with the prologue:</p>
 <div class="fragment"><div class="line">err = <a class="code" href="group__handshakestate.html#gaaf1a461a40326f8db0b7a537dc63e6fa">noise_handshakestate_set_prologue</a>(handshake, prologue, prologue_len);</div>
-</div><!-- fragment --><p>After the prologue, we can set the pre shared key value:</p>
+</div><!-- fragment --><p>We can also set the pre shared key (PSK) value:</p>
 <div class="fragment"><div class="line">err = <a class="code" href="group__handshakestate.html#gafca896117ad9a8697a3fe385deb3c280">noise_handshakestate_set_pre_shared_key</a>(handshake, psk, <span class="keyword">sizeof</span>(psk));</div>
-</div><!-- fragment --><p>Note that the prologue must be set before the pre shared key (PSK). If the PSK is set without a prologue, then the prologue is assumed to be empty. A later attempt to set the prologue will be rejected with an error.</p>
-<p>Next is the local client private key. The function <a class="el" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6" title="Determine if a HandshakeState still needs to be configured with a local keypair. ">noise_handshakestate_needs_local_keypair()</a> tells us if the handshake requires a local keypair.</p>
+</div><!-- fragment --><p>Next is the local client private key. The function <a class="el" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6" title="Determine if a HandshakeState still needs to be configured with a local keypair. ">noise_handshakestate_needs_local_keypair()</a> tells us if the handshake requires a local keypair.</p>
 <p>Once we know if we need a keypair, we obtain the local Diffie-Hellman key object using <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> and set the key with <a class="el" href="group__dhstate.html#gaa0bcd74dfbbd47c7e54fa413e437093f" title="Sets the keypair within a DHState object based on a private key only. ">noise_dhstate_set_keypair_private()</a>:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> (<a class="code" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6">noise_handshakestate_needs_local_keypair</a>(handshake)) {</div>
 <div class="line">    dh = <a class="code" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22">noise_handshakestate_get_local_keypair_dh</a>(handshake);</div>
@@ -217,7 +216,7 @@ Running the echo client</h2>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 17 2016 18:35:57 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

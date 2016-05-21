@@ -90,7 +90,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </ul>
 </div>
 <div class="textblock"><p>Noise-C is a plain C implementation of the <a href="http://noiseprotocol.org/">Noise Protocol</a>, intended as a reference implementation. It can also be referred to as "Noisy", which is what you get when you say "Noise-C" too fast. The code is distributed under the terms of the MIT license, with the code available from <a href="https://github.com/rweather/noise-c">github</a>.</p>
-<dl class="section note"><dt>Note</dt><dd>This project is still a work in progress. The vector tests from <a href="https://github.com/centromere/cacophony">cacophony</a> are working but there is still a lot of cleaning up and example writing to do.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>This project is still a work in progress. There is still a lot of cleaning up and example writing to do.</dd></dl>
 <p>The initial target is GNU/Linux systems, because that's what I have, but contributions are definitely welcome to make the code work on other platforms. Desktop systems will be targeted first and then embedded systems. "Make It Work And Then Make It Work Better" is my motto.</p>
 <h1><a class="anchor" id="major_apis"></a>
 Major API's</h1>
@@ -119,12 +119,16 @@ Directory structure</h1>
 <li><code>include/noise/</code> - Public API definitions for inclusion into applications. </li>
 <li><code>src/protocol/</code> - Source code for the core Noise-C protocol library. </li>
 <li><code>src/protobufs/</code> - Source code for the Noise-C protobufs library. </li>
+<li><code>src/keys/</code> - Source code for the key and certificate management library. </li>
 <li><code>src/crypto/</code> - Public domain and open source reference implementations of the cryptographic primitives. </li>
 <li><code>src/backend/ref/</code> - Backends for <a class="el" href="group__cipherstate.html">CipherState</a>, <a class="el" href="group__hashstate.html">HashState</a>, <a class="el" href="group__dhstate.html">DHState</a>, and <a class="el" href="group__signstate.html">SignState</a> that use the reference cryptographic primitives. </li>
 <li><code>src/backend/xyz/</code> - Recommended location for alternative backends. </li>
 <li><code>tools/protoc/</code> - Source code for the Noise-C protobufs compiler. </li>
+<li><code>tools/keytool/</code> - Command-line key and certificate management tool. </li>
 <li><code>tests/unit/</code> - Unit tests to exercise the library's functionality. </li>
 <li><code>tests/vector/</code> - Public JSON test vectors and test harness for the Noise protocol. </li>
+<li><code>tests/vector-gen/</code> - Generates test vectors in JSON format. </li>
+<li><code>tests/performance/</code> - Performance tests for the cryptographic primitives. </li>
 <li><code>examples/</code> - Source code for examples. </li>
 <li><code>doc/</code> - Overview and example documentation.</li>
 </ul>
@@ -141,11 +145,9 @@ Building</h1>
 TODO</h1>
 <p>In no particular order:</p>
 <ul>
-<li>Unit tests and vector tests for all public API's. </li>
 <li>Examples and overview documentation. </li>
-<li>Mechanism to encrypt static DH keypairs with a passphrase. </li>
-<li>Standalone key generation utility for static DH keypairs. </li>
-<li>Convert the build system to standard autoconf/automake conventions. </li>
+<li>Mechanism to encrypt static keypairs with a passphrase. </li>
+<li>Complete the standalone key generation utility for static keypairs. </li>
 <li>Port to other platforms (<a class="el" href="rand__os_8c.html" title="Access to the system random number generator. ">rand_os.c</a> is a particular place that needs work). </li>
 <li>Back ends for other cryptography libraries: OpenSSL, libsodium, ... </li>
 <li>Compile-time subsetting of the library for applications that only need a subset of the algorithms, and for platforms with limited memory.</li>
@@ -157,7 +159,7 @@ Contact</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 17 2016 18:35:58 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
