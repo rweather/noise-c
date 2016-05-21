@@ -67,6 +67,8 @@ typedef struct
     size_t resp_ssk_len;            /**< Length of resp_ssk in bytes */
     uint8_t *handshake_hash;        /**< Hash at the end of the handshake */
     size_t handshake_hash_len;      /**< Length of handshake_hash in bytes */
+    int fail;                       /**< Failure expected on last message */
+    int fallback;                   /**< Handshake involves IK to XXfallback */
     struct {
         uint8_t *payload;           /**< Payload for this message */
         size_t payload_len;         /**< Length of payload in bytes */
@@ -259,6 +261,7 @@ static void test_connection(const TestVector *vec, int is_one_way)
     size_t index;
     size_t mac_len;
     int role;
+    int fallback = vec->fallback;
 
     /* Create the two ends of the connection */
     compare(noise_handshakestate_new_by_name
@@ -365,12 +368,53 @@ static void test_connection(const TestVector *vec, int is_one_way)
         compare_blocks("ciphertext", mbuf.data, mbuf.size,
                        vec->messages[index].ciphertext,
                        vec->messages[index].ciphertext_len);
-        noise_buffer_set_output(pbuf, payload, sizeof(payload));
-        compare(noise_handshakestate_read_message(recv, &mbuf, &pbuf),
-                NOISE_ERROR_NONE);
-        compare_blocks("plaintext", pbuf.data, pbuf.size,
-                       vec->messages[index].payload,
-                       vec->messages[index].payload_len);
+        if (fallback) {
+            /* Perform a read on the responder, which will fail */
+            compare(noise_handshakestate_read_message(recv, &mbuf, &pbuf),
+                    NOISE_ERROR_MAC_FAILURE);
+
+            /* Initiate fallback on both sides */
+            compare(noise_handshakestate_fallback(responder),
+                    NOISE_ERROR_NONE);
+            compare(noise_handshakestate_fallback(initiator),
+                    NOISE_ERROR_NONE);
+
+            /* Supply the prologue and PSK again to both sides */
+            if (vec->init_prologue) {
+                compare(noise_handshakestate_set_prologue
+                            (initiator, vec->init_prologue, vec->init_prologue_len),
+                        NOISE_ERROR_NONE);
+            }
+            if (vec->resp_prologue) {
+                compare(noise_handshakestate_set_prologue
+                            (responder, vec->resp_prologue, vec->resp_prologue_len),
+                        NOISE_ERROR_NONE);
+            }
+            if (vec->init_psk) {
+                compare(noise_handshakestate_set_pre_shared_key
+                            (initiator, vec->init_psk, vec->init_psk_len),
+                        NOISE_ERROR_NONE);
+            }
+            if (vec->resp_psk) {
+                compare(noise_handshakestate_set_pre_shared_key
+                            (responder, vec->resp_psk, vec->resp_psk_len),
+                        NOISE_ERROR_NONE);
+            }
+
+            /* Restart the protocols */
+            compare(noise_handshakestate_start(initiator), NOISE_ERROR_NONE);
+            compare(noise_handshakestate_start(responder), NOISE_ERROR_NONE);
+
+            /* Only need to fallback once */
+            fallback = 0;
+        } else {
+            noise_buffer_set_output(pbuf, payload, sizeof(payload));
+            compare(noise_handshakestate_read_message(recv, &mbuf, &pbuf),
+                    NOISE_ERROR_NONE);
+            compare_blocks("plaintext", pbuf.data, pbuf.size,
+                           vec->messages[index].payload,
+                           vec->messages[index].payload_len);
+        }
     }
 
     /* Handshake finished.  Check the handshake hash values */
@@ -590,6 +634,27 @@ static size_t expect_binary_field(JSONReader *reader, uint8_t **value)
 }
 
 /**
+ * \brief Look for a field with a boolean value.
+ *
+ * \param reader The input stream.
+ * \return The boolean value.
+ */
+static int expect_boolean_field(JSONReader *reader)
+{
+    int result = 0;
+    json_next_token(reader);
+    expect_token(reader, JSON_TOKEN_COLON, ":");
+    if (!reader->errors && (reader->token == JSON_TOKEN_TRUE ||
+                            reader->token == JSON_TOKEN_FALSE)) {
+        result = (reader->token == JSON_TOKEN_TRUE);
+        json_next_token(reader);
+        if (!reader->errors && reader->token == JSON_TOKEN_COMMA)
+            json_next_token(reader);
+    }
+    return result;
+}
+
+/**
  * \brief Processes a single test vector from an input stream.
  *
  * \param reader The reader representing the input stream.
@@ -657,6 +722,10 @@ static int process_test_vector(JSONReader *reader)
         } else if (json_is_name(reader, "handshake_hash")) {
             vec.handshake_hash_len =
                 expect_binary_field(reader, &(vec.handshake_hash));
+        } else if (json_is_name(reader, "fail")) {
+            vec.fail = expect_boolean_field(reader);
+        } else if (json_is_name(reader, "fallback")) {
+            vec.fallback = expect_boolean_field(reader);
         } else if (json_is_name(reader, "messages")) {
             json_next_token(reader);
             expect_token(reader, JSON_TOKEN_COLON, ":");

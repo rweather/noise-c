@@ -737,9 +737,7 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  * noise_handshakestate_start() to restart the handshake from where
  * it left off before the fallback.
  *
- * \note This function reverses the roles of initiator and responder,
- * which will also affect the ordering of the final CipherState objects
- * returned by noise_handshakestate_split().
+ * \note This function reverses the roles of initiator and responder.
  *
  * \sa noise_handshakestate_start(), noise_handshakestate_get_role()
  */
@@ -1338,7 +1336,7 @@ int noise_handshakestate_read_message
  *
  * If the handshake pattern is one-way, then the application should call
  * noise_cipherstate_free() on the object that is not needed.  Alternatively,
- * the application can pass NULL to noise_symmetricstate_split() as the
+ * the application can pass NULL to noise_handshakestate_split() as the
  * \a send or \a receive argument and the second CipherState will not be
  * created at all.
  *
@@ -1389,8 +1387,8 @@ int noise_handshakestate_split
  *
  * If the handshake pattern is one-way, then the application should call
  * noise_cipherstate_free() on the object that is not needed.  Alternatively,
- * the application can pass NULL to noise_symmetricstate_split() as the
- * \a send or \a receive argument and the second CipherState will not be
+ * the application can pass NULL to noise_handshakestate_split_with_key() as
+ * the \a send or \a receive argument and the second CipherState will not be
  * created at all.
  *
  * \sa noise_handshakestate_split(), noise_handshakestate_get_handshake_hash()
@@ -1413,11 +1411,8 @@ int noise_handshakestate_split_with_key
     if (!state->symmetric->cipher)
         return NOISE_ERROR_INVALID_STATE;
 
-    /* Do we need to swap the CipherState objects for the role/pattern? */
-    if (state->role == NOISE_ROLE_INITIATOR)
-        swap = (state->symmetric->id.pattern_id == NOISE_PATTERN_XX_FALLBACK);
-    else
-        swap = (state->symmetric->id.pattern_id != NOISE_PATTERN_XX_FALLBACK);
+    /* Do we need to swap the CipherState objects for the role? */
+    swap = (state->role == NOISE_ROLE_RESPONDER);
 
     /* Split the CipherState objects out of the SymmetricState */
     if (swap) {

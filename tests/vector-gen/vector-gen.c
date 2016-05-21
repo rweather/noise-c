@@ -70,6 +70,21 @@ static Key const init_ephemeral = {
         0xea, 0x6c, 0xc9, 0x99, 0x2a, 0x56, 0x1c, 0x9d,
         0x19, 0xdf, 0xc3, 0x42, 0xe2, 0x60, 0xc2, 0x80,
         0xef, 0x4f, 0x3f, 0x9b, 0x8f, 0x87, 0x9d, 0x4e
+    },
+    {
+        0xca, 0x35, 0xde, 0xf5, 0xae, 0x56, 0xce, 0xc3,
+        0x3d, 0xc2, 0x03, 0x67, 0x31, 0xab, 0x14, 0x89,
+        0x6b, 0xc4, 0xc7, 0x5d, 0xbb, 0x07, 0xa6, 0x1f,
+        0x87, 0x9f, 0x8e, 0x3a, 0xfa, 0x4c, 0x79, 0x44
+    },
+    {
+        0x6c, 0xfc, 0xb9, 0x8a, 0xe6, 0xb1, 0xbc, 0x56,
+        0x59, 0xca, 0xdc, 0x59, 0x5b, 0xf6, 0x64, 0xe1,
+        0x70, 0x94, 0x40, 0x4e, 0xae, 0x6b, 0x45, 0xfd,
+        0xe6, 0xfc, 0x40, 0xca, 0x93, 0x7d, 0x1d, 0xbe,
+        0x14, 0x64, 0xcb, 0x66, 0xeb, 0x21, 0xfd, 0xba,
+        0xa4, 0x87, 0xcd, 0x0d, 0x11, 0xd6, 0xdc, 0xe5,
+        0xaa, 0x07, 0xb8, 0x21, 0x9b, 0xfd, 0xc4, 0x9a
     }
 };
 static Key const resp_ephemeral = {
@@ -87,6 +102,21 @@ static Key const resp_ephemeral = {
         0x84, 0x0f, 0xeb, 0xb9, 0x90, 0x42, 0x42, 0x1c,
         0xe1, 0x2a, 0xf6, 0x62, 0x6d, 0x98, 0xd9, 0x17,
         0x02, 0x60, 0x39, 0x0f, 0xbc, 0x83, 0x99, 0xa5
+    },
+    {
+        0x95, 0xeb, 0xc6, 0x0d, 0x2b, 0x1f, 0xa6, 0x72,
+        0xc1, 0xf4, 0x6a, 0x8a, 0xa2, 0x65, 0xef, 0x51,
+        0xbf, 0xe3, 0x8e, 0x7c, 0xcb, 0x39, 0xec, 0x5b,
+        0xe3, 0x40, 0x69, 0xf1, 0x44, 0x80, 0x88, 0x43
+    },
+    {
+        0xf7, 0xeb, 0x9a, 0x09, 0x46, 0x8f, 0x95, 0x64,
+        0x81, 0x9d, 0xe0, 0x7a, 0xda, 0x77, 0xa6, 0xcf,
+        0x5d, 0x5e, 0xac, 0xd8, 0x46, 0x82, 0x06, 0x75,
+        0x38, 0xbf, 0x2c, 0x4e, 0x4c, 0x90, 0x5e, 0x5c,
+        0xc3, 0x5c, 0xc3, 0xff, 0x41, 0x24, 0x1e, 0x47,
+        0xae, 0x3b, 0xd2, 0x96, 0x47, 0x7a, 0x23, 0x6e,
+        0xf1, 0x85, 0xe5, 0xa8, 0xa0, 0xf1, 0x8d, 0x65
     }
 };
 static Key const init_static = {
@@ -151,6 +181,38 @@ static Key const resp_static = {
         0xbb, 0xa1, 0x9e, 0x3b, 0xa7, 0xd4, 0x6b, 0x25,
         0x34, 0x12, 0xb7, 0x46, 0x65, 0xd4, 0x62, 0x7b,
         0x65, 0xfc, 0xef, 0x3f, 0x29, 0xc9, 0x5d, 0x3e
+    }
+};
+static Key const resp_static_2 = {
+    {
+        0xc9, 0xe9, 0x7f, 0xf5, 0x46, 0x73, 0x1e, 0x9d,
+        0xbe, 0x8c, 0x4e, 0x8a, 0xbc, 0x57, 0xb6, 0xdd,
+        0x05, 0x95, 0x78, 0x7a, 0x52, 0xb1, 0xa5, 0x75,
+        0xbc, 0x55, 0x22, 0xea, 0x43, 0xa0, 0x8d, 0x64
+    },
+    {
+        0x78, 0xf2, 0xec, 0x74, 0xd0, 0xb0, 0xde, 0xef,
+        0xad, 0xe2, 0xef, 0xba, 0xc4, 0x17, 0x2f, 0xce,
+        0xb1, 0x4f, 0x03, 0x64, 0xd3, 0x3a, 0x99, 0x77,
+        0xab, 0xdb, 0xf7, 0x8a, 0x2e, 0x6e, 0x4c, 0x6f,
+        0x62, 0x07, 0xfe, 0xa4, 0x29, 0x39, 0xa0, 0xba,
+        0xb6, 0x39, 0x8e, 0xed, 0x75, 0xf9, 0xee, 0x5b,
+        0xfd, 0x99, 0x00, 0xae, 0x4e, 0xdc, 0xe5, 0x47
+    },
+    {
+        0xf2, 0x15, 0xfe, 0x4a, 0xd5, 0x4b, 0x35, 0x45,
+        0x88, 0xd3, 0xfa, 0x52, 0x16, 0x61, 0x79, 0xb7,
+        0x23, 0xb9, 0xa2, 0x11, 0xec, 0x67, 0x16, 0x7b,
+        0x9b, 0xf1, 0x72, 0x92, 0x60, 0x97, 0x2a, 0x23
+    },
+    {
+        0x30, 0xab, 0xe6, 0x0d, 0xab, 0x54, 0x85, 0x1c,
+        0x91, 0x89, 0x5b, 0x57, 0xfa, 0x55, 0x35, 0xd7,
+        0x86, 0xc2, 0x14, 0x4d, 0x18, 0x3f, 0xf1, 0xbc,
+        0xf8, 0xce, 0x24, 0x5c, 0x83, 0xa2, 0x2c, 0x60,
+        0x10, 0x9b, 0x4c, 0x08, 0xfb, 0xd1, 0x5d, 0xa2,
+        0x4a, 0x38, 0x84, 0xde, 0x1c, 0x91, 0x4a, 0x03,
+        0xcb, 0x04, 0xcd, 0xe8, 0xd9, 0xfc, 0x4f, 0xb1
     }
 };
 
@@ -256,13 +318,10 @@ static void get_public_key(const uint8_t **k, size_t *klen, const Key *key, cons
     }
 }
 
-static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk)
+static void initialize_protocol
+    (HandshakeState *init, HandshakeState *resp, uint8_t flags,
+     const char *protocol_name, const NoiseProtocolId *id, int with_fallback)
 {
-    char protocol_name[NOISE_MAX_PROTOCOL_NAME];
-    const uint8_t *pattern = noise_pattern_lookup(id->pattern_id);
-    uint8_t flags = *pattern++;
-    HandshakeState init;
-    HandshakeState resp;
     const uint8_t *s = 0;
     size_t s_len = 0;
     const uint8_t *e = 0;
@@ -273,65 +332,6 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk)
     size_t rs_len = 0;
     const uint8_t *pk = 0;
     size_t pk_len = 0;
-    int payload_num;
-    int speaker;
-    Buffer payload;
-    Buffer message;
-    Buffer ad;
-    int is_one_way;
-    CipherState init_c1;
-    CipherState init_c2;
-    CipherState resp_c1;
-    CipherState resp_c2;
-
-    /* Initialize the handshakes for each end of the communication */
-    HandshakeState_new(&init);
-    HandshakeState_new(&resp);
-
-    /* Convert the identifiers into a name and print out the components */
-    noise_protocol_id_to_name(protocol_name, sizeof(protocol_name), id);
-    if (!first)
-        printf(",\n");
-    printf("{\n");
-    printf("\"name\": \"%s%s\",\n", protocol_name, with_ssk ? ":SSK" : "");
-    printf("\"pattern\": \"%s\",\n", noise_id_to_name(0, id->pattern_id));
-    printf("\"dh\": \"%s\",\n", noise_id_to_name(0, id->dh_id));
-    printf("\"cipher\": \"%s\",\n", noise_id_to_name(0, id->cipher_id));
-    printf("\"hash\": \"%s\",\n", noise_id_to_name(0, id->hash_id));
-    print_hex("init_prologue", prologue, sizeof(prologue));
-    if (id->prefix_id == NOISE_PREFIX_PSK)
-        print_hex("init_psk", psk, sizeof(psk));
-    if (with_ssk)
-        print_hex("init_ssk", ssk, sizeof(ssk));
-    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC)
-        print_key("init_static", &init_static, id);
-    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL)
-        print_key("init_ephemeral", &init_ephemeral, id);
-    if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED)
-        print_public_key("init_remote_static", &resp_static, id);
-    print_hex("resp_prologue", prologue, sizeof(prologue));
-    if (id->prefix_id == NOISE_PREFIX_PSK)
-        print_hex("resp_psk", psk, sizeof(psk));
-    if (with_ssk)
-        print_hex("resp_ssk", ssk, sizeof(ssk));
-    if (flags & NOISE_PAT_FLAG_REMOTE_STATIC)
-        print_key("resp_static", &resp_static, id);
-    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL)
-        print_key("resp_ephemeral", &resp_ephemeral, id);
-    if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED)
-        print_public_key("resp_remote_static", &init_static, id);
-
-    /* Initialize both ends of the communication */
-    s = 0;
-    s_len = 0;
-    e = 0;
-    e_len = 0;
-    re = 0;
-    re_len = 0;
-    rs = 0;
-    rs_len = 0;
-    pk = 0;
-    pk_len = 0;
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
         get_key(&s, &s_len, &init_static, id);
     }
@@ -339,13 +339,17 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk)
         get_key(&e, &e_len, &init_ephemeral, id);
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
-        get_public_key(&rs, &rs_len, &resp_static, id);
+        /* Deliberately use the wrong remote key if we will fallback */
+        if (with_fallback)
+            get_public_key(&rs, &rs_len, &resp_static_2, id);
+        else
+            get_public_key(&rs, &rs_len, &resp_static, id);
     }
     if (id->prefix_id == NOISE_PREFIX_PSK) {
         pk = psk;
         pk_len = sizeof(psk);
     }
-    Initialize(&init, protocol_name, 1, prologue, sizeof(prologue),
+    Initialize(init, protocol_name, 1, prologue, sizeof(prologue),
                s, s_len, e, e_len, rs, rs_len, re, re_len, pk, pk_len);
     s = 0;
     s_len = 0;
@@ -370,8 +374,147 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk)
         pk = psk;
         pk_len = sizeof(psk);
     }
-    Initialize(&resp, protocol_name, 0, prologue, sizeof(prologue),
+    Initialize(resp, protocol_name, 0, prologue, sizeof(prologue),
                s, s_len, e, e_len, rs, rs_len, re, re_len, pk, pk_len);
+}
+
+static void initialize_protocol_fallback
+    (HandshakeState *init, HandshakeState *resp, uint8_t flags,
+     const char *protocol_name, const NoiseProtocolId *id)
+{
+    const uint8_t *s = 0;
+    size_t s_len = 0;
+    const uint8_t *e = 0;
+    size_t e_len = 0;
+    const uint8_t *re = 0;
+    size_t re_len = 0;
+    const uint8_t *rs = 0;
+    size_t rs_len = 0;
+    const uint8_t *pk = 0;
+    size_t pk_len = 0;
+    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
+        get_key(&s, &s_len, &resp_static, id);
+    }
+    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL) {
+        get_key(&e, &e_len, &resp_ephemeral, id);
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
+        get_public_key(&rs, &rs_len, &init_static, id);
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEM_REQ) {
+        get_public_key(&re, &re_len, &init_ephemeral, id);
+    }
+    if (id->prefix_id == NOISE_PREFIX_PSK) {
+        pk = psk;
+        pk_len = sizeof(psk);
+    }
+    Initialize(init, protocol_name, 1, prologue, sizeof(prologue),
+               s, s_len, e, e_len, rs, rs_len, re, re_len, pk, pk_len);
+    s = 0;
+    s_len = 0;
+    e = 0;
+    e_len = 0;
+    re = 0;
+    re_len = 0;
+    rs = 0;
+    rs_len = 0;
+    pk = 0;
+    pk_len = 0;
+    if (flags & NOISE_PAT_FLAG_REMOTE_STATIC) {
+        get_key(&s, &s_len, &init_static, id);
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL) {
+        get_key(&e, &e_len, &init_ephemeral, id);
+    }
+    if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
+        get_public_key(&rs, &rs_len, &resp_static, id);
+    }
+    if (id->prefix_id == NOISE_PREFIX_PSK) {
+        pk = psk;
+        pk_len = sizeof(psk);
+    }
+    Initialize(resp, protocol_name, 0, prologue, sizeof(prologue),
+               s, s_len, e, e_len, rs, rs_len, re, re_len, pk, pk_len);
+}
+
+static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, int with_fallback)
+{
+    NoiseProtocolId id2;
+    char protocol_name[NOISE_MAX_PROTOCOL_NAME];
+    char alt_protocol_name[NOISE_MAX_PROTOCOL_NAME];
+    const uint8_t *pattern = noise_pattern_lookup(id->pattern_id);
+    uint8_t flags = *pattern;
+    HandshakeState init;
+    HandshakeState resp;
+    int payload_num;
+    int speaker;
+    Buffer payload;
+    Buffer message;
+    Buffer ad;
+    int is_one_way;
+    CipherState init_c1;
+    CipherState init_c2;
+    CipherState resp_c1;
+    CipherState resp_c2;
+    int fallback = with_fallback;
+
+    /* Initialize the handshakes for each end of the communication */
+    HandshakeState_new(&init);
+    HandshakeState_new(&resp);
+
+    /* Convert the identifiers into a name and print out the components */
+    noise_protocol_id_to_name(protocol_name, sizeof(protocol_name), id);
+    if (!first)
+        printf(",\n");
+    printf("{\n");
+    id2 = *id;
+    if (with_fallback) {
+        /* The incoming pattern is "IK" - put "XXfallback" in the name
+           field instead to make it clear what we are doing */
+        id2.pattern_id = NOISE_PATTERN_XX_FALLBACK;
+        noise_protocol_id_to_name(alt_protocol_name, sizeof(alt_protocol_name), &id2);
+        printf("\"name\": \"%s%s\",\n", alt_protocol_name, with_ssk ? ":SSK" : "");
+    } else {
+        printf("\"name\": \"%s%s\",\n", protocol_name, with_ssk ? ":SSK" : "");
+        alt_protocol_name[0] = '\0';
+    }
+    printf("\"pattern\": \"%s\",\n", noise_id_to_name(0, id->pattern_id));
+    printf("\"dh\": \"%s\",\n", noise_id_to_name(0, id->dh_id));
+    printf("\"cipher\": \"%s\",\n", noise_id_to_name(0, id->cipher_id));
+    printf("\"hash\": \"%s\",\n", noise_id_to_name(0, id->hash_id));
+    if (with_fallback)
+        printf("\"fallback\": true,\n");
+    print_hex("init_prologue", prologue, sizeof(prologue));
+    if (id->prefix_id == NOISE_PREFIX_PSK)
+        print_hex("init_psk", psk, sizeof(psk));
+    if (with_ssk)
+        print_hex("init_ssk", ssk, sizeof(ssk));
+    if (flags & NOISE_PAT_FLAG_LOCAL_STATIC)
+        print_key("init_static", &init_static, id);
+    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL)
+        print_key("init_ephemeral", &init_ephemeral, id);
+    if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
+        /* If we are going to fall back, then give the initiator the
+           wrong static key for the responder */
+        if (with_fallback)
+            print_public_key("init_remote_static", &resp_static_2, id);
+        else
+            print_public_key("init_remote_static", &resp_static, id);
+    }
+    print_hex("resp_prologue", prologue, sizeof(prologue));
+    if (id->prefix_id == NOISE_PREFIX_PSK)
+        print_hex("resp_psk", psk, sizeof(psk));
+    if (with_ssk)
+        print_hex("resp_ssk", ssk, sizeof(ssk));
+    if (flags & NOISE_PAT_FLAG_REMOTE_STATIC)
+        print_key("resp_static", &resp_static, id);
+    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL)
+        print_key("resp_ephemeral", &resp_ephemeral, id);
+    if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED)
+        print_public_key("resp_remote_static", &init_static, id);
+
+    /* Initialize both ends of the communication */
+    initialize_protocol(&init, &resp, flags, protocol_name, id, with_fallback);
 
     /* Run the handshake */
     printf("\"messages\": [\n");
@@ -389,8 +532,17 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk)
         if (speaker == 0) {
             WriteMessage(&init, payload, &message);
             print_hex_no_comma("ciphertext", message.data, message.size);
-            if (!is_one_way)
+            if (fallback) {
+                /* Switch to XXfallback and swap initiator/responder */
+                pattern = noise_pattern_lookup(id2.pattern_id);
+                flags = *pattern;
+                initialize_protocol_fallback
+                    (&init, &resp, flags, alt_protocol_name, &id2);
+                fallback = 0;
+                speaker = 1;
+            } else if (!is_one_way) {
                 ReadMessage(&resp, message, &payload);
+            }
         } else {
             WriteMessage(&resp, payload, &message);
             print_hex_no_comma("ciphertext", message.data, message.size);
@@ -458,21 +610,46 @@ int main(int argc, char *argv[])
     NoiseProtocolId id;
     int first = 1;
     int with_ssk = 0;
+    int with_fallback = 0;
 
-    if (argc > 1 && !strcmp(argv[1], "--with-ssk"))
-        with_ssk = 1;
+    while (argc > 1) {
+        if (!strcmp(argv[1], "--with-ssk"))
+            with_ssk = 1;
+        if (!strcmp(argv[1], "--with-fallback"))
+            with_fallback = 1;
+        ++argv;
+        --argc;
+    }
 
     memset(&id, 0, sizeof(id));
     printf("{\n");
     printf("\"vectors\": [\n");
 
-    for (id.pattern_id = NOISE_PATTERN_N; id.pattern_id <= NOISE_PATTERN_IX; ++id.pattern_id) {
+    if (!with_fallback) {
+        /* Output all of the regular patterns */
+        for (id.pattern_id = NOISE_PATTERN_N; id.pattern_id <= NOISE_PATTERN_IX; ++id.pattern_id) {
+            for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
+                for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+                    for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
+                        for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                            generate_vector(&id, first, with_ssk, 0);
+                            first = 0;
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        /* Output fallback patterns, starting with "IK" */
+        id.pattern_id = NOISE_PATTERN_IK;
         for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
             for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
                 for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
                     for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                        generate_vector(&id, first, with_ssk);
+                        generate_vector(&id, first, 0, 1);
                         first = 0;
+                        if (with_ssk)
+                            generate_vector(&id, first, 1, 1);
                     }
                 }
             }
