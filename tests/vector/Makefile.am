@@ -8,7 +8,11 @@ AM_CFLAGS = @WARNING_FLAGS@
 
 LDADD = ../../src/protocol/libnoiseprotocol.a
 
-VECTORS = cacophony.txt noise-c-basic.txt noise-c-ssk.txt
+VECTORS = \
+    cacophony.txt \
+    noise-c-basic.txt \
+    noise-c-ssk.txt \
+    noise-c-fallback.txt
 
 check-local:
 	./test-vector $(VECTORS)
