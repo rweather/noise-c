@@ -48,6 +48,16 @@ extern "C" {
 #define NOISE_MAX_HASHLEN 64
 
 /**
+ * \brief Standard length for pre-shared keys.
+ */
+#define NOISE_PSK_LEN 32
+
+/**
+ * \brief Standard length for secondary keys.
+ */
+#define NOISE_SSK_LEN 32
+
+/**
  * \brief Internal structure of the NoiseCipherState type.
  */
 struct NoiseCipherState_s
@@ -530,6 +540,18 @@ struct NoiseHandshakeState_s
 
     /** \brief Points to the object for the fixed ephemeral test key */
     NoiseDHState *dh_fixed_ephemeral;
+
+    /** \brief Pre-shared key value */
+    uint8_t pre_shared_key[NOISE_PSK_LEN];
+
+    /** \brief Length of the pre-shared key value: zero or NOISE_PSK_LEN only */
+    size_t pre_shared_key_len;
+
+    /** \brief Points to the prologue value */
+    uint8_t *prologue;
+
+    /** \brief Length of the prologue value in bytes */
+    size_t prologue_len;
 };
 
 /* Handshake message pattern tokens (must be single-byte values) */
@@ -573,14 +595,12 @@ struct NoiseHandshakeState_s
 #define NOISE_REQ_REMOTE_REQUIRED       (1 << 1)
 /** Pre-shared key has not been provided yet */
 #define NOISE_REQ_PSK                   (1 << 2)
-/** Prologue has not been provided yet */
-#define NOISE_REQ_PROLOGUE              (1 << 3)
 /** Emphemeral key for fallback pre-message has been provided */
-#define NOISE_REQ_FALLBACK_PREMSG       (1 << 4)
+#define NOISE_REQ_FALLBACK_PREMSG       (1 << 3)
 /** Local public key is part of the pre-message */
-#define NOISE_REQ_LOCAL_PREMSG          (1 << 5)
+#define NOISE_REQ_LOCAL_PREMSG          (1 << 4)
 /** Remote public key is part of the pre-message */
-#define NOISE_REQ_REMOTE_PREMSG         (1 << 6)
+#define NOISE_REQ_REMOTE_PREMSG         (1 << 5)
 
 void noise_rand_bytes(void *bytes, size_t size);
 

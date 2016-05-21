@@ -379,28 +379,6 @@ static void test_connection(const TestVector *vec, int is_one_way)
             compare(noise_handshakestate_fallback(initiator),
                     NOISE_ERROR_NONE);
 
-            /* Supply the prologue and PSK again to both sides */
-            if (vec->init_prologue) {
-                compare(noise_handshakestate_set_prologue
-                            (initiator, vec->init_prologue, vec->init_prologue_len),
-                        NOISE_ERROR_NONE);
-            }
-            if (vec->resp_prologue) {
-                compare(noise_handshakestate_set_prologue
-                            (responder, vec->resp_prologue, vec->resp_prologue_len),
-                        NOISE_ERROR_NONE);
-            }
-            if (vec->init_psk) {
-                compare(noise_handshakestate_set_pre_shared_key
-                            (initiator, vec->init_psk, vec->init_psk_len),
-                        NOISE_ERROR_NONE);
-            }
-            if (vec->resp_psk) {
-                compare(noise_handshakestate_set_pre_shared_key
-                            (responder, vec->resp_psk, vec->resp_psk_len),
-                        NOISE_ERROR_NONE);
-            }
-
             /* Restart the protocols */
             compare(noise_handshakestate_start(initiator), NOISE_ERROR_NONE);
             compare(noise_handshakestate_start(responder), NOISE_ERROR_NONE);

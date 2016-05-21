@@ -86,16 +86,11 @@ that are needed for the handshake.  We start with the prologue:
 err = noise_handshakestate_set_prologue(handshake, prologue, prologue_len);
 \endcode
 
-After the prologue, we can set the pre shared key value:
+We can also set the pre shared key (PSK) value:
 
 \code
 err = noise_handshakestate_set_pre_shared_key(handshake, psk, sizeof(psk));
 \endcode
-
-Note that the prologue must be set before the pre shared key (PSK).
-If the PSK is set without a prologue, then the prologue is assumed
-to be empty.  A later attempt to set the prologue will be rejected
-with an error.
 
 Next is the local client private key.  The function
 noise_handshakestate_needs_local_keypair() tells us if the handshake

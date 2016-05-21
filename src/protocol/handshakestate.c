@@ -22,6 +22,7 @@
 
 #include "internal.h"
 #include <string.h>
+#include <stdlib.h>
 
 /**
  * \file handshakestate.h
@@ -59,7 +60,7 @@
 static int noise_handshakestate_requirements
     (uint8_t flags, int prefix_id, int role, int is_fallback)
 {
-    int requirements = NOISE_REQ_PROLOGUE;
+    int requirements = 0;
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
         requirements |= NOISE_REQ_LOCAL_REQUIRED;
     }
@@ -277,6 +278,7 @@ int noise_handshakestate_free(NoiseHandshakeState *state)
         noise_dhstate_free(state->dh_remote_ephemeral);
     if (state->dh_fixed_ephemeral)
         noise_dhstate_free(state->dh_fixed_ephemeral);
+    noise_free(state->prologue, state->prologue_len);
 
     /* Clean and free the memory for "state" */
     noise_free(state, state->size);
@@ -403,7 +405,7 @@ NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
  */
 int noise_handshakestate_needs_pre_shared_key(const NoiseHandshakeState *state)
 {
-    if (!state)
+    if (!state || state->pre_shared_key_len)
         return 0;
     else
         return (state->requirements & NOISE_REQ_PSK) != 0;
@@ -415,7 +417,7 @@ int noise_handshakestate_needs_pre_shared_key(const NoiseHandshakeState *state)
  *
  * \param state The HandshakeState object.
  *
- * \return Returns 1 if \a state requires a pre shared key, zero if not.
+ * \return Returns 1 if \a state has a pre shared key, zero if not.
  *
  * \sa noise_handshakestate_set_pre_shared_key(),
  * noise_handshakestate_needs_pre_shared_key()
@@ -424,10 +426,8 @@ int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
 {
     if (!state)
         return 0;
-    else if ((state->requirements & NOISE_REQ_PSK) != 0)
-        return 0;
     else
-        return state->symmetric->id.prefix_id == NOISE_PREFIX_PSK;
+        return state->pre_shared_key_len != 0;
 }
 
 /**
@@ -443,12 +443,8 @@ int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
  * \return NOISE_ERROR_INVALID_LENGTH if \a key_len is not 32.
  * \return NOISE_ERROR_NOT_APPLICABLE if the protocol name does not
  * begin with "NoisePSK".
- * \return NOISE_ERROR_INVALID_STATE if this function is called afer
- * the protocol has already started, or the pre shared key was already set.
- *
- * If the prologue has not been set yet, then calling this function will
- * implicitly set the prologue to the empty sequence and it will no longer
- * be possible to specify an explicit prologue.
+ * \return NOISE_ERROR_INVALID_STATE if this function is called after
+ * the protocol has already started.
  *
  * \sa noise_handshakestate_start(), noise_handshakestate_set_prologue(),
  * noise_handshakestate_needs_pre_shared_key(),
@@ -457,35 +453,19 @@ int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
 int noise_handshakestate_set_pre_shared_key
     (NoiseHandshakeState *state, const uint8_t *key, size_t key_len)
 {
-    uint8_t temp[NOISE_MAX_HASHLEN];
-    NoiseHashState *hash;
-
     /* Validate the parameters and state */
     if (!state || !key)
         return NOISE_ERROR_INVALID_PARAM;
-    if (key_len != 32)
+    if (key_len != NOISE_PSK_LEN)
         return NOISE_ERROR_INVALID_LENGTH;
     if (state->symmetric->id.prefix_id != NOISE_PREFIX_PSK)
         return NOISE_ERROR_NOT_APPLICABLE;
     if (state->action != NOISE_ACTION_NONE)
         return NOISE_ERROR_INVALID_STATE;
-    if (!(state->requirements & NOISE_REQ_PSK))
-        return NOISE_ERROR_INVALID_STATE;
 
-    /* If we haven't hashed the prologue yet, hash an empty one now */
-    if (state->requirements & NOISE_REQ_PROLOGUE)
-        noise_handshakestate_set_prologue(state, "", 0);
-
-    /* Mix the pre shared key into the chaining key and handshake hash */
-    hash = state->symmetric->hash;
-    noise_hashstate_hkdf
-        (hash, state->symmetric->ck, hash->hash_len, key, key_len,
-         state->symmetric->ck, hash->hash_len, temp, hash->hash_len);
-    noise_symmetricstate_mix_hash(state->symmetric, temp, hash->hash_len);
-    noise_clean(temp, sizeof(temp));
-
-    /* We have the pre shared key now */
-    state->requirements &= ~NOISE_REQ_PSK;
+    /* Record the pre-shared key for use in noise_handshakestate_start() */
+    memcpy(state->pre_shared_key, key, key_len);
+    state->pre_shared_key_len = key_len;
     return NOISE_ERROR_NONE;
 }
 
@@ -498,11 +478,12 @@ int noise_handshakestate_set_pre_shared_key
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a prologue is NULL.
- * \return NOISE_ERROR_INVALID_STATE if this function is called afer
- * noise_handshakestate_set_pre_shared_key() or after the protocol has
- * already started.
+ * \return NOISE_ERROR_INVALID_STATE if this function is called after
+ * the protocol has already started.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * save the \a prologue value.
  *
- * This function must be called immediately after
+ * This function should be called immediately after
  * noise_handshakestate_new_by_id() or noise_handshakestate_new_by_name()
  * if there is a prologue for the session.  If the function is not called,
  * then the prologue will be assumed to be empty when the protocol starts.
@@ -517,12 +498,24 @@ int noise_handshakestate_set_prologue
         return NOISE_ERROR_INVALID_PARAM;
     if (state->action != NOISE_ACTION_NONE)
         return NOISE_ERROR_INVALID_STATE;
-    if (!(state->requirements & NOISE_REQ_PROLOGUE))
-        return NOISE_ERROR_INVALID_STATE;
 
-    /* Mix the prologue into the handshake hash */
-    noise_symmetricstate_mix_hash(state->symmetric, prologue, prologue_len);
-    state->requirements &= ~NOISE_REQ_PROLOGUE;
+    /* Make a copy of the prologue for later */
+    if (state->prologue && state->prologue_len == prologue_len) {
+        memcpy(state->prologue, prologue, prologue_len);
+    } else {
+        noise_free(state->prologue, state->prologue_len);
+        if (prologue_len) {
+            state->prologue = (uint8_t *)malloc(prologue_len);
+            if (!(state->prologue)) {
+                state->prologue_len = 0;
+                return NOISE_ERROR_NO_MEMORY;
+            }
+            memcpy(state->prologue, prologue, prologue_len);
+        } else {
+            state->prologue = 0;
+        }
+        state->prologue_len = prologue_len;
+    }
     return NOISE_ERROR_NONE;
 }
 
@@ -682,12 +675,31 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
     if ((state->requirements & NOISE_REQ_REMOTE_REQUIRED) != 0 &&
             !noise_dhstate_has_public_key(state->dh_remote_static))
         return NOISE_ERROR_REMOTE_KEY_REQUIRED;
-    if ((state->requirements & NOISE_REQ_PSK) != 0)
+    if ((state->requirements & NOISE_REQ_PSK) != 0 &&
+            state->pre_shared_key_len == 0)
         return NOISE_ERROR_PSK_REQUIRED;
 
-    /* If the prologue has not been provided yet, hash an empty one */
-    if (state->requirements & NOISE_REQ_PROLOGUE)
-        noise_handshakestate_set_prologue(state, "", 0);
+    /* Hash the prologue value */
+    if (state->prologue_len) {
+        noise_symmetricstate_mix_hash
+            (state->symmetric, state->prologue, state->prologue_len);
+    } else {
+        /* No prologue, so hash an empty one */
+        noise_symmetricstate_mix_hash
+            (state->symmetric, state->pre_shared_key, 0);
+    }
+
+    /* Mix the pre shared key into the chaining key and handshake hash */
+    if (state->pre_shared_key_len) {
+        uint8_t temp[NOISE_MAX_HASHLEN];
+        NoiseHashState *hash = state->symmetric->hash;
+        noise_hashstate_hkdf
+            (hash, state->symmetric->ck, hash->hash_len,
+             state->pre_shared_key, state->pre_shared_key_len,
+             state->symmetric->ck, hash->hash_len, temp, hash->hash_len);
+        noise_symmetricstate_mix_hash(state->symmetric, temp, hash->hash_len);
+        noise_clean(temp, sizeof(temp));
+    }
 
     /* Mix the pre-supplied public keys into the handshake hash */
     if (state->role == NOISE_ROLE_INITIATOR) {
@@ -730,15 +742,19 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  * This function is used to help implement the "Noise Pipes" protocol.
  * It resets a HandshakeState object with the handshake pattern "IK",
  * converting it into an object with the handshake pattern "XXfallback".
- * Information from the previous session such as the local keypair and
- * the initiator's ephemeral key are passed to the new session.
+ * Information from the previous session such as the local keypair,
+ * the initiator's ephemeral key, the prologue value, and the
+ * pre-shared key, are passed to the new session.
  *
- * Once the fallback has been initiated, the application must call
- * noise_handshakestate_set_prologue() and
- * noise_handshakestate_set_pre_shared_key() again to re-establish the
- * early handshake details.  The application can then call
- * noise_handshakestate_start() to restart the handshake from where
- * it left off before the fallback.
+ * Once the fallback has been initiated, the application can set
+ * new values for the handshake parameters if the values from the
+ * previous session do not apply.  For example, the application may
+ * use a different prologue for the fallback than for the original
+ * session.
+ *
+ * After setting any new parameters, the application calls
+ * noise_handshakestate_start() again to restart the handshake
+ * from where it left off before the fallback.
  *
  * \note This function reverses the roles of initiator and responder.
  *
@@ -1410,7 +1426,7 @@ int noise_handshakestate_split_with_key
         return NOISE_ERROR_INVALID_PARAM;
     if (!secondary_key && secondary_key_len)
         return NOISE_ERROR_INVALID_PARAM;
-    if (secondary_key_len != 0 && secondary_key_len != 32)
+    if (secondary_key_len != 0 && secondary_key_len != NOISE_SSK_LEN)
         return NOISE_ERROR_INVALID_LENGTH;
     if (state->action != NOISE_ACTION_SPLIT)
         return NOISE_ERROR_INVALID_STATE;
