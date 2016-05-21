@@ -32,9 +32,8 @@ which is what you get when you say "Noise-C" too fast.  The code is
 distributed under the terms of the MIT license, with the code available from
 <a href="https://github.com/rweather/noise-c">github</a>.
 
-\note This project is still a work in progress.  The vector tests from
-<a href="https://github.com/centromere/cacophony">cacophony</a> are
-working but there is still a lot of cleaning up and example writing to do.
+\note This project is still a work in progress.  There is still a lot of
+cleaning up and example writing to do.
 
 The initial target is GNU/Linux systems, because that's what I have,
 but contributions are definitely welcome to make the code work
@@ -66,6 +65,8 @@ is my motto.
     into applications.
 \li <tt>src/protocol/</tt> - Source code for the core Noise-C protocol library.
 \li <tt>src/protobufs/</tt> - Source code for the Noise-C protobufs library.
+\li <tt>src/keys/</tt> - Source code for the key and certificate management
+    library.
 \li <tt>src/crypto/</tt> - Public domain and open source reference
     implementations of the cryptographic primitives.
 \li <tt>src/backend/ref/</tt> - Backends for
@@ -74,9 +75,13 @@ is my motto.
     reference cryptographic primitives.
 \li <tt>src/backend/xyz/</tt> - Recommended location for alternative backends.
 \li <tt>tools/protoc/</tt> - Source code for the Noise-C protobufs compiler.
+\li <tt>tools/keytool/</tt> - Command-line key and certificate management tool.
 \li <tt>tests/unit/</tt> - Unit tests to exercise the library's functionality.
 \li <tt>tests/vector/</tt> - Public JSON test vectors and test harness for
-the Noise protocol.
+    the Noise protocol.
+\li <tt>tests/vector-gen/</tt> - Generates test vectors in JSON format.
+\li <tt>tests/performance/</tt> - Performance tests for the cryptographic
+    primitives.
 \li <tt>examples/</tt> - Source code for examples.
 \li <tt>doc/</tt> - Overview and example documentation.
 
@@ -100,11 +105,9 @@ $ make check
 
 In no particular order:
 
-\li Unit tests and vector tests for all public API's.
 \li Examples and overview documentation.
-\li Mechanism to encrypt static DH keypairs with a passphrase.
-\li Standalone key generation utility for static DH keypairs.
-\li Convert the build system to standard autoconf/automake conventions.
+\li Mechanism to encrypt static keypairs with a passphrase.
+\li Complete the standalone key generation utility for static keypairs.
 \li Port to other platforms (rand_os.c is a particular place that needs work).
 \li Back ends for other cryptography libraries: OpenSSL, libsodium, ...
 \li Compile-time subsetting of the library for applications that only
