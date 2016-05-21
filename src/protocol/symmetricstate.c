@@ -492,14 +492,15 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  * from a parallel non-DH handshake to mix into the final cipher keys.
  * This may be NULL if \a secondary_key_len is zero.
  * \param secondary_key_len Length of \a secondary_key in bytes.
- * This should be 32 to comply with the requirements from the Noise
- * protocol specification.
+ * This must be either zero or 32 to comply with the requirements from
+ * the Noise protocol specification.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  * \return NOISE_ERROR_INVALID_PARAM if both \a c1 and \a c2 are NULL.
  * \return NOISE_ERROR_INVALID_PARAM if \a secondary_key is NULL and
  * \a secondary_key_len is not zero.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a secondary_key_len is not zero or 32.
  * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to create
  * the new CipherState objects.
@@ -535,6 +536,8 @@ int noise_symmetricstate_split
         return NOISE_ERROR_INVALID_PARAM;
     if (!secondary_key && secondary_key_len)
         return NOISE_ERROR_INVALID_PARAM;
+    if (secondary_key_len != 0 && secondary_key_len != 32)
+        return NOISE_ERROR_INVALID_LENGTH;
     if (c1)
         *c1 = 0;
     if (c2)

@@ -435,11 +435,12 @@ int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
  *
  * \param state The HandshakeState object.
  * \param key Points to the pre shared key.
- * \param key_len The length of the \a key in bytes.  This should be 32
+ * \param key_len The length of the \a key in bytes.  This must be 32
  * to comply with the requirements from the Noise protocol specification.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a key is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a key_len is not 32.
  * \return NOISE_ERROR_NOT_APPLICABLE if the protocol name does not
  * begin with "NoisePSK".
  * \return NOISE_ERROR_INVALID_STATE if this function is called afer
@@ -462,6 +463,8 @@ int noise_handshakestate_set_pre_shared_key
     /* Validate the parameters and state */
     if (!state || !key)
         return NOISE_ERROR_INVALID_PARAM;
+    if (key_len != 32)
+        return NOISE_ERROR_INVALID_LENGTH;
     if (state->symmetric->id.prefix_id != NOISE_PREFIX_PSK)
         return NOISE_ERROR_NOT_APPLICABLE;
     if (state->action != NOISE_ACTION_NONE)
@@ -1364,14 +1367,15 @@ int noise_handshakestate_split
  * from a parallel non-DH handshake to mix into the final cipher keys.
  * This may be NULL if \a secondary_key_len is zero.
  * \param secondary_key_len Length of \a secondary_key in bytes.
- * This should be 32 to comply with the requirements from the Noise
- * protocol specification.
+ * This must be either zero or 32 to comply with the requirements from
+ * the Noise protocol specification.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  * \return NOISE_ERROR_INVALID_PARAM if both \a send and \a receive are NULL.
  * \return NOISE_ERROR_INVALID_PARAM if \a secondary_key is NULL and
  * \a secondary_key_len is not zero.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a secondary_key_len is not zero or 32.
  * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split
  * or the handshake protocol has not completed successfully yet.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to create
@@ -1406,6 +1410,8 @@ int noise_handshakestate_split_with_key
         return NOISE_ERROR_INVALID_PARAM;
     if (!secondary_key && secondary_key_len)
         return NOISE_ERROR_INVALID_PARAM;
+    if (secondary_key_len != 0 && secondary_key_len != 32)
+        return NOISE_ERROR_INVALID_LENGTH;
     if (state->action != NOISE_ACTION_SPLIT)
         return NOISE_ERROR_INVALID_STATE;
     if (!state->symmetric->cipher)
