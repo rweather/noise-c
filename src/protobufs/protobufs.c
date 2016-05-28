@@ -971,6 +971,9 @@ int noise_protobuf_write_bytes
         return err;
     if (out_data && size)
         memcpy(out_data, data, size);
+    err = noise_protobuf_write_varint(pbuf, size);
+    if (err != NOISE_ERROR_NONE)
+        return err;
     return noise_protobuf_write_tag(pbuf, tag, NOISE_PROTOBUF_WIRE_DELIM);
 }
 
@@ -1357,9 +1360,15 @@ int noise_protobuf_read_int64(NoiseProtobuf *pbuf, int tag, int64_t *value)
  */
 int noise_protobuf_read_uint64(NoiseProtobuf *pbuf, int tag, uint64_t *value)
 {
+    uint64_t val = 0;
+    int err;
     if (value)
         *value = 0;
-    return noise_protobuf_read_integer(pbuf, tag, value, value);
+    err = noise_protobuf_read_integer(pbuf, tag, &val, value);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+    *value = val;
+    return NOISE_ERROR_NONE;
 }
 
 /**
