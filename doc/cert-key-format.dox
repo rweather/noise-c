@@ -393,9 +393,18 @@ As an example, the algorithm identifier "ChaChaPoly_BLAKE2b_PBKDF2" is
 implemented as follows.  PBKDF2 is used with BLAKE2b to generate an
 encryption key and nonce for ChaChaPoly.  The first 32 bytes of the PBKDF2
 output are used as the encryption key.  The next 8 bytes of the PBKDF2 output
-are interpreted as a big-endian 64-bit value and used as the nonce.  The
-entirety of the private key details are encrypted in a single request,
-which limits the size to 65535 bytes including the MAC.
+are interpreted as a big-endian 63-bit value and used as the nonce
+(the high bit is set to zero).  The entirety of the private key details
+are encrypted in a single request, which limits the size to 65535 bytes
+including the MAC.
+
+\note The high bit of the nonce is set to zero for compatiblity with Noise
+libraries written in languages like Java that do not have true unsigned
+64-bit integer types and which may wish to exclude negative nonce values
+altogether in their CipherState implementation.  There have also been proposals
+in the Noise community to use nonce values like 2^64 - 1 for special purposes.
+To simplify things, the high bit of the generated nonce should be ignored
+and set to zero.
 
 The <tt>salt</tt> SHOULD be at least 16 bytes in length, and MAY be longer
 at the implementation's discretion.  The unsigned 32-bit <tt>iteration</tt>
