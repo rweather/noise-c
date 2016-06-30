@@ -54,6 +54,10 @@ int noise_hashstate_hkdf
      const uint8_t *data, size_t data_len,
      uint8_t *output1, size_t output1_len,
      uint8_t *output2, size_t output2_len);
+int noise_hashstate_pbkdf2
+    (NoiseHashState *state, const uint8_t *passphrase, size_t passphrase_len,
+     const uint8_t *salt, size_t salt_len, size_t iterations,
+     uint8_t *output, size_t output_len);
 int noise_hashstate_get_max_hash_length(void);
 int noise_hashstate_get_max_block_length(void);
 

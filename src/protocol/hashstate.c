@@ -392,8 +392,10 @@ static void noise_hashstate_xor_key(uint8_t *key, size_t key_len, uint8_t value)
  * \param state The HashState object.
  * \param key Points to the key.
  * \param key_len The length of the key in bytes.
- * \param data Points to the data.
- * \param data_len The length of the data in bytes.
+ * \param data1 Points to the first data block.
+ * \param data1_len The length of the first data block in bytes.
+ * \param data1 Points to the second data block (may be NULL).
+ * \param data1_len The length of the second data block in bytes.
  * \param hash The final output HMAC hash value.
  *
  * The \a data and \a hash buffers are allowed to overlap, but neither
@@ -403,7 +405,8 @@ static void noise_hashstate_xor_key(uint8_t *key, size_t key_len, uint8_t value)
  */
 static void noise_hashstate_hmac
     (NoiseHashState *state, const uint8_t *key, size_t key_len,
-     const uint8_t *data, size_t data_len, uint8_t *hash)
+     const uint8_t *data1, size_t data1_len,
+     const uint8_t *data2, size_t data2_len, uint8_t *hash)
 {
     size_t hash_len = state->hash_len;
     size_t block_len = state->block_len;
@@ -427,7 +430,9 @@ static void noise_hashstate_hmac
     /* Calculate the inner hash */
     (*(state->reset))(state);
     (*(state->update))(state, key_block, block_len);
-    (*(state->update))(state, data, data_len);
+    (*(state->update))(state, data1, data1_len);
+    if (data2)
+        (*(state->update))(state, data2, data2_len);
     (*(state->finalize))(state, hash);
 
     /* Format the key for the outer hashing context */
@@ -490,23 +495,103 @@ int noise_hashstate_hkdf
     temp_hash = alloca(hash_len + 1);
 
     /* Generate the temporary hashing key */
-    noise_hashstate_hmac(state, key, key_len, data, data_len, temp_key);
+    noise_hashstate_hmac(state, key, key_len, data, data_len, 0, 0, temp_key);
 
     /* Generate the first output */
     temp_hash[0] = 0x01;
     noise_hashstate_hmac
-        (state, temp_key, hash_len, temp_hash, 1, temp_hash);
+        (state, temp_key, hash_len, temp_hash, 1, 0, 0, temp_hash);
     memcpy(output1, temp_hash, output1_len);
 
     /* Generate the second output */
     temp_hash[hash_len] = 0x02;
     noise_hashstate_hmac
-        (state, temp_key, hash_len, temp_hash, hash_len + 1, temp_hash);
+        (state, temp_key, hash_len, temp_hash, hash_len + 1, 0, 0, temp_hash);
     memcpy(output2, temp_hash, output2_len);
 
     /* Clean up and exit */
     noise_clean(temp_key, hash_len);
     noise_clean(temp_hash, hash_len + 1);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Hashes a passphrase and salt using the PBKDF2 key derivation function.
+ *
+ * \param state The HashState object.
+ * \param passphrase Points to the passphrase.
+ * \param passphrase_len The length of the passphrase in bytes.
+ * \param salt Points to the salt.
+ * \param salt_len The length of the salt in bytes.
+ * \param iterations The number of hash iterations to use.
+ * \param output The output buffer to put the final hash into.
+ * \param output_len The length of the output in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a passphrase,
+ * \a salt, or \a output is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if the \a output_len is too large
+ * for valid PBKDF2 output.
+ *
+ * This function is intended as a utility for applications that need to hash a
+ * passphrase to encrypt private keys and other sensitive information.
+ *
+ * Reference: <a href="https://www.ietf.org/rfc/rfc2898.txt">RFC 2898</a>
+ */
+int noise_hashstate_pbkdf2
+    (NoiseHashState *state, const uint8_t *passphrase, size_t passphrase_len,
+     const uint8_t *salt, size_t salt_len, size_t iterations,
+     uint8_t *output, size_t output_len)
+{
+    size_t hash_len;
+    uint64_t max_size;
+    uint8_t T[NOISE_MAX_HASHLEN];
+    uint8_t U[NOISE_MAX_HASHLEN];
+    uint8_t ibuf[4];
+    size_t i, index, index2;
+
+    /* Validate the parameters */
+    if (!state || !passphrase || !salt || !output)
+        return NOISE_ERROR_INVALID_PARAM;
+    hash_len = state->hash_len;
+    max_size = ((uint64_t)0xFFFFFFFFU) * hash_len;
+    if (output_len > max_size)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Generate the required output blocks */
+    i = 1;
+    while (output_len > 0) {
+        /* Generate the next block of output */
+        ibuf[0] = (uint8_t)(i >> 24);
+        ibuf[1] = (uint8_t)(i >> 16);
+        ibuf[2] = (uint8_t)(i >> 8);
+        ibuf[3] = (uint8_t)i;
+        ++i;
+        noise_hashstate_hmac
+            (state, passphrase, passphrase_len, salt, salt_len,
+             ibuf, sizeof(ibuf), T);
+        memcpy(U, T, hash_len);
+        for (index = 1; index < iterations; ++index) {
+            noise_hashstate_hmac
+                (state, passphrase, passphrase_len, U, hash_len, 0, 0, U);
+            for (index2 = 0; index2 < hash_len; ++index2)
+                T[index2] ^= U[index2];
+        }
+
+        /* Copy the generated data into the output buffer */
+        if (output_len >= hash_len) {
+            memcpy(output, T, hash_len);
+            output += hash_len;
+            output_len -= hash_len;
+        } else {
+            memcpy(output, T, output_len);
+            output_len = 0;
+        }
+    }
+
+    /* Clean up and exit */
+    noise_clean(T, sizeof(T));
+    noise_clean(U, sizeof(U));
     return NOISE_ERROR_NONE;
 }
 

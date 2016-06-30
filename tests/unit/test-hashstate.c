@@ -341,6 +341,86 @@ static void hashstate_check_hkdf(void)
     hashstate_check_hkdf_algorithm(NOISE_HASH_SHA512);
 }
 
+/* Check the behaviour of the noise_hashstate_pbkdf2() function */
+static void check_pbkdf2(const char *name, const char *passphrase,
+                         const char *salt, size_t iterations,
+                         const char *result)
+{
+    uint8_t passphrase_bytes[32];
+    uint8_t salt_bytes[32];
+    uint8_t result_bytes[64];
+    uint8_t hash[64];
+    size_t passphrase_len;
+    size_t salt_len;
+    size_t result_len;
+    NoiseHashState *state;
+
+    /* Convert the test strings from hex into binary */
+    passphrase_len = string_to_data
+        (passphrase_bytes, sizeof(passphrase_bytes), passphrase);
+    salt_len = string_to_data
+        (salt_bytes, sizeof(salt_bytes), salt);
+    result_len = string_to_data
+        (result_bytes, sizeof(result_bytes), result);
+    verify(result_len <= sizeof(hash));
+
+    /* Construct a SHA256 hashing object */
+    compare(noise_hashstate_new_by_id
+                (&state, NOISE_HASH_SHA256), NOISE_ERROR_NONE);
+
+    /* Run PBKDF2 and check the output */
+    compare(noise_hashstate_pbkdf2
+                (state, passphrase_bytes, passphrase_len,
+                 salt_bytes, salt_len, iterations, hash, result_len),
+            NOISE_ERROR_NONE);
+    verify(!memcmp(hash, result_bytes, result_len));
+
+    /* Test error conditions */
+    compare(noise_hashstate_pbkdf2
+                (0, passphrase_bytes, passphrase_len,
+                 salt_bytes, salt_len, iterations, hash, result_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_pbkdf2
+                (state, 0, passphrase_len,
+                 salt_bytes, salt_len, iterations, hash, result_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_pbkdf2
+                (state, passphrase_bytes, passphrase_len,
+                 0, salt_len, iterations, hash, result_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_pbkdf2
+                (state, passphrase_bytes, passphrase_len,
+                 salt_bytes, salt_len, iterations, 0, result_len),
+            NOISE_ERROR_INVALID_PARAM);
+    if (sizeof(size_t) > 4) {
+        result_len = (size_t)(((uint64_t)0xFFFFFFFF) * 32 + 1);
+        compare(noise_hashstate_pbkdf2
+                    (state, passphrase_bytes, passphrase_len,
+                     salt_bytes, salt_len, iterations, hash, result_len),
+                NOISE_ERROR_INVALID_LENGTH);
+    }
+
+    /* Clean up */
+    noise_hashstate_free(state);
+}
+
+/* Check the behaviour of the noise_hashstate_pbkdf2() function */
+static void hashstate_check_pbkdf2(void)
+{
+    /* Test vectors for PBKDF2-HMAC-SHA-256 from section 11 of
+       https://tools.ietf.org/html/draft-josefsson-scrypt-kdf-05 */
+    check_pbkdf2("PBKDF2 #1", "passwd", "salt", 1,
+                 "0x55ac046e56e3089fec1691c22544b605"
+                   "f94185216dde0465e68b9d57c20dacbc"
+                   "49ca9cccf179b645991664b39d77ef31"
+                   "7c71b845b1e30bd509112041d3a19783");
+    check_pbkdf2("PBKDF2 #2", "Password", "NaCl", 80000,
+                 "0x4ddcd8f60b98be21830cee5ef22701f9"
+                   "641a4418d04c0414aeff08876b34ab56"
+                   "a1d425a1225833549adb841b51c9b317"
+                   "6a272bdebba1d078478f62b397f33c8d");
+}
+
 /* Check other error conditions that can be reported by the functions */
 static void hashstate_check_errors(void)
 {
@@ -375,5 +455,6 @@ void test_hashstate(void)
 {
     hashstate_check_test_vectors();
     hashstate_check_hkdf();
+    hashstate_check_pbkdf2();
     hashstate_check_errors();
 }
