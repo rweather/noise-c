@@ -78,6 +78,16 @@ struct NoiseRandState_s
 /** Force a rekey after this many blocks */
 #define NOISE_RAND_REKEY_COUNT  16
 
+/* Starting key for the random state before the first reseed.
+   This is the SHA256 initialization vector, to introduce a
+   little chaos into the starting state. */
+static uint8_t const starting_key[32] = {
+      0x6A, 0x09, 0xE6, 0x67, 0xBB, 0x67, 0xAE, 0x85,
+      0x3C, 0x6E, 0xF3, 0x72, 0xA5, 0x4F, 0xF5, 0x3A,
+      0x51, 0x0E, 0x52, 0x7F, 0x9B, 0x05, 0x68, 0x8C,
+      0x1F, 0x83, 0xD9, 0xAB, 0x5B, 0xE0, 0xCD, 0x19
+};
+
 /** @endcond */
 
 /**
@@ -95,16 +105,6 @@ struct NoiseRandState_s
  */
 int noise_randstate_new(NoiseRandState **state)
 {
-    /* Starting key for the random state before the first reseed.
-       This is the SHA256 initialization vector, to introduce a
-       little chaos into the starting state. */
-    static uint8_t const starting_key[32] = {
-          0x6A, 0x09, 0xE6, 0x67, 0xBB, 0x67, 0xAE, 0x85,
-          0x3C, 0x6E, 0xF3, 0x72, 0xA5, 0x4F, 0xF5, 0x3A,
-          0x51, 0x0E, 0x52, 0x7F, 0x9B, 0x05, 0x68, 0x8C,
-          0x1F, 0x83, 0xD9, 0xAB, 0x5B, 0xE0, 0xCD, 0x19
-    };
-
     /* Validate the parameter */
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
@@ -217,7 +217,8 @@ static void noise_randstate_rekey(NoiseRandState *state)
  * at any time by calling noise_randstate_reseed(), but it is usually
  * better to let the RandState API decide when to reseed on its own.
  *
- * \sa noise_randstate_pad(), noise_randstate_reseed()
+ * \sa noise_randstate_pad(), noise_randstate_reseed(),
+ * noise_randstate_generate_simple()
  */
 int noise_randstate_generate
     (NoiseRandState *state, uint8_t *buffer, size_t len)
@@ -327,6 +328,41 @@ int noise_randstate_pad
         return noise_randstate_generate
             (state, payload + orig_len, padded_len - orig_len);
     }
+}
+
+/**
+ * \brief Generates random data without first creating a RandState object.
+ *
+ * \param buffer The buffer to fill with random bytes.
+ * \param len The number of random bytes to generate.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a buffer is NULL.
+ *
+ * This function is provided for the convenience of applications that only
+ * need to generate a small amount of random data.
+ *
+ * \sa noise_randstate_generate()
+ */
+int noise_randstate_generate_simple(uint8_t *buffer, size_t len)
+{
+    NoiseRandState state;
+
+    /* Validate the parameters */
+    if (!buffer)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Initialize the random number generator on the stack */
+    memset(&state, 0, sizeof(state));
+    chacha_keysetup(&(state.chacha), starting_key, 256);
+    noise_randstate_reseed(&state);
+
+    /* Generate the required data */
+    noise_randstate_generate(&state, buffer, len);
+
+    /* Clean up the random number generator on the stack */
+    noise_clean(&state, sizeof(state));
+    return NOISE_ERROR_NONE;
 }
 
 /**@}*/

@@ -21,11 +21,10 @@
  */
 
 #include <noise/keys.h>
-#include <noise/protocol/cipherstate.h>
-#include <noise/protocol/hashstate.h>
-#include <noise/protocol/util.h>
+#include <noise/protocol.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /**
  * \file loader.h
@@ -41,6 +40,31 @@
  * \defgroup keyloader Key loading and saving API
  */
 /**@{*/
+
+/** @cond */
+
+/**
+ * \brief Version of keys and certificates supported by this library.
+ */
+#define NOISE_KEY_VERSION       1
+
+/**
+ * \brief Recommended length for salt values.
+ */
+#define NOISE_KEY_SALT_LEN      16
+
+/**
+ * \brief Recommended number of iterations for newly generated private keys.
+ */
+#define NOISE_KEY_ITERATIONS    20000
+
+/**
+ * \brief Number of extra bytes of overhead to allow for when allocating
+ * memory to hold an EncryptedPrivateKey object.
+ */
+#define NOISE_ENC_KEY_OVERHEAD  128
+
+/** @endcond */
 
 /**
  * \brief Loads the entire contents of a file into memory.
@@ -363,22 +387,39 @@ int noise_load_private_key_from_file
 }
 
 /**
- * \brief Creates a CipherState object for encrypting or decrypting a
- * private key using a passphrase.
+ * \brief Parses an algorithm name for encrypting private keys.
  *
- * \param cipher Variable that returns the CipherState.
- * \param enc_key EncryptedPrivateKey object that contains the parameters
- * to use to generate the encryption key.
- * \param passphrase Points to the passphrase to use to encrypt the private key.
- * \param passphrase_len Length of the passphrase in bytes.
+ * \param name The name of the algorithm; e.g. "ChaChaPoly_BLAKE2b_PBKDF2".
+ * \param cipher_id Return variable for the cipher identifier.
+ * \param hash_id Return variable for the hash identifier.
  *
- * \return NOISE_ERROR_NONE or an error code.
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_UNKNOWN_NAME if the \a name is unrecognized.
+ *
+ * The only supported value for the KDF portion of \a name is "PBKDF2".
  */
-static int noise_loader_create_cipherstate
-    (NoiseCipherState **cipher, Noise_EncryptedPrivateKey *enc_key,
-     const void *passphrase, size_t passphrase_len)
+static int noise_parse_protect_name
+    (const char *name, int *cipher_id, int *hash_id)
 {
-    // TODO
+    char *end;
+    *cipher_id = NOISE_CIPHER_NONE;
+    *hash_id = NOISE_HASH_NONE;
+    end = strchr(name, '_');
+    if (!end)
+        return NOISE_ERROR_UNKNOWN_NAME;
+    *cipher_id = noise_name_to_id(NOISE_CIPHER_CATEGORY, name, end - name);
+    if (*cipher_id == NOISE_CIPHER_NONE)
+        return NOISE_ERROR_UNKNOWN_NAME;
+    name = end + 1;
+    end = strchr(name, '_');
+    if (!end)
+        return NOISE_ERROR_UNKNOWN_NAME;
+    *hash_id = noise_name_to_id(NOISE_HASH_CATEGORY, name, end - name);
+    if (*hash_id == NOISE_HASH_NONE)
+        return NOISE_ERROR_UNKNOWN_NAME;
+    name = end + 1;
+    if (strcmp(name, "PBKDF2") != 0)
+        return NOISE_ERROR_UNKNOWN_NAME;
     return NOISE_ERROR_NONE;
 }
 
@@ -412,7 +453,12 @@ int noise_load_private_key_from_buffer
 {
     Noise_EncryptedPrivateKey *enc_key = 0;
     NoiseCipherState *cipher = 0;
+    NoiseHashState *hash = 0;
+    uint8_t key_data[40];
+    int cipher_id, hash_id;
     int err;
+    NoiseBuffer buf;
+    NoiseProtobuf pbuf2;
 
     /* Validate the parameters */
     if (!key)
@@ -426,25 +472,90 @@ int noise_load_private_key_from_buffer
     if (err != NOISE_ERROR_NONE)
         return err;
 
-    /* Decrypt the private key using the passphrase */
-    err = noise_loader_create_cipherstate
-        (&cipher, enc_key, passphrase, passphrase_len);
-    if (err != NOISE_ERROR_NONE) {
+    /* Check that we have everything we need for a valid key */
+    if (Noise_EncryptedPrivateKey_get_version(enc_key) != NOISE_KEY_VERSION ||
+            !Noise_EncryptedPrivateKey_has_algorithm(enc_key) ||
+            !Noise_EncryptedPrivateKey_has_salt(enc_key) ||
+            !Noise_EncryptedPrivateKey_has_iterations(enc_key) ||
+            !Noise_EncryptedPrivateKey_has_encrypted_data(enc_key)) {
         Noise_EncryptedPrivateKey_free(enc_key);
-        return err;
+        return NOISE_ERROR_INVALID_FORMAT;
     }
-    // TODO
+
+    /* Is the key protection algorithm supported? */
+    err = noise_parse_protect_name
+        (Noise_EncryptedPrivateKey_get_algorithm(enc_key),
+         &cipher_id, &hash_id);
+    if (err == NOISE_ERROR_NONE) {
+        err = noise_cipherstate_new_by_id(&cipher, cipher_id);
+        if (err == NOISE_ERROR_NONE &&
+                noise_cipherstate_get_key_length(cipher) != 32) {
+            /* At the moment we only support ciphers with 256-bit keys */
+            err = NOISE_ERROR_UNKNOWN_NAME;
+        }
+    }
+    if (err == NOISE_ERROR_NONE) {
+        err = noise_hashstate_new_by_id(&hash, hash_id);
+    }
+
+    /* Decrypt the private key information */
+    memset(&buf, 0, sizeof(buf));
+    if (err == NOISE_ERROR_NONE) {
+        /* Generate the key material using PBKDF2 */
+        noise_hashstate_pbkdf2
+            (hash, (const uint8_t *)passphrase, passphrase_len,
+             (const uint8_t *)Noise_EncryptedPrivateKey_get_salt(enc_key),
+             Noise_EncryptedPrivateKey_get_size_salt(enc_key),
+             Noise_EncryptedPrivateKey_get_iterations(enc_key),
+             key_data, sizeof(key_data));
+
+        /* Set the decryption key */
+        noise_cipherstate_init_key(cipher, key_data, 32);
+
+        /* Reduce the nonce to 63-bit and then fast-forward the cipher */
+        key_data[32] &= 0x7F;
+        noise_cipherstate_set_nonce
+            (cipher, (((uint64_t)(key_data[32])) << 56) |
+                     (((uint64_t)(key_data[33])) << 48) |
+                     (((uint64_t)(key_data[34])) << 40) |
+                     (((uint64_t)(key_data[35])) << 32) |
+                     (((uint64_t)(key_data[36])) << 24) |
+                     (((uint64_t)(key_data[37])) << 16) |
+                     (((uint64_t)(key_data[38])) <<  8) |
+                      ((uint64_t)(key_data[39])));
+
+        /* Decrypt the private key and check the MAC value.
+           We decrypt the value in-place in the EncryptedPrivateKey
+           object.  We will be throwing it away later so there's
+           no harm in overwriting the previous value. */
+        noise_buffer_set_input
+            (buf, (uint8_t *)Noise_EncryptedPrivateKey_get_encrypted_data(enc_key),
+             Noise_EncryptedPrivateKey_get_size_encrypted_data(enc_key));
+        err = noise_cipherstate_decrypt_with_ad(cipher, 0, 0, &buf);
+    }
+
+    /* Parse the decrypted data into a PrivateKey object */
+    if (err == NOISE_ERROR_NONE) {
+        noise_protobuf_prepare_input(&pbuf2, buf.data, buf.size);
+        err = Noise_PrivateKey_read(&pbuf2, 0, key);
+    }
 
     /* Clean up and exit */
     Noise_EncryptedPrivateKey_free(enc_key);
     noise_cipherstate_free(cipher);
+    noise_hashstate_free(hash);
+    noise_clean(key_data, sizeof(key_data));
     return err;
 }
+
+/** @cond */
 
 /**
  * \brief Prototype for a protobuf object write function.
  */
 typedef int (*NoiseWriteFunc)(NoiseProtobuf *pbuf, int tag, const void *obj);
+
+/** @endcond */
 
 /**
  * \brief Saves an object to a file.
@@ -589,22 +700,235 @@ int noise_save_certificate_chain_to_buffer
     return Noise_CertificateChain_write(pbuf, 0, chain);
 }
 
+/**
+ * \brief Saves a private key in encrypted form to a file.
+ *
+ * \param key The private key to be saved.
+ * \param filename The name of the file to save to.
+ * \param passphrase Points to the passphrase to use to encrypt the private key.
+ * \param passphrase_len Length of the passphrase in bytes.
+ * \param protect_name The name of the algorithm to use to protect the
+ * private key; e.g. "ChaChaPoly_BLAKE2b_PBKDF2".
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a key, \a filename,
+ * \a passphrase, or \a protect_name is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if the total size of the encrypted
+ * private key will be larger than NOISE_MAX_PAYLOAD_LEN.
+ * \return NOISE_ERROR_UNKNOWN_NAME if \a protect_name is unknown.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * save the encrypted private key data.
+ * \return NOISE_ERROR_SYSTEM if there was a problem opening or writing
+ * to \a filename, with the specific reason reported in the system
+ * errno variable.
+ *
+ * \sa noise_save_private_key_to_buffer(), noise_load_private_key_from_file()
+ */
 int noise_save_private_key_to_file
     (const Noise_PrivateKey *key, const char *filename,
      const void *passphrase, size_t passphrase_len,
      const char *protect_name)
 {
-    // TODO
-    return NOISE_ERROR_NONE;
+    NoiseProtobuf pbuf;
+    size_t size = 0;
+    int cipher_id, hash_id;
+    int err;
+    FILE *file;
+
+    /* Validate the parameters */
+    if (!key || !filename || !passphrase || !protect_name)
+        return NOISE_ERROR_INVALID_PARAM;
+    err = noise_parse_protect_name(protect_name, &cipher_id, &hash_id);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    /* Estimate how much memory we will need for the EncryptedPrivateKey */
+    noise_protobuf_prepare_measure(&pbuf, NOISE_MAX_PAYLOAD_LEN);
+    err = Noise_PrivateKey_write(&pbuf, 0, key);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+    err = noise_protobuf_finish_measure(&pbuf, &size);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+    size += strlen(protect_name) + NOISE_ENC_KEY_OVERHEAD;
+
+    /* Serialize the EncryptedPrivateKey into memory */
+    pbuf.data = (uint8_t *)malloc(size);
+    if (!(pbuf.data))
+        return NOISE_ERROR_NO_MEMORY;
+    pbuf.posn = size;
+    pbuf.size = size;
+    pbuf.error = NOISE_ERROR_NONE;
+    err = noise_save_private_key_to_buffer
+        (key, &pbuf, passphrase, passphrase_len, protect_name);
+    if (err == NOISE_ERROR_NONE &&
+            (pbuf.size - pbuf.posn) > NOISE_MAX_PAYLOAD_LEN) {
+        err = NOISE_ERROR_INVALID_LENGTH;
+    }
+
+    /* Save the encrypted data to the file */
+    if (err == NOISE_ERROR_NONE) {
+        file = fopen(filename, "wb");
+        if (file) {
+            size_t len = pbuf.size - pbuf.posn;
+            if (fwrite(pbuf.data + pbuf.posn, 1, len, file) != len)
+                err = NOISE_ERROR_SYSTEM;
+            fclose(file);
+        } else {
+            err = NOISE_ERROR_SYSTEM;
+        }
+    }
+
+    /* Clean up and exit */
+    noise_free(pbuf.data, size);
+    return err;
 }
 
+/**
+ * \brief Saves a private key in encrypted form to a protobuf.
+ *
+ * \param key The private key to be saved.
+ * \param pbuf The protobuf to write the encrypted data to.
+ * \param passphrase Points to the passphrase to use to encrypt the private key.
+ * \param passphrase_len Length of the passphrase in bytes.
+ * \param protect_name The name of the algorithm to use to protect the
+ * private key; e.g. "ChaChaPoly_BLAKE2b_PBKDF2".
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a key, \a pbuf, \a passphrase,
+ * or \a protect_name is NULL.
+ * \return NOISE_ERROR_UNKNOWN_NAME if \a protect_name is unknown.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a pbuf is not large enough to
+ * contain the encrypted private key data.
+ * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
+ * save the encrypted private key data.
+ *
+ * \sa noise_save_private_key_to_file(), noise_load_private_key_from_buffer()
+ */
 int noise_save_private_key_to_buffer
     (const Noise_PrivateKey *key, NoiseProtobuf *pbuf,
      const void *passphrase, size_t passphrase_len,
      const char *protect_name)
 {
-    // TODO
-    return NOISE_ERROR_NONE;
+    Noise_EncryptedPrivateKey *enc_key = 0;
+    NoiseProtobuf pcopy;
+    uint8_t salt[NOISE_KEY_SALT_LEN];
+    uint8_t key_data[40];
+    int cipher_id, hash_id;
+    NoiseCipherState *cipher = 0;
+    NoiseHashState *hash = 0;
+    size_t mac_len;
+    NoiseBuffer buf;
+    int err;
+
+    /* Validate the parameters */
+    if (!key || !pbuf || !passphrase || !protect_name)
+        return NOISE_ERROR_INVALID_PARAM;
+    err = noise_parse_protect_name(protect_name, &cipher_id, &hash_id);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    /* Construct the cipher and hash objects to use to encrypt the key */
+    err = noise_cipherstate_new_by_id(&cipher, cipher_id);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+    if (noise_cipherstate_get_key_length(cipher) != 32) {
+        /* At the moment we only support ciphers with 256-bit keys */
+        noise_cipherstate_free(cipher);
+        return NOISE_ERROR_UNKNOWN_NAME;
+    }
+    err = noise_hashstate_new_by_id(&hash, hash_id);
+    if (err != NOISE_ERROR_NONE) {
+        noise_cipherstate_free(cipher);
+        return err;
+    }
+    mac_len = noise_cipherstate_get_mac_length(cipher);
+
+    /* Write the private key details to the protobuf.  The incoming
+       protobuf is supposed to be large enough to hold the encrypted
+       version of the key so it should be large enough to hold the
+       unencrypted private key and MAC temporarily */
+    pcopy = *pbuf;
+    if (pcopy.posn < mac_len) {
+        err = NOISE_ERROR_INVALID_LENGTH;
+    } else {
+        pcopy.posn -= mac_len;
+        err = Noise_PrivateKey_write(&pcopy, 0, key);
+    }
+    if (err != NOISE_ERROR_NONE) {
+        noise_clean(pcopy.data + pcopy.posn, pbuf->posn - pcopy.posn);
+        noise_cipherstate_free(cipher);
+        noise_hashstate_free(hash);
+        return err;
+    }
+
+    /* Construct an EncryptedPrivateKey object and populate it */
+    err = Noise_EncryptedPrivateKey_new(&enc_key);
+    if (err == NOISE_ERROR_NONE) {
+        err = Noise_EncryptedPrivateKey_set_version(enc_key, NOISE_KEY_VERSION);
+    }
+    if (err == NOISE_ERROR_NONE) {
+        err = Noise_EncryptedPrivateKey_set_algorithm
+            (enc_key, protect_name, strlen(protect_name));
+    }
+    noise_randstate_generate_simple(salt, sizeof(salt));
+    if (err == NOISE_ERROR_NONE) {
+        err = Noise_EncryptedPrivateKey_set_salt(enc_key, salt, sizeof(salt));
+    }
+    if (err == NOISE_ERROR_NONE) {
+        err = Noise_EncryptedPrivateKey_set_iterations
+            (enc_key, NOISE_KEY_ITERATIONS);
+    }
+
+    /* Encrypt the private key information */
+    if (err == NOISE_ERROR_NONE) {
+        /* Generate the key material using PBKDF2 */
+        noise_hashstate_pbkdf2
+            (hash, (const uint8_t *)passphrase, passphrase_len,
+             salt, sizeof(salt), NOISE_KEY_ITERATIONS,
+             key_data, sizeof(key_data));
+
+        /* Set the encryption key */
+        noise_cipherstate_init_key(cipher, key_data, 32);
+
+        /* Reduce the nonce to 63-bit and then fast-forward the cipher */
+        key_data[32] &= 0x7F;
+        noise_cipherstate_set_nonce
+            (cipher, (((uint64_t)(key_data[32])) << 56) |
+                     (((uint64_t)(key_data[33])) << 48) |
+                     (((uint64_t)(key_data[34])) << 40) |
+                     (((uint64_t)(key_data[35])) << 32) |
+                     (((uint64_t)(key_data[36])) << 24) |
+                     (((uint64_t)(key_data[37])) << 16) |
+                     (((uint64_t)(key_data[38])) <<  8) |
+                      ((uint64_t)(key_data[39])));
+
+        /* Encrypt the private key and compute the MAC value */
+        noise_buffer_set_inout(buf, pcopy.data + pcopy.posn,
+                               pbuf->posn - pcopy.posn - mac_len,
+                               pbuf->posn - pcopy.posn);
+        noise_cipherstate_encrypt_with_ad(cipher, 0, 0, &buf);
+    }
+
+    /* Add the encrypted data to the EncryptedPrivateKey object */
+    if (err == NOISE_ERROR_NONE) {
+        err = Noise_EncryptedPrivateKey_set_encrypted_data
+            (enc_key, pcopy.data + pcopy.posn, pbuf->posn - pcopy.posn);
+    }
+    noise_clean(pcopy.data + pcopy.posn, pbuf->posn - pcopy.posn);
+
+    /* Now write the entire EncryptedPrivateKey object to the protobuf */
+    if (err == NOISE_ERROR_NONE) {
+        err = Noise_EncryptedPrivateKey_write(pbuf, 0, enc_key);
+    }
+
+    /* Clean up and exit */
+    Noise_EncryptedPrivateKey_free(enc_key);
+    noise_cipherstate_free(cipher);
+    noise_hashstate_free(hash);
+    noise_clean(salt, sizeof(salt));
+    noise_clean(key_data, sizeof(key_data));
+    return err;
 }
 
 /**@}*/

@@ -53,6 +53,7 @@ is my motto.
 \li \ref dhstate "DHState"
 \li \ref signstate "SignState"
 \li \ref randstate "RandState"
+\li \ref keyloader "Key/certificate loading and saving"
 
 \section other_info Other information
 
