@@ -576,7 +576,7 @@ static int noise_save_to_file
     FILE *file;
 
     /* Validate the parameters */
-    if (!data || !filename)
+    if (!obj || !filename)
         return NOISE_ERROR_INVALID_PARAM;
 
     /* Measure the size of the serialized object */
@@ -593,7 +593,7 @@ static int noise_save_to_file
     if (!(pbuf.data))
         return NOISE_ERROR_NO_MEMORY;
     pbuf.size = size;
-    pbuf.posn = 0;
+    pbuf.posn = size;
     pbuf.error = NOISE_ERROR_NONE;
     err = (*func)(&pbuf, 0, obj); 
     if (err == NOISE_ERROR_NONE)

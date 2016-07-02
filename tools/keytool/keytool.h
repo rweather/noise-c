@@ -39,4 +39,18 @@ int main_generate(const char *progname, int argc, char *argv[]);
 int main_show(const char *progname, int argc, char *argv[]);
 int main_sign(const char *progname, int argc, char *argv[]);
 
+void report_error(const char *file, long line, int err);
+
+char *ask_for_passphrase(int confirm);
+
+#define CHECK_ERROR(code)   \
+    do { \
+        int err = (code); \
+        if (err != NOISE_ERROR_NONE) { \
+            report_error(__FILE__, __LINE__, err); \
+            retval = 1; \
+            goto cleanup; \
+        } \
+    } while (0)
+
 #endif
