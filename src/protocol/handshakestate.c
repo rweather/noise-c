@@ -72,8 +72,8 @@ static int noise_handshakestate_requirements
         requirements |= NOISE_REQ_REMOTE_REQUIRED;
         requirements |= NOISE_REQ_REMOTE_PREMSG;
     }
-    if (flags & (NOISE_PAT_FLAG_REMOTE_EMPEM_REQ |
-                 NOISE_PAT_FLAG_LOCAL_EMPEM_REQ)) {
+    if (flags & (NOISE_PAT_FLAG_REMOTE_EPHEM_REQ |
+                 NOISE_PAT_FLAG_LOCAL_EPHEM_REQ)) {
         if (is_fallback)
             requirements |= NOISE_REQ_FALLBACK_PREMSG;
     }
@@ -139,11 +139,11 @@ static int noise_handshakestate_new
     dh_id = symmetric->id.dh_id;
     if ((flags & NOISE_PAT_FLAG_LOCAL_STATIC) != 0)
         err = noise_dhstate_new_by_id(&((*state)->dh_local_static), dh_id);
-    if ((flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL) != 0 && err == NOISE_ERROR_NONE)
+    if ((flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE)
         err = noise_dhstate_new_by_id(&((*state)->dh_local_ephemeral), dh_id);
     if ((flags & NOISE_PAT_FLAG_REMOTE_STATIC) != 0 && err == NOISE_ERROR_NONE)
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_static), dh_id);
-    if ((flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL) != 0 && err == NOISE_ERROR_NONE)
+    if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE)
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_ephemeral), dh_id);
 
     /* Bail out if we had an error trying to create the DHState objects */

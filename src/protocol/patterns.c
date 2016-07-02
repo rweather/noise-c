@@ -38,7 +38,7 @@
  * @endcode
  */
 static uint8_t const noise_pattern_N[] = {
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
 
@@ -60,7 +60,7 @@ static uint8_t const noise_pattern_N[] = {
  */
 static uint8_t const noise_pattern_K[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_LOCAL_REQUIRED |
     NOISE_PAT_FLAG_REMOTE_STATIC |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
@@ -83,7 +83,7 @@ static uint8_t const noise_pattern_K[] = {
  */
 static uint8_t const noise_pattern_X[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
 
@@ -104,8 +104,8 @@ static uint8_t const noise_pattern_X[] = {
  * @endcode
  */
 static uint8_t const noise_pattern_NN[] = {
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
@@ -126,9 +126,9 @@ static uint8_t const noise_pattern_NN[] = {
  * @endcode
  */
 static uint8_t const noise_pattern_NK[] = {
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
 
     NOISE_TOKEN_E,
@@ -149,9 +149,9 @@ static uint8_t const noise_pattern_NK[] = {
  * @endcode
  */
 static uint8_t const noise_pattern_NX[] = {
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
@@ -174,8 +174,8 @@ static uint8_t const noise_pattern_NX[] = {
  */
 static uint8_t const noise_pattern_XN[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
@@ -201,9 +201,9 @@ static uint8_t const noise_pattern_XN[] = {
  */
 static uint8_t const noise_pattern_XK[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
 
     NOISE_TOKEN_E,
@@ -229,9 +229,9 @@ static uint8_t const noise_pattern_XK[] = {
  */
 static uint8_t const noise_pattern_XX[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
@@ -258,9 +258,9 @@ static uint8_t const noise_pattern_XX[] = {
  */
 static uint8_t const noise_pattern_KN[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_LOCAL_REQUIRED |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
@@ -284,10 +284,10 @@ static uint8_t const noise_pattern_KN[] = {
  */
 static uint8_t const noise_pattern_KK[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_LOCAL_REQUIRED |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
 
     NOISE_TOKEN_E,
@@ -313,10 +313,10 @@ static uint8_t const noise_pattern_KK[] = {
  */
 static uint8_t const noise_pattern_KX[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_LOCAL_REQUIRED |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
@@ -339,8 +339,8 @@ static uint8_t const noise_pattern_KX[] = {
  */
 static uint8_t const noise_pattern_IN[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
@@ -364,9 +364,9 @@ static uint8_t const noise_pattern_IN[] = {
  */
 static uint8_t const noise_pattern_IK[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_REQUIRED,
 
     NOISE_TOKEN_E,
@@ -391,9 +391,9 @@ static uint8_t const noise_pattern_IK[] = {
  */
 static uint8_t const noise_pattern_IX[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL,
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
@@ -419,10 +419,10 @@ static uint8_t const noise_pattern_IX[] = {
  */
 static uint8_t const noise_pattern_XXfallback[] = {
     NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EMPEMERAL |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
     NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EMPEMERAL |
-    NOISE_PAT_FLAG_REMOTE_EMPEM_REQ,
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_EPHEM_REQ,
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_DHEE,

@@ -200,8 +200,8 @@ static void check_pattern(int id, const char *name, const char *required,
             role = NOISE_ROLE_INITIATOR;
         } else if (token == NOISE_TOKEN_E) {
             verify(role == NOISE_ROLE_RESPONDER);
-            seen_flags |= NOISE_PAT_FLAG_REMOTE_EMPEM_REQ |
-                          NOISE_PAT_FLAG_REMOTE_EMPEMERAL;
+            seen_flags |= NOISE_PAT_FLAG_REMOTE_EPHEM_REQ |
+                          NOISE_PAT_FLAG_REMOTE_EPHEMERAL;
         } else if (token == NOISE_TOKEN_S) {
             if (role == NOISE_ROLE_INITIATOR) {
                 seen_flags |= NOISE_PAT_FLAG_LOCAL_REQUIRED |
@@ -254,29 +254,29 @@ static void check_pattern(int id, const char *name, const char *required,
                     break;
                 case NOISE_TOKEN_E:
                     if (role == NOISE_ROLE_INITIATOR)
-                        seen_flags |= NOISE_PAT_FLAG_LOCAL_EMPEMERAL;
+                        seen_flags |= NOISE_PAT_FLAG_LOCAL_EPHEMERAL;
                     else
-                        seen_flags |= NOISE_PAT_FLAG_REMOTE_EMPEMERAL;
+                        seen_flags |= NOISE_PAT_FLAG_REMOTE_EPHEMERAL;
                     break;
                 case NOISE_TOKEN_DHEE:
-                    verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL);
-                    verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL);
+                    verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL);
+                    verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL);
                     break;
                 case NOISE_TOKEN_DHES:
                     if (role == NOISE_ROLE_INITIATOR) {
-                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL);
+                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL);
                         verify(seen_flags & NOISE_PAT_FLAG_REMOTE_STATIC);
                     } else {
                         verify(seen_flags & NOISE_PAT_FLAG_LOCAL_STATIC);
-                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL);
+                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL);
                     }
                     break;
                 case NOISE_TOKEN_DHSE:
                     if (role == NOISE_ROLE_INITIATOR) {
                         verify(seen_flags & NOISE_PAT_FLAG_LOCAL_STATIC);
-                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL);
+                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL);
                     } else {
-                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL);
+                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL);
                         verify(seen_flags & NOISE_PAT_FLAG_REMOTE_STATIC);
                     }
                     break;

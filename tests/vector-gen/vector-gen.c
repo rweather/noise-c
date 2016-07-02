@@ -335,7 +335,7 @@ static void initialize_protocol
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
         get_key(&s, &s_len, &init_static, id);
     }
-    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL) {
+    if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
         get_key(&e, &e_len, &init_ephemeral, id);
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
@@ -364,7 +364,7 @@ static void initialize_protocol
     if (flags & NOISE_PAT_FLAG_REMOTE_STATIC) {
         get_key(&s, &s_len, &resp_static, id);
     }
-    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL) {
+    if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
         get_key(&e, &e_len, &resp_ephemeral, id);
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
@@ -395,13 +395,13 @@ static void initialize_protocol_fallback
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
         get_key(&s, &s_len, &resp_static, id);
     }
-    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL) {
+    if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
         get_key(&e, &e_len, &resp_ephemeral, id);
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
         get_public_key(&rs, &rs_len, &init_static, id);
     }
-    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEM_REQ) {
+    if (flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) {
         get_public_key(&re, &re_len, &init_ephemeral, id);
     }
     if (id->prefix_id == NOISE_PREFIX_PSK) {
@@ -423,7 +423,7 @@ static void initialize_protocol_fallback
     if (flags & NOISE_PAT_FLAG_REMOTE_STATIC) {
         get_key(&s, &s_len, &init_static, id);
     }
-    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL) {
+    if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
         get_key(&e, &e_len, &init_ephemeral, id);
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
@@ -491,7 +491,7 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
         print_hex("init_ssk", ssk, sizeof(ssk));
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC)
         print_key("init_static", &init_static, id);
-    if (flags & NOISE_PAT_FLAG_LOCAL_EMPEMERAL)
+    if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL)
         print_key("init_ephemeral", &init_ephemeral, id);
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
         /* If we are going to fall back, then give the initiator the
@@ -508,7 +508,7 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
         print_hex("resp_ssk", ssk, sizeof(ssk));
     if (flags & NOISE_PAT_FLAG_REMOTE_STATIC)
         print_key("resp_static", &resp_static, id);
-    if (flags & NOISE_PAT_FLAG_REMOTE_EMPEMERAL)
+    if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL)
         print_key("resp_ephemeral", &resp_ephemeral, id);
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED)
         print_public_key("resp_remote_static", &init_static, id);

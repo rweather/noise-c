@@ -567,7 +567,7 @@ struct NoiseHandshakeState_s
 /** Pattern requires a local static keypair */
 #define NOISE_PAT_FLAG_LOCAL_STATIC     (1 << 0)
 /** Pattern requires a local ephemeral keypair */
-#define NOISE_PAT_FLAG_LOCAL_EMPEMERAL  (1 << 1)
+#define NOISE_PAT_FLAG_LOCAL_EPHEMERAL  (1 << 1)
 /** Pattern requires that the local public key be provided
     ahead of time to start the protocol.  That is, it is not
     sent as part of the protocol but is assumed to already be
@@ -575,11 +575,11 @@ struct NoiseHandshakeState_s
 #define NOISE_PAT_FLAG_LOCAL_REQUIRED   (1 << 2)
 /** Pattern requires that the local ephemeral key be provided
     ahead of time to start the protocol (for XXfallback) */
-#define NOISE_PAT_FLAG_LOCAL_EMPEM_REQ  (1 << 3)
+#define NOISE_PAT_FLAG_LOCAL_EPHEM_REQ  (1 << 3)
 /** Pattern requires a remote static public key */
 #define NOISE_PAT_FLAG_REMOTE_STATIC    (1 << 4)
 /** Pattern requires a remote ephemeral public key */
-#define NOISE_PAT_FLAG_REMOTE_EMPEMERAL (1 << 5)
+#define NOISE_PAT_FLAG_REMOTE_EPHEMERAL (1 << 5)
 /** Pattern requires that the remote public key be provided
     ahead of time to start the protocol.  That is, it is not
     sent as part of the protocol but is assumed to already be
@@ -587,8 +587,7 @@ struct NoiseHandshakeState_s
 #define NOISE_PAT_FLAG_REMOTE_REQUIRED  (1 << 6)
 /** Pattern requires that the remote ephemeral key be provided
     ahead of time to start the protocol (for XXfallback) */
-#define NOISE_PAT_FLAG_REMOTE_EMPEM_REQ (1 << 7)
-
+#define NOISE_PAT_FLAG_REMOTE_EPHEM_REQ (1 << 7) 
 /** Local static keypair is required for the handshake */
 #define NOISE_REQ_LOCAL_REQUIRED        (1 << 0)
 /** Remote public key is required for the handshake */
