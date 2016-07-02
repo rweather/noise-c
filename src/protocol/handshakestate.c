@@ -705,17 +705,17 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
     if (state->role == NOISE_ROLE_INITIATOR) {
         if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_local_static);
-        if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
-            noise_handshakestate_mix_public_key(state, state->dh_remote_static);
         if (state->requirements & NOISE_REQ_FALLBACK_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_remote_ephemeral);
+        if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_remote_static);
     } else {
         if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_remote_static);
-        if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
-            noise_handshakestate_mix_public_key(state, state->dh_local_static);
         if (state->requirements & NOISE_REQ_FALLBACK_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_local_ephemeral);
+        if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
+            noise_handshakestate_mix_public_key(state, state->dh_local_static);
     }
 
     /* The handshake has now officially started */
