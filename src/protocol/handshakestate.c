@@ -630,6 +630,21 @@ static void noise_handshakestate_mix_public_key
 }
 
 /**
+ * \brief Mixes a public key value into the chaining key.
+ *
+ * \param state The HandshakeState object.
+ * \param dh The DHState for the key to mix in.  Can be NULL.
+ */
+static void noise_handshakestate_mix_chaining_key
+    (NoiseHandshakeState *state, const NoiseDHState *dh)
+{
+    if (noise_dhstate_has_public_key(dh)) {
+        noise_symmetricstate_mix_key
+            (state->symmetric, dh->public_key, dh->public_key_len);
+    }
+}
+
+/**
  * \brief Starts the handshake on a HandshakeState object.
  *
  * \param state The HandshakeState object.
@@ -705,15 +720,25 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
     if (state->role == NOISE_ROLE_INITIATOR) {
         if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_local_static);
-        if (state->requirements & NOISE_REQ_FALLBACK_PREMSG)
+        if (state->requirements & NOISE_REQ_FALLBACK_PREMSG) {
             noise_handshakestate_mix_public_key(state, state->dh_remote_ephemeral);
+            if ((state->requirements & NOISE_REQ_PSK) != 0) {
+                noise_handshakestate_mix_chaining_key
+                    (state, state->dh_remote_ephemeral);
+            }
+        }
         if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_remote_static);
     } else {
         if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_remote_static);
-        if (state->requirements & NOISE_REQ_FALLBACK_PREMSG)
+        if (state->requirements & NOISE_REQ_FALLBACK_PREMSG) {
             noise_handshakestate_mix_public_key(state, state->dh_local_ephemeral);
+            if ((state->requirements & NOISE_REQ_PSK) != 0) {
+                noise_handshakestate_mix_chaining_key
+                    (state, state->dh_local_ephemeral);
+            }
+        }
         if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
             noise_handshakestate_mix_public_key(state, state->dh_local_static);
     }

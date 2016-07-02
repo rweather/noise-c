@@ -115,6 +115,10 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         }
         if (flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) {
             MixHash(&(handshake->symmetric), handshake->re, handshake->re_len);
+            if (handshake->psk_len) {
+                MixKey(&(handshake->symmetric), handshake->re,
+                       handshake->re_len);
+            }
         }
         if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
             MixHash(&(handshake->symmetric), handshake->rs, handshake->rs_len);
@@ -126,6 +130,10 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         if (flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) {
             MixHash(&(handshake->symmetric), handshake->e_public,
                     handshake->e_public_len);
+            if (handshake->psk_len) {
+                MixKey(&(handshake->symmetric), handshake->e_public,
+                       handshake->e_public_len);
+            }
         }
         if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
             MixHash(&(handshake->symmetric), handshake->s_public,
