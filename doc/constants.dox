@@ -235,6 +235,16 @@
  * \brief Handshake pattern identifier for "XXfallback".
  */
 
+/**
+ * \def NOISE_PATTERN_NX_FALLBACK
+ * \brief Handshake pattern identifier for "NXfallback".
+ */
+
+/**
+ * \def NOISE_PATTERN_IX_FALLBACK
+ * \brief Handshake pattern identifier for "IXfallback".
+ */
+
 /**@}*/
 
 /**

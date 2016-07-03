@@ -70,6 +70,8 @@ extern "C" {
 #define NOISE_PATTERN_IK                NOISE_ID('P', 14)
 #define NOISE_PATTERN_IX                NOISE_ID('P', 15)
 #define NOISE_PATTERN_XX_FALLBACK       NOISE_ID('P', 16)
+#define NOISE_PATTERN_NX_FALLBACK       NOISE_ID('P', 17)
+#define NOISE_PATTERN_IX_FALLBACK       NOISE_ID('P', 18)
 
 /* Protocol name prefixes */
 #define NOISE_PREFIX_NONE               0

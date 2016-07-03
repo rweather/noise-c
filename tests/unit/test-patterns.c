@@ -400,4 +400,14 @@ void test_patterns(void)
                   "<- e\n",
                   "-> e, dhee, s, dhse\n"
                   "<- s, dhse\n");
+
+    check_pattern(NOISE_PATTERN_NX_FALLBACK,
+                  "Noise_NXfallback(s, re)",
+                  "<- e\n",
+                  "-> e, dhee, s, dhse\n");
+
+    check_pattern(NOISE_PATTERN_IX_FALLBACK,
+                  "Noise_IXfallback(s, rs, re)",
+                  "<- e, s\n",
+                  "-> e, dhee, dhes, s, dhse\n");
 }

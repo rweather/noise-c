@@ -600,6 +600,8 @@ struct NoiseHandshakeState_s
 #define NOISE_REQ_LOCAL_PREMSG          (1 << 4)
 /** Remote public key is part of the pre-message */
 #define NOISE_REQ_REMOTE_PREMSG         (1 << 5)
+/** Fallback is possible from this pattern (two-way, ends in "K") */
+#define NOISE_REQ_FALLBACK_POSSIBLE     (1 << 6)
 
 void noise_rand_bytes(void *bytes, size_t size);
 

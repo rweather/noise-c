@@ -85,6 +85,8 @@ static NoiseIdMapping const algorithm_names[] = {
     {NOISE_PATTERN_IK,          "IK",            2},
     {NOISE_PATTERN_IX,          "IX",            2},
     {NOISE_PATTERN_XX_FALLBACK, "XXfallback",   10},
+    {NOISE_PATTERN_NX_FALLBACK, "NXfallback",   10},
+    {NOISE_PATTERN_IX_FALLBACK, "IXfallback",   10},
 
     /* Protocol name prefixes */
     {NOISE_PREFIX_STANDARD,     "Noise",         5},

@@ -469,9 +469,9 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
     printf("{\n");
     id2 = *id;
     if (with_fallback) {
-        /* The incoming pattern is "IK" - put "XXfallback" in the name
-           field instead to make it clear what we are doing */
-        id2.pattern_id = NOISE_PATTERN_XX_FALLBACK;
+        /* Put the name of the fallback pattern into the "name" field
+           to make it clear what we are doing */
+        id2.pattern_id = with_fallback;
         noise_protocol_id_to_name(alt_protocol_name, sizeof(alt_protocol_name), &id2);
         printf("\"name\": \"%s%s\",\n", alt_protocol_name, with_ssk ? ":SSK" : "");
     } else {
@@ -482,8 +482,15 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
     printf("\"dh\": \"%s\",\n", noise_id_to_name(0, id->dh_id));
     printf("\"cipher\": \"%s\",\n", noise_id_to_name(0, id->cipher_id));
     printf("\"hash\": \"%s\",\n", noise_id_to_name(0, id->hash_id));
-    if (with_fallback)
+    if (with_fallback) {
         printf("\"fallback\": true,\n");
+        if (with_fallback != NOISE_PATTERN_XX_FALLBACK) {
+            /* Put the name of the fallback pattern into the test data
+               if it isn't the default value of "XXfallback" */
+            printf("\"fallback_pattern\": \"%s\",\n",
+                   noise_id_to_name(0, with_fallback));
+        }
+    }
     print_hex("init_prologue", prologue, sizeof(prologue));
     if (id->prefix_id == NOISE_PREFIX_PSK)
         print_hex("init_psk", psk, sizeof(psk));
@@ -611,6 +618,7 @@ int main(int argc, char *argv[])
     int first = 1;
     int with_ssk = 0;
     int with_fallback = 0;
+    int index;
 
     while (argc > 1) {
         if (!strcmp(argv[1], "--with-ssk"))
@@ -640,16 +648,24 @@ int main(int argc, char *argv[])
             }
         }
     } else {
-        /* Output fallback patterns, starting with "IK" */
-        id.pattern_id = NOISE_PATTERN_IK;
-        for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
-            for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
-                for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
-                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                        generate_vector(&id, first, 0, 1);
-                        first = 0;
-                        if (with_ssk)
-                            generate_vector(&id, first, 1, 1);
+        /* Output fallback patterns */
+        static int const fallback_patterns[] = {
+            NOISE_PATTERN_IK, NOISE_PATTERN_XX_FALLBACK,
+            NOISE_PATTERN_NK, NOISE_PATTERN_NX_FALLBACK,
+            0
+        };
+        for (index = 0; fallback_patterns[index] != 0; index += 2) {
+            int fallback_id = fallback_patterns[index + 1];
+            id.pattern_id = fallback_patterns[index];
+            for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
+                for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+                    for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
+                        for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                            generate_vector(&id, first, 0, fallback_id);
+                            first = 0;
+                            if (with_ssk)
+                                generate_vector(&id, first, 1, fallback_id);
+                        }
                     }
                 }
             }

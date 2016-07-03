@@ -53,7 +53,7 @@
  * \param flags The flags from the handshake pattern.
  * \param prefix_id The prefix identifier from the protocol name.
  * \param role The role, either initiator or responder.
- * \param is_fallback Non-zero if the pattern is "XXfallback".
+ * \param is_fallback Non-zero if we are processing a fallback pattern.
  *
  * \return The key requirements for the handshake pattern.
  */
@@ -105,6 +105,7 @@ static int noise_handshakestate_new
     const uint8_t *pattern;
     int dh_id;
     uint8_t flags;
+    int extra_reqs = 0;
     int err;
 
     /* Locate the information for the current handshake pattern */
@@ -114,6 +115,8 @@ static int noise_handshakestate_new
         return NOISE_ERROR_UNKNOWN_ID;
     }
     flags = pattern[0];
+    if ((flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) != 0)
+        extra_reqs |= NOISE_REQ_FALLBACK_POSSIBLE;
     if (role == NOISE_ROLE_RESPONDER) {
         /* Reverse the pattern flags so that the responder is "local" */
         flags = noise_pattern_reverse_flags(flags);
@@ -127,7 +130,7 @@ static int noise_handshakestate_new
     }
 
     /* Initialize the HandshakeState */
-    (*state)->requirements = noise_handshakestate_requirements
+    (*state)->requirements = extra_reqs | noise_handshakestate_requirements
         (flags, symmetric->id.prefix_id, role, 0);
     (*state)->action = NOISE_ACTION_NONE;
     (*state)->tokens = pattern + 1;
@@ -660,8 +663,8 @@ static void noise_handshakestate_mix_chaining_key
  * \return NOISE_ERROR_INVALID_STATE if the protocol handshake
  * has already started.
  * \return NOISE_ERROR_NOT_APPLICABLE if an attempt was made to
- * start a "XXfallback" handshake pattern without first calling
- * noise_handshakestate_fallback() on a previous "IK" handshake.
+ * start a fallback handshake pattern without first calling
+ * noise_handshakestate_fallback() on a previous handshake.
  *
  * This function is called after all of the handshake parameters have been
  * provided to the HandshakeState object.  This function should be followed
@@ -762,13 +765,13 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  * been started or has not reached the fallback position yet.
  * \return NOISE_ERROR_INVALID_LENGTH if the new protocol name is too long.
  * \return NOISE_ERROR_NOT_APPLICABLE if the handshake pattern in the
- * original protocol name was not "IK".
+ * original protocol name is not compatible with "XXfallback".
  *
- * This function is used to help implement the "Noise Pipes" protocol.
- * It resets a HandshakeState object with the handshake pattern "IK",
- * converting it into an object with the handshake pattern "XXfallback".
- * Information from the previous session such as the local keypair,
- * the initiator's ephemeral key, the prologue value, and the
+ * This function is intended used to help implement the "Noise Pipes" protocol.
+ * It resets a HandshakeState object with the original handshake pattern
+ * (usually "IK"), converting it into an object with the handshake pattern
+ * "XXfallback".  Information from the previous session such as the local
+ * keypair, the initiator's ephemeral key, the prologue value, and the
  * pre-shared key, are passed to the new session.
  *
  * Once the fallback has been initiated, the application can set
@@ -783,9 +786,61 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  *
  * \note This function reverses the roles of initiator and responder.
  *
- * \sa noise_handshakestate_start(), noise_handshakestate_get_role()
+ * \sa noise_handshakestate_start(), noise_handshakestate_fallback_to()
  */
 int noise_handshakestate_fallback(NoiseHandshakeState *state)
+{
+    return noise_handshakestate_fallback_to(state, NOISE_PATTERN_XX_FALLBACK);
+}
+
+/**
+ * \brief Falls back to another handshake pattern.
+ *
+ * \param state The HandshakeState object.
+ * \param pattern_id The identifier for the pattern to fallback to;
+ * e.g. NOISE_PATTERN_XX_FALLBACK, NOISE_PATTERN_NX_FALLBACK, etc.
+ *
+ * \return NOISE_ERROR_NONE on error.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the previous protocol has not
+ * been started or has not reached the fallback position yet.
+ * \return NOISE_ERROR_INVALID_LENGTH if the new protocol name is too long.
+ * \return NOISE_ERROR_NOT_APPLICABLE if the handshake pattern in the
+ * original protocol name is not compatible with \a pattern_id.
+ * \return NOISE_ERROR_NOT_APPLICABLE if \a pattern_id does not
+ * identify a fallback pattern.
+ *
+ * This function is a generalization of the "Noise Pipes" protocol,
+ * allowing for other combinations of patterns to be used for the
+ * full handshake, abbreviated handshake, and fallback handshake.
+ * For example, "NX/NK/NXfallback", "XX/XK/XXfallback", etc.
+ *
+ * This function resets a HandshakeState object with the original
+ * handshake pattern, and converts it into an object with the new handshake
+ * \a pattern_id.  Information from the previous session such as the local
+ * keypair, the initiator's ephemeral key, the prologue value, and the
+ * pre-shared key, are passed to the new session.
+ *
+ * Once the fallback has been initiated, the application can set
+ * new values for the handshake parameters if the values from the
+ * previous session do not apply.  For example, the application may
+ * use a different prologue for the fallback than for the original
+ * session.
+ *
+ * After setting any new parameters, the application calls
+ * noise_handshakestate_start() again to restart the handshake
+ * from where it left off before the fallback.
+ *
+ * The new pattern may have greater key requirements than the original;
+ * for example changing from "NK" from "XXfallback" requires that the
+ * initiator's static public key be set.  The application is responsible for
+ * setting any extra keys before calling noise_handshakestate_start().
+ *
+ * \note This function reverses the roles of initiator and responder.
+ *
+ * \sa noise_handshakestate_start(), noise_handshakestate_fallback()
+ */
+int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
 {
     char name[NOISE_MAX_PROTOCOL_NAME];
     size_t hash_len;
@@ -798,7 +853,15 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
     /* Validate the parameter */
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
-    if (state->symmetric->id.pattern_id != NOISE_PATTERN_IK)
+
+    /* The original pattern must end in "K" for fallback to be possible */
+    if (state->symmetric->id.pattern_id < NOISE_PATTERN_NN ||
+            (state->requirements & NOISE_REQ_FALLBACK_POSSIBLE) == 0)
+        return NOISE_ERROR_NOT_APPLICABLE;
+
+    /* Check that "pattern_id" supports fallback */
+    pattern = noise_pattern_lookup(pattern_id);
+    if (!pattern || (*pattern & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) == 0)
         return NOISE_ERROR_NOT_APPLICABLE;
 
     /* The initiator should be waiting for a return message from the
@@ -820,15 +883,15 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
             return NOISE_ERROR_INVALID_STATE;
     }
 
-    /* Format a new protocol name for the "XXfallback" variant */
+    /* Format a new protocol name for the fallback variant */
     id = state->symmetric->id;
-    id.pattern_id = NOISE_PATTERN_XX_FALLBACK;
+    id.pattern_id = pattern_id;
     err = noise_protocol_id_to_name(name, sizeof(name), &id);
     if (err != NOISE_ERROR_NONE)
         return err;
 
-    /* Convert the HandshakeState to the "XXfallback" pattern */
-    state->symmetric->id.pattern_id = NOISE_PATTERN_XX_FALLBACK;
+    /* Convert the HandshakeState to the fallback pattern */
+    state->symmetric->id.pattern_id = pattern_id;
     noise_dhstate_clear_key(state->dh_remote_static);
     if (state->role == NOISE_ROLE_INITIATOR) {
         noise_dhstate_clear_key(state->dh_remote_ephemeral);
@@ -838,12 +901,11 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
         state->role = NOISE_ROLE_INITIATOR;
     }
 
-    /* Start a new token pattern for "XXfallback" */
-    pattern = noise_pattern_lookup(id.pattern_id);
+    /* Start a new token pattern for the fallback */
     state->tokens = pattern + 1;
     state->action = NOISE_ACTION_NONE;
 
-    /* Set up the key requirements for "XXfallback" */
+    /* Set up the key requirements for the fallback */
     flags = pattern[0];
     if (state->role == NOISE_ROLE_RESPONDER) {
         flags = noise_pattern_reverse_flags(flags);

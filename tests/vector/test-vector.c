@@ -69,6 +69,7 @@ typedef struct
     size_t handshake_hash_len;      /**< Length of handshake_hash in bytes */
     int fail;                       /**< Failure expected on last message */
     int fallback;                   /**< Handshake involves IK to XXfallback */
+    char *fallback_pattern;         /**< Name of the pattern to fall back to */
     struct {
         uint8_t *payload;           /**< Payload for this message */
         size_t payload_len;         /**< Length of payload in bytes */
@@ -107,6 +108,7 @@ static void test_vector_free(TestVector *vec)
     free_field(init_ssk);
     free_field(resp_ssk);
     free_field(handshake_hash);
+    free_field(fallback_pattern);
     for (index = 0; index < vec->num_messages; ++index) {
         if (vec->messages[index].payload)
             free(vec->messages[index].payload);
@@ -369,14 +371,22 @@ static void test_connection(const TestVector *vec, int is_one_way)
                        vec->messages[index].ciphertext,
                        vec->messages[index].ciphertext_len);
         if (fallback) {
+            /* Look up the pattern to fall back to */
+            int fallback_id = NOISE_PATTERN_XX_FALLBACK;
+            if (vec->fallback_pattern) {
+                fallback_id = noise_name_to_id
+                    (NOISE_PATTERN_CATEGORY, vec->fallback_pattern,
+                     strlen(vec->fallback_pattern));
+            }
+
             /* Perform a read on the responder, which will fail */
             compare(noise_handshakestate_read_message(recv, &mbuf, &pbuf),
                     NOISE_ERROR_MAC_FAILURE);
 
             /* Initiate fallback on both sides */
-            compare(noise_handshakestate_fallback(responder),
+            compare(noise_handshakestate_fallback_to(responder, fallback_id),
                     NOISE_ERROR_NONE);
-            compare(noise_handshakestate_fallback(initiator),
+            compare(noise_handshakestate_fallback_to(initiator, fallback_id),
                     NOISE_ERROR_NONE);
 
             /* Restart the protocols */
@@ -704,6 +714,8 @@ static int process_test_vector(JSONReader *reader)
             vec.fail = expect_boolean_field(reader);
         } else if (json_is_name(reader, "fallback")) {
             vec.fallback = expect_boolean_field(reader);
+        } else if (json_is_name(reader, "fallback_pattern")) {
+            expect_string_field(reader, &(vec.fallback_pattern));
         } else if (json_is_name(reader, "messages")) {
             json_next_token(reader);
             expect_token(reader, JSON_TOKEN_COLON, ":");
