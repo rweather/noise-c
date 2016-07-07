@@ -892,12 +892,14 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
 
     /* Convert the HandshakeState to the fallback pattern */
     state->symmetric->id.pattern_id = pattern_id;
-    noise_dhstate_clear_key(state->dh_remote_static);
     if (state->role == NOISE_ROLE_INITIATOR) {
         noise_dhstate_clear_key(state->dh_remote_ephemeral);
+        noise_dhstate_clear_key(state->dh_remote_static);
         state->role = NOISE_ROLE_RESPONDER;
     } else {
         noise_dhstate_clear_key(state->dh_local_ephemeral);
+        if (!(pattern[0] & NOISE_PAT_FLAG_REMOTE_REQUIRED))
+            noise_dhstate_clear_key(state->dh_remote_static);
         state->role = NOISE_ROLE_INITIATOR;
     }
 

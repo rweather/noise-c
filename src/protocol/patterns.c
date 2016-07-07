@@ -484,6 +484,163 @@ static uint8_t const noise_pattern_IXfallback[] = {
 };
 
 /**
+ * \brief Token sequence for handshake pattern "Xnoidh".
+ *
+ * @code
+ * Noise_Xnoidh(s, rs):
+ *   <- s
+ *   ...
+ *   -> e, s, dhes, dhss
+ * @endcode
+ */
+static uint8_t const noise_pattern_Xnoidh[] = {
+    NOISE_PAT_FLAG_LOCAL_STATIC |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_STATIC |
+    NOISE_PAT_FLAG_REMOTE_REQUIRED,
+
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_END
+};
+
+/**
+ * \brief Token sequence for handshake pattern "NXnoidh".
+ *
+ * @code
+ * Noise_NXnoidh(rs):
+ *   -> e
+ *   <- e, s, dhee, dhse
+ * @endcode
+ */
+static uint8_t const noise_pattern_NXnoidh[] = {
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_STATIC |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
+
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_FLIP_DIR,
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_END
+};
+
+/**
+ * \brief Token sequence for handshake pattern "XXnoidh".
+ *
+ * @code
+ * Noise_XXnoidh(s, rs):
+ *   -> e
+ *   <- e, s, dhee, dhse
+ *   -> s, dhse
+ * @endcode
+ */
+static uint8_t const noise_pattern_XXnoidh[] = {
+    NOISE_PAT_FLAG_LOCAL_STATIC |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_STATIC |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
+
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_FLIP_DIR,
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_FLIP_DIR,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_END
+};
+
+/**
+ * \brief Token sequence for handshake pattern "KXnoidh".
+ *
+ * @code
+ * Noise_KXnoidh(s, rs):
+ *   -> s
+ *   ...
+ *   -> e
+ *   <- e, s, dhee, dhes, dhse
+ * @endcode
+ */
+static uint8_t const noise_pattern_KXnoidh[] = {
+    NOISE_PAT_FLAG_LOCAL_STATIC |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_LOCAL_REQUIRED |
+    NOISE_PAT_FLAG_REMOTE_STATIC |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
+
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_FLIP_DIR,
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_END
+};
+
+/**
+ * \brief Token sequence for handshake pattern "IKnoidh".
+ *
+ * @code
+ * Noise_IKnoidh(s, rs):
+ *   <- s
+ *   ...
+ *   -> e, s, dhes, dhss
+ *   <- e, dhee, dhes
+ * @endcode
+ */
+static uint8_t const noise_pattern_IKnoidh[] = {
+    NOISE_PAT_FLAG_LOCAL_STATIC |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_STATIC |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_REQUIRED,
+
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_FLIP_DIR,
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_END
+};
+
+/**
+ * \brief Token sequence for handshake pattern "IXnoidh".
+ *
+ * @code
+ * Noise_IXnoidh(s, rs):
+ *   -> e, s
+ *   <- e, s, dhee, dhes, dhse
+ * @endcode
+ */
+static uint8_t const noise_pattern_IXnoidh[] = {
+    NOISE_PAT_FLAG_LOCAL_STATIC |
+    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
+    NOISE_PAT_FLAG_REMOTE_STATIC |
+    NOISE_PAT_FLAG_REMOTE_EPHEMERAL,
+
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_FLIP_DIR,
+    NOISE_TOKEN_E,
+    NOISE_TOKEN_S,
+    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_END
+};
+
+/**
  * \brief Looks up a specific handshake pattern.
  *
  * \param id The identifier for the handshake pattern.
@@ -515,6 +672,12 @@ const uint8_t *noise_pattern_lookup(int id)
     case NOISE_PATTERN_XX_FALLBACK: return noise_pattern_XXfallback;
     case NOISE_PATTERN_NX_FALLBACK: return noise_pattern_NXfallback;
     case NOISE_PATTERN_IX_FALLBACK: return noise_pattern_IXfallback;
+    case NOISE_PATTERN_X_NOIDH:     return noise_pattern_Xnoidh;
+    case NOISE_PATTERN_NX_NOIDH:    return noise_pattern_NXnoidh;
+    case NOISE_PATTERN_XX_NOIDH:    return noise_pattern_XXnoidh;
+    case NOISE_PATTERN_KX_NOIDH:    return noise_pattern_KXnoidh;
+    case NOISE_PATTERN_IK_NOIDH:    return noise_pattern_IKnoidh;
+    case NOISE_PATTERN_IX_NOIDH:    return noise_pattern_IXnoidh;
     default:                        return 0;
     }
 }

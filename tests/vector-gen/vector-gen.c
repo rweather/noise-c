@@ -650,14 +650,19 @@ int main(int argc, char *argv[])
     } else {
         /* Output fallback patterns */
         static int const fallback_patterns[] = {
-            NOISE_PATTERN_IK, NOISE_PATTERN_XX_FALLBACK,
-            NOISE_PATTERN_NK, NOISE_PATTERN_NX_FALLBACK,
+            NOISE_PATTERN_IK, NOISE_PATTERN_XX_FALLBACK, 1,
+            NOISE_PATTERN_NK, NOISE_PATTERN_NX_FALLBACK, 1,
+            /* Note: PSK's don't work with IKnoidh / IXfallback */
+            NOISE_PATTERN_IK_NOIDH, NOISE_PATTERN_IX_FALLBACK, 0,
             0
         };
-        for (index = 0; fallback_patterns[index] != 0; index += 2) {
+        for (index = 0; fallback_patterns[index] != 0; index += 3) {
             int fallback_id = fallback_patterns[index + 1];
+            int psk_allowed = fallback_patterns[index + 2];
             id.pattern_id = fallback_patterns[index];
             for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
+                if (id.prefix_id == NOISE_PREFIX_PSK && !psk_allowed)
+                    continue;
                 for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
                     for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
                         for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {

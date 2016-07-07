@@ -410,4 +410,40 @@ void test_patterns(void)
                   "Noise_IXfallback(s, rs, re)",
                   "<- e, s\n",
                   "-> e, dhee, dhes, s, dhse\n");
+
+    check_pattern(NOISE_PATTERN_X_NOIDH,
+                  "Noise_Xnoidh(s, rs)",
+                  "<- s\n",
+                  "-> e, s, dhes, dhss\n");
+
+    check_pattern(NOISE_PATTERN_NX_NOIDH,
+                  "Noise_NXnoidh(rs)",
+                  "",
+                  "-> e\n"
+                  "<- e, s, dhee, dhse\n");
+
+    check_pattern(NOISE_PATTERN_XX_NOIDH,
+                  "Noise_XXnoidh(s, rs)",
+                  "",
+                  "-> e\n"
+                  "<- e, s, dhee, dhse\n"
+                  "-> s, dhse\n");
+
+    check_pattern(NOISE_PATTERN_KX_NOIDH,
+                  "Noise_KXnoidh(s, rs)",
+                  "-> s\n",
+                  "-> e\n"
+                  "<- e, s, dhee, dhes, dhse\n");
+
+    check_pattern(NOISE_PATTERN_IK_NOIDH,
+                  "Noise_IKnoidh(s, rs)",
+                  "<- s\n",
+                  "-> e, s, dhes, dhss\n"
+                  "<- e, dhee, dhes\n");
+
+    check_pattern(NOISE_PATTERN_IX_NOIDH,
+                  "Noise_IXnoidh(s, rs)",
+                  "",
+                  "-> e, s\n"
+                  "<- e, s, dhee, dhes, dhse\n");
 }

@@ -245,6 +245,36 @@
  * \brief Handshake pattern identifier for "IXfallback".
  */
 
+/**
+ * \def NOISE_PATTERN_X_NOIDH
+ * \brief Handshake pattern identifier for "Xnoidh".
+ */
+
+/**
+ * \def NOISE_PATTERN_NX_NOIDH
+ * \brief Handshake pattern identifier for "NXnoidh".
+ */
+
+/**
+ * \def NOISE_PATTERN_XX_NOIDH
+ * \brief Handshake pattern identifier for "XXnoidh".
+ */
+
+/**
+ * \def NOISE_PATTERN_KX_NOIDH
+ * \brief Handshake pattern identifier for "KXnoidh".
+ */
+
+/**
+ * \def NOISE_PATTERN_IK_NOIDH
+ * \brief Handshake pattern identifier for "IKnoidh".
+ */
+
+/**
+ * \def NOISE_PATTERN_IX_NOIDH
+ * \brief Handshake pattern identifier for "IXnoidh".
+ */
+
 /**@}*/
 
 /**
