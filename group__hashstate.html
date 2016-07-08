@@ -127,6 +127,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga795989697cb68459e4a9b5a91a98eed2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga795989697cb68459e4a9b5a91a98eed2">noise_hashstate_new_by_name</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> **state, const char *name)</td></tr>
 <tr class="memdesc:ga795989697cb68459e4a9b5a91a98eed2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new HashState object by its algorithm name.  <a href="#ga795989697cb68459e4a9b5a91a98eed2">More...</a><br/></td></tr>
 <tr class="separator:ga795989697cb68459e4a9b5a91a98eed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2fa984eb8ff8e4d75bdcf53ac6578980"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#ga2fa984eb8ff8e4d75bdcf53ac6578980">noise_hashstate_pbkdf2</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state, const uint8_t *passphrase, size_t passphrase_len, const uint8_t *salt, size_t salt_len, size_t iterations, uint8_t *output, size_t output_len)</td></tr>
+<tr class="memdesc:ga2fa984eb8ff8e4d75bdcf53ac6578980"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hashes a passphrase and salt using the PBKDF2 key derivation function.  <a href="#ga2fa984eb8ff8e4d75bdcf53ac6578980">More...</a><br/></td></tr>
+<tr class="separator:ga2fa984eb8ff8e4d75bdcf53ac6578980"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabf6c0c84d7ca72464e0c17dac8bc88a9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__hashstate.html#gabf6c0c84d7ca72464e0c17dac8bc88a9">noise_hashstate_reset</a> (<a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *state)</td></tr>
 <tr class="memdesc:gabf6c0c84d7ca72464e0c17dac8bc88a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets the hash state.  <a href="#gabf6c0c84d7ca72464e0c17dac8bc88a9">More...</a><br/></td></tr>
 <tr class="separator:gabf6c0c84d7ca72464e0c17dac8bc88a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -335,7 +338,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <p>Gets the maximum block length for the supported algorithms. </p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga880e5e53a1cbdd4a62496b63258a87fa" title="Gets the maximum hash length for the supported algorithms. ">noise_hashstate_get_max_hash_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00528">528</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00613">613</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -356,7 +359,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <p>Gets the maximum hash length for the supported algorithms. </p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga03724dfe186e4bda680a3d11a4f1665c" title="Gets the maximum block length for the supported algorithms. ">noise_hashstate_get_max_block_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00518">518</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00603">603</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -595,7 +598,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>output1_len</em> or <em>output2_len</em> is gr
 <p>Reference: <a href="http://tools.ietf.org/html/rfc5869">RFC 5868</a></p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__hashstate.html#ga495beb456544121bf24a32428d0384bc" title="Hashes a single data buffer and returns the hash value. ">noise_hashstate_hash_one()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00472">472</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00477">477</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
 
 </div>
 </div>
@@ -689,6 +692,92 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new HashSt
 
 </div>
 </div>
+<a class="anchor" id="ga2fa984eb8ff8e4d75bdcf53ac6578980"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_hashstate_pbkdf2 </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__hashstate.html#ga0365ae7e591e983de323ce54f51f4972">NoiseHashState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>passphrase</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>passphrase_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>salt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>salt_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>iterations</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>output_len</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Hashes a passphrase and salt using the PBKDF2 key derivation function. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The HashState object. </td></tr>
+    <tr><td class="paramname">passphrase</td><td>Points to the passphrase. </td></tr>
+    <tr><td class="paramname">passphrase_len</td><td>The length of the passphrase in bytes. </td></tr>
+    <tr><td class="paramname">salt</td><td>Points to the salt. </td></tr>
+    <tr><td class="paramname">salt_len</td><td>The length of the salt in bytes. </td></tr>
+    <tr><td class="paramname">iterations</td><td>The number of hash iterations to use. </td></tr>
+    <tr><td class="paramname">output</td><td>The output buffer to put the final hash into. </td></tr>
+    <tr><td class="paramname">output_len</td><td>The length of the output in bytes.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if one of <em>state</em>, <em>passphrase</em>, <em>salt</em>, or <em>output</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_LENGTH if the <em>output_len</em> is too large for valid PBKDF2 output.</dd></dl>
+<p>This function is intended as a utility for applications that need to hash a passphrase to encrypt private keys and other sensitive information.</p>
+<p>Reference: <a href="https://www.ietf.org/rfc/rfc2898.txt">RFC 2898</a> </p>
+
+<p>Definition at line <a class="el" href="hashstate_8c_source.html#l00542">542</a> of file <a class="el" href="hashstate_8c_source.html">hashstate.c</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="gabf6c0c84d7ca72464e0c17dac8bc88a9"></a>
 <div class="memitem">
 <div class="memproto">
@@ -770,7 +859,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>data</em> is NULL.</dd></dl>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 9 2016 09:48:55 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

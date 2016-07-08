@@ -126,9 +126,6 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aa3f5e61581db25327873b6aafef39543"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseCipherState__s.html#aa3f5e61581db25327873b6aafef39543">n</a></td></tr>
 <tr class="memdesc:aa3f5e61581db25327873b6aafef39543"><td class="mdescLeft">&#160;</td><td class="mdescRight">The nonce value for the next packet.  <a href="#aa3f5e61581db25327873b6aafef39543">More...</a><br/></td></tr>
 <tr class="separator:aa3f5e61581db25327873b6aafef39543"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfccba116293338d485ed781e2d88bbf"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseCipherState__s.html#acfccba116293338d485ed781e2d88bbf">nonce_overflow</a></td></tr>
-<tr class="memdesc:acfccba116293338d485ed781e2d88bbf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non-zero if the nonce has overflowed.  <a href="#acfccba116293338d485ed781e2d88bbf">More...</a><br/></td></tr>
-<tr class="separator:acfccba116293338d485ed781e2d88bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acca6bed643d8fa0fb1831630b155d419"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseCipherState__s.html#acca6bed643d8fa0fb1831630b155d419">size</a></td></tr>
 <tr class="memdesc:acca6bed643d8fa0fb1831630b155d419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total size of the structure including subclass state.  <a href="#acca6bed643d8fa0fb1831630b155d419">More...</a><br/></td></tr>
 <tr class="separator:acca6bed643d8fa0fb1831630b155d419"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -167,7 +164,7 @@ Data Fields</h2></td></tr>
 <p>Creates a new CipherState of the same type as this one. </p>
 <dl class="section return"><dt>Returns</dt><dd>A new CipherState object, or NULL if there is insufficient memory for the request. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00092">92</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00089">89</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -194,7 +191,7 @@ Data Fields</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success, NOISE_ERROR_MAC_FAILURE if the MAC check failed. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00138">138</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00135">135</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -218,7 +215,7 @@ Data Fields</h2></td></tr>
 <p>This function is called just before the memory for the CipherState is deallocated. It gives the back end an opportunity to clean up linked objects.</p>
 <p>This pointer can be NULL if the back end does not need any special clean up logic. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00153">153</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00150">150</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -246,7 +243,7 @@ Data Fields</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success.</dd></dl>
 <p>The <em>data</em> buffer must have enough room to append <a class="el" href="structNoiseCipherState__s.html#ae86d179092c51b9b5498f0b0f34284d9">mac_len</a> extra bytes for the MAC value. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00121">121</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00118">118</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -286,7 +283,7 @@ Data Fields</h2></td></tr>
 </dl>
 <p>If the key has already been set before, then calling this function again will set a new key. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00103">103</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00100">100</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -302,7 +299,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the key for this cipher in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00078">78</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00075">75</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -318,7 +315,7 @@ Data Fields</h2></td></tr>
 
 <p>Length of the MAC for this cipher in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00081">81</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00078">78</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -334,23 +331,7 @@ Data Fields</h2></td></tr>
 
 <p>The nonce value for the next packet. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00084">84</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="acfccba116293338d485ed781e2d88bbf"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint8_t NoiseCipherState_s::nonce_overflow</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Non-zero if the nonce has overflowed. </p>
-
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00075">75</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00081">81</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -376,7 +357,7 @@ Data Fields</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 9 2016 09:48:55 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

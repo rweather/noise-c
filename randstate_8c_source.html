@@ -131,18 +131,18 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor"></span></div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#define NOISE_RAND_REKEY_COUNT  16</span></div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor"></span></div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">   96</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">noise_randstate_new</a>(<a class="code" href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a> **state)</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;{</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="comment">/* Starting key for the random state before the first reseed.</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment">       This is the SHA256 initialization vector, to introduce a</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment">       little chaos into the starting state. */</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keyword">static</span> uint8_t <span class="keyword">const</span> starting_key[32] = {</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;          0x6A, 0x09, 0xE6, 0x67, 0xBB, 0x67, 0xAE, 0x85,</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;          0x3C, 0x6E, 0xF3, 0x72, 0xA5, 0x4F, 0xF5, 0x3A,</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;          0x51, 0x0E, 0x52, 0x7F, 0x9B, 0x05, 0x68, 0x8C,</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;          0x1F, 0x83, 0xD9, 0xAB, 0x5B, 0xE0, 0xCD, 0x19</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    };</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">/* Starting key for the random state before the first reseed.</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">   This is the SHA256 initialization vector, to introduce a</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">   little chaos into the starting state. */</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">static</span> uint8_t <span class="keyword">const</span> starting_key[32] = {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      0x6A, 0x09, 0xE6, 0x67, 0xBB, 0x67, 0xAE, 0x85,</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;      0x3C, 0x6E, 0xF3, 0x72, 0xA5, 0x4F, 0xF5, 0x3A,</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      0x51, 0x0E, 0x52, 0x7F, 0x9B, 0x05, 0x68, 0x8C,</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      0x1F, 0x83, 0xD9, 0xAB, 0x5B, 0xE0, 0xCD, 0x19</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;};</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;</div>
+<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">  106</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">noise_randstate_new</a>(<a class="code" href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a> **state)</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;{</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="comment">/* Validate the parameter */</span></div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">if</span> (!state)</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
@@ -206,95 +206,117 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(data, <span class="keyword">sizeof</span>(data));</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;}</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a></div>
-<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">  223</a></span>&#160;    (<a class="code" href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a> *state, uint8_t *buffer, <span class="keywordtype">size_t</span> len)</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;{</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="keywordtype">size_t</span> blocks;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="keywordtype">size_t</span> temp_len;</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="comment">/* Validate the parameters.  We make sure to set the contents of</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="comment">       the buffer to zero before proceeding just in case this function</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment">       bails out before it can actually generate data.  We don&#39;t want</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment">       to accidentally leak the previous contents in the buffer. */</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="keywordflow">if</span> (!buffer)</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    memset(buffer, 0, len);</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    <span class="keywordflow">if</span> (!state)</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="comment">/* Force a reseed if necessary */</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="keywordflow">if</span> (state-&gt;left &lt; len)</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        <a class="code" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">noise_randstate_reseed</a>(state);</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="comment">/* Generate the random data in ChaCha20 block-sized chunks */</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    blocks = 0;</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="keywordflow">while</span> (len &gt; 0) {</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        temp_len = len;</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="keywordflow">if</span> (temp_len &gt; 64)</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            temp_len = 64;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="keywordflow">if</span> (state-&gt;left &gt;= 64) {</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            <span class="comment">/* One less block before we need to force a reseed */</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            state-&gt;left -= 64;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="comment">/* Too much random data generated.  Force a reseed now */</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;            <a class="code" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">noise_randstate_reseed</a>(state);</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;            blocks = 0;</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        }</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="keywordflow">if</span> (blocks++ &gt;= NOISE_RAND_REKEY_COUNT) {</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;            <span class="comment">/* Too many blocks in the current request.  Force a rekey now */</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            noise_randstate_rekey(state);</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            blocks = 0;</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        }</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        chacha_encrypt_bytes(&amp;(state-&gt;chacha), buffer, buffer, temp_len);</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        buffer += temp_len;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        len -= temp_len;</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    }</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="comment">/* Force a rekey after every request to destroy the input that</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="comment">       was used to generate the random data for this request.</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment">       This prevents the state from being rolled backwards. */</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    noise_randstate_rekey(state);</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;}</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">noise_randstate_pad</a></div>
-<div class="line"><a name="l00304"></a><span class="lineno"><a class="line" href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">  304</a></span>&#160;    (<a class="code" href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a> *state, uint8_t *payload, <span class="keywordtype">size_t</span> orig_len,</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;     <span class="keywordtype">size_t</span> padded_len, <span class="keywordtype">int</span> padding_mode)</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;{</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="keywordflow">if</span> (!payload)</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <span class="keywordflow">if</span> (!state) {</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;        <span class="comment">/* Zero the padding region just in case so that we don&#39;t accidentally</span></div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;<span class="comment">           leak the previous contents of the payload&#39;s padding region. */</span></div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        <span class="keywordflow">if</span> (padded_len &gt; orig_len)</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            memset(payload + orig_len, 0, padded_len - orig_len);</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    }</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="comment">/* Nothing to do if the new length is shorter than the original */</span></div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="keywordflow">if</span> (padded_len &lt;= orig_len)</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="comment">/* Pad the payload as requested */</span></div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordflow">if</span> (padding_mode == <a class="code" href="group__padding__modes.html#ga5f63770f27d92cd12b5c4bef76fac57b">NOISE_PADDING_ZERO</a>) {</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        memset(payload + orig_len, 0, padded_len - orig_len);</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a></div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            (state, payload + orig_len, padded_len - orig_len);</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    }</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;}</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a></div>
+<div class="line"><a name="l00224"></a><span class="lineno"><a class="line" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">  224</a></span>&#160;    (<a class="code" href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a> *state, uint8_t *buffer, <span class="keywordtype">size_t</span> len)</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;{</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="keywordtype">size_t</span> blocks;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <span class="keywordtype">size_t</span> temp_len;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="comment">/* Validate the parameters.  We make sure to set the contents of</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="comment">       the buffer to zero before proceeding just in case this function</span></div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="comment">       bails out before it can actually generate data.  We don&#39;t want</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment">       to accidentally leak the previous contents in the buffer. */</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="keywordflow">if</span> (!buffer)</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    memset(buffer, 0, len);</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="keywordflow">if</span> (!state)</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="comment">/* Force a reseed if necessary */</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    <span class="keywordflow">if</span> (state-&gt;left &lt; len)</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        <a class="code" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">noise_randstate_reseed</a>(state);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    <span class="comment">/* Generate the random data in ChaCha20 block-sized chunks */</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    blocks = 0;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="keywordflow">while</span> (len &gt; 0) {</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        temp_len = len;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="keywordflow">if</span> (temp_len &gt; 64)</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;            temp_len = 64;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="keywordflow">if</span> (state-&gt;left &gt;= 64) {</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="comment">/* One less block before we need to force a reseed */</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            state-&gt;left -= 64;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;            <span class="comment">/* Too much random data generated.  Force a reseed now */</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;            <a class="code" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">noise_randstate_reseed</a>(state);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            blocks = 0;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        }</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">if</span> (blocks++ &gt;= NOISE_RAND_REKEY_COUNT) {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="comment">/* Too many blocks in the current request.  Force a rekey now */</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            noise_randstate_rekey(state);</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            blocks = 0;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        }</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        chacha_encrypt_bytes(&amp;(state-&gt;chacha), buffer, buffer, temp_len);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;        buffer += temp_len;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        len -= temp_len;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    }</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="comment">/* Force a rekey after every request to destroy the input that</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment">       was used to generate the random data for this request.</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="comment">       This prevents the state from being rolled backwards. */</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    noise_randstate_rekey(state);</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;}</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">noise_randstate_pad</a></div>
+<div class="line"><a name="l00305"></a><span class="lineno"><a class="line" href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">  305</a></span>&#160;    (<a class="code" href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a> *state, uint8_t *payload, <span class="keywordtype">size_t</span> orig_len,</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;     <span class="keywordtype">size_t</span> padded_len, <span class="keywordtype">int</span> padding_mode)</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;{</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="keywordflow">if</span> (!payload)</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="keywordflow">if</span> (!state) {</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <span class="comment">/* Zero the padding region just in case so that we don&#39;t accidentally</span></div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="comment">           leak the previous contents of the payload&#39;s padding region. */</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        <span class="keywordflow">if</span> (padded_len &gt; orig_len)</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;            memset(payload + orig_len, 0, padded_len - orig_len);</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    }</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    <span class="comment">/* Nothing to do if the new length is shorter than the original */</span></div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    <span class="keywordflow">if</span> (padded_len &lt;= orig_len)</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="comment">/* Pad the payload as requested */</span></div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    <span class="keywordflow">if</span> (padding_mode == <a class="code" href="group__padding__modes.html#ga5f63770f27d92cd12b5c4bef76fac57b">NOISE_PADDING_ZERO</a>) {</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        memset(payload + orig_len, 0, padded_len - orig_len);</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            (state, payload + orig_len, padded_len - orig_len);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    }</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;}</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;</div>
+<div class="line"><a name="l00347"></a><span class="lineno"><a class="line" href="group__randstate.html#ga449c8ba03209a4213cf70c2e08b6140d">  347</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__randstate.html#ga449c8ba03209a4213cf70c2e08b6140d">noise_randstate_generate_simple</a>(uint8_t *buffer, <span class="keywordtype">size_t</span> len)</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;{</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    <a class="code" href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a> state;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="keywordflow">if</span> (!buffer)</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="comment">/* Initialize the random number generator on the stack */</span></div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    memset(&amp;state, 0, <span class="keyword">sizeof</span>(state));</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    chacha_keysetup(&amp;(state.chacha), starting_key, 256);</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <a class="code" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">noise_randstate_reseed</a>(&amp;state);</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="comment">/* Generate the required data */</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <a class="code" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a>(&amp;state, buffer, len);</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="comment">/* Clean up the random number generator on the stack */</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(&amp;state, <span class="keyword">sizeof</span>(state));</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;}</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;</div>
 <div class="ttc" id="group__padding__modes_html_ga5f63770f27d92cd12b5c4bef76fac57b"><div class="ttname"><a href="group__padding__modes.html#ga5f63770f27d92cd12b5c4bef76fac57b">NOISE_PADDING_ZERO</a></div><div class="ttdeci">#define NOISE_PADDING_ZERO</div><div class="ttdoc">Pads messages with zero bytes. </div></div>
 <div class="ttc" id="group__utils_html_ga4d7440ace7a148437e229969490f6162"><div class="ttname"><a href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a></div><div class="ttdeci">void noise_clean(void *data, size_t size)</div><div class="ttdoc">Cleans a block of memory to destroy its contents. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00120">util.c:120</a></div></div>
 <div class="ttc" id="group__errors_html_ga4c2869f005128d7a415e6d941ccc67bb"><div class="ttname"><a href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_PARAM</div><div class="ttdoc">Invalid parameter to function; e.g. a NULL value. </div></div>
 <div class="ttc" id="group__errors_html_ga132b97fab62750f9f1e665c3783455c4"><div class="ttname"><a href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a></div><div class="ttdeci">#define NOISE_ERROR_NONE</div><div class="ttdoc">Success, no error. </div></div>
-<div class="ttc" id="group__randstate_html_ga2a45f812e88e15375e193a9716ca9ae1"><div class="ttname"><a href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">noise_randstate_pad</a></div><div class="ttdeci">int noise_randstate_pad(NoiseRandState *state, uint8_t *payload, size_t orig_len, size_t padded_len, int padding_mode)</div><div class="ttdoc">Adds padding bytes to the end of a message payload. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00304">randstate.c:304</a></div></div>
+<div class="ttc" id="group__randstate_html_ga2a45f812e88e15375e193a9716ca9ae1"><div class="ttname"><a href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1">noise_randstate_pad</a></div><div class="ttdeci">int noise_randstate_pad(NoiseRandState *state, uint8_t *payload, size_t orig_len, size_t padded_len, int padding_mode)</div><div class="ttdoc">Adds padding bytes to the end of a message payload. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00305">randstate.c:305</a></div></div>
 <div class="ttc" id="group__errors_html_gae39efe3160d926a8a630bc9f946bdc02"><div class="ttname"><a href="group__errors.html#gae39efe3160d926a8a630bc9f946bdc02">NOISE_ERROR_NO_MEMORY</a></div><div class="ttdeci">#define NOISE_ERROR_NO_MEMORY</div><div class="ttdoc">Insufficient memory to complete the operation. </div></div>
-<div class="ttc" id="group__randstate_html_gab6d527eb906a8ff06743d93fec6ae2c0"><div class="ttname"><a href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a></div><div class="ttdeci">int noise_randstate_generate(NoiseRandState *state, uint8_t *buffer, size_t len)</div><div class="ttdoc">Generates random bytes for use by the application. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00223">randstate.c:223</a></div></div>
-<div class="ttc" id="group__randstate_html_ga119d7d822704ccd7783bf9960ea2f48a"><div class="ttname"><a href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">noise_randstate_new</a></div><div class="ttdeci">int noise_randstate_new(NoiseRandState **state)</div><div class="ttdoc">Creates a new random number generator. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00096">randstate.c:96</a></div></div>
+<div class="ttc" id="group__randstate_html_gab6d527eb906a8ff06743d93fec6ae2c0"><div class="ttname"><a href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0">noise_randstate_generate</a></div><div class="ttdeci">int noise_randstate_generate(NoiseRandState *state, uint8_t *buffer, size_t len)</div><div class="ttdoc">Generates random bytes for use by the application. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00224">randstate.c:224</a></div></div>
+<div class="ttc" id="group__randstate_html_ga119d7d822704ccd7783bf9960ea2f48a"><div class="ttname"><a href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a">noise_randstate_new</a></div><div class="ttdeci">int noise_randstate_new(NoiseRandState **state)</div><div class="ttdoc">Creates a new random number generator. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00106">randstate.c:106</a></div></div>
 <div class="ttc" id="group__randstate_html_gade20313ad0e500c95f5faa2b8bcf536f"><div class="ttname"><a href="group__randstate.html#gade20313ad0e500c95f5faa2b8bcf536f">NoiseRandState</a></div><div class="ttdeci">struct NoiseRandState_s NoiseRandState</div><div class="ttdoc">Opaque object that represents a random number generator. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8h_source.html#l00033">randstate.h:33</a></div></div>
+<div class="ttc" id="group__randstate_html_ga449c8ba03209a4213cf70c2e08b6140d"><div class="ttname"><a href="group__randstate.html#ga449c8ba03209a4213cf70c2e08b6140d">noise_randstate_generate_simple</a></div><div class="ttdeci">int noise_randstate_generate_simple(uint8_t *buffer, size_t len)</div><div class="ttdoc">Generates random data without first creating a RandState object. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00347">randstate.c:347</a></div></div>
 <div class="ttc" id="internal_8h_html"><div class="ttname"><a href="internal_8h.html">internal.h</a></div><div class="ttdoc">Internal definitions for the library. </div></div>
 <div class="ttc" id="group__utils_html_ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><div class="ttname"><a href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a></div><div class="ttdeci">void noise_free(void *ptr, size_t size)</div><div class="ttdoc">Destroys the contents of a block of memory and free it. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00102">util.c:102</a></div></div>
 <div class="ttc" id="group__randstate_html_gae69c043dcb1b967142b947ad27bb4eb3"><div class="ttname"><a href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3">noise_randstate_reseed</a></div><div class="ttdeci">int noise_randstate_reseed(NoiseRandState *state)</div><div class="ttdoc">Reseeds the random number generator from operating system entropy. </div><div class="ttdef"><b>Definition:</b> <a href="randstate_8c_source.html#l00163">randstate.c:163</a></div></div>
@@ -304,7 +326,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 9 2016 09:48:55 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

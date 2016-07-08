@@ -95,35 +95,50 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <p>Key loading and saving implementation.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;<a class="el" href="keys_8h_source.html">noise/keys.h</a>&gt;</code><br/>
+<code>#include &lt;<a class="el" href="protocol_8h_source.html">noise/protocol.h</a>&gt;</code><br/>
+<code>#include &lt;stdio.h&gt;</code><br/>
+<code>#include &lt;stdlib.h&gt;</code><br/>
+<code>#include &lt;string.h&gt;</code><br/>
 </div>
 <p><a href="loader_8c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gaa987bc305a2b481fe0474cd2dde37f50"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gaa987bc305a2b481fe0474cd2dde37f50">noise_load_certificate_chain_from_buffer</a> (<a class="el" href="certificate_8h.html#a4017b7d8ad320542726ef5f75ed97a62">Noise_CertificateChain</a> **chain, <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf)</td></tr>
+<tr class="memdesc:gaa987bc305a2b481fe0474cd2dde37f50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a certificate chain from a protobuf.  <a href="group__keyloader.html#gaa987bc305a2b481fe0474cd2dde37f50">More...</a><br/></td></tr>
 <tr class="separator:gaa987bc305a2b481fe0474cd2dde37f50"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga17e127a17bc84ddf79047f2243333b17"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#ga17e127a17bc84ddf79047f2243333b17">noise_load_certificate_chain_from_file</a> (<a class="el" href="certificate_8h.html#a4017b7d8ad320542726ef5f75ed97a62">Noise_CertificateChain</a> **chain, const char *filename)</td></tr>
+<tr class="memdesc:ga17e127a17bc84ddf79047f2243333b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a certificate chain from a file.  <a href="group__keyloader.html#ga17e127a17bc84ddf79047f2243333b17">More...</a><br/></td></tr>
 <tr class="separator:ga17e127a17bc84ddf79047f2243333b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab712a082cb05f1633fab45b16b2b2083"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gab712a082cb05f1633fab45b16b2b2083">noise_load_certificate_from_buffer</a> (<a class="el" href="certificate_8h.html#acc27282cd9f98d740595df5e56b44b8c">Noise_Certificate</a> **cert, <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf)</td></tr>
 <tr class="memdesc:gab712a082cb05f1633fab45b16b2b2083"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a certificate from a protobuf.  <a href="group__keyloader.html#gab712a082cb05f1633fab45b16b2b2083">More...</a><br/></td></tr>
 <tr class="separator:gab712a082cb05f1633fab45b16b2b2083"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff8bab122116dc684078049cd0090162"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gaff8bab122116dc684078049cd0090162">noise_load_certificate_from_file</a> (<a class="el" href="certificate_8h.html#acc27282cd9f98d740595df5e56b44b8c">Noise_Certificate</a> **cert, const char *filename)</td></tr>
+<tr class="memdesc:gaff8bab122116dc684078049cd0090162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a certificate from a file.  <a href="group__keyloader.html#gaff8bab122116dc684078049cd0090162">More...</a><br/></td></tr>
 <tr class="separator:gaff8bab122116dc684078049cd0090162"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1dca23afd6eab7c04999925e9f4ba0d2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#ga1dca23afd6eab7c04999925e9f4ba0d2">noise_load_private_key_from_buffer</a> (<a class="el" href="certificate_8h.html#a03890699234e7310e5976cca65bab8c9">Noise_PrivateKey</a> **key, <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf, const void *passphrase, size_t passphrase_len)</td></tr>
+<tr class="memdesc:ga1dca23afd6eab7c04999925e9f4ba0d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a private key from a protobuf.  <a href="group__keyloader.html#ga1dca23afd6eab7c04999925e9f4ba0d2">More...</a><br/></td></tr>
 <tr class="separator:ga1dca23afd6eab7c04999925e9f4ba0d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaad53241514ae9f0cfb50dd5161e8a0d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gaad53241514ae9f0cfb50dd5161e8a0d4">noise_load_private_key_from_file</a> (<a class="el" href="certificate_8h.html#a03890699234e7310e5976cca65bab8c9">Noise_PrivateKey</a> **key, const char *filename, const void *passphrase, size_t passphrase_len)</td></tr>
+<tr class="memdesc:gaad53241514ae9f0cfb50dd5161e8a0d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a private key from a file.  <a href="group__keyloader.html#gaad53241514ae9f0cfb50dd5161e8a0d4">More...</a><br/></td></tr>
 <tr class="separator:gaad53241514ae9f0cfb50dd5161e8a0d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga30ddde4ec4e393fa629016f72330cec6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#ga30ddde4ec4e393fa629016f72330cec6">noise_save_certificate_chain_to_buffer</a> (const <a class="el" href="certificate_8h.html#a4017b7d8ad320542726ef5f75ed97a62">Noise_CertificateChain</a> *chain, <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf)</td></tr>
+<tr class="memdesc:ga30ddde4ec4e393fa629016f72330cec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a certificate chain to a protobuf.  <a href="group__keyloader.html#ga30ddde4ec4e393fa629016f72330cec6">More...</a><br/></td></tr>
 <tr class="separator:ga30ddde4ec4e393fa629016f72330cec6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaac2e42aca881c1280037af0d6662e4b1"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gaac2e42aca881c1280037af0d6662e4b1">noise_save_certificate_chain_to_file</a> (const <a class="el" href="certificate_8h.html#a4017b7d8ad320542726ef5f75ed97a62">Noise_CertificateChain</a> *chain, const char *filename)</td></tr>
+<tr class="memdesc:gaac2e42aca881c1280037af0d6662e4b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a certificate chain to a file.  <a href="group__keyloader.html#gaac2e42aca881c1280037af0d6662e4b1">More...</a><br/></td></tr>
 <tr class="separator:gaac2e42aca881c1280037af0d6662e4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3d9ea936b00e78825faa3dcaad534385"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#ga3d9ea936b00e78825faa3dcaad534385">noise_save_certificate_to_buffer</a> (const <a class="el" href="certificate_8h.html#acc27282cd9f98d740595df5e56b44b8c">Noise_Certificate</a> *cert, <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf)</td></tr>
+<tr class="memdesc:ga3d9ea936b00e78825faa3dcaad534385"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a certificate to a protobuf.  <a href="group__keyloader.html#ga3d9ea936b00e78825faa3dcaad534385">More...</a><br/></td></tr>
 <tr class="separator:ga3d9ea936b00e78825faa3dcaad534385"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa01f1a447b6ab883695159963d4fc300"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gaa01f1a447b6ab883695159963d4fc300">noise_save_certificate_to_file</a> (const <a class="el" href="certificate_8h.html#acc27282cd9f98d740595df5e56b44b8c">Noise_Certificate</a> *cert, const char *filename)</td></tr>
+<tr class="memdesc:gaa01f1a447b6ab883695159963d4fc300"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a certificate to a file.  <a href="group__keyloader.html#gaa01f1a447b6ab883695159963d4fc300">More...</a><br/></td></tr>
 <tr class="separator:gaa01f1a447b6ab883695159963d4fc300"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac11cdca90e76da79409a1f88d7f5186b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gac11cdca90e76da79409a1f88d7f5186b">noise_save_private_key_to_buffer</a> (const <a class="el" href="certificate_8h.html#a03890699234e7310e5976cca65bab8c9">Noise_PrivateKey</a> *key, <a class="el" href="protobufs_8h.html#structNoiseProtobuf">NoiseProtobuf</a> *pbuf, const void *passphrase, size_t passphrase_len, const char *protect_name)</td></tr>
+<tr class="memdesc:gac11cdca90e76da79409a1f88d7f5186b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a private key in encrypted form to a protobuf.  <a href="group__keyloader.html#gac11cdca90e76da79409a1f88d7f5186b">More...</a><br/></td></tr>
 <tr class="separator:gac11cdca90e76da79409a1f88d7f5186b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gab1f118585a782471b6e7e4d7f8d09018"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__keyloader.html#gab1f118585a782471b6e7e4d7f8d09018">noise_save_private_key_to_file</a> (const <a class="el" href="certificate_8h.html#a03890699234e7310e5976cca65bab8c9">Noise_PrivateKey</a> *key, const char *filename, const void *passphrase, size_t passphrase_len, const char *protect_name)</td></tr>
+<tr class="memdesc:gab1f118585a782471b6e7e4d7f8d09018"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves a private key in encrypted form to a file.  <a href="group__keyloader.html#gab1f118585a782471b6e7e4d7f8d09018">More...</a><br/></td></tr>
 <tr class="separator:gab1f118585a782471b6e7e4d7f8d09018"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -133,7 +148,7 @@ Functions</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 9 2016 09:48:55 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -301,6 +301,7 @@ Encrypted private key format</h1>
 <p>The only KDF algorithm that is defined at present is PBKDF2 from <a href="https://www.ietf.org/rfc/rfc2898.txt">RFC 2898</a>. The <code>salt</code> and <code>iterations</code> fields are two of the parameters to PBKDF2 (the other being the passphrase).</p>
 <p>Other KDF algorithms may be defined in the future. The <code>salt</code> and <code>iterations</code> fields can be repurposed to contain whatever parameters those KDF algorithms require.</p>
 <p>As an example, the algorithm identifier "ChaChaPoly_BLAKE2b_PBKDF2" is implemented as follows. PBKDF2 is used with BLAKE2b to generate an encryption key and nonce for ChaChaPoly. The first 32 bytes of the PBKDF2 output are used as the encryption key. The next 8 bytes of the PBKDF2 output are interpreted as a big-endian 64-bit value and used as the nonce. The entirety of the private key details are encrypted in a single request, which limits the size to 65535 bytes including the MAC.</p>
+<dl class="section note"><dt>Note</dt><dd>The nonce value 2^64 - 1 (0xFFFFFFFFFFFFFFFF) is reserved by revision 30 of the Noise specification. If the PBKDF2 hashing process generates such a nonce, then the implementation should generate a new salt and hash the passphrase again. This situation is highly unlikely.</dd></dl>
 <p>The <code>salt</code> SHOULD be at least 16 bytes in length, and MAY be longer at the implementation's discretion. The unsigned 32-bit <code>iteration</code> count should be large enough to make dictionary attacks on the private key file time-consuming on current hardware.</p>
 <p>Encrypted private keys can be a hassle for servers and other systems that run unattended. Such systems may need to use a static passphrase, even if only the empty passphrase.</p>
 <p>The field tag numbers on "EncryptedPrivateKey" are deliberately different than those for "Certificate" and "CertificateChain" so that an application can easily determine what type of data it is processing. Applications may use this to cross-check that a private key is not accidentally sent over the wire as a certificate.</p>
@@ -312,7 +313,7 @@ Public key fingerprints</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat May 21 2016 15:44:40 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 9 2016 09:48:55 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
