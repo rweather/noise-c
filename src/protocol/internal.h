@@ -71,9 +71,6 @@ struct NoiseCipherState_s
     /** \brief Non-zero if the key has been set on this cipher */
     uint8_t has_key;
 
-    /** \brief Non-zero if the nonce has overflowed */
-    uint8_t nonce_overflow;
-
     /** \brief Length of the key for this cipher in bytes */
     uint8_t key_len;
 

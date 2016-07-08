@@ -932,7 +932,6 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
     /* Reset the encryption key within the symmetric state to empty */
     state->symmetric->cipher->has_key = 0;
     state->symmetric->cipher->n = 0;
-    state->symmetric->cipher->nonce_overflow = 0;
 
     /* Ready to go */
     return NOISE_ERROR_NONE;

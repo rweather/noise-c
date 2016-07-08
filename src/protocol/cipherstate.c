@@ -221,7 +221,6 @@ int noise_cipherstate_init_key
     (*(state->init_key))(state, key);
     state->has_key = 1;
     state->n = 0;
-    state->nonce_overflow = 0;
     return NOISE_ERROR_NONE;
 }
 
@@ -306,14 +305,14 @@ int noise_cipherstate_encrypt_with_ad
     if ((buffer->max_size - buffer->size) < state->mac_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* If the nonce has overflowed, then further encryption is impossible */
-    if (state->nonce_overflow)
+    /* If the nonce has overflowed, then further encryption is impossible.
+       The value 2^64 - 1 is reserved (Noise specification revision 30),
+       so if the nonce has reached that value then overflow has occurred. */
+    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
         return NOISE_ERROR_INVALID_NONCE;
 
     /* Encrypt the plaintext and authenticate it */
     err = (*(state->encrypt))(state, ad, ad_len, buffer->data, buffer->size);
-    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
-        state->nonce_overflow = 1;
     ++(state->n);
     if (err != NOISE_ERROR_NONE)
         return err;
@@ -381,15 +380,15 @@ int noise_cipherstate_decrypt_with_ad
     if (buffer->size < state->mac_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* If the nonce has overflowed, then further decryption is impossible */
-    if (state->nonce_overflow)
+    /* If the nonce has overflowed, then further decryption is impossible.
+       The value 2^64 - 1 is reserved (Noise specification revision 30),
+       so if the nonce has reached that value then overflow has occurred. */
+    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
         return NOISE_ERROR_INVALID_NONCE;
 
     /* Decrypt the ciphertext and check the MAC */
     err = (*(state->decrypt))
         (state, ad, ad_len, buffer->data, buffer->size - state->mac_len);
-    if (state->n == 0xFFFFFFFFFFFFFFFFULL)
-        state->nonce_overflow = 1;
     ++(state->n);
     if (err != NOISE_ERROR_NONE)
         return err;

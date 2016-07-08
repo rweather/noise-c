@@ -512,8 +512,7 @@ int noise_load_private_key_from_buffer
         /* Set the decryption key */
         noise_cipherstate_init_key(cipher, key_data, 32);
 
-        /* Reduce the nonce to 63-bit and then fast-forward the cipher */
-        key_data[32] &= 0x7F;
+        /* Set the nonce and fast-forward the cipher */
         noise_cipherstate_set_nonce
             (cipher, (((uint64_t)(key_data[32])) << 56) |
                      (((uint64_t)(key_data[33])) << 48) |
@@ -820,6 +819,7 @@ int noise_save_private_key_to_buffer
     size_t mac_len;
     NoiseBuffer buf;
     int err;
+    int retry;
 
     /* Validate the parameters */
     if (!key || !pbuf || !passphrase || !protect_name)
@@ -871,46 +871,54 @@ int noise_save_private_key_to_buffer
         err = Noise_EncryptedPrivateKey_set_algorithm
             (enc_key, protect_name, strlen(protect_name));
     }
-    noise_randstate_generate_simple(salt, sizeof(salt));
-    if (err == NOISE_ERROR_NONE) {
-        err = Noise_EncryptedPrivateKey_set_salt(enc_key, salt, sizeof(salt));
-    }
     if (err == NOISE_ERROR_NONE) {
         err = Noise_EncryptedPrivateKey_set_iterations
             (enc_key, NOISE_KEY_ITERATIONS);
     }
 
     /* Encrypt the private key information */
+    noise_randstate_generate_simple(salt, sizeof(salt));
     if (err == NOISE_ERROR_NONE) {
-        /* Generate the key material using PBKDF2 */
-        noise_hashstate_pbkdf2
-            (hash, (const uint8_t *)passphrase, passphrase_len,
-             salt, sizeof(salt), NOISE_KEY_ITERATIONS,
-             key_data, sizeof(key_data));
+        do {
+            /* Generate the key material using PBKDF2 */
+            retry = 0;
+            noise_hashstate_pbkdf2
+                (hash, (const uint8_t *)passphrase, passphrase_len,
+                 salt, sizeof(salt), NOISE_KEY_ITERATIONS,
+                 key_data, sizeof(key_data));
 
-        /* Set the encryption key */
-        noise_cipherstate_init_key(cipher, key_data, 32);
+            /* Set the encryption key */
+            noise_cipherstate_init_key(cipher, key_data, 32);
 
-        /* Reduce the nonce to 63-bit and then fast-forward the cipher */
-        key_data[32] &= 0x7F;
-        noise_cipherstate_set_nonce
-            (cipher, (((uint64_t)(key_data[32])) << 56) |
-                     (((uint64_t)(key_data[33])) << 48) |
-                     (((uint64_t)(key_data[34])) << 40) |
-                     (((uint64_t)(key_data[35])) << 32) |
-                     (((uint64_t)(key_data[36])) << 24) |
-                     (((uint64_t)(key_data[37])) << 16) |
-                     (((uint64_t)(key_data[38])) <<  8) |
-                      ((uint64_t)(key_data[39])));
+            /* Set the nonce and fast-forward the cipher */
+            noise_cipherstate_set_nonce
+                (cipher, (((uint64_t)(key_data[32])) << 56) |
+                         (((uint64_t)(key_data[33])) << 48) |
+                         (((uint64_t)(key_data[34])) << 40) |
+                         (((uint64_t)(key_data[35])) << 32) |
+                         (((uint64_t)(key_data[36])) << 24) |
+                         (((uint64_t)(key_data[37])) << 16) |
+                         (((uint64_t)(key_data[38])) <<  8) |
+                          ((uint64_t)(key_data[39])));
 
-        /* Encrypt the private key and compute the MAC value */
-        noise_buffer_set_inout(buf, pcopy.data + pcopy.posn,
-                               pbuf->posn - pcopy.posn - mac_len,
-                               pbuf->posn - pcopy.posn);
-        noise_cipherstate_encrypt_with_ad(cipher, 0, 0, &buf);
+            /* Encrypt the private key and compute the MAC value */
+            noise_buffer_set_inout(buf, pcopy.data + pcopy.posn,
+                                   pbuf->posn - pcopy.posn - mac_len,
+                                   pbuf->posn - pcopy.posn);
+            err = noise_cipherstate_encrypt_with_ad(cipher, 0, 0, &buf);
+            if (err != NOISE_ERROR_NONE) {
+                /* The nonce is probably the reserved value 2^64 - 1,
+                   which we cannot use.  Generate a new salt and try again */
+                noise_randstate_generate_simple(salt, sizeof(salt));
+                retry = 1;
+            }
+        } while (retry);
     }
 
     /* Add the encrypted data to the EncryptedPrivateKey object */
+    if (err == NOISE_ERROR_NONE) {
+        err = Noise_EncryptedPrivateKey_set_salt(enc_key, salt, sizeof(salt));
+    }
     if (err == NOISE_ERROR_NONE) {
         err = Noise_EncryptedPrivateKey_set_encrypted_data
             (enc_key, pcopy.data + pcopy.posn, pbuf->posn - pcopy.posn);

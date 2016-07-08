@@ -134,7 +134,7 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
 
     /* Fast-forward the nonce to just before the rollover.  We will be able
        to encrypt one more block, and then the next request will be rejected */
-    compare(noise_cipherstate_set_nonce(state, 0xFFFFFFFFFFFFFFFFULL),
+    compare(noise_cipherstate_set_nonce(state, 0xFFFFFFFFFFFFFFFEULL),
             NOISE_ERROR_NONE);
     noise_buffer_set_inout(mbuf, buffer, pt_len, sizeof(buffer));
     compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
@@ -160,7 +160,7 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
 
     /* Fast-forward the nonce to just before the rollover.  We will be able
        to decrypt one more block, and then the next request will be rejected */
-    compare(noise_cipherstate_set_nonce(state, 0xFFFFFFFFFFFFFFFFULL),
+    compare(noise_cipherstate_set_nonce(state, 0xFFFFFFFFFFFFFFFEULL),
             NOISE_ERROR_NONE);
     noise_buffer_set_input(mbuf, buffer, pt_len + mac_len);
     compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
