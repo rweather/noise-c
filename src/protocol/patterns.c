@@ -435,55 +435,6 @@ static uint8_t const noise_pattern_XXfallback[] = {
 };
 
 /**
- * \brief Token sequence for handshake pattern "NXfallback".
- *
- * @code
- * Noise_NXfallback(s, re):
- *   <- e
- *   ...
- *   -> e, dhee, s, dhse
- * @endcode
- */
-static uint8_t const noise_pattern_NXfallback[] = {
-    NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
-    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
-    NOISE_PAT_FLAG_REMOTE_EPHEM_REQ,
-
-    NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
-    NOISE_TOKEN_END
-};
-
-/**
- * \brief Token sequence for handshake pattern "IXfallback".
- *
- * @code
- * Noise_IXfallback(s, rs):
- *   <- e, s
- *   ...
- *   -> e, dhee, dhes, s, dhse
- * @endcode
- */
-static uint8_t const noise_pattern_IXfallback[] = {
-    NOISE_PAT_FLAG_LOCAL_STATIC |
-    NOISE_PAT_FLAG_LOCAL_EPHEMERAL |
-    NOISE_PAT_FLAG_REMOTE_STATIC |
-    NOISE_PAT_FLAG_REMOTE_EPHEMERAL |
-    NOISE_PAT_FLAG_REMOTE_REQUIRED |
-    NOISE_PAT_FLAG_REMOTE_EPHEM_REQ,
-
-    NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
-    NOISE_TOKEN_END
-};
-
-/**
  * \brief Token sequence for handshake pattern "Xnoidh".
  *
  * @code
@@ -670,8 +621,6 @@ const uint8_t *noise_pattern_lookup(int id)
     case NOISE_PATTERN_IK:          return noise_pattern_IK;
     case NOISE_PATTERN_IX:          return noise_pattern_IX;
     case NOISE_PATTERN_XX_FALLBACK: return noise_pattern_XXfallback;
-    case NOISE_PATTERN_NX_FALLBACK: return noise_pattern_NXfallback;
-    case NOISE_PATTERN_IX_FALLBACK: return noise_pattern_IXfallback;
     case NOISE_PATTERN_X_NOIDH:     return noise_pattern_Xnoidh;
     case NOISE_PATTERN_NX_NOIDH:    return noise_pattern_NXnoidh;
     case NOISE_PATTERN_XX_NOIDH:    return noise_pattern_XXnoidh;

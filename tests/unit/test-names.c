@@ -81,8 +81,6 @@ static void test_id_mappings(void)
     check_id("IK", NOISE_PATTERN_IK);
     check_id("IX", NOISE_PATTERN_IX);
     check_id("XXfallback", NOISE_PATTERN_XX_FALLBACK);
-    check_id("NXfallback", NOISE_PATTERN_NX_FALLBACK);
-    check_id("IXfallback", NOISE_PATTERN_IX_FALLBACK);
     check_id("Xnoidh", NOISE_PATTERN_X_NOIDH);
     check_id("NXnoidh", NOISE_PATTERN_NX_NOIDH);
     check_id("XXnoidh", NOISE_PATTERN_XX_NOIDH);

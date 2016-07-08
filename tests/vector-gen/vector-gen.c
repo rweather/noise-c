@@ -651,9 +651,11 @@ int main(int argc, char *argv[])
         /* Output fallback patterns */
         static int const fallback_patterns[] = {
             NOISE_PATTERN_IK, NOISE_PATTERN_XX_FALLBACK, 1,
+#if 0
             NOISE_PATTERN_NK, NOISE_PATTERN_NX_FALLBACK, 1,
             /* Note: PSK's don't work with IKnoidh / IXfallback */
             NOISE_PATTERN_IK_NOIDH, NOISE_PATTERN_IX_FALLBACK, 0,
+#endif
             0
         };
         for (index = 0; fallback_patterns[index] != 0; index += 3) {
