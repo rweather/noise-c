@@ -373,6 +373,13 @@
  * begin data session communications.
  */
 
+/**
+ * \def NOISE_ACTION_COMPLETE
+ * \brief The HandshakeState has flagged that the handshake is over and
+ * and that noise_handshake_split() has been called to begin data session
+ * communications.
+ */
+
 /**@}*/
 
 /**

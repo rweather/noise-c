@@ -961,6 +961,8 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
  * \return NOISE_ACTION_SPLIT if the handshake has finished successfully
  * and the application should call noise_handshakestate_split() to
  * obtain the CipherState objects for the data phase of the protocol.
+ * \return NOISE_ACTION_COMPLETE if the handshake has finished successfully
+ * and noise_handshakestate_split() has been called.
  *
  * \sa noise_handshakestate_write_message(),
  * noise_handshakestate_read_message(), noise_handshakestate_split(),
@@ -1506,6 +1508,7 @@ int noise_handshakestate_split_with_key
      const uint8_t *secondary_key, size_t secondary_key_len)
 {
     int swap;
+    int err;
 
     /* Validate the parameters */
     if (!state)
@@ -1526,12 +1529,15 @@ int noise_handshakestate_split_with_key
 
     /* Split the CipherState objects out of the SymmetricState */
     if (swap) {
-        return noise_symmetricstate_split
+        err = noise_symmetricstate_split
             (state->symmetric, receive, send, secondary_key, secondary_key_len);
     } else {
-        return noise_symmetricstate_split
+        err = noise_symmetricstate_split
             (state->symmetric, send, receive, secondary_key, secondary_key_len);
     }
+    if (err == NOISE_ERROR_NONE)
+        state->action = NOISE_ACTION_COMPLETE;
+    return err;
 }
 
 /**
@@ -1571,7 +1577,8 @@ int noise_handshakestate_get_handshake_hash
     /* Validate the parameters */
     if (!state || !hash)
         return NOISE_ERROR_INVALID_PARAM;
-    if (state->action != NOISE_ACTION_SPLIT)
+    if (state->action != NOISE_ACTION_SPLIT &&
+            state->action != NOISE_ACTION_COMPLETE)
         return NOISE_ERROR_INVALID_STATE;
 
     /* Copy the handshake hash into the supplied buffer */
