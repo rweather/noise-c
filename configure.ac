@@ -35,6 +35,8 @@ AC_CHECK_LIB(ws2_32, [_head_libws2_32_a])
 AC_CHECK_LIB(ws2_32, [_head_lib32_libws2_32_a])
 AC_CHECK_LIB(ws2_32, [_head_lib64_libws2_32_a])
 
+AC_CHECK_FUNCS([poll])
+
 AC_SUBST([WARNING_FLAGS],[-Wall])
 AC_SUBST([GOLDILOCKS_ARCH],[$with_ed448_arch])
 

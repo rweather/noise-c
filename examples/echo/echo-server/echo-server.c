@@ -79,7 +79,7 @@ static void usage(const char *progname)
 {
     fprintf(stderr, "Usage: %s [options] port\n\n", progname);
     fprintf(stderr, "Options:\n\n");
-    fprintf(stderr, "    --key-dir-key=directory, -k directory\n");
+    fprintf(stderr, "    --key-dir=directory, -k directory\n");
     fprintf(stderr, "        Directory containing the client and server keys.\n\n");
     fprintf(stderr, "    --psk=value, -p value\n");
     fprintf(stderr, "        Pre-shared key value to use.\n\n");

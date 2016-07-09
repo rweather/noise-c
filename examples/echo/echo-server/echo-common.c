@@ -26,9 +26,11 @@
 #include <stdlib.h>
 #if defined(__WIN32__) || defined(WIN32)
 #include <winsock2.h>
+#include <ws2tcpip.h>
 typedef int socklen_t;
 typedef BOOL sockopt_type;
 #define MSG_NOSIGNAL 0
+#undef HAVE_POLL
 #else
 #include <unistd.h>
 #include <signal.h>
@@ -36,10 +38,14 @@ typedef BOOL sockopt_type;
 #include <sys/socket.h>
 #include <sys/wait.h>
 #include <netinet/ip.h>
+#include <netinet/ip6.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#if HAVE_POLL
+#include <poll.h>
+#endif
 #include <errno.h>
 #define closesocket(x)  close((x))
 typedef int sockopt_type;
@@ -262,45 +268,56 @@ int echo_load_public_key(const char *filename, uint8_t *key, size_t len)
    if an error occurs while creating the socket or trying to connect. */
 int echo_connect(const char *hostname, int port)
 {
-    struct sockaddr_in addr;
-    struct hostent *ent;
-    int fd;
+    struct addrinfo hints;
+    struct addrinfo *result = 0;
+    struct addrinfo *current;
+    int fd, err;
     sockopt_type opt;
+    char service[64];
 
-    /* Look up the address of the remote party (IPv4 only at present) */
-    memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(port);
-    addr.sin_addr.s_addr = inet_addr(hostname);
-    if (addr.sin_addr.s_addr == INADDR_NONE) {
-        ent = gethostbyname(hostname);
-        if (!ent) {
-            fprintf(stderr, "%s: Unknown hostname\n", hostname);
+    /* Look up the address of the remote party */
+    snprintf(service, sizeof(service), "%d", port);
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    err = getaddrinfo(hostname, service, &hints, &result);
+    if (err != 0) {
+        fprintf(stderr, "%s: %s\n", hostname, gai_strerror(err));
+        return -1;
+    }
+
+    /* Try each of the return addresses in turn until one connects */
+    for (current = result; current != 0; current = current->ai_next) {
+        /* Create the socket and set some useful options on it */
+        fd = socket(current->ai_family, current->ai_socktype,
+                    current->ai_protocol);
+        if (fd < 0)
+            continue;
+        opt = 1;
+        if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY,
+                       (const void *)&opt, sizeof(opt)) < 0) {
+            perror("setsockopt TCP_NODELAY");
+            closesocket(fd);
+            freeaddrinfo(result);
             return -1;
         }
-        memcpy(&(addr.sin_addr), ent->h_addr_list[0], sizeof(addr.sin_addr));
+
+        /* Attempt to connect to the remote party using this address */
+        if (connect(fd, current->ai_addr, current->ai_addrlen) < 0) {
+            perror("connect");
+            closesocket(fd);
+            continue;
+        }
+
+        /* We are connected */
+        freeaddrinfo(result);
+        return fd;
     }
 
-    /* Create the socket and set some useful options on it */
-    fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd < 0) {
-        perror("socket");
-        return -1;
-    }
-    opt = 1;
-    if (setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (const void *)&opt, sizeof(opt)) < 0) {
-        perror("setsockopt TCP_NODELAY");
-        closesocket(fd);
-        return -1;
-    }
-
-    /* Connect to the remote party */
-    if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("connect");
-        closesocket(fd);
-        return -1;
-    }
-    return fd;
+    /* If we get here, then none of the returned addresses worked */
+    fprintf(stderr, "%s: Could not connect\n", hostname);
+    freeaddrinfo(result);
+    return -1;
 }
 
 #if !(defined(__WIN32__) || defined(WIN32))
@@ -312,6 +329,9 @@ static void sigchld_handler(int sig)
 
 #endif
 
+/* Maximum number of addresses we can listen on */
+#define MAX_LISTEN 4
+
 /* Accepts an incoming connection from an echo client.  Returns the file
    descriptor of the socket to use to communicate with the client.
 
@@ -320,57 +340,156 @@ static void sigchld_handler(int sig)
    never return from this function. */
 int echo_accept(int port)
 {
-    int listen_fd;
-    int accept_fd;
+    struct addrinfo hints;
+    struct addrinfo *result = 0;
+    struct addrinfo *current;
+#if HAVE_POLL
+    struct pollfd poll_fd[MAX_LISTEN];
+#endif
+    int listen_fd[MAX_LISTEN];
+    int num_listen = 0;
+    int fd, accept_fd;
+    int err, index;
     sockopt_type opt;
-    struct sockaddr_in addr;
+    struct sockaddr_storage addr;
     socklen_t addrlen;
+    char service[64];
+    int seenIPV4 = 0;
 
 #if !(defined(__WIN32__) || defined(WIN32))
     /* We will need SIGCHLD signals to clean up child processes */
     signal(SIGCHLD, sigchld_handler);
 #endif
 
-    /* Create the listening socket and bind it to the port */
-    listen_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (listen_fd < 0) {
-        perror("socket");
+    /* Ask getaddrinfo() for a list of socket addresses to bind to */
+    snprintf(service, sizeof(service), "%d", port);
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE;
+    err = getaddrinfo(NULL, service, &hints, &result);
+    if (err != 0) {
+        fprintf(stderr, "Could not find an address to bind to: %s\n",
+                gai_strerror(err));
         exit(1);
     }
-    opt = 1;
-    if (setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, (const void *)&opt, sizeof(opt)) < 0) {
-        perror("setsockopt SO_REUSEADDR");
-        closesocket(listen_fd);
-        exit(1);
+
+    /* Bind to all addresses we can */
+    memset(listen_fd, 0, sizeof(listen_fd));
+    for (current = result; current != 0 && num_listen < MAX_LISTEN;
+            current = current->ai_next) {
+        fd = socket(current->ai_family, current->ai_socktype,
+                    current->ai_protocol);
+        if (fd < 0)
+            continue;
+        opt = 1;
+        if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR,
+                       (const void *)&opt, sizeof(opt)) < 0) {
+            perror("setsockopt SO_REUSEADDR");
+            closesocket(fd);
+            exit(1);
+        }
+        if (current->ai_family == AF_INET)
+            seenIPV4 = 1;
+#if defined(IPV6_V6ONLY) && defined(IPPROTO_IPV6)
+        if (current->ai_family == AF_INET6 && seenIPV4) {
+            /* We're trying to bind to both IPv4 and IPv6.
+               Set the IPv6-only option or the second bind
+               attempt may fail.  If the option doesn't work,
+               then let the second bind fail below anyway. */
+            setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY,
+                       (const void *)&opt, sizeof(opt));
+        }
+#endif
+        if (bind(fd, current->ai_addr, current->ai_addrlen) < 0) {
+            perror("bind");
+            closesocket(fd);
+            continue;
+        }
+        if (listen(fd, 5) < 0) {
+            closesocket(fd);
+            continue;
+        }
+        listen_fd[num_listen] = fd;
+#if HAVE_POLL
+        poll_fd[num_listen].fd = fd;
+        poll_fd[num_listen].events = POLLIN;
+        poll_fd[num_listen].revents = 0;
+#endif
+        ++num_listen;
     }
-    memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(port);
-    if (bind(listen_fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("bind");
-        closesocket(listen_fd);
-        exit(1);
-    }
-    if (listen(listen_fd, 5) < 0) {
-        perror("listen");
-        closesocket(listen_fd);
+    freeaddrinfo(result);
+
+    /* If we couldn't bind to anything, then fail */
+    if (!num_listen) {
+        fprintf(stderr, "Could not bind to the specified port on any address\n");
         exit(1);
     }
 
     /* Loop forever waiting for incoming connections */
     accept_fd = -1;
     for (;;) {
+        /* Wait for one of the descriptors to be ready to accept() */
+#if HAVE_POLL
+        for (index = 0; index < num_listen; ++index)
+            poll_fd[index].revents = 0;
+        err = poll(poll_fd, num_listen, -1);
+        if (err < 0) {
+            if (errno == EINTR) {
+                /* Interrupted by a system call.  This is probably due to a
+                   child process terminating.  Clean up any waiting children. */
+                int status;
+                while (waitpid(-1, &status, WNOHANG) >= 0)
+                    ;   /* Do nothing */
+                continue;
+            }
+            perror("poll");
+            exit(1);
+        }
+        fd = -1;
+        for (index = 0; index < num_listen; ++index) {
+            if (poll_fd[index].revents != 0) {
+                fd = listen_fd[index];
+                break;
+            }
+        }
+        if (fd == -1)
+            continue;
+#else
+        fd_set read_set;
+        int nfds = 0;
+        FD_ZERO(&read_set);
+        for (index = 0; index < num_listen; ++index) {
+            FD_SET(listen_fd[index], &read_set);
+            if (listen_fd[index] >= nfds)
+                nfds = listen_fd[index] + 1;
+        }
+        err = select(nfds, &read_set, NULL, NULL, NULL);
+        if (err <= 0)
+            continue;
+        fd = -1;
+        for (index = 0; index < num_listen; ++index) {
+            if (FD_ISSET(listen_fd[index], &read_set)) {
+                fd = listen_fd[index];
+                break;
+            }
+        }
+        if (fd == -1)
+            continue;
+#endif
+
+        /* Accept the incoming connection */
         memset(&addr, 0, sizeof(addr));
         addrlen = sizeof(addr);
-        accept_fd = accept(listen_fd, (struct sockaddr *)&addr, &addrlen);
+        accept_fd = accept(fd, (struct sockaddr *)&addr, &addrlen);
 #if defined(__WIN32__) || defined(WIN32)
         if (accept_fd >= 0) {
             /* Win32 doesn't have a direct equivalent to fork so merely
-               close the listening socket and return.  This means that
+               close the listening sockets and return.  This means that
                the server can only handle a single connection on Win32.
                Fix this later by using threads to handle clients instead. */
-            closesocket(listen_fd);
+            for (index = 0; index < num_listen; ++index)
+                closesocket(listen_fd[index]);
             break;
         }
 #else
@@ -380,11 +499,13 @@ int echo_accept(int port)
             if (pid < 0) {
                 perror("fork");
                 closesocket(accept_fd);
-                closesocket(listen_fd);
+                for (index = 0; index < num_listen; ++index)
+                    closesocket(listen_fd[index]);
                 exit(1);
             } else if (pid == 0) {
                 /* In the child process */
-                closesocket(listen_fd);
+                for (index = 0; index < num_listen; ++index)
+                    closesocket(listen_fd[index]);
                 break;
             } else {
                 /* In the parent process */
@@ -398,7 +519,8 @@ int echo_accept(int port)
                 ;   /* Do nothing */
         } else {
             perror("accept");
-            closesocket(listen_fd);
+            for (index = 0; index < num_listen; ++index)
+                closesocket(listen_fd[index]);
             exit(1);
         }
 #endif
