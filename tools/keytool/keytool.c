@@ -92,6 +92,10 @@ void report_error(const char *file, long line, int err)
 
 char *ask_for_passphrase(int confirm)
 {
+#if defined(__WIN32__) || defined(WIN32)
+    /* TODO */
+    return 0;
+#else
     char *pp = getpass("Passphrase: ");
     char *np;
     if (!pp) {
@@ -115,4 +119,5 @@ char *ask_for_passphrase(int confirm)
     }
     noise_clean(np, strlen(np));
     return passphrase;
+#endif
 }
