@@ -47,3 +47,8 @@ ed25519:
     Reference implementation of the Ed25519 signature signature algorithm.
     https://github.com/floodyberry/ed25519-donna.git
     Public domain
+
+newhope
+    Reference New Hope post-quantum key exchange algorithm.
+    https://github.com/tpoeppelmann/newhope.git
+    Public domain

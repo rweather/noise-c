@@ -49,4 +49,21 @@ libnoiseprotocol_a_SOURCES = \
 	../crypto/sha2/sha256.c \
 	../crypto/sha2/sha512.c \
 	../crypto/goldilocks/src/p448/@GOLDILOCKS_ARCH@/p448.c \
-	../crypto/ed25519/ed25519.c
+	../crypto/ed25519/ed25519.c \
+	../crypto/newhope/crypto_stream_chacha20.c \
+	../crypto/newhope/crypto_stream_chacha20.h \
+	../crypto/newhope/error_correction.c \
+	../crypto/newhope/error_correction.h \
+	../crypto/newhope/fips202.c \
+	../crypto/newhope/fips202.h \
+	../crypto/newhope/newhope.c \
+	../crypto/newhope/newhope.h \
+	../crypto/newhope/ntt.c \
+	../crypto/newhope/ntt.h \
+	../crypto/newhope/params.h \
+	../crypto/newhope/poly.c \
+	../crypto/newhope/poly.h \
+	../crypto/newhope/precomp.c \
+	../crypto/newhope/randombytes.h \
+	../crypto/newhope/reduce.c \
+	../crypto/newhope/reduce.h
