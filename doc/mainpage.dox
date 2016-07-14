@@ -41,6 +41,17 @@ on other platforms.  Desktop systems will be targeted first and
 then embedded systems.  "Make It Work And Then Make It Work Better"
 is my motto.
 
+\section algorithms Supported Patterns and Algorithms
+
+\li Specification Level: Revision 30
+\li Prefixes: Noise and NoisePSK
+\li Patterns: N, X, K, NN, NK, NX, XN, XK, XX, KN, KK, KX, IN, IK, IX,
+XXfallback, Xnoidh, NXnoidh, XXnoidh, KXnoidh, IKnoidh, IXnoidh
+\li Diffie-Hellman: 25519, 448
+\li Cipher: ChaChaPoly, AESGCM
+\li Hash: BLAKE2s, BLAKE2b, SHA256, SHA512
+\li Other: Support for SSK values
+
 \section major_apis Major API's
 
 \li \ref handshakestate "HandshakeState"
