@@ -91,6 +91,7 @@ NoiseDHState *noise_curve25519_new(void)
     if (!state)
         return 0;
     state->parent.dh_id = NOISE_DH_CURVE25519;
+    state->parent.nulls_allowed = 1;
     state->parent.private_key_len = 32;
     state->parent.public_key_len = 32;
     state->parent.shared_key_len = 32;

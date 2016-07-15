@@ -21,6 +21,7 @@
  */
 
 #include "test-helpers.h"
+#include "protocol/internal.h"
 
 #define MAX_DH_KEY_LEN 80
 
@@ -375,6 +376,25 @@ static void check_dh_generate(int id)
     compare(noise_dhstate_get_dh_id(state2), id);
     shared_key_len = noise_dhstate_get_shared_key_length(state1);
 
+    /* NewHope is "mutual" so Bob's object needs to know about Alice's
+     * so that it will generate Bob's "keypair" with respect to the
+     * parameters in Alice's public key.  Normally this is done by
+     * HandshakeState during a session */
+    if (id == NOISE_DH_NEWHOPE) {
+        state2->mutual = state1;    /* Do we need a proper API for this? */
+        verify(noise_dhstate_is_ephemeral_only(state1));
+        verify(noise_dhstate_is_ephemeral_only(state2));
+
+        /* Key lengths start off configured for Alice */
+        compare(noise_dhstate_get_private_key_length(state1), 2048);
+        compare(noise_dhstate_get_public_key_length(state1), 1824);
+        compare(noise_dhstate_get_private_key_length(state2), 2048);
+        compare(noise_dhstate_get_public_key_length(state2), 1824);
+    } else {
+        verify(!noise_dhstate_is_ephemeral_only(state1));
+        verify(!noise_dhstate_is_ephemeral_only(state2));
+    }
+
     /* Generate keypairs for Alice and Bob */
     compare(noise_dhstate_generate_keypair(state1), NOISE_ERROR_NONE);
     compare(noise_dhstate_generate_keypair(state2), NOISE_ERROR_NONE);
@@ -387,6 +407,14 @@ static void check_dh_generate(int id)
     compare(noise_dhstate_calculate (state2, state1, shared2, shared_key_len),
             NOISE_ERROR_NONE);
     verify(!memcmp(shared1, shared2, shared_key_len));
+
+    /* Check final key lengths for "NewHope" - Bob's will change */
+    if (id == NOISE_DH_NEWHOPE) {
+        compare(noise_dhstate_get_private_key_length(state1), 2048);
+        compare(noise_dhstate_get_public_key_length(state1), 1824);
+        compare(noise_dhstate_get_private_key_length(state2), 2048);
+        compare(noise_dhstate_get_public_key_length(state2), 2048);
+    }
 
     /* Check parameter error conditions */
     compare(noise_dhstate_generate_keypair(0), NOISE_ERROR_INVALID_PARAM);
@@ -401,6 +429,7 @@ static void dhstate_check_generate_keypair(void)
 {
     check_dh_generate(NOISE_DH_CURVE25519);
     check_dh_generate(NOISE_DH_CURVE448);
+    check_dh_generate(NOISE_DH_NEWHOPE);
 }
 
 /* Check other error conditions that can be reported by the functions */

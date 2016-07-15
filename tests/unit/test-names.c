@@ -64,6 +64,7 @@ static void test_id_mappings(void)
 
     check_id("25519", NOISE_DH_CURVE25519);
     check_id("448", NOISE_DH_CURVE448);
+    check_id("NewHope", NOISE_DH_NEWHOPE);
 
     check_id("N", NOISE_PATTERN_N);
     check_id("X", NOISE_PATTERN_X);
@@ -227,6 +228,11 @@ static void test_protocol_names(void)
          NOISE_PREFIX_PSK, NOISE_PATTERN_IK,
          NOISE_DH_CURVE448, NOISE_CIPHER_CHACHAPOLY,
          NOISE_HASH_BLAKE2b);
+    check_protocol_name
+        ("Noise_NN_NewHope_AESGCM_SHA256",
+         NOISE_PREFIX_STANDARD, NOISE_PATTERN_NN,
+         NOISE_DH_NEWHOPE, NOISE_CIPHER_AESGCM,
+         NOISE_HASH_SHA256);
 }
 
 void test_names(void)

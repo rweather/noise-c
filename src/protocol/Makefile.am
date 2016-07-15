@@ -34,6 +34,7 @@ libnoiseprotocol_a_SOURCES = \
 	../backend/ref/cipher-chachapoly.c \
 	../backend/ref/dh-curve25519.c \
 	../backend/ref/dh-curve448.c \
+	../backend/ref/dh-newhope.c \
 	../backend/ref/hash-blake2s.c \
 	../backend/ref/hash-blake2b.c \
 	../backend/ref/hash-sha256.c \

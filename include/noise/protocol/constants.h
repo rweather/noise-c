@@ -50,6 +50,7 @@ extern "C" {
 #define NOISE_DH_CATEGORY               NOISE_ID('D', 0)
 #define NOISE_DH_CURVE25519             NOISE_ID('D', 1)
 #define NOISE_DH_CURVE448               NOISE_ID('D', 2)
+#define NOISE_DH_NEWHOPE                NOISE_ID('D', 3)
 
 /* Handshake patterns */
 #define NOISE_PATTERN_NONE              0

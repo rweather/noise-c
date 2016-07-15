@@ -39,6 +39,7 @@ int noise_dhstate_get_dh_id(const NoiseDHState *state);
 size_t noise_dhstate_get_public_key_length(const NoiseDHState *state);
 size_t noise_dhstate_get_private_key_length(const NoiseDHState *state);
 size_t noise_dhstate_get_shared_key_length(const NoiseDHState *state);
+int noise_dhstate_is_ephemeral_only(const NoiseDHState *state);
 int noise_dhstate_has_keypair(const NoiseDHState *state);
 int noise_dhstate_has_public_key(const NoiseDHState *state);
 int noise_dhstate_generate_keypair(NoiseDHState *state);

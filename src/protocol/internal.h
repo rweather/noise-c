@@ -224,7 +224,13 @@ struct NoiseDHState_s
     int dh_id;
 
     /** \brief The type of key stored within this DHState object */
-    uint16_t key_type;
+    uint8_t key_type;
+
+    /** \brief Non-zero if this algorithm only supports ephemeral keys */
+    uint8_t ephemeral_only : 1;
+
+    /** \brief Non-zero if null public keys are allowed with this algorithm */
+    uint8_t nulls_allowed : 1;
 
     /** \brief Length of the private key for this algorithm in bytes */
     uint16_t private_key_len;
@@ -240,6 +246,9 @@ struct NoiseDHState_s
 
     /** \brief Points to the public key in the subclass state */
     uint8_t *public_key;
+
+    /** \brief Mutual DH object for ephemeral-only key exchanges */
+    NoiseDHState *mutual;
 
     /**
      * \brief Generates a new key pair for this Diffie-Hellman algorithm.
@@ -614,6 +623,7 @@ NoiseHashState *noise_sha512_new(void);
 
 NoiseDHState *noise_curve25519_new(void);
 NoiseDHState *noise_curve448_new(void);
+NoiseDHState *noise_newhope_new(void);
 
 NoiseSignState *noise_ed25519_new(void);
 

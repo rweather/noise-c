@@ -94,6 +94,7 @@ int echo_get_protocol_id(EchoProtocolId *id, const char *name)
     switch (nid.dh_id) {
     case NOISE_DH_CURVE25519:       id->dh = ECHO_DH_25519; break;
     case NOISE_DH_CURVE448:         id->dh = ECHO_DH_448; break;
+    case NOISE_DH_NEWHOPE:          id->dh = ECHO_DH_NEWHOPE; break;
     default:                        ok = 0; break;
     }
 
@@ -146,6 +147,7 @@ int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id)
     switch (id->dh) {
     case ECHO_DH_25519:             nid->dh_id = NOISE_DH_CURVE25519; break;
     case ECHO_DH_448:               nid->dh_id = NOISE_DH_CURVE448; break;
+    case ECHO_DH_NEWHOPE:           nid->dh_id = NOISE_DH_NEWHOPE; break;
     default:                        ok = 0;
     }
 

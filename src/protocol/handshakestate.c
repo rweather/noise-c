@@ -149,6 +149,23 @@ static int noise_handshakestate_new
     if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE)
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_ephemeral), dh_id);
 
+    /* If the DH algorithm is ephemeral-only, then we need to apply some
+     * extra checks on the pattern: essentially, only "NN" is possible */
+    if (err == NOISE_ERROR_NONE) {
+        if ((*state)->dh_local_static && (*state)->dh_local_static->ephemeral_only)
+            err = NOISE_ERROR_NOT_APPLICABLE;
+        if ((*state)->dh_remote_static && (*state)->dh_remote_static->ephemeral_only)
+            err = NOISE_ERROR_NOT_APPLICABLE;
+        if ((*state)->dh_local_ephemeral && (*state)->dh_local_ephemeral->ephemeral_only) {
+            if (!((*state)->dh_remote_ephemeral))
+                err = NOISE_ERROR_NOT_APPLICABLE;
+            else
+                (*state)->dh_local_ephemeral->mutual = (*state)->dh_remote_ephemeral;
+        } else if ((*state)->dh_remote_ephemeral && (*state)->dh_remote_ephemeral->ephemeral_only) {
+            err = NOISE_ERROR_NOT_APPLICABLE;
+        }
+    }
+
     /* Bail out if we had an error trying to create the DHState objects */
     if (err != NOISE_ERROR_NONE) {
         noise_handshakestate_free(*state);
@@ -175,8 +192,8 @@ static int noise_handshakestate_new
  * \return NOISE_ERROR_UNKNOWN_ID if the \a protocol_id is unknown.
  * \return NOISE_ERROR_INVALID_LENGTH if the full name corresponding to
  * \a protocol_id is too long.
- * \return NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output
- * or the cipher key are incompatible.
+ * \return NOISE_ERROR_NOT_APPLICABLE if the combination of algorithm
+ * identifiers in \a protocol_id is not permitted.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new HandshakeState object.
  *
@@ -221,8 +238,8 @@ int noise_handshakestate_new_by_id
  * is NULL, or \a role is not one of NOISE_ROLE_INITIATOR or
  * NOISE_ROLE_RESPONDER.
  * \return NOISE_ERROR_UNKNOWN_NAME if the \a protocol_name is unknown.
- * \return NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output
- * or the cipher key are incompatible.
+ * \return NOISE_ERROR_NOT_APPLICABLE if the combination of algorithm
+ * identifiers in \a protocol_id is not permitted.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new HandshakeState object.
  *
@@ -1047,7 +1064,6 @@ static int noise_handshakestate_write
                then the ephemeral key may have already been provided. */
             if (!state->dh_local_ephemeral)
                 return NOISE_ERROR_INVALID_STATE;
-            len = state->dh_local_ephemeral->public_key_len;
             if (!state->dh_fixed_ephemeral) {
                 err = noise_dhstate_generate_keypair(state->dh_local_ephemeral);
             } else {
@@ -1061,6 +1077,7 @@ static int noise_handshakestate_write
             }
             if (err != NOISE_ERROR_NONE)
                 break;
+            len = state->dh_local_ephemeral->public_key_len;
             if (rest.max_size < len)
                 return NOISE_ERROR_INVALID_LENGTH;
             memcpy(rest.data, state->dh_local_ephemeral->public_key, len);

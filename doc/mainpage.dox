@@ -48,9 +48,15 @@ is my motto.
 \li Patterns: N, X, K, NN, NK, NX, XN, XK, XX, KN, KK, KX, IN, IK, IX,
 XXfallback, Xnoidh, NXnoidh, XXnoidh, KXnoidh, IKnoidh, IXnoidh
 \li Diffie-Hellman: 25519, 448
+\li Post-Quantum Diffie-Hellman: NewHope (experimental)
 \li Cipher: ChaChaPoly, AESGCM
 \li Hash: BLAKE2s, BLAKE2b, SHA256, SHA512
 \li Other: Support for SSK values
+
+Note that the post-quantum "NewHope" algorithm only works with the "NN"
+handshake pattern because it does not support long-term static keys.
+For more information, see the <a href="https://github.com/noiseprotocol/noise_wiki/wiki/Post-Quantum-Noise-with-New-Hope">Post-Quantum Noise with New Hope</a>
+page on the Noise wiki.
 
 \section major_apis Major API's
 

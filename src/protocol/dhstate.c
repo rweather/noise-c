@@ -81,6 +81,10 @@ int noise_dhstate_new_by_id(NoiseDHState **state, int id)
         *state = noise_curve448_new();
         break;
 
+    case NOISE_DH_NEWHOPE:
+        *state = noise_newhope_new();
+        break;
+
     default:
         return NOISE_ERROR_UNKNOWN_ID;
     }
@@ -209,6 +213,23 @@ size_t noise_dhstate_get_private_key_length(const NoiseDHState *state)
 size_t noise_dhstate_get_shared_key_length(const NoiseDHState *state)
 {
     return state ? state->shared_key_len : 0;
+}
+
+/**
+ * \brief Determine if a DHState object only supports ephemeral keys.
+ *
+ * \param state The DHState object.
+ *
+ * \return Non-zero if the DHState object only supports ephemeral keys,
+ * or zero if the DHState object supports both static and ephemeral keys.
+ *
+ * Some algorithms like "NewHope" can only be used to generate
+ * ephemeral keys during a session and have no support for long-term
+ * static keys.
+ */
+int noise_dhstate_is_ephemeral_only(const NoiseDHState *state)
+{
+    return state ? state->ephemeral_only : 0;
 }
 
 /**
@@ -457,7 +478,7 @@ int noise_dhstate_set_public_key
 
     /* Validate the public key with the back end and then ignore the
        result if the public key is the special null value */
-    is_null = noise_is_zero(public_key, public_key_len);
+    is_null = state->nulls_allowed & noise_is_zero(public_key, public_key_len);
     err = (*(state->validate_public_key))(state, public_key);
     err &= (is_null - 1);
     if (err != NOISE_ERROR_NONE)
@@ -536,10 +557,12 @@ int noise_dhstate_set_null_public_key(NoiseDHState *state)
  */
 int noise_dhstate_is_null_public_key(const NoiseDHState *state)
 {
-    if (state && state->key_type != NOISE_KEY_TYPE_NO_KEY)
-        return noise_is_zero(state->public_key, state->public_key_len);
-    else
+    if (state && state->key_type != NOISE_KEY_TYPE_NO_KEY) {
+        return state->nulls_allowed &&
+               noise_is_zero(state->public_key, state->public_key_len);
+    } else {
         return 0;
+    }
 }
 
 /**
@@ -635,7 +658,7 @@ int noise_dhstate_calculate
     /* If the public key is null, then the output must be null too.
        We check for null now, but still perform the normal evaluation.
        At the end we will null out the result in constant time */
-    is_null = noise_is_zero
+    is_null = public_key_state->nulls_allowed & noise_is_zero
         (public_key_state->public_key, public_key_state->public_key_len);
 
     /* Perform the calculation */

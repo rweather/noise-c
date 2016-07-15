@@ -85,13 +85,13 @@ static int noise_symmetricstate_new
     hash_len = noise_hashstate_get_hash_length(new_state->hash);
     if (hash_len > NOISE_MAX_HASHLEN) {
         noise_symmetricstate_free(new_state);
-        return NOISE_ERROR_INVALID_LENGTH;
+        return NOISE_ERROR_NOT_APPLICABLE;
     }
 
     /* The key length must also be less than or equal to the hash length */
     if (noise_cipherstate_get_key_length(new_state->cipher) > hash_len) {
         noise_symmetricstate_free(new_state);
-        return NOISE_ERROR_INVALID_LENGTH;
+        return NOISE_ERROR_NOT_APPLICABLE;
     }
 
     /* Initialize the chaining key "ck" and the handshake hash "h" from
@@ -124,7 +124,7 @@ static int noise_symmetricstate_new
  * \return NOISE_ERROR_UNKNOWN_ID if the protocol \a id is unknown.
  * \return NOISE_ERROR_INVALID_LENGTH if the full name corresponding
  * to \a id is too long.
- * \return NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output
+ * \return NOISE_ERROR_NOT_APPLICABLE if the lengths of the hash output
  * or the cipher key are incompatible.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new SymmetricState object.
@@ -165,7 +165,7 @@ int noise_symmetricstate_new_by_id
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a name is NULL.
  * \return NOISE_ERROR_UNKNOWN_NAME if the protocol \a name is unknown.
- * \return NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output
+ * \return NOISE_ERROR_NOT_APPLICABLE if the lengths of the hash output
  * or the cipher key are incompatible.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to
  * allocate the new SymmetricState object.

@@ -136,6 +136,12 @@
  * \brief Diffie-Hellman identifier for "448".
  */
 
+/**
+ * \def NOISE_DH_NEWHOPE
+ * \brief Diffie-Hellman identifier for "NewHope" (post-quantum,
+ * ephemeral key exchanges only).
+ */
+
 /**@}*/
 
 /**
