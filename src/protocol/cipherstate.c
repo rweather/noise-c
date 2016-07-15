@@ -48,6 +48,16 @@
  * \brief Opaque object that represents a CipherState.
  */
 
+/** @cond */
+
+/** Maximum length of an encryption key across all back ends */
+#define NOISE_MAX_KEY_LEN   32
+
+/** Maximum length of a MAC value across all back ends */
+#define NOISE_MAX_MAC_LEN   16
+
+/** @endcond */
+
 /**
  * \brief Creates a new CipherState object by its algorithm identifier.
  *
@@ -486,6 +496,61 @@ int noise_cipherstate_decrypt(NoiseCipherState *state, NoiseBuffer *buffer)
 }
 
 /**
+ * \brief Derives key material from the CipherState for use in a future session.
+ *
+ * \param state The CipherState object.
+ * \param data Points to the buffer to fill with derived key material.
+ * \param len The length of the key material, which must be 32.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a data is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a len is not 32.
+ * \return NOISE_ERROR_INVALID_STATE if noise_cipherstate_has_key() is false.
+ *
+ * This function is intended for use with resumption patterns and nested
+ * post-quantum handshakes to generate PSK or SSK key material to pass
+ * from one handshake to another.
+ *
+ * Warning: Every time this function is called it will return the same 32
+ * bytes of key material until such time that noise_cipherstate_init_key()
+ * is called to establish a new encryption key.  This function should
+ * therefore be called only once when the current session is about to be
+ * terminated.
+ */
+int noise_cipherstate_derive(NoiseCipherState *state, uint8_t *data, size_t len)
+{
+    uint8_t buffer[32 + NOISE_MAX_MAC_LEN];
+    uint64_t nonce;
+    int err;
+
+    /* Validate the parameters.  We zero the return data buffer
+       early just in case this function bails out with an error.
+       We don't want to accidentally leak the previous memory
+       contents */
+    if (!data)
+        return NOISE_ERROR_INVALID_PARAM;
+    memset(data, 0, len);
+    if (len != 32)
+        return NOISE_ERROR_INVALID_LENGTH;
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (!state->has_key)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Encrypt a block of zeroes with the reserved nonce value 2^64-1 */
+    memset(buffer, 0, sizeof(buffer));
+    nonce = state->n;
+    state->n = 0xFFFFFFFFFFFFFFFFULL;
+    err = (*(state->encrypt))(state, 0, 0, buffer, len);
+    state->n = nonce;
+
+    /* Discard the MAC and return the ciphertext */
+    memcpy(data, buffer, len);
+    noise_clean(buffer, sizeof(buffer));
+    return err;
+}
+
+/**
  * \brief Sets the nonce value for this cipherstate object.
  *
  * \param state The CipherState object.
@@ -530,7 +595,7 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
  */
 int noise_cipherstate_get_max_key_length(void)
 {
-    return 32;
+    return NOISE_MAX_KEY_LEN;
 }
 
 /**
@@ -540,7 +605,7 @@ int noise_cipherstate_get_max_key_length(void)
  */
 int noise_cipherstate_get_max_mac_length(void)
 {
-    return 16;
+    return NOISE_MAX_MAC_LEN;
 }
 
 /**@}*/
