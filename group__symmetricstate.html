@@ -478,7 +478,7 @@ NOISE_ERROR_UNKNOWN_ID if the protocol <em>id</em> is unknown. </dd>
 <dd>
 NOISE_ERROR_INVALID_LENGTH if the full name corresponding to <em>id</em> is too long. </dd>
 <dd>
-NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output or the cipher key are incompatible. </dd>
+NOISE_ERROR_NOT_APPLICABLE if the lengths of the hash output or the cipher key are incompatible. </dd>
 <dd>
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new SymmetricState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9" title="Frees a SymmetricState object after destroying all sensitive material. ">noise_symmetricstate_free()</a>, <a class="el" href="group__symmetricstate.html#ga29d5f792aa9dc3cbff5609ff0bbce543" title="Creates a new SymmetricState object from a protocol name. ">noise_symmetricstate_new_by_name()</a> </dd></dl>
@@ -525,7 +525,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>name</em> is NULL. </dd>
 <dd>
 NOISE_ERROR_UNKNOWN_NAME if the protocol <em>name</em> is unknown. </dd>
 <dd>
-NOISE_ERROR_INVALID_LENGTH if the lengths of the hash output or the cipher key are incompatible. </dd>
+NOISE_ERROR_NOT_APPLICABLE if the lengths of the hash output or the cipher key are incompatible. </dd>
 <dd>
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new SymmetricState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__symmetricstate.html#ga6577c4265dd0cd484de5485a4b829cb9" title="Frees a SymmetricState object after destroying all sensitive material. ">noise_symmetricstate_free()</a>, <a class="el" href="group__symmetricstate.html#ga8198aa2fea89f65139360558ee622aed" title="Creates a new SymmetricState object from a protocol identifier. ">noise_symmetricstate_new_by_id()</a> </dd></dl>
@@ -611,7 +611,7 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 9 2016 09:48:55 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 15 2016 17:25:54 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

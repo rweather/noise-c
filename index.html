@@ -80,7 +80,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
-<ul><li class="level1"><a href="#major_apis">Major API's</a></li>
+<ul><li class="level1"><a href="#algorithms">Supported Patterns and Algorithms</a></li>
+<li class="level1"><a href="#major_apis">Major API's</a></li>
 <li class="level1"><a href="#supporting_apis">Supporting API's</a></li>
 <li class="level1"><a href="#other_info">Other information</a></li>
 <li class="level1"><a href="#dir_structure">Directory structure</a></li>
@@ -92,6 +93,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="textblock"><p>Noise-C is a plain C implementation of the <a href="http://noiseprotocol.org/">Noise Protocol</a>, intended as a reference implementation. It can also be referred to as "Noisy", which is what you get when you say "Noise-C" too fast. The code is distributed under the terms of the MIT license, with the code available from <a href="https://github.com/rweather/noise-c">github</a>.</p>
 <dl class="section note"><dt>Note</dt><dd>This project is still a work in progress. There is still a lot of cleaning up and example writing to do.</dd></dl>
 <p>The initial target is GNU/Linux systems, because that's what I have, but contributions are definitely welcome to make the code work on other platforms. Desktop systems will be targeted first and then embedded systems. "Make It Work And Then Make It Work Better" is my motto.</p>
+<h1><a class="anchor" id="algorithms"></a>
+Supported Patterns and Algorithms</h1>
+<ul>
+<li>Specification Level: Revision 30 </li>
+<li>Prefixes: Noise and NoisePSK </li>
+<li>Patterns: N, X, K, NN, NK, NX, XN, XK, XX, KN, KK, KX, IN, IK, IX, XXfallback, Xnoidh, NXnoidh, XXnoidh, KXnoidh, IKnoidh, IXnoidh </li>
+<li>Diffie-Hellman: 25519, 448 </li>
+<li>Post-Quantum Diffie-Hellman: NewHope (experimental) </li>
+<li>Cipher: ChaChaPoly, AESGCM </li>
+<li>Hash: BLAKE2s, BLAKE2b, SHA256, SHA512 </li>
+<li>Other: Support for SSK values</li>
+</ul>
+<p>Note that the post-quantum "NewHope" algorithm only works with the "NN" handshake pattern because it does not support long-term static keys. For more information, see the <a href="https://github.com/noiseprotocol/noise_wiki/wiki/Post-Quantum-Noise-with-New-Hope">Post-Quantum Noise with New Hope</a> page on the Noise wiki.</p>
 <h1><a class="anchor" id="major_apis"></a>
 Major API's</h1>
 <ul>
@@ -160,7 +174,7 @@ Contact</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 9 2016 09:48:55 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Jul 15 2016 17:25:54 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
