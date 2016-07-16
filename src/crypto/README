@@ -52,3 +52,8 @@ newhope
     Reference New Hope post-quantum key exchange algorithm.
     https://github.com/tpoeppelmann/newhope.git
     Public domain
+
+sidh
+    Reference Supersingular Isogeny-based Diffie-Hellman (SIDH) algorithm.
+    https://www.microsoft.com/en-us/download/details.aspx?id=52438
+    MIT license

@@ -67,4 +67,13 @@ libnoiseprotocol_a_SOURCES = \
 	../crypto/newhope/precomp.c \
 	../crypto/newhope/randombytes.h \
 	../crypto/newhope/reduce.c \
-	../crypto/newhope/reduce.h
+	../crypto/newhope/reduce.h \
+	../crypto/sidh/ec_isogeny.c \
+	../crypto/sidh/fpx.c \
+	../crypto/sidh/kex.c \
+	../crypto/sidh/SIDH.c \
+	../crypto/sidh/SIDH.h \
+	../crypto/sidh/SIDH_internal.h \
+	../crypto/sidh/SIDH_setup.c \
+	../crypto/sidh/validate.c \
+        ../crypto/sidh/generic/fp_generic.c
