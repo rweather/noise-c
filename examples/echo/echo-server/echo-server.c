@@ -54,6 +54,7 @@ static uint8_t psk[32];
 /* Message buffer for send/receive */
 #define MAX_MESSAGE_LEN 65535
 static uint8_t message[MAX_MESSAGE_LEN + 2];
+static uint8_t inner_message[MAX_MESSAGE_LEN];
 
 /* Curve25519 private key to use when fixed ephemeral mode is selected */
 static uint8_t const fixed_ephemeral_25519[32] = {
@@ -201,15 +202,141 @@ static int initialize_handshake
     return 1;
 }
 
+/* State information for the inner post-quantum handshake */
+typedef struct
+{
+    NoiseHandshakeState *handshake;
+    NoiseCipherState *send;
+    NoiseCipherState *recv;
+    uint8_t ssk[32];
+    size_t ssk_len;
+
+} PQHandshake;
+
+/* Initialize the inner post-quantum handshake object */
+static void pq_init(PQHandshake *pq)
+{
+    pq->handshake = 0;
+    pq->send = 0;
+    pq->recv = 0;
+    pq->ssk_len = 0;
+}
+
+/* Free the inner post-quantum handshake object */
+static void pq_free(PQHandshake *pq)
+{
+    noise_handshakestate_free(pq->handshake);
+    noise_cipherstate_free(pq->send);
+    noise_cipherstate_free(pq->recv);
+    noise_clean(pq->ssk, sizeof(pq->ssk));
+    pq_init(pq);
+}
+
+/* Prepare the outer handshake payload using an inner post-quantum handshake */
+static int pq_prepare_payload(PQHandshake *pq, NoiseBuffer *payload)
+{
+    int action;
+    int err;
+
+    /* If not post-quantum, then the outer payload is empty */
+    if (!pq->handshake) {
+        noise_buffer_set_input(*payload, inner_message, 0);
+        return NOISE_ERROR_NONE;
+    }
+
+    /* Determine what to do based on the PQ state */
+    action = noise_handshakestate_get_action(pq->handshake);
+    if (action == NOISE_ACTION_WRITE_MESSAGE) {
+        /* PQ handshake is still running, call WriteMessage() */
+        noise_buffer_set_output(*payload, inner_message, sizeof(inner_message));
+        return noise_handshakestate_write_message(pq->handshake, payload, NULL);
+    } else if (action == NOISE_ACTION_SPLIT) {
+        /* PQ handshake has completed, call Split() */
+        err = noise_handshakestate_split
+            (pq->handshake, &(pq->send), &(pq->recv));
+        if (err != NOISE_ERROR_NONE)
+            return err;
+    } else if (action != NOISE_ACTION_COMPLETE) {
+        return NOISE_ERROR_INVALID_STATE;
+    }
+
+    /* PQ handshake has finished: encrypt the outgoing payload with
+       the send cipher for the PQ handshake */
+    noise_buffer_set_inout(*payload, inner_message, 0, sizeof(inner_message));
+    return noise_cipherstate_encrypt(pq->send, payload);
+}
+
+/* Unwrap an inner payload that is protected by the post-quantum handshake */
+static int pq_unwrap_payload(PQHandshake *pq, NoiseBuffer *payload)
+{
+    int action;
+    int err;
+
+    /* If not post-quantum, then nothing to do: discard the payload */
+    if (!pq->handshake)
+        return NOISE_ERROR_NONE;
+
+    /* Determine what to do based on the PQ state */
+    action = noise_handshakestate_get_action(pq->handshake);
+    if (action == NOISE_ACTION_READ_MESSAGE) {
+        /* PQ handshake is still running, call ReadMessage() */
+        return noise_handshakestate_read_message(pq->handshake, payload, NULL);
+    } else if (action == NOISE_ACTION_SPLIT) {
+        /* PQ handshake has completed, call Split() */
+        err = noise_handshakestate_split
+            (pq->handshake, &(pq->send), &(pq->recv));
+        if (err != NOISE_ERROR_NONE)
+            return err;
+    } else if (action != NOISE_ACTION_COMPLETE) {
+        return NOISE_ERROR_INVALID_STATE;
+    }
+
+    /* PQ handshake has finished: decrypt the incoming payload with
+       the receive cipher for the PQ handshake */
+    return noise_cipherstate_decrypt(pq->recv, payload);
+}
+
+/* Finishes the post-quantum inner handshake and prepares to
+   split the outer handshake */
+static int pq_split(PQHandshake *pq)
+{
+    int action;
+    int err;
+
+    /* If not post-quantum, then nothing to do (SSK is zero-length) */
+    if (!pq->handshake) {
+        pq->ssk_len = 0;
+        return NOISE_ERROR_NONE;
+    }
+
+    /* Determine what we need to do to split the PQ handshake */
+    action = noise_handshakestate_get_action(pq->handshake);
+    if (action == NOISE_ACTION_SPLIT) {
+        err = noise_handshakestate_split
+            (pq->handshake, &(pq->send), &(pq->recv));
+        if (err != NOISE_ERROR_NONE)
+            return err;
+    } else if (action != NOISE_ACTION_COMPLETE) {
+        return NOISE_ERROR_INVALID_STATE;
+    }
+
+    /* Derive the SSK from the post-quantum receive cipher */
+    pq->ssk_len = sizeof(pq->ssk);
+    return noise_cipherstate_derive(pq->recv, pq->ssk, sizeof(pq->ssk));
+}
+
 int main(int argc, char *argv[])
 {
     NoiseHandshakeState *handshake = 0;
+    PQHandshake pq_handshake;
     NoiseCipherState *send_cipher = 0;
     NoiseCipherState *recv_cipher = 0;
     EchoProtocolId id;
     NoiseProtocolId nid;
     NoiseBuffer mbuf;
+    NoiseBuffer payload;
     size_t message_size;
+    int post_quantum = 0;
     int fd;
     int err;
     int ok = 1;
@@ -254,7 +381,7 @@ int main(int argc, char *argv[])
     }
 
     /* Convert the echo protocol identifier into a Noise protocol identifier */
-    if (ok && !echo_to_noise_protocol_id(&nid, &id)) {
+    if (ok && !echo_to_noise_protocol_id(&nid, &post_quantum, &id)) {
         fprintf(stderr, "Unknown echo protocol identifier\n");
         ok = 0;
     }
@@ -276,6 +403,30 @@ int main(int argc, char *argv[])
         }
     }
 
+    /* Also initialize the nested post-quantum handshake if needed */
+    pq_init(&pq_handshake);
+    if (id.psk & ECHO_PQ_ENABLED) {
+        /* Convert the echo protocol id into Noise_NN_NewHope */
+        NoiseProtocolId nid;
+        EchoProtocolId pq_id = id;
+        pq_id.psk &= ~ECHO_PQ_ENABLED;
+        pq_id.pattern = ECHO_PATTERN_NN;
+        pq_id.dh = ECHO_DH_NEWHOPE;
+        echo_to_noise_protocol_id(&nid, 0, &pq_id);
+
+        /* Construct and initialize the extra handshake object */
+        err = noise_handshakestate_new_by_id
+            (&pq_handshake.handshake, &nid, NOISE_ROLE_RESPONDER);
+        if (err != NOISE_ERROR_NONE) {
+            noise_perror("Post-quantum handshake create", err);
+            ok = 0;
+        } else if (!initialize_handshake
+                      (pq_handshake.handshake, &nid, &pq_id, sizeof(pq_id))) {
+            pq_free(&pq_handshake);
+            ok = 0;
+        }
+    }
+
     /* Start the handshake */
     if (ok) {
         err = noise_handshakestate_start(handshake);
@@ -284,14 +435,27 @@ int main(int argc, char *argv[])
             ok = 0;
         }
     }
+    if (ok && pq_handshake.handshake) {
+        err = noise_handshakestate_start(pq_handshake.handshake);
+        if (err != NOISE_ERROR_NONE) {
+            noise_perror("start pq handshake", err);
+            ok = 0;
+        }
+    }
 
     /* Run the handshake until we run out of things to read or write */
     while (ok) {
         action = noise_handshakestate_get_action(handshake);
         if (action == NOISE_ACTION_WRITE_MESSAGE) {
-            /* Write the next handshake message with a zero-length payload */
+            /* Write the next handshake message */
+            err = pq_prepare_payload(&pq_handshake, &payload);
+            if (err != NOISE_ERROR_NONE) {
+                noise_perror("write pq handshake", err);
+                ok = 0;
+                break;
+            }
             noise_buffer_set_output(mbuf, message + 2, sizeof(message) - 2);
-            err = noise_handshakestate_write_message(handshake, &mbuf, NULL);
+            err = noise_handshakestate_write_message(handshake, &mbuf, &payload);
             if (err != NOISE_ERROR_NONE) {
                 noise_perror("write handshake", err);
                 ok = 0;
@@ -304,16 +468,23 @@ int main(int argc, char *argv[])
                 break;
             }
         } else if (action == NOISE_ACTION_READ_MESSAGE) {
-            /* Read the next handshake message and discard the payload */
+            /* Read the next handshake message */
             message_size = echo_recv(fd, message, sizeof(message));
             if (!message_size) {
                 ok = 0;
                 break;
             }
             noise_buffer_set_input(mbuf, message + 2, message_size - 2);
-            err = noise_handshakestate_read_message(handshake, &mbuf, NULL);
+            noise_buffer_set_output(payload, inner_message, sizeof(inner_message));
+            err = noise_handshakestate_read_message(handshake, &mbuf, &payload);
             if (err != NOISE_ERROR_NONE) {
                 noise_perror("read handshake", err);
+                ok = 0;
+                break;
+            }
+            err = pq_unwrap_payload(&pq_handshake, &payload);
+            if (err != NOISE_ERROR_NONE) {
+                noise_perror("read pq handshake", err);
                 ok = 0;
                 break;
             }
@@ -329,9 +500,20 @@ int main(int argc, char *argv[])
         ok = 0;
     }
 
+    /* Finalize the inner post-quantum handshake if we have one */
+    if (ok) {
+        err = pq_split(&pq_handshake);
+        if (err != NOISE_ERROR_NONE) {
+            noise_perror("split pq handshake", err);
+            ok = 0;
+        }
+    }
+
     /* Split out the two CipherState objects for send and receive */
     if (ok) {
-        err = noise_handshakestate_split(handshake, &send_cipher, &recv_cipher);
+        err = noise_handshakestate_split_with_key
+            (handshake, &send_cipher, &recv_cipher,
+             pq_handshake.ssk, pq_handshake.ssk_len);
         if (err != NOISE_ERROR_NONE) {
             noise_perror("split to start data transfer", err);
             ok = 0;
@@ -341,6 +523,7 @@ int main(int argc, char *argv[])
     /* We no longer need the HandshakeState */
     noise_handshakestate_free(handshake);
     handshake = 0;
+    pq_free(&pq_handshake);
 
     /* Process all incoming data packets and echo them back to the client */
     while (ok) {
