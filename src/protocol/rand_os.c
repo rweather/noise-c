@@ -74,6 +74,7 @@ void noise_rand_bytes(void *bytes, size_t size)
             int len = read(fd, bytes, size);
             if (len == (int)size) {
                 /* We have the bytes we wanted */
+                close(fd);
                 return;
             } else if (len >= 0) {
                 /* Short read - this shouldn't happen.  Treat it as "no data" */
@@ -84,6 +85,7 @@ void noise_rand_bytes(void *bytes, size_t size)
                 break;
             }
         }
+        close(fd);
     } else {
         perror(RANDOM_DEVICE);
     }
