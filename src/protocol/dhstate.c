@@ -753,4 +753,28 @@ int noise_dhstate_get_max_key_length(void)
     return 56;
 }
 
+/**
+ * \brief Links two DHState objects together.
+ *
+ * \param private_key_state The object that will contain the local private key.
+ * \param public_key_state The object that will contain the remote public key.
+ *
+ * This function is intended for use with algorithms like New Hope where
+ * local keypairs may be generated with respect to the parameters from a
+ * remote public key.
+ */
+int noise_dhstate_link
+    (NoiseDHState *private_key_state, NoiseDHState *public_key_state)
+{
+    /* Validate the parameters */
+    if (!private_key_state || !public_key_state)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (private_key_state->dh_id != public_key_state->dh_id)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Link the two objects together */
+    private_key_state->mutual = public_key_state;
+    return NOISE_ERROR_NONE;
+}
+
 /**@}*/

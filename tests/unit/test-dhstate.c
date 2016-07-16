@@ -21,7 +21,6 @@
  */
 
 #include "test-helpers.h"
-#include "protocol/internal.h"
 
 #define MAX_DH_KEY_LEN 80
 
@@ -381,7 +380,7 @@ static void check_dh_generate(int id)
      * parameters in Alice's public key.  Normally this is done by
      * HandshakeState during a session */
     if (id == NOISE_DH_NEWHOPE) {
-        state2->mutual = state1;    /* Do we need a proper API for this? */
+        compare(noise_dhstate_link(state2, state1), NOISE_ERROR_NONE);
         verify(noise_dhstate_is_ephemeral_only(state1));
         verify(noise_dhstate_is_ephemeral_only(state2));
 
