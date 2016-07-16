@@ -42,6 +42,7 @@
 #define BLOCKS_PER_MB   1024
 #define MB_COUNT        200
 #define DH_COUNT        1000
+#define PQ_DH_COUNT     2000
 
 typedef uint64_t timestamp_t;
 
@@ -227,6 +228,59 @@ static void perf_dh_calculate(int id)
     noise_dhstate_free(dh2);
 }
 
+/* Measure the performance of an ephemeral-only DH primitive (e.g NewHope) */
+static void perf_dh_ephemeral_only(int id)
+{
+    char name[64];
+    NoiseDHState *dh1;
+    NoiseDHState *dh2;
+    uint8_t shared_key[32];
+    timestamp_t start, end;
+    int count;
+    double elapsed;
+
+    if (noise_dhstate_new_by_id(&dh1, id) != NOISE_ERROR_NONE)
+        return;
+    if (noise_dhstate_new_by_id(&dh2, id) != NOISE_ERROR_NONE) {
+        noise_dhstate_free(dh1);
+        return;
+    }
+    noise_dhstate_link(dh2, dh1);
+
+    start = current_timestamp();
+    for (count = 0; count < PQ_DH_COUNT; ++count)
+        noise_dhstate_generate_keypair(dh1);
+    end = current_timestamp();
+
+    elapsed = elapsed_to_seconds(start, end) / (double)PQ_DH_COUNT;
+    snprintf(name, sizeof(name), "%s generate",
+             noise_id_to_name(NOISE_DH_CATEGORY, id));
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
+
+    start = current_timestamp();
+    for (count = 0; count < PQ_DH_COUNT; ++count)
+        noise_dhstate_generate_keypair(dh2);
+    end = current_timestamp();
+
+    elapsed = elapsed_to_seconds(start, end) / (double)PQ_DH_COUNT;
+    snprintf(name, sizeof(name), "%s sharedb",
+             noise_id_to_name(NOISE_DH_CATEGORY, id));
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
+
+    start = current_timestamp();
+    for (count = 0; count < PQ_DH_COUNT; ++count)
+        noise_dhstate_calculate(dh1, dh2, shared_key, sizeof(shared_key));
+    end = current_timestamp();
+
+    elapsed = elapsed_to_seconds(start, end) / (double)PQ_DH_COUNT;
+    snprintf(name, sizeof(name), "%s shareda",
+             noise_id_to_name(NOISE_DH_CATEGORY, id));
+    printf("%-20s%8.2f          %8.2f\n", name, 1.0 / elapsed, units / elapsed);
+
+    noise_dhstate_free(dh1);
+    noise_dhstate_free(dh2);
+}
+
 /* Measure the performance of a signing primitive when deriving keys */
 static void perf_sign_derive(int id)
 {
@@ -353,6 +407,7 @@ int main(int argc, char *argv[])
     perf_dh_derive(NOISE_DH_CURVE448);
     perf_dh_calculate(NOISE_DH_CURVE25519);
     perf_dh_calculate(NOISE_DH_CURVE448);
+    perf_dh_ephemeral_only(NOISE_DH_NEWHOPE);
 
     /* Measure the performance of the signing primitives */
     perf_sign_derive(NOISE_SIGN_ED25519);
