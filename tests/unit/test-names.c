@@ -65,6 +65,7 @@ static void test_id_mappings(void)
     check_id("25519", NOISE_DH_CURVE25519);
     check_id("448", NOISE_DH_CURVE448);
     check_id("NewHope", NOISE_DH_NEWHOPE);
+    check_id("SIDHp751", NOISE_DH_SIDHP751);
 
     check_id("N", NOISE_PATTERN_N);
     check_id("X", NOISE_PATTERN_X);

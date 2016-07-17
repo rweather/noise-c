@@ -54,6 +54,7 @@
 #define ECHO_DH_25519               0x00
 #define ECHO_DH_448                 0x01
 #define ECHO_DH_NEWHOPE             0x02
+#define ECHO_DH_SIDHP751            0x03
 
 #define ECHO_HASH_SHA256            0x00
 #define ECHO_HASH_SHA512            0x01

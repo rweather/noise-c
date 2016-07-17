@@ -68,6 +68,7 @@ static NoiseIdMapping const algorithm_names[] = {
     {NOISE_DH_CURVE25519,       "25519",         5},
     {NOISE_DH_CURVE448,         "448",           3},
     {NOISE_DH_NEWHOPE,          "NewHope",       7},
+    {NOISE_DH_SIDHP751,         "SIDHp751",      8},
 
     /* Handshake patterns */
     {NOISE_PATTERN_N,           "N",             1},

@@ -85,6 +85,10 @@ int noise_dhstate_new_by_id(NoiseDHState **state, int id)
         *state = noise_newhope_new();
         break;
 
+    case NOISE_DH_SIDHP751:
+        *state = noise_sidhp751_new();
+        break;
+
     default:
         return NOISE_ERROR_UNKNOWN_ID;
     }

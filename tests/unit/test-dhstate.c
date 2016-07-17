@@ -22,7 +22,7 @@
 
 #include "test-helpers.h"
 
-#define MAX_DH_KEY_LEN 80
+#define MAX_DH_KEY_LEN 256
 
 /* Check raw DH output against test vectors */
 static void check_dh(int id, size_t private_key_len, size_t public_key_len,
@@ -389,6 +389,10 @@ static void check_dh_generate(int id)
         compare(noise_dhstate_get_public_key_length(state1), 1824);
         compare(noise_dhstate_get_private_key_length(state2), 2048);
         compare(noise_dhstate_get_public_key_length(state2), 1824);
+    } else if (id == NOISE_DH_SIDHP751) {
+        compare(noise_dhstate_link(state2, state1), NOISE_ERROR_NONE);
+        verify(noise_dhstate_is_ephemeral_only(state1));
+        verify(noise_dhstate_is_ephemeral_only(state2));
     } else {
         verify(!noise_dhstate_is_ephemeral_only(state1));
         verify(!noise_dhstate_is_ephemeral_only(state2));
@@ -429,6 +433,7 @@ static void dhstate_check_generate_keypair(void)
     check_dh_generate(NOISE_DH_CURVE25519);
     check_dh_generate(NOISE_DH_CURVE448);
     check_dh_generate(NOISE_DH_NEWHOPE);
+    check_dh_generate(NOISE_DH_SIDHP751);
 }
 
 /* Check other error conditions that can be reported by the functions */

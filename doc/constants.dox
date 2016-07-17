@@ -142,6 +142,12 @@
  * ephemeral key exchanges only).
  */
 
+/**
+ * \def NOISE_DH_SIDHP751
+ * \brief Diffie-Hellman identifier for "SIDHp751" (post-quantum,
+ * ephemeral key exchanges only).
+ */
+
 /**@}*/
 
 /**
