@@ -77,4 +77,5 @@ libnoiseprotocol_a_SOURCES = \
 	../crypto/sidh/SIDH_internal.h \
 	../crypto/sidh/SIDH_setup.c \
 	../crypto/sidh/validate.c \
-        ../crypto/sidh/generic/fp_generic.c
+        ../crypto/sidh/AMD64/fp_x64.c \
+        ../crypto/sidh/AMD64/fp_x64_asm.S

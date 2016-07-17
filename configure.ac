@@ -8,6 +8,7 @@ AC_PROG_RANLIB
 AC_PROG_LEX
 AC_PROG_YACC
 AC_PATH_PROG(DOXYGEN, doxygen)
+AM_PROG_AS
 
 dnl Determine the default Ed448-Goldilocks architecture to use.
 AC_CHECK_DECL([__x86_64__])
