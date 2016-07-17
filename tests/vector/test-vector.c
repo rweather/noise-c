@@ -231,7 +231,7 @@ static int test_name_parsing(const TestVector *vec)
     check_id(id.dh_id, NOISE_DH_CATEGORY, vec->dh);
     check_id(id.cipher_id, NOISE_CIPHER_CATEGORY, vec->cipher);
     check_id(id.hash_id, NOISE_HASH_CATEGORY, vec->hash);
-    compare(id.reserved_id, 0);
+    compare(id.forward_id, 0);
     return id.pattern_id == NOISE_PATTERN_N ||
            id.pattern_id == NOISE_PATTERN_X ||
            id.pattern_id == NOISE_PATTERN_K;

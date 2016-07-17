@@ -233,6 +233,70 @@ static int noise_protocol_parse_field
 }
 
 /**
+ * \brief Parses a dual field from a protocol name string; "field1+field2"
+ * or simply "field1".
+ *
+ * \param category The category of identifier that we expect in this field.
+ * \param name Points to the start of the protocol name string.
+ * \param len The total length of the protocol name string.
+ * \param posn The current position in the string, updated once the next
+ * field has been parsed.
+ * \param second_id Points to a variable to be set to the second identifier.
+ * \param ok Initialized to non-zero by the caller.  Will be set to zero
+ * if a parse error was encountered.
+ *
+ * \return The algorithm identifier for the first component of the
+ * current field, or zero if the field's contents are not a recognized
+ * dual name for this field.
+ */
+static int noise_protocol_parse_dual_field
+    (int category, const char *name, size_t len,
+     size_t *posn, int *second_id, int *ok)
+{
+    size_t start, field_len;
+    int first_id;
+
+    /* Clear the second identifier before we start in case we don't find one */
+    *second_id = 0;
+
+    /* If the parse already failed, then nothing further to do */
+    if (!(*ok))
+        return 0;
+
+    /* Find the start and end of the current field */
+    start = *posn;
+    while (*posn < len && name[*posn] != '_' && name[*posn] != '+')
+        ++(*posn);
+    if (*posn >= len) {
+        /* Should be terminated with either '_' or '+' */
+        *ok = 0;
+        return 0;
+    }
+    field_len = *posn - start;
+
+    /* Look up the first name in the current category */
+    first_id = noise_name_to_id(category, name + start, field_len);
+    if (!first_id) {
+        *ok = 0;
+        return 0;
+    }
+
+    /* If the next character is '_', then we are finished */
+    if (name[*posn] == '_') {
+        ++(*posn);
+        return first_id;
+    }
+
+    /* Parse the rest of the field until the next '_' as the second id */
+    ++(*posn);
+    *second_id = noise_protocol_parse_field(category, name, len, posn, 0, ok);
+    if (*second_id)
+        return first_id;
+    else
+        return 0;
+}
+
+/**
  * \brief Parses a protocol name into a set of identifiers for the
  * algorithms that are indicated by the name.
  *
@@ -259,26 +323,21 @@ int noise_protocol_name_to_id
     /* Parse underscore-separated fields from the name */
     posn = 0;
     ok = 1;
+    memset(id, 0, sizeof(NoiseProtocolId));
     id->prefix_id = noise_protocol_parse_field
         (NOISE_PREFIX_CATEGORY, name, name_len, &posn, 0, &ok);
     id->pattern_id = noise_protocol_parse_field
         (NOISE_PATTERN_CATEGORY, name, name_len, &posn, 0, &ok);
-    id->dh_id = noise_protocol_parse_field
-        (NOISE_DH_CATEGORY, name, name_len, &posn, 0, &ok);
+    id->dh_id = noise_protocol_parse_dual_field
+        (NOISE_DH_CATEGORY, name, name_len, &posn, &(id->forward_id), &ok);
     id->cipher_id = noise_protocol_parse_field
         (NOISE_CIPHER_CATEGORY, name, name_len, &posn, 0, &ok);
     id->hash_id = noise_protocol_parse_field
         (NOISE_HASH_CATEGORY, name, name_len, &posn, 1, &ok);
-    id->reserved_id = 0;
 
     /* If there was a parse error, then clear everything */
     if (!ok) {
-        id->prefix_id = NOISE_PREFIX_NONE;
-        id->pattern_id = NOISE_PATTERN_NONE;
-        id->dh_id = NOISE_DH_NONE;
-        id->cipher_id = NOISE_CIPHER_NONE;
-        id->hash_id = NOISE_HASH_NONE;
-        id->reserved_id = 0;
+        memset(id, 0, sizeof(NoiseProtocolId));
         return NOISE_ERROR_UNKNOWN_NAME;
     }
 
@@ -380,17 +439,34 @@ int noise_protocol_id_to_name
         (NOISE_PREFIX_CATEGORY, id->prefix_id, name, name_len, &posn, 0, &err);
     noise_protocol_format_field
         (NOISE_PATTERN_CATEGORY, id->pattern_id, name, name_len, &posn, 0, &err);
-    noise_protocol_format_field
-        (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, 0, &err);
+    if (!id->forward_id) {
+        noise_protocol_format_field
+            (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, 0, &err);
+    } else {
+        /* Format the DH names as "dh_id+forward_id"; e.g. "25519+NewHope" */
+        noise_protocol_format_field
+            (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, 1, &err);
+        if (err == NOISE_ERROR_NONE) {
+            if ((posn + 1) < name_len)
+                name[posn++] = '+';
+            else
+                err = NOISE_ERROR_INVALID_LENGTH;
+        }
+        noise_protocol_format_field
+            (NOISE_DH_CATEGORY, id->forward_id, name, name_len, &posn, 0, &err);
+    }
     noise_protocol_format_field
         (NOISE_CIPHER_CATEGORY, id->cipher_id, name, name_len, &posn, 0, &err);
     noise_protocol_format_field
         (NOISE_HASH_CATEGORY, id->hash_id, name, name_len, &posn, 1, &err);
 
-    /* The reserved identifier must be zero.  We don't know how to
+    /* The reserved identifiers must be zero.  We don't know how to
        format reserved identifiers other than zero */
-    if (id->reserved_id != 0 && err == NOISE_ERROR_NONE)
-        err = NOISE_ERROR_UNKNOWN_ID;
+    for (posn = 0; posn < (sizeof(id->reserved) / sizeof(id->reserved[0])) &&
+                   err == NOISE_ERROR_NONE; ++posn) {
+        if (id->reserved[posn] != 0)
+            err = NOISE_ERROR_UNKNOWN_ID;
+    }
 
     /* If an error occurred, then clear the buffer just to be safe */
     if (err != NOISE_ERROR_NONE)

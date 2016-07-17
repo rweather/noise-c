@@ -104,11 +104,12 @@ static void test_id_mappings(void)
 /* Check the parsing and formatting of a specific protocol name */
 static void check_protocol_name
     (const char *name, int prefix_id, int pattern_id, int dh_id,
-     int cipher_id, int hash_id)
+     int cipher_id, int hash_id, int forward_id)
 {
     NoiseProtocolId expected_id;
     NoiseProtocolId actual_id;
     char buffer[NOISE_MAX_PROTOCOL_NAME];
+    size_t posn;
 
     /* Construct the expected protocol id from parsing the name */
     memset(&expected_id, 0, sizeof(expected_id));
@@ -117,6 +118,7 @@ static void check_protocol_name
     expected_id.dh_id = dh_id;
     expected_id.cipher_id = cipher_id;
     expected_id.hash_id = hash_id;
+    expected_id.forward_id = forward_id;
 
     /* Parse the name into its constituent identifiers */
     memset(&actual_id, 0x66, sizeof(actual_id));
@@ -127,7 +129,7 @@ static void check_protocol_name
     compare(actual_id.dh_id, expected_id.dh_id);
     compare(actual_id.cipher_id, expected_id.cipher_id);
     compare(actual_id.hash_id, expected_id.hash_id);
-    compare(actual_id.reserved_id, 0);
+    compare(actual_id.forward_id, expected_id.forward_id);
     verify(!memcmp(&actual_id, &expected_id, sizeof(actual_id)));
 
     /* Format the name from the identifiers */
@@ -150,7 +152,7 @@ static void check_protocol_name
     compare(actual_id.dh_id, 0);
     compare(actual_id.cipher_id, 0);
     compare(actual_id.hash_id, 0);
-    compare(actual_id.reserved_id, 0);
+    compare(actual_id.forward_id, 0);
     memset(buffer, 0xAA, sizeof(buffer));
     compare(noise_protocol_id_to_name(buffer, sizeof(buffer), 0),
             NOISE_ERROR_INVALID_PARAM);
@@ -171,15 +173,17 @@ static void check_protocol_name
     compare(buffer[0], '\0');
 
     /* Reserved identifiers cannot be formatted */
-    expected_id.reserved_id = NOISE_PREFIX_PSK;
-    memset(buffer, 0x66, sizeof(buffer));
-    compare(noise_protocol_id_to_name(buffer, sizeof(buffer), &expected_id),
-            NOISE_ERROR_UNKNOWN_ID);
-    compare(buffer[0], '\0');
+    for (posn = 0; posn < (sizeof(expected_id.reserved) / sizeof(expected_id.reserved[0])); ++posn) {
+        expected_id.reserved[posn] = NOISE_PREFIX_PSK;
+        memset(buffer, 0x66, sizeof(buffer));
+        compare(noise_protocol_id_to_name(buffer, sizeof(buffer), &expected_id),
+                NOISE_ERROR_UNKNOWN_ID);
+        compare(buffer[0], '\0');
+        expected_id.reserved[posn] = 0;
+    }
 
     /* Identifiers in the wrong fields */
     expected_id.cipher_id = hash_id;
-    expected_id.reserved_id = 0;
     memset(buffer, 0x66, sizeof(buffer));
     compare(noise_protocol_id_to_name(buffer, sizeof(buffer), &expected_id),
             NOISE_ERROR_UNKNOWN_ID);
@@ -192,47 +196,52 @@ static void test_protocol_names(void)
         ("Noise_XX_25519_AESGCM_SHA256",
          NOISE_PREFIX_STANDARD, NOISE_PATTERN_XX,
          NOISE_DH_CURVE25519, NOISE_CIPHER_AESGCM,
-         NOISE_HASH_SHA256);
+         NOISE_HASH_SHA256, 0);
     check_protocol_name
         ("Noise_N_25519_ChaChaPoly_BLAKE2s",
          NOISE_PREFIX_STANDARD, NOISE_PATTERN_N,
          NOISE_DH_CURVE25519, NOISE_CIPHER_CHACHAPOLY,
-         NOISE_HASH_BLAKE2s);
+         NOISE_HASH_BLAKE2s, 0);
     check_protocol_name
         ("Noise_XXfallback_448_AESGCM_SHA512",
          NOISE_PREFIX_STANDARD, NOISE_PATTERN_XX_FALLBACK,
          NOISE_DH_CURVE448, NOISE_CIPHER_AESGCM,
-         NOISE_HASH_SHA512);
+         NOISE_HASH_SHA512, 0);
     check_protocol_name
         ("Noise_IK_448_ChaChaPoly_BLAKE2b",
          NOISE_PREFIX_STANDARD, NOISE_PATTERN_IK,
          NOISE_DH_CURVE448, NOISE_CIPHER_CHACHAPOLY,
-         NOISE_HASH_BLAKE2b);
+         NOISE_HASH_BLAKE2b, 0);
     check_protocol_name
         ("NoisePSK_XX_25519_AESGCM_SHA256",
          NOISE_PREFIX_PSK, NOISE_PATTERN_XX,
          NOISE_DH_CURVE25519, NOISE_CIPHER_AESGCM,
-         NOISE_HASH_SHA256);
+         NOISE_HASH_SHA256, 0);
     check_protocol_name
         ("NoisePSK_N_25519_ChaChaPoly_BLAKE2s",
          NOISE_PREFIX_PSK, NOISE_PATTERN_N,
          NOISE_DH_CURVE25519, NOISE_CIPHER_CHACHAPOLY,
-         NOISE_HASH_BLAKE2s);
+         NOISE_HASH_BLAKE2s, 0);
     check_protocol_name
         ("NoisePSK_XXfallback_448_AESGCM_SHA512",
          NOISE_PREFIX_PSK, NOISE_PATTERN_XX_FALLBACK,
          NOISE_DH_CURVE448, NOISE_CIPHER_AESGCM,
-         NOISE_HASH_SHA512);
+         NOISE_HASH_SHA512, 0);
     check_protocol_name
         ("NoisePSK_IK_448_ChaChaPoly_BLAKE2b",
          NOISE_PREFIX_PSK, NOISE_PATTERN_IK,
          NOISE_DH_CURVE448, NOISE_CIPHER_CHACHAPOLY,
-         NOISE_HASH_BLAKE2b);
+         NOISE_HASH_BLAKE2b, 0);
     check_protocol_name
         ("Noise_NN_NewHope_AESGCM_SHA256",
          NOISE_PREFIX_STANDARD, NOISE_PATTERN_NN,
          NOISE_DH_NEWHOPE, NOISE_CIPHER_AESGCM,
-         NOISE_HASH_SHA256);
+         NOISE_HASH_SHA256, 0);
+    check_protocol_name
+        ("Noise_XX_25519+NewHope_AESGCM_SHA256",
+         NOISE_PREFIX_STANDARD, NOISE_PATTERN_XX,
+         NOISE_DH_CURVE25519, NOISE_CIPHER_AESGCM,
+         NOISE_HASH_SHA256, NOISE_DH_NEWHOPE);
 }
 
 void test_names(void)

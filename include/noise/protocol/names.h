@@ -37,7 +37,8 @@ typedef struct
     int dh_id;          /**< Diffie-Hellman algorithm identifier */
     int cipher_id;      /**< Cipher algorithm identifier */
     int hash_id;        /**< Hash algorithm identifier */
-    int reserved_id;    /**< Reserved for future use, must be zero */
+    int forward_id;     /**< Extra forward secrecy algorithm identifier */
+    int reserved[4];    /**< Reserved for future use; should be zero */
 
 } NoiseProtocolId;
 
