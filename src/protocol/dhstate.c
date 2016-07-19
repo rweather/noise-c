@@ -777,4 +777,54 @@ int noise_dhstate_link
     return NOISE_ERROR_NONE;
 }
 
+/**
+ * \brief Gets the role that a DHState object will play in a handshake.
+ *
+ * \param state The DHState object.
+ *
+ * \return The role, NOISE_ROLE_INITIATOR or NOISE_ROLE_RESPONDER, or zero
+ * if the role has not been set yet.
+ *
+ * \sa noise_dhstate_set_role()
+ */
+int noise_dhstate_get_role(const NoiseDHState *state)
+{
+    return state ? state->role : 0;
+}
+
+/**
+ * \brief Sets the role that a DHState object will play in a handshake.
+ *
+ * \param state The DHState object.
+ * \param The role, NOISE_ROLE_INITIATOR or NOISE_ROLE_RESPONDER, or zero
+ * if the role is unspecified.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a role is not one of
+ * NOISE_ROLE_INITIATOR, NOISE_ROLE_RESPONDER, or zero.
+ *
+ * This function is intended for use with algorithms that have a different
+ * method for calculating public keys and shared secrets for the two parties
+ * in a communication.  An example is the post-quantum SIDH algorithm where
+ * "Alice" and "Bob" differ in the calculations they perform.
+ *
+ * To assist with supporting such algorithms, the HandshakeState labels
+ * DHState objects as either initiator or responder depending upon who
+ * owns that specific key.  The algorithm-specific back end can then use
+ * the role information to determine which object it wants to treat as
+ * "Alice" and which object should be treated as "Bob".
+ *
+ * \sa noise_dhstate_get_role()
+ */
+int noise_dhstate_set_role(NoiseDHState *state, int role)
+{
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (role != NOISE_ROLE_INITIATOR && role != NOISE_ROLE_RESPONDER && role)
+        return NOISE_ERROR_INVALID_PARAM;
+    state->role = role;
+    return NOISE_ERROR_NONE;
+}
+
 /**@}*/
