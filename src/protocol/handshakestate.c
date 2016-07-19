@@ -107,6 +107,8 @@ static int noise_handshakestate_new
     uint8_t flags;
     int extra_reqs = 0;
     int err;
+    int local_dh_role;
+    int remote_dh_role;
 
     /* Locate the information for the current handshake pattern */
     pattern = noise_pattern_lookup(symmetric->id.pattern_id);
@@ -120,6 +122,27 @@ static int noise_handshakestate_new
     if (role == NOISE_ROLE_RESPONDER) {
         /* Reverse the pattern flags so that the responder is "local" */
         flags = noise_pattern_reverse_flags(flags);
+    }
+
+    /* Determine the role to use for DHState objects */
+    if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) != 0) {
+        /* Fallback pattern - reverse the DHState role */
+        if (role == NOISE_ROLE_INITIATOR) {
+            local_dh_role = NOISE_ROLE_RESPONDER;
+            remote_dh_role = NOISE_ROLE_INITIATOR;
+        } else {
+            local_dh_role = NOISE_ROLE_INITIATOR;
+            remote_dh_role = NOISE_ROLE_RESPONDER;
+        }
+    } else {
+        /* Regular pattern */
+        if (role == NOISE_ROLE_INITIATOR) {
+            local_dh_role = NOISE_ROLE_INITIATOR;
+            remote_dh_role = NOISE_ROLE_RESPONDER;
+        } else {
+            local_dh_role = NOISE_ROLE_RESPONDER;
+            remote_dh_role = NOISE_ROLE_INITIATOR;
+        }
     }
 
     /* Create the HandshakeState object */
@@ -148,6 +171,12 @@ static int noise_handshakestate_new
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_static), dh_id);
     if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE)
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_ephemeral), dh_id);
+
+    /* Set the roles for the DHState objects */
+    noise_dhstate_set_role((*state)->dh_local_ephemeral, local_dh_role);
+    noise_dhstate_set_role((*state)->dh_local_static, local_dh_role);
+    noise_dhstate_set_role((*state)->dh_remote_ephemeral, remote_dh_role);
+    noise_dhstate_set_role((*state)->dh_remote_static, remote_dh_role);
 
     /* If the DH algorithm is ephemeral-only, then we need to apply some
      * extra checks on the pattern: essentially, only "NN" is possible */
@@ -409,6 +438,9 @@ NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
               != NOISE_ERROR_NONE) {
             return 0;
         }
+        noise_dhstate_set_role
+            (state->dh_fixed_ephemeral,
+             noise_dhstate_get_role(state->dh_local_ephemeral));
     }
 
     return state->dh_fixed_ephemeral;

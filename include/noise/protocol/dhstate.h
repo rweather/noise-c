@@ -68,6 +68,8 @@ int noise_dhstate_format_fingerprint
 int noise_dhstate_get_max_key_length(void);
 int noise_dhstate_link
     (NoiseDHState *private_key_state, NoiseDHState *public_key_state);
+int noise_dhstate_get_role(const NoiseDHState *state);
+int noise_dhstate_set_role(NoiseDHState *state, int role);
 
 #ifdef __cplusplus
 };

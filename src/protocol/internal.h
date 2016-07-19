@@ -221,7 +221,10 @@ struct NoiseDHState_s
     size_t size;
 
     /** \brief Algorithm identifier for the Diffie-Hellman operation */
-    int dh_id;
+    short dh_id;
+
+    /** \brief The role; either initiator or responder or zero */
+    short role;
 
     /** \brief The type of key stored within this DHState object */
     uint8_t key_type;
