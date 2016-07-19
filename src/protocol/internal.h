@@ -627,7 +627,7 @@ NoiseHashState *noise_sha512_new(void);
 NoiseDHState *noise_curve25519_new(void);
 NoiseDHState *noise_curve448_new(void);
 NoiseDHState *noise_newhope_new(void);
-NoiseDHState *noise_sidh_new(void);
+NoiseDHState *noise_sidhp751_new(void);
 
 NoiseSignState *noise_ed25519_new(void);
 

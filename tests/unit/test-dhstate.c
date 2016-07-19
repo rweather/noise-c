@@ -375,6 +375,12 @@ static void check_dh_generate(int id)
     compare(noise_dhstate_get_dh_id(state2), id);
     shared_key_len = noise_dhstate_get_shared_key_length(state1);
 
+    /* Set the roles for the two DHState objects */
+    compare(noise_dhstate_set_role(state1, NOISE_ROLE_INITIATOR),
+            NOISE_ERROR_NONE);
+    compare(noise_dhstate_set_role(state2, NOISE_ROLE_RESPONDER),
+            NOISE_ERROR_NONE);
+
     /* NewHope is "mutual" so Bob's object needs to know about Alice's
      * so that it will generate Bob's "keypair" with respect to the
      * parameters in Alice's public key.  Normally this is done by
@@ -390,7 +396,6 @@ static void check_dh_generate(int id)
         compare(noise_dhstate_get_private_key_length(state2), 2048);
         compare(noise_dhstate_get_public_key_length(state2), 1824);
     } else if (id == NOISE_DH_SIDHP751) {
-        compare(noise_dhstate_link(state2, state1), NOISE_ERROR_NONE);
         verify(noise_dhstate_is_ephemeral_only(state1));
         verify(noise_dhstate_is_ephemeral_only(state2));
     } else {

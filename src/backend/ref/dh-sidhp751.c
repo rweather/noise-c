@@ -33,44 +33,28 @@
 #define SIDH_PUBLIC_KEY_LEN     SIDH_BITS_TO_BYTES(SIDH_PWORD_BITS * 8)
 #define SIDH_SHARED_KEY_LEN     SIDH_BITS_TO_BYTES(SIDH_PWORD_BITS * 2)
 
-#define SIDH_TYPE_ALICE         1
-#define SIDH_TYPE_BOB           2
-
 typedef struct NoiseSIDHState_s
 {
     struct NoiseDHState_s parent;
     PCurveIsogenyStruct curve_data;
-    uint8_t private_key[SIDH_PRIVATE_KEY_LEN];
-    uint8_t public_key[SIDH_PUBLIC_KEY_LEN];
-    int type;
+
+    /* The external private key representation is the concatenation
+       of the SIDH private key with the SIDH public key because we
+       cannot derive the public key from the private material later */
+    uint8_t key[SIDH_PRIVATE_KEY_LEN + SIDH_PUBLIC_KEY_LEN];
 
 } NoiseSIDHState;
 
 static void noise_sidhp751_generate_keypair(NoiseDHState *state)
 {
     NoiseSIDHState *st = (NoiseSIDHState *)state;
-    if (st->parent.mutual && st->parent.mutual->key_type != NOISE_KEY_TYPE_NO_KEY) {
-        /* We already have a mutual public key for Alice, so we are
-         * generating the keypair for Bob */
-        KeyGeneration_B(st->private_key, st->public_key, st->curve_data);
-        st->type = SIDH_TYPE_BOB;
+    if (state->role != NOISE_ROLE_RESPONDER) {
+        /* Generate the keypair for Alice */
+        KeyGeneration_A(state->private_key, state->public_key, st->curve_data);
     } else {
-        /* No mutual public key, so generate the keypair for Alice */
-        KeyGeneration_A(st->private_key, st->public_key, st->curve_data);
-        st->type = SIDH_TYPE_ALICE;
-
-        /* Change the other object to "Bob" to validate the public key later */
-        if (st->parent.mutual)
-            ((NoiseSIDHState *)(st->parent.mutual))->type = SIDH_TYPE_BOB;
+        /* Generating the keypair for Bob */
+        KeyGeneration_B(state->private_key, state->public_key, st->curve_data);
     }
-}
-
-static int noise_sidhp751_validate_keypair
-        (const NoiseDHState *state, const uint8_t *private_key,
-         const uint8_t *public_key)
-{
-    /* Cannot set private keys for SIDH - can only generate them */
-    return NOISE_ERROR_INVALID_PRIVATE_KEY;
 }
 
 static int noise_sidhp751_validate_public_key
@@ -79,7 +63,7 @@ static int noise_sidhp751_validate_public_key
     NoiseSIDHState *st = (NoiseSIDHState *)state;
     CRYPTO_STATUS status;
     bool valid = false;
-    if (st->type == SIDH_TYPE_ALICE) {
+    if (st->parent.role != NOISE_ROLE_RESPONDER) {
         status = Validate_PKA
             ((uint8_t *)public_key, &valid, st->curve_data);
     } else {
@@ -91,12 +75,21 @@ static int noise_sidhp751_validate_public_key
     return NOISE_ERROR_NONE;
 }
 
+static int noise_sidhp751_validate_keypair
+        (const NoiseDHState *state, const uint8_t *private_key,
+         const uint8_t *public_key)
+{
+    /* Private keys contain the public key, so validate the public key only */
+    return noise_sidhp751_validate_public_key(state, public_key);
+}
+
 static int noise_sidhp751_derive_public_key
         (const NoiseDHState *state, const uint8_t *private_key,
          uint8_t *public_key)
 {
-    /* Cannot set private keys for SIDH - can only generate them */
-    return NOISE_ERROR_INVALID_PRIVATE_KEY;
+    /* Private keys contain the public key, so the public key
+       has already been derived.  Validate the public key only */
+    return noise_sidhp751_validate_public_key(state, public_key);
 }
 
 static int noise_sidhp751_calculate
@@ -107,14 +100,14 @@ static int noise_sidhp751_calculate
     NoiseSIDHState *priv_st = (NoiseSIDHState *)private_key_state;
     NoiseSIDHState *pub_st = (NoiseSIDHState *)public_key_state;
     CRYPTO_STATUS status;
-    if (priv_st->type == SIDH_TYPE_ALICE) {
+    if (priv_st->parent.role == NOISE_ROLE_INITIATOR) {
         status = SecretAgreement_A
-            (priv_st->private_key, pub_st->public_key, shared_key,
-             priv_st->curve_data);
+            (priv_st->parent.private_key, pub_st->parent.public_key,
+             shared_key, priv_st->curve_data);
     } else {
         status = SecretAgreement_B
-            (priv_st->private_key, pub_st->public_key, shared_key,
-             priv_st->curve_data);
+            (priv_st->parent.private_key, pub_st->parent.public_key,
+             shared_key, priv_st->curve_data);
     }
     if (status != CRYPTO_SUCCESS)
         return NOISE_ERROR_INVALID_PUBLIC_KEY;
@@ -158,17 +151,16 @@ NoiseDHState *noise_sidhp751_new(void)
     state->parent.dh_id = NOISE_DH_SIDHP751;
     state->parent.ephemeral_only = 1;
     state->parent.nulls_allowed = 0;
-    state->parent.private_key_len = SIDH_PRIVATE_KEY_LEN;
+    state->parent.private_key_len = SIDH_PRIVATE_KEY_LEN + SIDH_PUBLIC_KEY_LEN;
     state->parent.public_key_len = SIDH_PUBLIC_KEY_LEN;
     state->parent.shared_key_len = SIDH_SHARED_KEY_LEN;
-    state->parent.private_key = state->private_key;
-    state->parent.public_key = state->public_key;
+    state->parent.private_key = state->key;
+    state->parent.public_key = state->key + SIDH_PRIVATE_KEY_LEN;
     state->parent.generate_keypair = noise_sidhp751_generate_keypair;
     state->parent.validate_keypair = noise_sidhp751_validate_keypair;
     state->parent.validate_public_key = noise_sidhp751_validate_public_key;
     state->parent.derive_public_key = noise_sidhp751_derive_public_key;
     state->parent.calculate = noise_sidhp751_calculate;
     state->parent.destroy = noise_sidhp751_destroy;
-    state->type = SIDH_TYPE_ALICE;
     return &(state->parent);
 }
