@@ -43,6 +43,8 @@ int noise_dhstate_is_ephemeral_only(const NoiseDHState *state);
 int noise_dhstate_has_keypair(const NoiseDHState *state);
 int noise_dhstate_has_public_key(const NoiseDHState *state);
 int noise_dhstate_generate_keypair(NoiseDHState *state);
+int noise_dhstate_generate_dependent_keypair
+    (NoiseDHState *state, const NoiseDHState *other);
 int noise_dhstate_set_keypair
     (NoiseDHState *state, const uint8_t *private_key, size_t private_key_len,
      const uint8_t *public_key, size_t public_key_len);
@@ -66,8 +68,6 @@ int noise_dhstate_copy(NoiseDHState *state, const NoiseDHState *from);
 int noise_dhstate_format_fingerprint
     (const NoiseDHState *state, int fingerprint_type, char *buffer, size_t len);
 int noise_dhstate_get_max_key_length(void);
-int noise_dhstate_link
-    (NoiseDHState *private_key_state, NoiseDHState *public_key_state);
 int noise_dhstate_get_role(const NoiseDHState *state);
 int noise_dhstate_set_role(NoiseDHState *state, int role);
 

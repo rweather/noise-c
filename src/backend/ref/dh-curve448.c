@@ -34,7 +34,8 @@ typedef struct
 /* Curve448 base point from RFC 7748, 5 in little-endian order */
 static uint8_t const basepoint[56] = {5};
 
-static void noise_curve448_generate_keypair(NoiseDHState *state)
+static int noise_curve448_generate_keypair
+    (NoiseDHState *state, const NoiseDHState *other)
 {
     /* Generate 56 bytes of random data and modify bits to put it
        into the correct form for Curve448 private keys.  This is the
@@ -45,6 +46,7 @@ static void noise_curve448_generate_keypair(NoiseDHState *state)
 
     /* Evaluate the curve operation to derive the public key */
     curve448_eval(state->public_key, state->private_key, basepoint);
+    return NOISE_ERROR_NONE;
 }
 
 static int noise_curve448_validate_keypair

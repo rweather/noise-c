@@ -381,28 +381,27 @@ static void check_dh_generate(int id)
     compare(noise_dhstate_set_role(state2, NOISE_ROLE_RESPONDER),
             NOISE_ERROR_NONE);
 
-    /* NewHope is "mutual" so Bob's object needs to know about Alice's
-     * so that it will generate Bob's "keypair" with respect to the
-     * parameters in Alice's public key.  Normally this is done by
-     * HandshakeState during a session */
-    if (id == NOISE_DH_NEWHOPE) {
-        compare(noise_dhstate_link(state2, state1), NOISE_ERROR_NONE);
+    /* Generate keypairs for Alice and Bob */
+    compare(noise_dhstate_generate_keypair(state1), NOISE_ERROR_NONE);
+    if (id != NOISE_DH_NEWHOPE) {
+        verify(!noise_dhstate_is_ephemeral_only(state1));
+        verify(!noise_dhstate_is_ephemeral_only(state2));
+        compare(noise_dhstate_generate_keypair(state2), NOISE_ERROR_NONE);
+    } else {
+        /* Check the NewHope parameters */
         verify(noise_dhstate_is_ephemeral_only(state1));
         verify(noise_dhstate_is_ephemeral_only(state2));
-
-        /* Key lengths start off configured for Alice */
         compare(noise_dhstate_get_private_key_length(state1), 2048);
         compare(noise_dhstate_get_public_key_length(state1), 1824);
         compare(noise_dhstate_get_private_key_length(state2), 2048);
-        compare(noise_dhstate_get_public_key_length(state2), 1824);
-    } else {
-        verify(!noise_dhstate_is_ephemeral_only(state1));
-        verify(!noise_dhstate_is_ephemeral_only(state2));
-    }
+        compare(noise_dhstate_get_public_key_length(state2), 2048);
 
-    /* Generate keypairs for Alice and Bob */
-    compare(noise_dhstate_generate_keypair(state1), NOISE_ERROR_NONE);
-    compare(noise_dhstate_generate_keypair(state2), NOISE_ERROR_NONE);
+        /* NewHope is "mutual" so Bob's object needs to know about Alice's
+         * so that it will generate Bob's "keypair" with respect to the
+         * parameters in Alice's public key. */
+        compare(noise_dhstate_generate_dependent_keypair(state2, state1),
+                NOISE_ERROR_NONE);
+    }
 
     /* Calculate the shared key on both ends and compare */
     memset(shared1, 0xAA, sizeof(shared1));
@@ -412,14 +411,6 @@ static void check_dh_generate(int id)
     compare(noise_dhstate_calculate (state2, state1, shared2, shared_key_len),
             NOISE_ERROR_NONE);
     verify(!memcmp(shared1, shared2, shared_key_len));
-
-    /* Check final key lengths for "NewHope" - Bob's will change */
-    if (id == NOISE_DH_NEWHOPE) {
-        compare(noise_dhstate_get_private_key_length(state1), 2048);
-        compare(noise_dhstate_get_public_key_length(state1), 1824);
-        compare(noise_dhstate_get_private_key_length(state2), 2048);
-        compare(noise_dhstate_get_public_key_length(state2), 2048);
-    }
 
     /* Check parameter error conditions */
     compare(noise_dhstate_generate_keypair(0), NOISE_ERROR_INVALID_PARAM);

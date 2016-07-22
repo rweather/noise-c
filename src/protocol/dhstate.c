@@ -292,14 +292,62 @@ int noise_dhstate_has_public_key(const NoiseDHState *state)
  */
 int noise_dhstate_generate_keypair(NoiseDHState *state)
 {
+    int err;
+
     /* Validate the parameter */
     if (!state)
         return NOISE_ERROR_INVALID_PARAM;
 
     /* Generate the new keypair */
-    (*(state->generate_keypair))(state);
-    state->key_type = NOISE_KEY_TYPE_KEYPAIR;
-    return NOISE_ERROR_NONE;
+    err = (*(state->generate_keypair))(state, 0);
+    if (err == NOISE_ERROR_NONE)
+        state->key_type = NOISE_KEY_TYPE_KEYPAIR;
+    return err;
+}
+
+/**
+ * \brief Generates a new key pair within a DHState object that may depend
+ * upon the parameters from another DHState object.
+ *
+ * \param state The DHState object.
+ * \param other The other DHState object to obtain parameters from,
+ * which may be NULL.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state and \a other
+ * do not have the same algorithm identifier.
+ * \return NOISE_ERROR_INVALID_STATE if dependent parameters are required
+ * but \a other does not currently contain any.
+ *
+ * This function is intended for generating ephemeral keypairs for
+ * algorithms like New Hope where the keypair for Bob depends upon
+ * parameters that are transmitted in Alice's public key.  If the
+ * algorithm does not require dependent parameters to generate the
+ * keypair, \a other is ignored.
+ *
+ * \note This function needs to generate random key material for the
+ * private key, so the system random number generator must be properly
+ * seeded before calling this function.
+ *
+ * \sa noise_dhstate_calculate(), noise_dhstate_set_keypair()
+ */
+int noise_dhstate_generate_dependent_keypair
+    (NoiseDHState *state, const NoiseDHState *other)
+{
+    int err;
+
+    /* Validate the parameters */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (other && state->dh_id != other->dh_id)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* Generate the new keypair */
+    err = (*(state->generate_keypair))(state, other);
+    if (err == NOISE_ERROR_NONE)
+        state->key_type = NOISE_KEY_TYPE_KEYPAIR;
+    return err;
 }
 
 /**
@@ -758,30 +806,6 @@ int noise_dhstate_get_max_key_length(void)
 }
 
 /**
- * \brief Links two DHState objects together.
- *
- * \param private_key_state The object that will contain the local private key.
- * \param public_key_state The object that will contain the remote public key.
- *
- * This function is intended for use with algorithms like New Hope where
- * local keypairs may be generated with respect to the parameters from a
- * remote public key.
- */
-int noise_dhstate_link
-    (NoiseDHState *private_key_state, NoiseDHState *public_key_state)
-{
-    /* Validate the parameters */
-    if (!private_key_state || !public_key_state)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (private_key_state->dh_id != public_key_state->dh_id)
-        return NOISE_ERROR_INVALID_PARAM;
-
-    /* Link the two objects together */
-    private_key_state->mutual = public_key_state;
-    return NOISE_ERROR_NONE;
-}
-
-/**
  * \brief Gets the role that a DHState object will play in a handshake.
  *
  * \param state The DHState object.
@@ -828,6 +852,8 @@ int noise_dhstate_set_role(NoiseDHState *state, int role)
     if (role != NOISE_ROLE_INITIATOR && role != NOISE_ROLE_RESPONDER && role)
         return NOISE_ERROR_INVALID_PARAM;
     state->role = role;
+    if (state->change_role)
+        (*(state->change_role))(state);
     return NOISE_ERROR_NONE;
 }
 

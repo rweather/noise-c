@@ -250,15 +250,16 @@ struct NoiseDHState_s
     /** \brief Points to the public key in the subclass state */
     uint8_t *public_key;
 
-    /** \brief Mutual DH object for ephemeral-only key exchanges */
-    NoiseDHState *mutual;
-
     /**
      * \brief Generates a new key pair for this Diffie-Hellman algorithm.
      *
      * \param state Points to the DHState.
+     * \param other Points to the other DHState for obtaining dependent
+     * parameters.  May be NULL.
+     *
+     * \return NOISE_ERROR_NONE on success or an error code otherwise.
      */
-    void (*generate_keypair)(NoiseDHState *state);
+    int (*generate_keypair)(NoiseDHState *state, const NoiseDHState *other);
 
     /**
      * \brief Validates a keypair.
@@ -327,6 +328,16 @@ struct NoiseDHState_s
         (const NoiseDHState *private_key_state,
          const NoiseDHState *public_key_state,
          uint8_t *shared_key);
+
+    /**
+     * \brief Changes the role for this object.
+     *
+     * \param state Points to the DHState.
+     *
+     * This pointer can be NULL if the back end does not need any special
+     * logic to change the role.
+     */
+    void (*change_role)(NoiseDHState *state);
 
     /**
      * \brief Destroys this DHState prior to the memory being freed.

@@ -38,13 +38,15 @@ typedef struct
 
 } NoiseCurve25519State;
 
-static void noise_curve25519_generate_keypair(NoiseDHState *state)
+static int noise_curve25519_generate_keypair
+    (NoiseDHState *state, const NoiseDHState *other)
 {
     NoiseCurve25519State *st = (NoiseCurve25519State *)state;
     noise_rand_bytes(st->private_key, 32);
     st->private_key[0] &= 0xF8;
     st->private_key[31] = (st->private_key[31] & 0x7F) | 0x40;
     curved25519_scalarmult_basepoint(st->public_key, st->private_key);
+    return NOISE_ERROR_NONE;
 }
 
 static int noise_curve25519_validate_keypair
