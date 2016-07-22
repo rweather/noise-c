@@ -245,7 +245,6 @@ static void perf_dh_ephemeral_only(int id)
         noise_dhstate_free(dh1);
         return;
     }
-    noise_dhstate_link(dh2, dh1);
 
     start = current_timestamp();
     for (count = 0; count < PQ_DH_COUNT; ++count)
@@ -259,7 +258,7 @@ static void perf_dh_ephemeral_only(int id)
 
     start = current_timestamp();
     for (count = 0; count < PQ_DH_COUNT; ++count)
-        noise_dhstate_generate_keypair(dh2);
+        noise_dhstate_generate_dependent_keypair(dh2, dh1);
     end = current_timestamp();
 
     elapsed = elapsed_to_seconds(start, end) / (double)PQ_DH_COUNT;

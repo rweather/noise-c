@@ -186,12 +186,8 @@ static int noise_handshakestate_new
         if ((*state)->dh_remote_static && (*state)->dh_remote_static->ephemeral_only)
             err = NOISE_ERROR_NOT_APPLICABLE;
         if ((*state)->dh_local_ephemeral && (*state)->dh_local_ephemeral->ephemeral_only) {
-            if (!((*state)->dh_remote_ephemeral)) {
+            if (!((*state)->dh_remote_ephemeral))
                 err = NOISE_ERROR_NOT_APPLICABLE;
-            } else {
-                noise_dhstate_link((*state)->dh_local_ephemeral,
-                                   (*state)->dh_remote_ephemeral);
-            }
         } else if ((*state)->dh_remote_ephemeral && (*state)->dh_remote_ephemeral->ephemeral_only) {
             err = NOISE_ERROR_NOT_APPLICABLE;
         }
@@ -1099,7 +1095,8 @@ static int noise_handshakestate_write
             if (!state->dh_local_ephemeral)
                 return NOISE_ERROR_INVALID_STATE;
             if (!state->dh_fixed_ephemeral) {
-                err = noise_dhstate_generate_keypair(state->dh_local_ephemeral);
+                err = noise_dhstate_generate_dependent_keypair
+                    (state->dh_local_ephemeral, state->dh_remote_ephemeral);
             } else {
                 /* Use the fixed ephemeral key provided by the test harness */
                 err = noise_dhstate_set_keypair
