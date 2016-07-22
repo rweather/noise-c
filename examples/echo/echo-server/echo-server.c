@@ -45,10 +45,14 @@ static int fixed_ephemeral = 0;
 /* Loaded keys */
 #define CURVE25519_KEY_LEN 32
 #define CURVE448_KEY_LEN 56
+#define SIDHP751_PRIVATE_KEY_LEN 816
+#define SIDHP751_PUBLIC_KEY_LEN 768
 static uint8_t client_key_25519[CURVE25519_KEY_LEN];
 static uint8_t server_key_25519[CURVE25519_KEY_LEN];
 static uint8_t client_key_448[CURVE448_KEY_LEN];
 static uint8_t server_key_448[CURVE448_KEY_LEN];
+static uint8_t client_key_sidh[SIDHP751_PUBLIC_KEY_LEN];
+static uint8_t server_key_sidh[SIDHP751_PRIVATE_KEY_LEN];
 static uint8_t psk[32];
 
 /* Message buffer for send/receive */
@@ -154,6 +158,9 @@ static int initialize_handshake
         } else if (dh_id == NOISE_DH_CURVE448) {
             err = noise_dhstate_set_keypair_private
                 (dh, server_key_448, sizeof(server_key_448));
+        } else if (dh_id == NOISE_DH_SIDHP751) {
+            err = noise_dhstate_set_keypair_private
+                (dh, server_key_sidh, sizeof(server_key_sidh));
         } else {
             err = NOISE_ERROR_UNKNOWN_ID;
         }
@@ -170,9 +177,12 @@ static int initialize_handshake
         if (dh_id == NOISE_DH_CURVE25519) {
             err = noise_dhstate_set_public_key
                 (dh, client_key_25519, sizeof(client_key_25519));
-        } else if (dh_id == NOISE_DH_CURVE25519) {
+        } else if (dh_id == NOISE_DH_CURVE448) {
             err = noise_dhstate_set_public_key
                 (dh, client_key_448, sizeof(client_key_448));
+        } else if (dh_id == NOISE_DH_SIDHP751) {
+            err = noise_dhstate_set_public_key
+                (dh, client_key_sidh, sizeof(client_key_sidh));
         } else {
             err = NOISE_ERROR_UNKNOWN_ID;
         }
@@ -188,9 +198,13 @@ static int initialize_handshake
         if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
             err = noise_dhstate_set_keypair_private
                 (dh, fixed_ephemeral_25519, sizeof(fixed_ephemeral_25519));
-        } else {
+        } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE448) {
             err = noise_dhstate_set_keypair_private
                 (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
+        } else {
+            fprintf(stderr, "Do not have a fixed ephemeral for %s\n",
+                    noise_id_to_name(0, noise_dhstate_get_dh_id(dh)));
+            return 0;
         }
         if (err != NOISE_ERROR_NONE) {
             noise_perror("fixed ephemeral value", err);
@@ -359,12 +373,20 @@ int main(int argc, char *argv[])
             ("server_key_448", server_key_448, sizeof(server_key_448))) {
         return 1;
     }
+    if (!echo_load_private_key
+            ("server_key_sidh", server_key_sidh, sizeof(server_key_sidh))) {
+        return 1;
+    }
     if (!echo_load_public_key
             ("client_key_25519.pub", client_key_25519, sizeof(client_key_25519))) {
         return 1;
     }
     if (!echo_load_public_key
             ("client_key_448.pub", client_key_448, sizeof(client_key_448))) {
+        return 1;
+    }
+    if (!echo_load_public_key
+            ("client_key_sidh.pub", client_key_sidh, sizeof(client_key_sidh))) {
         return 1;
     }
     if (!echo_load_public_key("psk", psk, sizeof(psk))) {

@@ -489,8 +489,8 @@ int noise_dhstate_set_public_key
         return err;
 
     /* Copy the public key into place and clear the private key */
-    memcpy(state->public_key, public_key, public_key_len);
     memset(state->private_key, 0, state->private_key_len);
+    memcpy(state->public_key, public_key, public_key_len);
     state->key_type = NOISE_KEY_TYPE_PUBLIC;
     return NOISE_ERROR_NONE;
 }

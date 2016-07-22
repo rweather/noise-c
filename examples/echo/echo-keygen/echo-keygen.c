@@ -27,7 +27,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#define MAX_DH_KEY_SIZE 128
+#define MAX_DH_KEY_SIZE 2048
 
 int save_private_key(const char *filename, const uint8_t *key, size_t len);
 int save_public_key(const char *filename, const uint8_t *key, size_t len);
@@ -62,6 +62,10 @@ int main(int argc, char *argv[])
         noise_perror(key_type, err);
         return 1;
     }
+    if (!strncmp(priv_key_file, "server_", 7))
+        noise_dhstate_set_role(dh, NOISE_ROLE_RESPONDER);
+    else
+        noise_dhstate_set_role(dh, NOISE_ROLE_INITIATOR);
     err = noise_dhstate_generate_keypair(dh);
     if (err != NOISE_ERROR_NONE) {
         noise_perror("generate keypair", err);

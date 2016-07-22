@@ -64,9 +64,11 @@ static int noise_sidhp751_validate_public_key
     CRYPTO_STATUS status;
     bool valid = false;
     if (st->parent.role != NOISE_ROLE_RESPONDER) {
+        /* Validate the public key for Alice */
         status = Validate_PKA
             ((uint8_t *)public_key, &valid, st->curve_data);
     } else {
+        /* Validate the public key for Bob */
         status = Validate_PKB
             ((uint8_t *)public_key, &valid, st->curve_data);
     }
@@ -79,17 +81,29 @@ static int noise_sidhp751_validate_keypair
         (const NoiseDHState *state, const uint8_t *private_key,
          const uint8_t *public_key)
 {
-    /* Private keys contain the public key, so validate the public key only */
-    return noise_sidhp751_validate_public_key(state, public_key);
+    /* Private keys contain the public key, so validate the public key
+       and then check that the public key contained within the private
+       key is identical to the supplied public key */
+    int err = noise_sidhp751_validate_public_key(state, public_key);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+    if (!noise_is_equal(private_key + SIDH_PRIVATE_KEY_LEN, public_key,
+                        SIDH_PUBLIC_KEY_LEN)) {
+        return NOISE_ERROR_INVALID_PRIVATE_KEY;
+    }
+    return NOISE_ERROR_NONE;
 }
 
 static int noise_sidhp751_derive_public_key
         (const NoiseDHState *state, const uint8_t *private_key,
          uint8_t *public_key)
 {
-    /* Private keys contain the public key, so the public key
-       has already been derived.  Validate the public key only */
-    return noise_sidhp751_validate_public_key(state, public_key);
+    /* Private keys contain the public key as a component */
+    int err = noise_sidhp751_validate_public_key
+        (state, private_key + SIDH_PRIVATE_KEY_LEN);
+    if (err == NOISE_ERROR_INVALID_PUBLIC_KEY)
+        err = NOISE_ERROR_INVALID_PRIVATE_KEY;
+    return err;
 }
 
 static int noise_sidhp751_calculate
@@ -149,7 +163,7 @@ NoiseDHState *noise_sidhp751_new(void)
         return 0;
     }
     state->parent.dh_id = NOISE_DH_SIDHP751;
-    state->parent.ephemeral_only = 1;
+    state->parent.ephemeral_only = 0;
     state->parent.nulls_allowed = 0;
     state->parent.private_key_len = SIDH_PRIVATE_KEY_LEN + SIDH_PUBLIC_KEY_LEN;
     state->parent.public_key_len = SIDH_PUBLIC_KEY_LEN;

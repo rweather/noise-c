@@ -71,7 +71,7 @@ typedef struct
 
 } EchoProtocolId;
 
-#define MAX_DH_KEY_LEN 128
+#define MAX_DH_KEY_LEN 2048
 
 extern int echo_verbose;
 
