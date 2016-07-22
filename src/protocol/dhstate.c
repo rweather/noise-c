@@ -820,7 +820,7 @@ int noise_dhstate_get_role(const NoiseDHState *state)
  * \brief Sets the role that a DHState object will play in a handshake.
  *
  * \param state The DHState object.
- * \param The role, NOISE_ROLE_INITIATOR or NOISE_ROLE_RESPONDER, or zero
+ * \param role The role, NOISE_ROLE_INITIATOR or NOISE_ROLE_RESPONDER, or zero
  * if the role is unspecified.
  *
  * \return NOISE_ERROR_NONE on success.
