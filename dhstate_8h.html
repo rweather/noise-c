@@ -123,6 +123,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga05b705a292e82c508ab8a337c4f8aea3">noise_dhstate_free</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga05b705a292e82c508ab8a337c4f8aea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a DHState object after destroying all sensitive material.  <a href="group__dhstate.html#ga05b705a292e82c508ab8a337c4f8aea3">More...</a><br/></td></tr>
 <tr class="separator:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga921137066457bfc4b273ad5a03a0415f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga921137066457bfc4b273ad5a03a0415f">noise_dhstate_generate_dependent_keypair</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *other)</td></tr>
+<tr class="memdesc:ga921137066457bfc4b273ad5a03a0415f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new key pair within a DHState object that may depend upon the parameters from another DHState object.  <a href="group__dhstate.html#ga921137066457bfc4b273ad5a03a0415f">More...</a><br/></td></tr>
+<tr class="separator:ga921137066457bfc4b273ad5a03a0415f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4e8cf5645611200af11977fefb12b290"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga4e8cf5645611200af11977fefb12b290">noise_dhstate_generate_keypair</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga4e8cf5645611200af11977fefb12b290"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new key pair within a DHState object.  <a href="group__dhstate.html#ga4e8cf5645611200af11977fefb12b290">More...</a><br/></td></tr>
 <tr class="separator:ga4e8cf5645611200af11977fefb12b290"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,6 +147,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga37e9dfeeeadce4f90339cf1ffe5b1e2f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga37e9dfeeeadce4f90339cf1ffe5b1e2f">noise_dhstate_get_public_key_length</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga37e9dfeeeadce4f90339cf1ffe5b1e2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the public key for a DHState object.  <a href="group__dhstate.html#ga37e9dfeeeadce4f90339cf1ffe5b1e2f">More...</a><br/></td></tr>
 <tr class="separator:ga37e9dfeeeadce4f90339cf1ffe5b1e2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d245b5d1866d489566e99ccbea662f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga3d245b5d1866d489566e99ccbea662f3">noise_dhstate_get_role</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
+<tr class="memdesc:ga3d245b5d1866d489566e99ccbea662f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the role that a DHState object will play in a handshake.  <a href="group__dhstate.html#ga3d245b5d1866d489566e99ccbea662f3">More...</a><br/></td></tr>
+<tr class="separator:ga3d245b5d1866d489566e99ccbea662f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae0ee1c268584933d007fdac16e95c3ec"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gae0ee1c268584933d007fdac16e95c3ec">noise_dhstate_get_shared_key_length</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:gae0ee1c268584933d007fdac16e95c3ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the shared key for a DHState object.  <a href="group__dhstate.html#gae0ee1c268584933d007fdac16e95c3ec">More...</a><br/></td></tr>
 <tr class="separator:gae0ee1c268584933d007fdac16e95c3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,6 +183,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gac6fa00b45a6db3bb405ed1163e09ae95"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95">noise_dhstate_set_public_key</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const uint8_t *public_key, size_t public_key_len)</td></tr>
 <tr class="memdesc:gac6fa00b45a6db3bb405ed1163e09ae95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the public key in a DHState object.  <a href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95">More...</a><br/></td></tr>
 <tr class="separator:gac6fa00b45a6db3bb405ed1163e09ae95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab448054707a261d51fb1ef65c1d49810"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gab448054707a261d51fb1ef65c1d49810">noise_dhstate_set_role</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, int role)</td></tr>
+<tr class="memdesc:gab448054707a261d51fb1ef65c1d49810"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the role that a DHState object will play in a handshake.  <a href="group__dhstate.html#gab448054707a261d51fb1ef65c1d49810">More...</a><br/></td></tr>
+<tr class="separator:gab448054707a261d51fb1ef65c1d49810"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>DHState interface. </p>
@@ -185,7 +194,7 @@ Functions</h2></td></tr>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 16 2016 10:25:13 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 23 2016 06:34:13 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -106,6 +106,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga05b705a292e82c508ab8a337c4f8aea3">noise_dhstate_free</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga05b705a292e82c508ab8a337c4f8aea3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees a DHState object after destroying all sensitive material.  <a href="#ga05b705a292e82c508ab8a337c4f8aea3">More...</a><br/></td></tr>
 <tr class="separator:ga05b705a292e82c508ab8a337c4f8aea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga921137066457bfc4b273ad5a03a0415f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga921137066457bfc4b273ad5a03a0415f">noise_dhstate_generate_dependent_keypair</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *other)</td></tr>
+<tr class="memdesc:ga921137066457bfc4b273ad5a03a0415f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new key pair within a DHState object that may depend upon the parameters from another DHState object.  <a href="#ga921137066457bfc4b273ad5a03a0415f">More...</a><br/></td></tr>
+<tr class="separator:ga921137066457bfc4b273ad5a03a0415f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4e8cf5645611200af11977fefb12b290"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga4e8cf5645611200af11977fefb12b290">noise_dhstate_generate_keypair</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga4e8cf5645611200af11977fefb12b290"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new key pair within a DHState object.  <a href="#ga4e8cf5645611200af11977fefb12b290">More...</a><br/></td></tr>
 <tr class="separator:ga4e8cf5645611200af11977fefb12b290"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,6 +130,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga37e9dfeeeadce4f90339cf1ffe5b1e2f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga37e9dfeeeadce4f90339cf1ffe5b1e2f">noise_dhstate_get_public_key_length</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:ga37e9dfeeeadce4f90339cf1ffe5b1e2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the public key for a DHState object.  <a href="#ga37e9dfeeeadce4f90339cf1ffe5b1e2f">More...</a><br/></td></tr>
 <tr class="separator:ga37e9dfeeeadce4f90339cf1ffe5b1e2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3d245b5d1866d489566e99ccbea662f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#ga3d245b5d1866d489566e99ccbea662f3">noise_dhstate_get_role</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
+<tr class="memdesc:ga3d245b5d1866d489566e99ccbea662f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the role that a DHState object will play in a handshake.  <a href="#ga3d245b5d1866d489566e99ccbea662f3">More...</a><br/></td></tr>
+<tr class="separator:ga3d245b5d1866d489566e99ccbea662f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gae0ee1c268584933d007fdac16e95c3ec"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gae0ee1c268584933d007fdac16e95c3ec">noise_dhstate_get_shared_key_length</a> (const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:gae0ee1c268584933d007fdac16e95c3ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length of the shared key for a DHState object.  <a href="#gae0ee1c268584933d007fdac16e95c3ec">More...</a><br/></td></tr>
 <tr class="separator:gae0ee1c268584933d007fdac16e95c3ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,6 +166,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gac6fa00b45a6db3bb405ed1163e09ae95"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95">noise_dhstate_set_public_key</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const uint8_t *public_key, size_t public_key_len)</td></tr>
 <tr class="memdesc:gac6fa00b45a6db3bb405ed1163e09ae95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the public key in a DHState object.  <a href="#gac6fa00b45a6db3bb405ed1163e09ae95">More...</a><br/></td></tr>
 <tr class="separator:gac6fa00b45a6db3bb405ed1163e09ae95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab448054707a261d51fb1ef65c1d49810"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dhstate.html#gab448054707a261d51fb1ef65c1d49810">noise_dhstate_set_role</a> (<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, int role)</td></tr>
+<tr class="memdesc:gab448054707a261d51fb1ef65c1d49810"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the role that a DHState object will play in a handshake.  <a href="#gab448054707a261d51fb1ef65c1d49810">More...</a><br/></td></tr>
+<tr class="separator:gab448054707a261d51fb1ef65c1d49810"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>DHState objects are used to store the keypairs for the local party or the public keys for remote parties. Once the keys have been set, <a class="el" href="group__dhstate.html#ga72076f5192308be0e095470d7b7a1891" title="Performs a Diffie-Hellman calculation. ">noise_dhstate_calculate()</a> can be used to perform a Diffie-Hellman operation with two DHState objects. </p>
@@ -241,7 +250,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if the public key in <em>public_key_state</em> is
 <p>If the input public key is the special null value, then the output <em>shared_key</em> will also be the null value and NOISE_ERROR_NONE will be returned.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#ga4e8cf5645611200af11977fefb12b290" title="Generates a new key pair within a DHState object. ">noise_dhstate_generate_keypair()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00642">642</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00690">690</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -271,7 +280,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if the public key in <em>public_key_state</em> is
 NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gad70dda4e2945deae1b9d1aa0f157c8dc" title="Determine if a DHState object contains a keypair. ">noise_dhstate_has_keypair()</a>, <a class="el" href="group__dhstate.html#ga1af6ca1345a21c2f674d87382be7b0d6" title="Determine if a DHState object contains a public key. ">noise_dhstate_has_public_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00578">578</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00626">626</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -313,7 +322,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>from</em> is NULL. </dd>
 <dd>
 NOISE_ERROR_NOT_APPLICABLE if <em>from</em> does not have the same key type identifier as <em>state</em>. </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00686">686</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00734">734</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -374,7 +383,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entir
 NOISE_ERROR_INVALID_STATE if a public key has not been set on <em>state</em> yet.</dd></dl>
 <p>Fingerprints are created by hashing the public key with SHA256 and then formatting the value in hexadecimal with bytes separated by colons. If the <em>fingerprint_type</em> is NOISE_FINGERPRINT_BASIC, then the SHA256 hash value is truncated to the first 16 bytes. If the type is NOISE_FINGERPRINT_FULL, then the entire 32 byte hash value is formatted. </p>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00729">729</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00777">777</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -405,6 +414,53 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#ga92ae8d4e63fee46fcdbd5e5931eb3551" title="Creates a new DHState object by its algorithm identifier. ">noise_dhstate_new_by_id()</a>, <a class="el" href="group__dhstate.html#ga345b2bc6c6641cdddd93fafa42a5d440" title="Creates a new DHState object by its algorithm name. ">noise_dhstate_new_by_name()</a> </dd></dl>
 
 <p>Definition at line <a class="el" href="dhstate_8c_source.html#l00146">146</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga921137066457bfc4b273ad5a03a0415f"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_dhstate_generate_dependent_keypair </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td>
+          <td class="paramname"><em>other</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates a new key pair within a DHState object that may depend upon the parameters from another DHState object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The DHState object. </td></tr>
+    <tr><td class="paramname">other</td><td>The other DHState object to obtain parameters from, which may be NULL.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> or is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> and <em>other</em> do not have the same algorithm identifier. </dd>
+<dd>
+NOISE_ERROR_INVALID_STATE if dependent parameters are required but <em>other</em> does not currently contain any.</dd></dl>
+<p>This function is intended for generating ephemeral keypairs for algorithms like New Hope where the keypair for Bob depends upon parameters that are transmitted in Alice's public key. If the algorithm does not require dependent parameters to generate the keypair, <em>other</em> is ignored.</p>
+<dl class="section note"><dt>Note</dt><dd>This function needs to generate random key material for the private key, so the system random number generator must be properly seeded before calling this function.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#ga72076f5192308be0e095470d7b7a1891" title="Performs a Diffie-Hellman calculation. ">noise_dhstate_calculate()</a>, <a class="el" href="group__dhstate.html#gaba2d5df7a3e727e479a297c231383dcc" title="Sets the keypair within a DHState object. ">noise_dhstate_set_keypair()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00332">332</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -528,7 +584,7 @@ NOISE_ERROR_INVALID_LENGTH if either <em>private_key_len</em> or <em>public_key_
 NOISE_ERROR_INVALID_STATE if <em>state</em> does not contain a keypair.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gaba2d5df7a3e727e479a297c231383dcc" title="Sets the keypair within a DHState object. ">noise_dhstate_set_keypair()</a>, <a class="el" href="group__dhstate.html#gaf3f309448ef895b037fdf8a6b812fe40" title="Gets the public key value from a DHState object. ">noise_dhstate_get_public_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00420">420</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00468">468</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -548,7 +604,7 @@ NOISE_ERROR_INVALID_STATE if <em>state</em> does not contain a keypair.</dd></dl
 
 <p>Gets the maximum length of DH keys for the supported algorithms. </p>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00751">751</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00799">799</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -626,7 +682,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>public_key</em> is NULL. </dd
 NOISE_ERROR_INVALID_LENGTH if <em>public_key_len</em> is incorrect for this algorithm.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95" title="Sets the public key in a DHState object. ">noise_dhstate_set_public_key()</a>, <a class="el" href="group__dhstate.html#ga37e9dfeeeadce4f90339cf1ffe5b1e2f" title="Gets the length of the public key for a DHState object. ">noise_dhstate_get_public_key_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00509">509</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00557">557</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -655,6 +711,34 @@ NOISE_ERROR_INVALID_LENGTH if <em>public_key_len</em> is incorrect for this algo
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gada42ef950369824e089cd6fbb32b1438" title="Gets the length of the private key for a DHState object. ">noise_dhstate_get_private_key_length()</a>, <a class="el" href="group__dhstate.html#gae0ee1c268584933d007fdac16e95c3ec" title="Gets the length of the shared key for a DHState object. ">noise_dhstate_get_shared_key_length()</a> </dd></dl>
 
 <p>Definition at line <a class="el" href="dhstate_8c_source.html#l00183">183</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga3d245b5d1866d489566e99ccbea662f3"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_dhstate_get_role </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td>
+          <td class="paramname"><em>state</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the role that a DHState object will play in a handshake. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The DHState object.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The role, NOISE_ROLE_INITIATOR or NOISE_ROLE_RESPONDER, or zero if the role has not been set yet.</dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gab448054707a261d51fb1ef65c1d49810" title="Sets the role that a DHState object will play in a handshake. ">noise_dhstate_set_role()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00814">814</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -794,7 +878,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>public_key_len</em> is incorrect for this algo
 <dl class="section return"><dt>Returns</dt><dd>Returns non-zero if the public key within <em>state</em> is the special null value; zero otherwise.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#ga615959000774dcf6484152d439b72f59" title="Sets the public key in a DHState object to the special null value. ">noise_dhstate_set_null_public_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00558">558</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00606">606</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -953,7 +1037,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if <em>public_key</em> is not valid.</dd></dl>
 <p>The algorithm may decide to defer NOISE_ERROR_INVALID_PRIVATE_KEY or NOISE_ERROR_INVALID_PUBLIC_KEY to later when the keypair is actually used during <a class="el" href="group__dhstate.html#ga72076f5192308be0e095470d7b7a1891" title="Performs a Diffie-Hellman calculation. ">noise_dhstate_calculate()</a>.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gacfb68c245cadc7f4c420ccb6ec9a08f5" title="Gets the keypair from within a DHState object. ">noise_dhstate_get_keypair()</a>, <a class="el" href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95" title="Sets the public key in a DHState object. ">noise_dhstate_set_public_key()</a>, <a class="el" href="group__dhstate.html#gaa0bcd74dfbbd47c7e54fa413e437093f" title="Sets the keypair within a DHState object based on a private key only. ">noise_dhstate_set_keypair_private()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00326">326</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00374">374</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -1009,7 +1093,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if <em>public_key</em> that is derived from the <
 <p>This function only takes the private key as an argument. The public key in the keypair is derived from the private key.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gacfb68c245cadc7f4c420ccb6ec9a08f5" title="Gets the keypair from within a DHState object. ">noise_dhstate_get_keypair()</a>, <a class="el" href="group__dhstate.html#gac6fa00b45a6db3bb405ed1163e09ae95" title="Sets the public key in a DHState object. ">noise_dhstate_set_public_key()</a>, <a class="el" href="group__dhstate.html#gaba2d5df7a3e727e479a297c231383dcc" title="Sets the keypair within a DHState object. ">noise_dhstate_set_keypair()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00377">377</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00425">425</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -1039,7 +1123,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if <em>public_key</em> that is derived from the <
 NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gaa263022048cf6fe3279c90c479715e67" title="Determine if the public key in a DHState object has the special null value. ">noise_dhstate_is_null_public_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00532">532</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00580">580</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
@@ -1093,14 +1177,59 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if <em>public_key</em> is not valid and it is not
 <p>The algorithm may decide to defer NOISE_ERROR_INVALID_PUBLIC_KEY to later when the public key is actually used during <a class="el" href="group__dhstate.html#ga72076f5192308be0e095470d7b7a1891" title="Performs a Diffie-Hellman calculation. ">noise_dhstate_calculate()</a>.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#gaf3f309448ef895b037fdf8a6b812fe40" title="Gets the public key value from a DHState object. ">noise_dhstate_get_public_key()</a>, <a class="el" href="group__dhstate.html#gaba2d5df7a3e727e479a297c231383dcc" title="Sets the keypair within a DHState object. ">noise_dhstate_set_keypair()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00469">469</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00517">517</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gab448054707a261d51fb1ef65c1d49810"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int noise_dhstate_set_role </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td>
+          <td class="paramname"><em>state</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>role</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the role that a DHState object will play in a handshake. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>The DHState object. </td></tr>
+    <tr><td class="paramname">role</td><td>The role, NOISE_ROLE_INITIATOR or NOISE_ROLE_RESPONDER, or zero if the role is unspecified.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL. </dd>
+<dd>
+NOISE_ERROR_INVALID_PARAM if <em>role</em> is not one of NOISE_ROLE_INITIATOR, NOISE_ROLE_RESPONDER, or zero.</dd></dl>
+<p>This function is intended for use with algorithms that have a different method for calculating public keys and shared secrets for the two parties in a communication. An example is the post-quantum SIDH algorithm where "Alice" and "Bob" differ in the calculations they perform.</p>
+<p>To assist with supporting such algorithms, the HandshakeState labels DHState objects as either initiator or responder depending upon who owns that specific key. The algorithm-specific back end can then use the role information to determine which object it wants to treat as "Alice" and which object should be treated as "Bob".</p>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__dhstate.html#ga3d245b5d1866d489566e99ccbea662f3" title="Gets the role that a DHState object will play in a handshake. ">noise_dhstate_get_role()</a> </dd></dl>
+
+<p>Definition at line <a class="el" href="dhstate_8c_source.html#l00844">844</a> of file <a class="el" href="dhstate_8c_source.html">dhstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 16 2016 10:25:13 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 23 2016 06:34:13 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -99,27 +99,27 @@ Data Fields</h2></td></tr>
 <tr class="memitem:aec63c22f14213fff9a0db0ebc3047f2c"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#aec63c22f14213fff9a0db0ebc3047f2c">calculate</a> )(const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *private_key_state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *public_key_state, uint8_t *shared_key)</td></tr>
 <tr class="memdesc:aec63c22f14213fff9a0db0ebc3047f2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a Diffie-Hellman calculation.  <a href="#aec63c22f14213fff9a0db0ebc3047f2c">More...</a><br/></td></tr>
 <tr class="separator:aec63c22f14213fff9a0db0ebc3047f2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41a81e902bf1a93a3f9083db593aa4af"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a41a81e902bf1a93a3f9083db593aa4af">change_role</a> )(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
+<tr class="memdesc:a41a81e902bf1a93a3f9083db593aa4af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the role for this object.  <a href="#a41a81e902bf1a93a3f9083db593aa4af">More...</a><br/></td></tr>
+<tr class="separator:a41a81e902bf1a93a3f9083db593aa4af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3abd0225f5cc1efa5fae5903a7b8948"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#aa3abd0225f5cc1efa5fae5903a7b8948">derive_public_key</a> )(const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const uint8_t *<a class="el" href="structNoiseDHState__s.html#aacb825aedaa140d12fab37b897da06f0">private_key</a>, uint8_t *<a class="el" href="structNoiseDHState__s.html#a63a30c2d7fc0b31b9082f4b706194b2a">public_key</a>)</td></tr>
 <tr class="memdesc:aa3abd0225f5cc1efa5fae5903a7b8948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives a public key from a private key.  <a href="#aa3abd0225f5cc1efa5fae5903a7b8948">More...</a><br/></td></tr>
 <tr class="separator:aa3abd0225f5cc1efa5fae5903a7b8948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19deb64f0c9b893f8f736db347823c81"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a19deb64f0c9b893f8f736db347823c81">destroy</a> )(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
 <tr class="memdesc:a19deb64f0c9b893f8f736db347823c81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys this DHState prior to the memory being freed.  <a href="#a19deb64f0c9b893f8f736db347823c81">More...</a><br/></td></tr>
 <tr class="separator:a19deb64f0c9b893f8f736db347823c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa92d90f9b82e88e7d7976d2e86cc2fca"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#aa92d90f9b82e88e7d7976d2e86cc2fca">dh_id</a></td></tr>
-<tr class="memdesc:aa92d90f9b82e88e7d7976d2e86cc2fca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Algorithm identifier for the Diffie-Hellman operation.  <a href="#aa92d90f9b82e88e7d7976d2e86cc2fca">More...</a><br/></td></tr>
-<tr class="separator:aa92d90f9b82e88e7d7976d2e86cc2fca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a210acb7a581e30c90317f936e2bd49e3"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a210acb7a581e30c90317f936e2bd49e3">dh_id</a></td></tr>
+<tr class="memdesc:a210acb7a581e30c90317f936e2bd49e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Algorithm identifier for the Diffie-Hellman operation.  <a href="#a210acb7a581e30c90317f936e2bd49e3">More...</a><br/></td></tr>
+<tr class="separator:a210acb7a581e30c90317f936e2bd49e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6d59223d17db601429afb3ee2355639f"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a6d59223d17db601429afb3ee2355639f">ephemeral_only</a>: 1</td></tr>
 <tr class="memdesc:a6d59223d17db601429afb3ee2355639f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non-zero if this algorithm only supports ephemeral keys.  <a href="#a6d59223d17db601429afb3ee2355639f">More...</a><br/></td></tr>
 <tr class="separator:a6d59223d17db601429afb3ee2355639f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa96e195a495bd06781ff277f348932af"><td class="memItemLeft" align="right" valign="top">void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#aa96e195a495bd06781ff277f348932af">generate_keypair</a> )(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td></tr>
-<tr class="memdesc:aa96e195a495bd06781ff277f348932af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new key pair for this Diffie-Hellman algorithm.  <a href="#aa96e195a495bd06781ff277f348932af">More...</a><br/></td></tr>
-<tr class="separator:aa96e195a495bd06781ff277f348932af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63b1e36f2c3b44fb80237dc294526473"><td class="memItemLeft" align="right" valign="top">int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a63b1e36f2c3b44fb80237dc294526473">generate_keypair</a> )(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *other)</td></tr>
+<tr class="memdesc:a63b1e36f2c3b44fb80237dc294526473"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a new key pair for this Diffie-Hellman algorithm.  <a href="#a63b1e36f2c3b44fb80237dc294526473">More...</a><br/></td></tr>
+<tr class="separator:a63b1e36f2c3b44fb80237dc294526473"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8c40a430a9109de62162e2ac60b3abc"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#af8c40a430a9109de62162e2ac60b3abc">key_type</a></td></tr>
 <tr class="memdesc:af8c40a430a9109de62162e2ac60b3abc"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of key stored within this DHState object.  <a href="#af8c40a430a9109de62162e2ac60b3abc">More...</a><br/></td></tr>
 <tr class="separator:af8c40a430a9109de62162e2ac60b3abc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ea28f620c13bf75263ec9b68b0efd91"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a0ea28f620c13bf75263ec9b68b0efd91">mutual</a></td></tr>
-<tr class="memdesc:a0ea28f620c13bf75263ec9b68b0efd91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Mutual DH object for ephemeral-only key exchanges.  <a href="#a0ea28f620c13bf75263ec9b68b0efd91">More...</a><br/></td></tr>
-<tr class="separator:a0ea28f620c13bf75263ec9b68b0efd91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed73bb9a568a0f417a2512db724e7cfa"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#aed73bb9a568a0f417a2512db724e7cfa">nulls_allowed</a>: 1</td></tr>
 <tr class="memdesc:aed73bb9a568a0f417a2512db724e7cfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Non-zero if null public keys are allowed with this algorithm.  <a href="#aed73bb9a568a0f417a2512db724e7cfa">More...</a><br/></td></tr>
 <tr class="separator:aed73bb9a568a0f417a2512db724e7cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,6 +135,9 @@ Data Fields</h2></td></tr>
 <tr class="memitem:ab5a28a815c35396a971ee4ae533686fd"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#ab5a28a815c35396a971ee4ae533686fd">public_key_len</a></td></tr>
 <tr class="memdesc:ab5a28a815c35396a971ee4ae533686fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the public key for this algorithm in bytes.  <a href="#ab5a28a815c35396a971ee4ae533686fd">More...</a><br/></td></tr>
 <tr class="separator:ab5a28a815c35396a971ee4ae533686fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67851f67a7499ef19a3f91d7fdb4e96e"><td class="memItemLeft" align="right" valign="top">short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#a67851f67a7499ef19a3f91d7fdb4e96e">role</a></td></tr>
+<tr class="memdesc:a67851f67a7499ef19a3f91d7fdb4e96e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The role; either initiator or responder or zero.  <a href="#a67851f67a7499ef19a3f91d7fdb4e96e">More...</a><br/></td></tr>
+<tr class="separator:a67851f67a7499ef19a3f91d7fdb4e96e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab1b932dd8f0412288ffebfdcda429b75"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structNoiseDHState__s.html#ab1b932dd8f0412288ffebfdcda429b75">shared_key_len</a></td></tr>
 <tr class="memdesc:ab1b932dd8f0412288ffebfdcda429b75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the shared key for this algorithm in bytes.  <a href="#ab1b932dd8f0412288ffebfdcda429b75">More...</a><br/></td></tr>
 <tr class="separator:ab1b932dd8f0412288ffebfdcda429b75"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,7 +182,30 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if the private key is invalid for the algorithm.
 NOISE_ERROR_INVALID_PUBLIC_KEY if the public key is invalid for the algorithm.</dd></dl>
 <p>This function must always operate in the same amount of time, even if the private or public key is invalid. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00324">324</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00328">328</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a41a81e902bf1a93a3f9083db593aa4af"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void(* NoiseDHState_s::change_role)(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Changes the role for this object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Points to the DHState.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>This pointer can be NULL if the back end does not need any special logic to change the role. </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00340">340</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -208,7 +234,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong with the private key
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00291">291</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00295">295</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -232,16 +258,16 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 <p>This function is called just before the memory for the DHState is deallocated. It gives the back end an opportunity to clean up linked objects.</p>
 <p>This pointer can be NULL if the back end does not need any special clean up logic. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00340">340</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00354">354</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa92d90f9b82e88e7d7976d2e86cc2fca"></a>
+<a class="anchor" id="a210acb7a581e30c90317f936e2bd49e3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int NoiseDHState_s::dh_id</td>
+          <td class="memname">short NoiseDHState_s::dh_id</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -264,16 +290,16 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Non-zero if this algorithm only supports ephemeral keys. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00230">230</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00233">233</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="aa96e195a495bd06781ff277f348932af"></a>
+<a class="anchor" id="a63b1e36f2c3b44fb80237dc294526473"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void(* NoiseDHState_s::generate_keypair)(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state)</td>
+          <td class="memname">int(* NoiseDHState_s::generate_keypair)(<a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *state, const <a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a> *other)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -282,11 +308,13 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">state</td><td>Points to the DHState. </td></tr>
+    <tr><td class="paramname">other</td><td>Points to the other DHState for obtaining dependent parameters. May be NULL.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success or an error code otherwise. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00258">258</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00262">262</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -302,23 +330,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>The type of key stored within this DHState object. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00227">227</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="a0ea28f620c13bf75263ec9b68b0efd91"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group__dhstate.html#gacd53cb04a20ac2ee334693c4b4248956">NoiseDHState</a>* NoiseDHState_s::mutual</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Mutual DH object for ephemeral-only key exchanges. </p>
-
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00251">251</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00230">230</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -334,7 +346,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Non-zero if null public keys are allowed with this algorithm. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00233">233</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00236">236</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -350,7 +362,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Points to the private key in the subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00245">245</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00248">248</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -366,7 +378,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the private key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00236">236</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00239">239</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -382,7 +394,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Points to the public key in the subclass state. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00248">248</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00251">251</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -398,7 +410,23 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the public key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00239">239</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00242">242</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a67851f67a7499ef19a3f91d7fdb4e96e"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">short NoiseDHState_s::role</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The role; either initiator or responder or zero. </p>
+
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00227">227</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +442,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the derived publ
 
 <p>Length of the shared key for this algorithm in bytes. </p>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00242">242</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00245">245</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -459,7 +487,7 @@ NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong with the private key
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00274">274</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00278">278</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -485,7 +513,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. 
 <dd>
 NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. </dd></dl>
 
-<p>Definition at line <a class="el" href="internal_8h_source.html#l00305">305</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
+<p>Definition at line <a class="el" href="internal_8h_source.html#l00309">309</a> of file <a class="el" href="internal_8h_source.html">internal.h</a>.</p>
 
 </div>
 </div>
@@ -495,7 +523,7 @@ NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong with the public key. 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 16 2016 10:25:14 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Jul 23 2016 06:34:13 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
