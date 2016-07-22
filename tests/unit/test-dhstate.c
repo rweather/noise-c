@@ -395,9 +395,6 @@ static void check_dh_generate(int id)
         compare(noise_dhstate_get_public_key_length(state1), 1824);
         compare(noise_dhstate_get_private_key_length(state2), 2048);
         compare(noise_dhstate_get_public_key_length(state2), 1824);
-    } else if (id == NOISE_DH_SIDHP751) {
-        verify(noise_dhstate_is_ephemeral_only(state1));
-        verify(noise_dhstate_is_ephemeral_only(state2));
     } else {
         verify(!noise_dhstate_is_ephemeral_only(state1));
         verify(!noise_dhstate_is_ephemeral_only(state2));
