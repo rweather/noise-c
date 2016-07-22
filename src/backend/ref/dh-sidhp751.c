@@ -45,7 +45,8 @@ typedef struct NoiseSIDHState_s
 
 } NoiseSIDHState;
 
-static void noise_sidhp751_generate_keypair(NoiseDHState *state)
+static int noise_sidhp751_generate_keypair
+    (NoiseDHState *state, const NoiseDHState *other)
 {
     NoiseSIDHState *st = (NoiseSIDHState *)state;
     if (state->role != NOISE_ROLE_RESPONDER) {
@@ -55,6 +56,7 @@ static void noise_sidhp751_generate_keypair(NoiseDHState *state)
         /* Generating the keypair for Bob */
         KeyGeneration_B(state->private_key, state->public_key, st->curve_data);
     }
+    return NOISE_ERROR_NONE;
 }
 
 static int noise_sidhp751_validate_public_key
