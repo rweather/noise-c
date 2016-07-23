@@ -49,6 +49,8 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
 {
     NoiseProtocolId id;
     size_t name_len = strlen(protocol_name);
+    size_t public_key_len;
+    size_t private_key_len;
     const uint8_t *pattern;
     uint8_t flags;
     int err;
@@ -65,6 +67,15 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     err = noise_dhstate_new_by_id(&(handshake->dh_public), id.dh_id);
     if (err != NOISE_ERROR_NONE) {
         noise_perror("Initialize DH Public", err);
+        exit(1);
+    }
+    public_key_len = noise_dhstate_get_public_key_length(handshake->dh_public);
+    private_key_len = noise_dhstate_get_private_key_length(handshake->dh_private);
+    if (s_len > private_key_len || e_len > private_key_len ||
+            rs_len > public_key_len || re_len > public_key_len ||
+            private_key_len > MAX_DH_KEY_LEN ||
+            public_key_len > MAX_DH_KEY_LEN) {
+        fprintf(stderr, "Out of range key sizes\n");
         exit(1);
     }
     pattern = noise_pattern_lookup(id.pattern_id);

@@ -794,14 +794,6 @@ int noise_dhstate_format_fingerprint
 }
 
 /**
- * \brief Gets the maximum length of DH keys for the supported algorithms.
- */
-int noise_dhstate_get_max_key_length(void)
-{
-    return 56;
-}
-
-/**
  * \brief Gets the role that a DHState object will play in a handshake.
  *
  * \param state The DHState object.

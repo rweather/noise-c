@@ -154,9 +154,8 @@ int main_generate(const char *progname, int argc, char *argv[])
     Noise_SubjectInfo *subject = 0;
     uint8_t *private_key = 0;
     uint8_t *public_key = 0;
-    size_t max_key_length;
-    size_t private_key_length;
-    size_t public_key_length;
+    size_t private_key_length = 0;
+    size_t public_key_length = 0;
     int index, err;
 
     /* Parse the command-line options */
@@ -168,18 +167,6 @@ int main_generate(const char *progname, int argc, char *argv[])
         passphrase = ask_for_passphrase(1);
         if (!passphrase)
             return 1;
-    }
-
-    /* Allocate temporary space for extracting keys from DHState objects */
-    max_key_length = noise_dhstate_get_max_key_length();
-    private_key_length = noise_signstate_get_max_key_length();
-    if (private_key_length > max_key_length)
-        max_key_length = private_key_length;
-    private_key = (uint8_t *)malloc(max_key_length);
-    public_key = (uint8_t *)malloc(max_key_length);
-    if (!private_key || !public_key) {
-        perror("malloc");
-        return 1;
     }
 
     /* Create the private key and certificate objects */
@@ -220,7 +207,19 @@ int main_generate(const char *progname, int argc, char *argv[])
             if (noise_dhstate_new_by_id(&dh, id) == NOISE_ERROR_NONE) {
                 public_key_length = noise_dhstate_get_public_key_length(dh);
                 private_key_length = noise_dhstate_get_private_key_length(dh);
-                noise_dhstate_generate_keypair(dh);
+                public_key = (uint8_t *)malloc(public_key_length);
+                private_key = (uint8_t *)malloc(private_key_length);
+                if (!public_key || !private_key) {
+                    fprintf(stderr, "Insufficient memory for key objects\n");
+                    retval = 1;
+                    goto cleanup;
+                }
+                err = noise_dhstate_generate_keypair(dh);
+                if (err != NOISE_ERROR_NONE) {
+                    noise_perror(name, err);
+                    retval = 1;
+                    goto cleanup;
+                }
                 noise_dhstate_get_keypair
                     (dh, private_key, private_key_length,
                      public_key, public_key_length);
@@ -237,7 +236,19 @@ int main_generate(const char *progname, int argc, char *argv[])
             if (noise_signstate_new_by_id(&sign, id) == NOISE_ERROR_NONE) {
                 public_key_length = noise_signstate_get_public_key_length(sign);
                 private_key_length = noise_signstate_get_private_key_length(sign);
-                noise_signstate_generate_keypair(sign);
+                public_key = (uint8_t *)malloc(public_key_length);
+                private_key = (uint8_t *)malloc(private_key_length);
+                if (!public_key || !private_key) {
+                    fprintf(stderr, "Insufficient memory for key objects\n");
+                    retval = 1;
+                    goto cleanup;
+                }
+                err = noise_signstate_generate_keypair(sign);
+                if (err != NOISE_ERROR_NONE) {
+                    noise_perror(name, err);
+                    retval = 1;
+                    goto cleanup;
+                }
                 noise_signstate_get_keypair
                     (sign, private_key, private_key_length,
                      public_key, public_key_length);
@@ -253,6 +264,12 @@ int main_generate(const char *progname, int argc, char *argv[])
                         (pub_key, public_key, public_key_length));
         CHECK_ERROR(Noise_PrivateKeyInfo_set_key
                         (priv_key, private_key, private_key_length));
+        noise_free(private_key, private_key_length);
+        noise_free(public_key, public_key_length);
+        private_key = 0;
+        public_key = 0;
+        private_key_length = 0;
+        public_key_length = 0;
     }
 
     /* Save the certificate and private key */
@@ -283,7 +300,7 @@ int main_generate(const char *progname, int argc, char *argv[])
 cleanup:
     Noise_PrivateKey_free(key);
     Noise_Certificate_free(cert);
-    noise_free(private_key, max_key_length);
-    noise_free(public_key, max_key_length);
+    noise_free(private_key, private_key_length);
+    noise_free(public_key, public_key_length);
     return retval;
 }

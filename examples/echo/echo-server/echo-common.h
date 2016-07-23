@@ -70,8 +70,6 @@ typedef struct
 
 } EchoProtocolId;
 
-#define MAX_DH_KEY_LEN 128
-
 extern int echo_verbose;
 
 int echo_get_protocol_id(EchoProtocolId *id, const char *name, int post_quantum);

@@ -137,8 +137,8 @@ static int initialize_handshake
     (NoiseHandshakeState *handshake, const void *prologue, size_t prologue_len)
 {
     NoiseDHState *dh;
-    uint8_t key[MAX_DH_KEY_LEN];
-    size_t key_len;
+    uint8_t *key = 0;
+    size_t key_len = 0;
     int err;
 
     /* Set the prologue first */
@@ -167,9 +167,15 @@ static int initialize_handshake
         if (client_private_key) {
             dh = noise_handshakestate_get_local_keypair_dh(handshake);
             key_len = noise_dhstate_get_private_key_length(dh);
-            if (!echo_load_private_key(client_private_key, key, key_len))
+            key = (uint8_t *)malloc(key_len);
+            if (!key)
                 return 0;
+            if (!echo_load_private_key(client_private_key, key, key_len)) {
+                noise_free(key, key_len);
+                return 0;
+            }
             err = noise_dhstate_set_keypair_private(dh, key, key_len);
+            noise_free(key, key_len);
             if (err != NOISE_ERROR_NONE) {
                 noise_perror("set client private key", err);
                 return 0;
@@ -185,9 +191,15 @@ static int initialize_handshake
         if (server_public_key) {
             dh = noise_handshakestate_get_remote_public_key_dh(handshake);
             key_len = noise_dhstate_get_public_key_length(dh);
-            if (!echo_load_public_key(server_public_key, key, key_len))
+            key = (uint8_t *)malloc(key_len);
+            if (!key)
                 return 0;
+            if (!echo_load_public_key(server_public_key, key, key_len)) {
+                noise_free(key, key_len);
+                return 0;
+            }
             err = noise_dhstate_set_public_key(dh, key, key_len);
+            noise_free(key, key_len);
             if (err != NOISE_ERROR_NONE) {
                 noise_perror("set server public key", err);
                 return 0;

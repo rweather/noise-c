@@ -59,9 +59,9 @@ static void check_dh(int id, size_t private_key_len, size_t public_key_len,
     verify(!noise_dhstate_has_keypair(state1));
     verify(!noise_dhstate_has_public_key(state1));
     verify(!noise_dhstate_is_null_public_key(state1));
-    verify(private_key_len <= noise_dhstate_get_max_key_length());
-    verify(public_key_len <= noise_dhstate_get_max_key_length());
-    verify(shared_key_len <= noise_dhstate_get_max_key_length());
+    verify(private_key_len <= MAX_DH_KEY_LEN);
+    verify(public_key_len <= MAX_DH_KEY_LEN);
+    verify(shared_key_len <= MAX_DH_KEY_LEN);
 
     /* Create the second DH object */
     compare(noise_dhstate_new_by_id(&state2, id), NOISE_ERROR_NONE);
@@ -374,6 +374,7 @@ static void check_dh_generate(int id)
     compare(noise_dhstate_get_dh_id(state1), id);
     compare(noise_dhstate_get_dh_id(state2), id);
     shared_key_len = noise_dhstate_get_shared_key_length(state1);
+    verify(shared_key_len <= MAX_DH_KEY_LEN);
 
     /* Set the roles for the two DHState objects */
     compare(noise_dhstate_set_role(state1, NOISE_ROLE_INITIATOR),

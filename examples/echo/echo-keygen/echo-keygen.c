@@ -24,10 +24,9 @@
 
 #include <noise/protocol.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-#define MAX_DH_KEY_SIZE 128
 
 int save_private_key(const char *filename, const uint8_t *key, size_t len);
 int save_public_key(const char *filename, const uint8_t *key, size_t len);
@@ -38,10 +37,10 @@ int main(int argc, char *argv[])
     const char *key_type = NULL;
     const char *priv_key_file = NULL;
     const char *pub_key_file = NULL;
-    uint8_t priv_key[MAX_DH_KEY_SIZE];
-    size_t priv_key_len;
-    uint8_t pub_key[MAX_DH_KEY_SIZE];
-    size_t pub_key_len;
+    uint8_t *priv_key = 0;
+    size_t priv_key_len = 0;
+    uint8_t *pub_key = 0;
+    size_t pub_key_len = 0;
     int ok = 1;
     int err;
 
@@ -72,6 +71,12 @@ int main(int argc, char *argv[])
     /* Fetch the keypair to be saved */
     priv_key_len = noise_dhstate_get_private_key_length(dh);
     pub_key_len = noise_dhstate_get_public_key_length(dh);
+    priv_key = (uint8_t *)malloc(priv_key_len);
+    pub_key = (uint8_t *)malloc(pub_key_len);
+    if (!priv_key || !pub_key) {
+        fprintf(stderr, "Out of memory\n");
+        return 1;
+    }
     err = noise_dhstate_get_keypair
         (dh, priv_key, priv_key_len, pub_key, pub_key_len);
     if (err != NOISE_ERROR_NONE) {
@@ -87,8 +92,8 @@ int main(int argc, char *argv[])
 
     /* Clean up */
     noise_dhstate_free(dh);
-    noise_clean(priv_key, sizeof(priv_key));
-    noise_clean(pub_key, sizeof(pub_key));
+    noise_free(priv_key, priv_key_len);
+    noise_free(pub_key, pub_key_len);
     if (!ok) {
         unlink(priv_key_file);
         unlink(pub_key_file);

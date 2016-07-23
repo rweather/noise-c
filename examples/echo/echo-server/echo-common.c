@@ -51,6 +51,8 @@ typedef BOOL sockopt_type;
 typedef int sockopt_type;
 #endif
 
+#define MAX_DH_KEY_LEN 2048
+
 int echo_verbose = 0;
 
 /* Convert a Noise handshake protocol name into an Echo protocol id */

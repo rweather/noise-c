@@ -67,7 +67,6 @@ int noise_dhstate_calculate
 int noise_dhstate_copy(NoiseDHState *state, const NoiseDHState *from);
 int noise_dhstate_format_fingerprint
     (const NoiseDHState *state, int fingerprint_type, char *buffer, size_t len);
-int noise_dhstate_get_max_key_length(void);
 int noise_dhstate_get_role(const NoiseDHState *state);
 int noise_dhstate_set_role(NoiseDHState *state, int role);
 
