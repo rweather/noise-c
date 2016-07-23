@@ -574,13 +574,15 @@ int noise_dhstate_get_public_key
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state does not support null
+ * public keys.
  *
  * \sa noise_dhstate_is_null_public_key()
  */
 int noise_dhstate_set_null_public_key(NoiseDHState *state)
 {
     /* Validate the parameter */
-    if (!state)
+    if (!state || !state->nulls_allowed)
         return NOISE_ERROR_INVALID_PARAM;
 
     /* Clear the key to all-zeroes */
