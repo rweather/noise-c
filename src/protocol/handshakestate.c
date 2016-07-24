@@ -1099,12 +1099,8 @@ static int noise_handshakestate_write
                     (state->dh_local_ephemeral, state->dh_remote_ephemeral);
             } else {
                 /* Use the fixed ephemeral key provided by the test harness */
-                err = noise_dhstate_set_keypair
-                    (state->dh_local_ephemeral,
-                     state->dh_fixed_ephemeral->private_key,
-                     state->dh_fixed_ephemeral->private_key_len,
-                     state->dh_fixed_ephemeral->public_key,
-                     state->dh_fixed_ephemeral->public_key_len);
+                err = noise_dhstate_copy
+                    (state->dh_local_ephemeral, state->dh_fixed_ephemeral);
             }
             if (err != NOISE_ERROR_NONE)
                 break;
