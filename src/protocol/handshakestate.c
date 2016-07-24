@@ -369,7 +369,7 @@ int noise_handshakestate_get_protocol_id
 }
 
 /**
- * \brief Gets the DHStatic object that contains the local static keypair.
+ * \brief Gets the DHState object that contains the local static keypair.
  *
  * \param state The HandshakeState object.
  *
@@ -388,7 +388,7 @@ NoiseDHState *noise_handshakestate_get_local_keypair_dh
 }
 
 /**
- * \brief Gets the DHStatic object that contains the remote static public key.
+ * \brief Gets the DHState object that contains the remote static public key.
  *
  * \param state The HandshakeState object.
  *
@@ -409,7 +409,7 @@ NoiseDHState *noise_handshakestate_get_remote_public_key_dh
 }
 
 /**
- * \brief Gets the DHStatic object that contains the local ephemeral keypair.
+ * \brief Gets the DHState object that contains the local ephemeral keypair.
  *
  * \param state The HandshakeState object.
  *
