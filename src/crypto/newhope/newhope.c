@@ -55,6 +55,7 @@ void newhope_keygen(unsigned char *send, poly *sk)
   unsigned char noiseseed[32];
 
   randombytes(seed, NEWHOPE_SEEDBYTES);
+  sha3256(seed, seed, NEWHOPE_SEEDBYTES); /* Don't send output of system RNG */
   randombytes(noiseseed, 32);
 
   gen_a(&a, seed);

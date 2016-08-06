@@ -64,7 +64,7 @@ void poly_uniform(poly *a, const unsigned char *seed)
   unsigned int pos=0, ctr=0;
   uint16_t val;
   uint64_t state[25];
-  unsigned int nblocks=16;
+  unsigned int nblocks=14;
   uint8_t buf[SHAKE128_RATE*nblocks];
 
   shake128_absorb(state, seed, NEWHOPE_SEEDBYTES);
@@ -73,8 +73,8 @@ void poly_uniform(poly *a, const unsigned char *seed)
 
   while(ctr < PARAM_N)
   {
-    val = (buf[pos] | ((uint16_t) buf[pos+1] << 8)) & 0x3fff; // Specialized for q = 12889
-    if(val < PARAM_Q)
+    val = (buf[pos] | ((uint16_t) buf[pos+1] << 8));
+    if(val < 5*PARAM_Q)
       a->coeffs[ctr++] = val;
     pos += 2;
     if(pos > SHAKE128_RATE*nblocks-2)
@@ -93,22 +93,20 @@ void poly_getnoise(poly *r, unsigned char *seed, unsigned char nonce)
 #error "poly_getnoise in poly.c only supports k=16"
 #endif
 
-  unsigned char buf[4*PARAM_N];
-  uint32_t *tp, t,d, a, b;
+  uint32_t buf[PARAM_N];
+  uint32_t t,d, a, b;
   unsigned char n[8];
   int i,j;
-
-  tp = (uint32_t *) buf;
 
   for(i=1;i<8;i++)
     n[i] = 0;
   n[0] = nonce;
 
-  crypto_stream_chacha20(buf,4*PARAM_N,n,seed);
+  crypto_stream_chacha20((unsigned char *)buf,4*PARAM_N,n,seed);
 
   for(i=0;i<PARAM_N;i++)
   {
-    t = tp[i];
+    t = buf[i];
     d = 0;
     for(j=0;j<8;j++)
       d += (t >> j) & 0x01010101;

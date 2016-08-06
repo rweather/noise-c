@@ -22,7 +22,6 @@
 
 #include "internal.h"
 #include "crypto/newhope/newhope.h"
-#include "crypto/sha2/sha256.h"
 #include <string.h>
 
 #define MAX_OF(a, b) ((a) > (b) ? (a) : (b))
@@ -128,18 +127,5 @@ NoiseDHState *noise_newhope_new(void)
 /* Implementation of random number generation needed by New Hope */
 void randombytes(unsigned char *x,unsigned long long xlen)
 {
-    if (xlen == 32) {
-        /* Generating seed material that may be sent in the clear.
-         * Hash the kernel data with SHA256 in case the kernel RNG
-         * is watermarking random data output */
-        sha256_context_t hash;
-        noise_rand_bytes(x, 32);
-        sha256_reset(&hash);
-        sha256_update(&hash, x, 32);
-        sha256_finish(&hash, x);
-        noise_clean(&hash, sizeof(hash));
-    } else {
-        /* New Hope currently only requests random data of size 32 */
-        noise_rand_bytes(x, (size_t)xlen);
-    }
+    noise_rand_bytes(x, (size_t)xlen);
 }

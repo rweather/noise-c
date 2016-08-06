@@ -9,7 +9,7 @@ static int32_t abs(int32_t v)
 }
 
 
-static int32_t f(int32_t *v0, int32_t *v1, int32_t x)
+static int32_t f(int32_t *v0, int32_t *v1, uint32_t x)
 {
   int32_t xit, t, r, b;
   
