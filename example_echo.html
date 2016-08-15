@@ -122,7 +122,7 @@ Setting keys</h2>
 </div><!-- fragment --><p>We can also set the pre shared key (PSK) value:</p>
 <div class="fragment"><div class="line">err = <a class="code" href="group__handshakestate.html#gafca896117ad9a8697a3fe385deb3c280">noise_handshakestate_set_pre_shared_key</a>(handshake, psk, <span class="keyword">sizeof</span>(psk));</div>
 </div><!-- fragment --><p>Next is the local client private key. The function <a class="el" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6" title="Determine if a HandshakeState still needs to be configured with a local keypair. ">noise_handshakestate_needs_local_keypair()</a> tells us if the handshake requires a local keypair.</p>
-<p>Once we know if we need a keypair, we obtain the local Diffie-Hellman key object using <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHStatic object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> and set the key with <a class="el" href="group__dhstate.html#gaa0bcd74dfbbd47c7e54fa413e437093f" title="Sets the keypair within a DHState object based on a private key only. ">noise_dhstate_set_keypair_private()</a>:</p>
+<p>Once we know if we need a keypair, we obtain the local Diffie-Hellman key object using <a class="el" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22" title="Gets the DHState object that contains the local static keypair. ">noise_handshakestate_get_local_keypair_dh()</a> and set the key with <a class="el" href="group__dhstate.html#gaa0bcd74dfbbd47c7e54fa413e437093f" title="Sets the keypair within a DHState object based on a private key only. ">noise_dhstate_set_keypair_private()</a>:</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> (<a class="code" href="group__handshakestate.html#gac7d3a6990a63b42f86109f5044c9f4d6">noise_handshakestate_needs_local_keypair</a>(handshake)) {</div>
 <div class="line">    dh = <a class="code" href="group__handshakestate.html#ga7d54d2d642d3893dd8392a6bc6b30a22">noise_handshakestate_get_local_keypair_dh</a>(handshake);</div>
 <div class="line">    key_len = <a class="code" href="group__dhstate.html#gada42ef950369824e089cd6fbb32b1438">noise_dhstate_get_private_key_length</a>(dh);</div>
@@ -164,7 +164,7 @@ Running the handshake phase</h2>
 Running the data transport phase</h2>
 <p>Once the handshake completes successfully, we can "split" the HandshakeState into two CipherState objects, one for sending and the other for receiving:</p>
 <div class="fragment"><div class="line">err = <a class="code" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a">noise_handshakestate_split</a>(handshake, &amp;send_cipher, &amp;recv_cipher);</div>
-</div><!-- fragment --><p>If the remote side provided its public key during the handshake, then <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHStatic object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> and <a class="el" href="group__dhstate.html#gaf3f309448ef895b037fdf8a6b812fe40" title="Gets the public key value from a DHState object. ">noise_dhstate_get_public_key()</a> can be used to retrieve it at this point.</p>
+</div><!-- fragment --><p>If the remote side provided its public key during the handshake, then <a class="el" href="group__handshakestate.html#ga1e34b02757ddef3481caccf85c9a1d54" title="Gets the DHState object that contains the remote static public key. ">noise_handshakestate_get_remote_public_key_dh()</a> and <a class="el" href="group__dhstate.html#gaf3f309448ef895b037fdf8a6b812fe40" title="Gets the public key value from a DHState object. ">noise_dhstate_get_public_key()</a> can be used to retrieve it at this point.</p>
 <p>The HandshakeState is now no longer required and we can discard it:</p>
 <div class="fragment"><div class="line"><a class="code" href="group__handshakestate.html#ga1ee4331d10a6c28bd336bfdf1017346d">noise_handshakestate_free</a>(handshake);</div>
 </div><!-- fragment --><p>From now on, whenever the application has data to send, it calls <a class="el" href="group__cipherstate.html#ga0e764ac8cb75e3da216987232255b9b9" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt()</a> or <a class="el" href="group__cipherstate.html#ga11123cb18f5d28e0fd4ed3e700aafeaa" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a> on the sending CipherState, and then writes the resulting packet to the transport.</p>
@@ -228,7 +228,7 @@ Post-quantum echo</h2>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Jul 23 2016 06:34:13 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Aug 15 2016 20:01:07 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
