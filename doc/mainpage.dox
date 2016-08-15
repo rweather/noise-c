@@ -112,8 +112,7 @@ git repository.
 To build the library under GNU/Linux and run the tests, type the following:
 
 \code
-$ automake --add-missing
-$ autoreconf
+$ autoreconf -i
 $ ./configure
 $ make
 $ make check
