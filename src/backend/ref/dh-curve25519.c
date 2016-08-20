@@ -22,6 +22,7 @@
 
 #include "internal.h"
 #include "crypto/ed25519/ed25519.h"
+#include <string.h>
 
 /* We use ed25519's faster curved25519_scalarmult_basepoint() function
    when deriving a public key from a private key.  Unfortunately ed25519
@@ -49,16 +50,28 @@ static int noise_curve25519_generate_keypair
     return NOISE_ERROR_NONE;
 }
 
-static int noise_curve25519_validate_keypair
-        (const NoiseDHState *state, const uint8_t *private_key,
+static int noise_curve25519_set_keypair
+        (NoiseDHState *state, const uint8_t *private_key,
          const uint8_t *public_key)
 {
     /* Check that the public key actually corresponds to the private key */
+    NoiseCurve25519State *st = (NoiseCurve25519State *)state;
     uint8_t temp[32];
     int equal;
     curved25519_scalarmult_basepoint(temp, private_key);
     equal = noise_is_equal(temp, public_key, 32);
+    memcpy(st->private_key, private_key, 32);
+    memcpy(st->public_key, public_key, 32);
     return NOISE_ERROR_INVALID_PUBLIC_KEY & (equal - 1);
+}
+
+static int noise_curve25519_set_keypair_private
+        (NoiseDHState *state, const uint8_t *private_key)
+{
+    NoiseCurve25519State *st = (NoiseCurve25519State *)state;
+    memcpy(st->private_key, private_key, 32);
+    curved25519_scalarmult_basepoint(st->public_key, st->private_key);
+    return NOISE_ERROR_NONE;
 }
 
 static int noise_curve25519_validate_public_key
@@ -68,11 +81,13 @@ static int noise_curve25519_validate_public_key
     return NOISE_ERROR_NONE;
 }
 
-static int noise_curve25519_derive_public_key
-        (const NoiseDHState *state, const uint8_t *private_key,
-         uint8_t *public_key)
+static int noise_curve25519_copy
+    (NoiseDHState *state, const NoiseDHState *from, const NoiseDHState *other)
 {
-    curved25519_scalarmult_basepoint(public_key, private_key);
+    NoiseCurve25519State *st = (NoiseCurve25519State *)state;
+    const NoiseCurve25519State *from_st = (const NoiseCurve25519State *)from;
+    memcpy(st->private_key, from_st->private_key, 32);
+    memcpy(st->public_key, from_st->public_key, 32);
     return NOISE_ERROR_NONE;
 }
 
@@ -100,9 +115,10 @@ NoiseDHState *noise_curve25519_new(void)
     state->parent.private_key = state->private_key;
     state->parent.public_key = state->public_key;
     state->parent.generate_keypair = noise_curve25519_generate_keypair;
-    state->parent.validate_keypair = noise_curve25519_validate_keypair;
+    state->parent.set_keypair = noise_curve25519_set_keypair;
+    state->parent.set_keypair_private = noise_curve25519_set_keypair_private;
     state->parent.validate_public_key = noise_curve25519_validate_public_key;
-    state->parent.derive_public_key = noise_curve25519_derive_public_key;
+    state->parent.copy = noise_curve25519_copy;
     state->parent.calculate = noise_curve25519_calculate;
     return &(state->parent);
 }

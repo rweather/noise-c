@@ -22,6 +22,7 @@
 
 #include "internal.h"
 #include "crypto/curve448/curve448.h"
+#include <string.h>
 
 typedef struct
 {
@@ -37,28 +38,42 @@ static uint8_t const basepoint[56] = {5};
 static int noise_curve448_generate_keypair
     (NoiseDHState *state, const NoiseDHState *other)
 {
+    NoiseCurve448State *st = (NoiseCurve448State *)state;
+
     /* Generate 56 bytes of random data and modify bits to put it
        into the correct form for Curve448 private keys.  This is the
        decodeScalar448() function from section 5 of RFC 7748 */
-    noise_rand_bytes(state->private_key, 56);
-    state->private_key[0] &= 0xFC;
-    state->private_key[55] |= 0x80;
+    noise_rand_bytes(st->private_key, 56);
+    st->private_key[0] &= 0xFC;
+    st->private_key[55] |= 0x80;
 
     /* Evaluate the curve operation to derive the public key */
-    curve448_eval(state->public_key, state->private_key, basepoint);
+    curve448_eval(st->public_key, st->private_key, basepoint);
     return NOISE_ERROR_NONE;
 }
 
-static int noise_curve448_validate_keypair
-        (const NoiseDHState *state, const uint8_t *private_key,
+static int noise_curve448_set_keypair
+        (NoiseDHState *state, const uint8_t *private_key,
          const uint8_t *public_key)
 {
     /* Check that the public key actually corresponds to the private key */
+    NoiseCurve448State *st = (NoiseCurve448State *)state;
     uint8_t temp[56];
     int equal;
     curve448_eval(temp, private_key, basepoint);
     equal = noise_is_equal(temp, public_key, 56);
+    memcpy(st->private_key, private_key, 56);
+    memcpy(st->public_key, public_key, 56);
     return NOISE_ERROR_INVALID_PUBLIC_KEY & (equal - 1);
+}
+
+static int noise_curve448_set_keypair_private
+        (NoiseDHState *state, const uint8_t *private_key)
+{
+    NoiseCurve448State *st = (NoiseCurve448State *)state;
+    memcpy(st->private_key, private_key, 56);
+    curve448_eval(st->public_key, st->private_key, basepoint);
+    return NOISE_ERROR_NONE;
 }
 
 static int noise_curve448_validate_public_key
@@ -68,11 +83,13 @@ static int noise_curve448_validate_public_key
     return NOISE_ERROR_NONE;
 }
 
-static int noise_curve448_derive_public_key
-        (const NoiseDHState *state, const uint8_t *private_key,
-         uint8_t *public_key)
+static int noise_curve448_copy
+    (NoiseDHState *state, const NoiseDHState *from, const NoiseDHState *other)
 {
-    curve448_eval(public_key, private_key, basepoint);
+    NoiseCurve448State *st = (NoiseCurve448State *)state;
+    const NoiseCurve448State *from_st = (const NoiseCurve448State *)from;
+    memcpy(st->private_key, from_st->private_key, 56);
+    memcpy(st->public_key, from_st->public_key, 56);
     return NOISE_ERROR_NONE;
 }
 
@@ -100,9 +117,10 @@ NoiseDHState *noise_curve448_new(void)
     state->parent.private_key = state->private_key;
     state->parent.public_key = state->public_key;
     state->parent.generate_keypair = noise_curve448_generate_keypair;
-    state->parent.validate_keypair = noise_curve448_validate_keypair;
+    state->parent.set_keypair = noise_curve448_set_keypair;
+    state->parent.set_keypair_private = noise_curve448_set_keypair_private;
     state->parent.validate_public_key = noise_curve448_validate_public_key;
-    state->parent.derive_public_key = noise_curve448_derive_public_key;
+    state->parent.copy = noise_curve448_copy;
     state->parent.calculate = noise_curve448_calculate;
     return &(state->parent);
 }

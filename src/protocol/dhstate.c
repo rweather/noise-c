@@ -384,14 +384,12 @@ int noise_dhstate_set_keypair
     if (public_key_len != state->public_key_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* Validate the keypair */
-    err = (*(state->validate_keypair))(state, private_key, public_key);
-    if (err != NOISE_ERROR_NONE)
+    /* Set the keypair */
+    err = (*(state->set_keypair))(state, private_key, public_key);
+    if (err != NOISE_ERROR_NONE) {
+        noise_dhstate_clear_key(state);
         return err;
-
-    /* Copy the key into place */
-    memcpy(state->private_key, private_key, state->private_key_len);
-    memcpy(state->public_key, public_key, state->public_key_len);
+    }
     state->key_type = NOISE_KEY_TYPE_KEYPAIR;
     return NOISE_ERROR_NONE;
 }
@@ -432,16 +430,12 @@ int noise_dhstate_set_keypair_private
     if (private_key_len != state->private_key_len)
         return NOISE_ERROR_INVALID_LENGTH;
 
-    /* Derive the public key from the private key */
-    err = (*(state->derive_public_key))
-        (state, private_key, state->public_key);
+    /* Set the private key and derive the public key from the private key */
+    err = (*(state->set_keypair_private))(state, private_key);
     if (err != NOISE_ERROR_NONE) {
         noise_dhstate_clear_key(state);
         return err;
     }
-
-    /* Copy the private key into place */
-    memcpy(state->private_key, private_key, state->private_key_len);
     state->key_type = NOISE_KEY_TYPE_KEYPAIR;
     return NOISE_ERROR_NONE;
 }
@@ -735,19 +729,22 @@ int noise_dhstate_calculate
  */
 int noise_dhstate_copy(NoiseDHState *state, const NoiseDHState *from)
 {
+    int err;
+
     /* Validate the parameters */
     if (!state || !from)
         return NOISE_ERROR_INVALID_PARAM;
     if (state->dh_id != from->dh_id)
         return NOISE_ERROR_NOT_APPLICABLE;
+    if (state == from)
+        return NOISE_ERROR_NONE;
 
     /* Copy the key information across */
-    if (state != from) {
-        state->key_type = from->key_type;
-        memcpy(state->private_key, from->private_key, from->private_key_len);
-        memcpy(state->public_key, from->public_key, from->public_key_len);
-    }
-    return NOISE_ERROR_NONE;
+    err = (*(state->copy))(state, from, 0);
+    if (err != NOISE_ERROR_NONE)
+        return err;
+    state->key_type = from->key_type;
+    return err;
 }
 
 /**

@@ -262,7 +262,7 @@ struct NoiseDHState_s
     int (*generate_keypair)(NoiseDHState *state, const NoiseDHState *other);
 
     /**
-     * \brief Validates a keypair.
+     * \brief Sets a keypair.
      *
      * \param state Points to the DHState.
      * \param private_key Points to the private key for the keypair.
@@ -274,26 +274,22 @@ struct NoiseDHState_s
      * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
      * with the public key.
      */
-    int (*validate_keypair)
-        (const NoiseDHState *state, const uint8_t *private_key,
+    int (*set_keypair)
+        (NoiseDHState *state, const uint8_t *private_key,
          const uint8_t *public_key);
 
     /**
-     * \brief Derives a public key from a private key.
+     * \brief Sets a keypair using only the private key.
      *
      * \param state Points to the DHState.
      * \param private_key Points to the private key for the keypair.
-     * \param public_key Points to the public key for the keypair.
      *
      * \return NOISE_ERROR_NONE if the keypair is valid.
      * \return NOISE_ERROR_INVALID_PRIVATE_KEY if there is something wrong
      * with the private key.
-     * \return NOISE_ERROR_INVALID_PUBLIC_KEY if there is something wrong
-     * with the derived public key.
      */
-    int (*derive_public_key)
-        (const NoiseDHState *state, const uint8_t *private_key,
-         uint8_t *public_key);
+    int (*set_keypair_private)
+        (NoiseDHState *state, const uint8_t *private_key);
 
     /**
      * \brief Validates a public key.
@@ -307,6 +303,17 @@ struct NoiseDHState_s
      */
     int (*validate_public_key)
         (const NoiseDHState *state, const uint8_t *public_key);
+
+    /**
+     * \brief Copies another key into this object.
+     *
+     * \param state Points to the DHState to copy into.
+     * \param from Points to the DHState to copy from.
+     * \param other Points to another DHState for obtaining dependent
+     * parameters.  May be NULL.
+     */
+    int (*copy)(NoiseDHState *state, const NoiseDHState *from,
+                const NoiseDHState *other);
 
     /**
      * \brief Performs a Diffie-Hellman calculation.

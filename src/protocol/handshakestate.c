@@ -1098,9 +1098,13 @@ static int noise_handshakestate_write
                 err = noise_dhstate_generate_dependent_keypair
                     (state->dh_local_ephemeral, state->dh_remote_ephemeral);
             } else {
-                /* Use the fixed ephemeral key provided by the test harness */
-                err = noise_dhstate_copy
-                    (state->dh_local_ephemeral, state->dh_fixed_ephemeral);
+                /* Use the fixed ephemeral key provided by the test harness.
+                   To support New Hope we need to perform a dependent copy */
+                state->dh_local_ephemeral->key_type =
+                    state->dh_fixed_ephemeral->key_type;
+                err = (*(state->dh_local_ephemeral->copy))
+                    (state->dh_local_ephemeral, state->dh_fixed_ephemeral,
+                     state->dh_remote_ephemeral);
             }
             if (err != NOISE_ERROR_NONE)
                 break;
