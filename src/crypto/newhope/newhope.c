@@ -2,6 +2,7 @@
 #include "randombytes.h"
 #include "error_correction.h"
 #include "fips202.h"
+#include <string.h>
 
 static void encode_a(unsigned char *r, const poly *pk, const unsigned char *seed)
 {
@@ -48,15 +49,23 @@ static void gen_a(poly *a, const unsigned char *seed)
 
 // API FUNCTIONS 
 
-void newhope_keygen(unsigned char *send, poly *sk)
+void newhope_keygen(unsigned char *send, poly *sk, const unsigned char *random_data)
 {
   poly a, e, r, pk;
   unsigned char seed[NEWHOPE_SEEDBYTES];
   unsigned char noiseseed[32];
 
-  randombytes(seed, NEWHOPE_SEEDBYTES);
+  if(random_data)
+  {
+    memcpy(seed, random_data, NEWHOPE_SEEDBYTES);
+    memcpy(noiseseed, random_data + NEWHOPE_SEEDBYTES, 32);
+  }
+  else
+  {
+    randombytes(seed, NEWHOPE_SEEDBYTES);
+    randombytes(noiseseed, 32);
+  }
   sha3256(seed, seed, NEWHOPE_SEEDBYTES); /* Don't send output of system RNG */
-  randombytes(noiseseed, 32);
 
   gen_a(&a, seed);
 
@@ -73,13 +82,16 @@ void newhope_keygen(unsigned char *send, poly *sk)
 }
 
 
-void newhope_sharedb(unsigned char *sharedkey, unsigned char *send, const unsigned char *received)
+void newhope_sharedb(unsigned char *sharedkey, unsigned char *send, const unsigned char *received, const unsigned char *random_data)
 {
   poly sp, ep, v, a, pka, c, epp, bp;
   unsigned char seed[NEWHOPE_SEEDBYTES];
   unsigned char noiseseed[32];
   
-  randombytes(noiseseed, 32);
+  if(random_data)
+    memcpy(noiseseed, random_data, 32);
+  else
+    randombytes(noiseseed, 32);
 
   decode_a(&pka, seed, received);
   gen_a(&a, seed);
