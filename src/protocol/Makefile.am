@@ -51,6 +51,7 @@ libnoiseprotocol_a_SOURCES = \
 	../crypto/sha2/sha512.c \
 	../crypto/goldilocks/src/p448/@GOLDILOCKS_ARCH@/p448.c \
 	../crypto/ed25519/ed25519.c \
+	../crypto/newhope/batcher.c \
 	../crypto/newhope/crypto_stream_chacha20.c \
 	../crypto/newhope/crypto_stream_chacha20.h \
 	../crypto/newhope/error_correction.c \

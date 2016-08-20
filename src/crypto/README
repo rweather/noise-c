@@ -49,6 +49,6 @@ ed25519:
     Public domain
 
 newhope
-    Reference New Hope post-quantum key exchange algorithm.
-    https://github.com/tpoeppelmann/newhope.git
+    Reference New Hope post-quantum key exchange algorithm, "torref" version.
+    https://cryptojedi.org/crypto/#newhope
     Public domain
