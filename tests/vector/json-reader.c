@@ -26,7 +26,7 @@
 /* Note: This is not a complete JSON parser.  It has enough support
    to process the Noise test vector format only */
 
-#define JSON_STR_MAX 512
+#define JSON_STR_MAX 8192
 
 /**
  * \brief Initializes a JSON reader object.

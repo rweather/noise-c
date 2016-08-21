@@ -69,6 +69,13 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         noise_perror("Initialize DH Public", err);
         exit(1);
     }
+    if (is_initiator) {
+        noise_dhstate_set_role(handshake->dh_private, NOISE_ROLE_INITIATOR);
+        noise_dhstate_set_role(handshake->dh_public, NOISE_ROLE_RESPONDER);
+    } else {
+        noise_dhstate_set_role(handshake->dh_private, NOISE_ROLE_RESPONDER);
+        noise_dhstate_set_role(handshake->dh_public, NOISE_ROLE_INITIATOR);
+    }
     public_key_len = noise_dhstate_get_public_key_length(handshake->dh_public);
     private_key_len = noise_dhstate_get_private_key_length(handshake->dh_private);
     if (s_len > private_key_len || e_len > private_key_len ||
@@ -93,7 +100,8 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     if (handshake->s_len) {
         noise_dhstate_set_keypair_private
             (handshake->dh_private, handshake->s, handshake->s_len);
-        handshake->s_public_len = handshake->s_len;
+        handshake->s_public_len =
+            noise_dhstate_get_public_key_length(handshake->dh_private);
         noise_dhstate_get_public_key
             (handshake->dh_private, handshake->s_public, handshake->s_public_len);
     } else {
@@ -102,7 +110,8 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     if (handshake->e_len) {
         noise_dhstate_set_keypair_private
             (handshake->dh_private, handshake->e, handshake->e_len);
-        handshake->e_public_len = handshake->e_len;
+        handshake->e_public_len =
+            noise_dhstate_get_public_key_length(handshake->dh_private);
         noise_dhstate_get_public_key
             (handshake->dh_private, handshake->e_public, handshake->e_public_len);
     } else {
@@ -162,6 +171,7 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
 int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *message)
 {
     size_t index = 0;
+    size_t len;
     Buffer data;
     if (handshake->action != ACTION_WRITE) {
         fprintf(stderr, "Unexpected write\n");
@@ -171,15 +181,31 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
                 *(handshake->pattern) != NOISE_TOKEN_FLIP_DIR) {
         switch (*(handshake->pattern)++) {
         case NOISE_TOKEN_E:
-            memcpy(message->data + index, handshake->e_public,
-                   handshake->e_public_len);
-            index += handshake->e_public_len;
-            MixHash(&(handshake->symmetric), handshake->e_public,
-                    handshake->e_public_len);
-            if (handshake->psk_len) {
-                MixKey(&(handshake->symmetric), handshake->e_public,
-                       handshake->e_public_len);
+            if (noise_dhstate_get_dh_id(handshake->dh_private)
+                        == NOISE_DH_NEWHOPE &&
+                    noise_dhstate_get_role(handshake->dh_private)
+                        == NOISE_ROLE_RESPONDER) {
+                /* New Hope needs special support for dependent fixed keygen.
+                   The public key for Bob isn't generated until calculate() */
+                len = noise_dhstate_get_public_key_length(handshake->dh_private);
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->e, handshake->e_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->re, handshake->re_len);
+                noise_dhstate_calculate
+                    (handshake->dh_private, handshake->dh_public,
+                     message->data + index, 32);
+                noise_dhstate_get_public_key
+                    (handshake->dh_private, message->data + index, len);
+            } else {
+                len = handshake->e_public_len;
+                memcpy(message->data + index, handshake->e_public, len);
             }
+            MixHash(&(handshake->symmetric), message->data + index, len);
+            if (handshake->psk_len) {
+                MixKey(&(handshake->symmetric), message->data + index, len);
+            }
+            index += len;
             break;
 
         case NOISE_TOKEN_S:
@@ -195,10 +221,10 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
                 (handshake->dh_private, handshake->e, handshake->e_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->re, handshake->re_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
 
         case NOISE_TOKEN_DHES:
@@ -206,10 +232,10 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
                 (handshake->dh_private, handshake->e, handshake->e_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->rs, handshake->rs_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
 
         case NOISE_TOKEN_DHSE:
@@ -217,10 +243,10 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
                 (handshake->dh_private, handshake->s, handshake->s_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->re, handshake->re_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
 
         case NOISE_TOKEN_DHSS:
@@ -228,10 +254,10 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
                 (handshake->dh_private, handshake->s, handshake->s_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->rs, handshake->rs_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
         }
     }
@@ -252,6 +278,7 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
 int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload)
 {
     size_t index = 0;
+    size_t len;
     Buffer data;
     if (handshake->action != ACTION_READ) {
         fprintf(stderr, "Unexpected read\n");
@@ -292,10 +319,10 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
                 (handshake->dh_private, handshake->e, handshake->e_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->re, handshake->re_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
 
         case NOISE_TOKEN_DHES:
@@ -303,10 +330,10 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
                 (handshake->dh_private, handshake->s, handshake->s_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->re, handshake->re_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
 
         case NOISE_TOKEN_DHSE:
@@ -314,10 +341,10 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
                 (handshake->dh_private, handshake->e, handshake->e_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->rs, handshake->rs_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
 
         case NOISE_TOKEN_DHSS:
@@ -325,10 +352,10 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
                 (handshake->dh_private, handshake->s, handshake->s_len);
             noise_dhstate_set_public_key
                 (handshake->dh_public, handshake->rs, handshake->rs_len);
+            len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
-                (handshake->dh_private, handshake->dh_public,
-                 data.data, handshake->e_len);
-            MixKey(&(handshake->symmetric), data.data, handshake->e_len);
+                (handshake->dh_private, handshake->dh_public, data.data, len);
+            MixKey(&(handshake->symmetric), data.data, len);
             break;
         }
     }

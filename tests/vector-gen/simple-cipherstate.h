@@ -25,7 +25,7 @@
 
 #include <noise/protocol.h>
 
-#define MAX_BUFLEN 512
+#define MAX_BUFLEN 4096
 
 typedef struct
 {

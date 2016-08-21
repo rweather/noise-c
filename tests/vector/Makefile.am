@@ -12,7 +12,8 @@ VECTORS = \
     cacophony.txt \
     noise-c-basic.txt \
     noise-c-ssk.txt \
-    noise-c-fallback.txt
+    noise-c-fallback.txt \
+    noise-c-newhope.txt
 
 check-local:
 	./test-vector $(VECTORS)

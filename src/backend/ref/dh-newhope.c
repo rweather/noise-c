@@ -104,8 +104,7 @@ static int noise_newhope_copy
            sizeof(st->private_key));
     memcpy(st->public_key, from_st->public_key, sizeof(st->public_key));
     if (st->parent.role == NOISE_ROLE_RESPONDER && !(st->generated) &&
-            from_st->parent.key_type == NOISE_KEY_TYPE_KEYPAIR &&
-            other_st && other_st->generated) {
+            from_st->parent.key_type == NOISE_KEY_TYPE_KEYPAIR && other_st) {
         /* We are copying a key pair for Bob but we didn't have the
            public key for Alice when we set Bob's private key.  We have
            the public key for Alice now so generate Bob's actual key */

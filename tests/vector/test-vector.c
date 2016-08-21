@@ -27,7 +27,7 @@
 #include <unistd.h>
 
 #define MAX_MESSAGES 32
-#define MAX_MESSAGE_SIZE 256
+#define MAX_MESSAGE_SIZE 4096
 
 /**
  * \brief Information about a single test vector.

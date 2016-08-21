@@ -25,7 +25,7 @@
 
 #include "simple-symmetricstate.h"
 
-#define MAX_DH_KEY_LEN  56
+#define MAX_DH_KEY_LEN  2048
 #define MAX_PSK_LEN     32
 
 #define ACTION_NONE     0
