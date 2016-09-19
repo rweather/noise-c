@@ -32,6 +32,17 @@
 #ifndef __BYTE_ORDER
 #define __BYTE_ORDER __LITTLE_ENDIAN
 #endif
+#elif defined(__APPLE__)
+#include <machine/endian.h>
+#if !defined( __BYTE_ORDER) && defined(__DARWIN_BYTE_ORDER)
+#define __BYTE_ORDER __DARWIN_BYTE_ORDER
+#endif
+#if !defined( __BIG_ENDIAN) && defined(__DARWIN_BIG_ENDIAN)
+#define __BIG_ENDIAN __DARWIN_BIG_ENDIAN
+#endif
+#if !defined( __LITTLE_ENDIAN) && defined(__DARWIN_LITTLE_ENDIAN)
+#define __LITTLE_ENDIAN __DARWIN_LITTLE_ENDIAN
+#endif
 #else
 #include <endian.h>
 #endif

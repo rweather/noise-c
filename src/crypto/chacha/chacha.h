@@ -7,7 +7,11 @@
 
 #if defined(__SSE2__) && defined(__GNUC__) && __GNUC__ >= 4
 #define USE_VECTOR_MATH 1
+#ifdef __clang__
+typedef uint32_t VectorUInt32 __attribute__((ext_vector_type(4)));
+#else
 typedef uint32_t VectorUInt32 __attribute__((__vector_size__(16)));
+#endif
 #else
 #undef USE_VECTOR_MATH
 #endif
