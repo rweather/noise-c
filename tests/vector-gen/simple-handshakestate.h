@@ -39,8 +39,8 @@ typedef struct
     SymmetricState symmetric;
     NoiseDHState *dh_private;
     NoiseDHState *dh_public;
-    NoiseDHState *forward_private;
-    NoiseDHState *forward_public;
+    NoiseDHState *hybrid_private;
+    NoiseDHState *hybrid_public;
     uint8_t s[MAX_DH_KEY_LEN];
     size_t s_len;
     uint8_t s_public[MAX_DH_KEY_LEN];

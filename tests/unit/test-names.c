@@ -104,7 +104,7 @@ static void test_id_mappings(void)
 /* Check the parsing and formatting of a specific protocol name */
 static void check_protocol_name
     (const char *name, int prefix_id, int pattern_id, int dh_id,
-     int cipher_id, int hash_id, int forward_id)
+     int cipher_id, int hash_id, int hybrid_id)
 {
     NoiseProtocolId expected_id;
     NoiseProtocolId actual_id;
@@ -118,7 +118,7 @@ static void check_protocol_name
     expected_id.dh_id = dh_id;
     expected_id.cipher_id = cipher_id;
     expected_id.hash_id = hash_id;
-    expected_id.forward_id = forward_id;
+    expected_id.hybrid_id = hybrid_id;
 
     /* Parse the name into its constituent identifiers */
     memset(&actual_id, 0x66, sizeof(actual_id));
@@ -129,7 +129,7 @@ static void check_protocol_name
     compare(actual_id.dh_id, expected_id.dh_id);
     compare(actual_id.cipher_id, expected_id.cipher_id);
     compare(actual_id.hash_id, expected_id.hash_id);
-    compare(actual_id.forward_id, expected_id.forward_id);
+    compare(actual_id.hybrid_id, expected_id.hybrid_id);
     verify(!memcmp(&actual_id, &expected_id, sizeof(actual_id)));
 
     /* Format the name from the identifiers */
@@ -152,7 +152,7 @@ static void check_protocol_name
     compare(actual_id.dh_id, 0);
     compare(actual_id.cipher_id, 0);
     compare(actual_id.hash_id, 0);
-    compare(actual_id.forward_id, 0);
+    compare(actual_id.hybrid_id, 0);
     memset(buffer, 0xAA, sizeof(buffer));
     compare(noise_protocol_id_to_name(buffer, sizeof(buffer), 0),
             NOISE_ERROR_INVALID_PARAM);

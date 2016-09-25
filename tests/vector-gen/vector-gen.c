@@ -702,8 +702,8 @@ static void initialize_protocol
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
         get_key(&e, &e_len, &init_ephemeral, id->dh_id);
-        if (id->forward_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &init_ephemeral, id->forward_id);
+        if (id->hybrid_id != NOISE_DH_NONE) {
+            get_key(&f, &f_len, &init_ephemeral, id->hybrid_id);
         }
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
@@ -739,8 +739,8 @@ static void initialize_protocol
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
         get_key(&e, &e_len, &resp_ephemeral, id->dh_id);
-        if (id->forward_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &resp_ephemeral, id->forward_id);
+        if (id->hybrid_id != NOISE_DH_NONE) {
+            get_key(&f, &f_len, &resp_ephemeral, id->hybrid_id);
         }
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
@@ -778,8 +778,8 @@ static void initialize_protocol_fallback
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
         get_key(&e, &e_len, &resp_ephemeral, id->dh_id);
-        if (id->forward_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &resp_ephemeral, id->forward_id);
+        if (id->hybrid_id != NOISE_DH_NONE) {
+            get_key(&f, &f_len, &resp_ephemeral, id->hybrid_id);
         }
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
@@ -787,8 +787,8 @@ static void initialize_protocol_fallback
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) {
         get_public_key(&re, &re_len, &init_ephemeral, id->dh_id);
-        if (id->forward_id != NOISE_DH_NONE) {
-            get_public_key(&rf, &rf_len, &init_ephemeral, id->forward_id);
+        if (id->hybrid_id != NOISE_DH_NONE) {
+            get_public_key(&rf, &rf_len, &init_ephemeral, id->hybrid_id);
         }
     }
     if (id->prefix_id == NOISE_PREFIX_PSK) {
@@ -817,8 +817,8 @@ static void initialize_protocol_fallback
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
         get_key(&e, &e_len, &init_ephemeral, id->dh_id);
-        if (id->forward_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &init_ephemeral, id->forward_id);
+        if (id->hybrid_id != NOISE_DH_NONE) {
+            get_key(&f, &f_len, &init_ephemeral, id->hybrid_id);
         }
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
@@ -876,9 +876,8 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
     }
     printf("\"pattern\": \"%s\",\n", noise_id_to_name(0, id->pattern_id));
     printf("\"dh\": \"%s\",\n", noise_id_to_name(0, id->dh_id));
-    if (id->forward_id != NOISE_DH_NONE) {
-        printf("\"forward_dh\": \"%s\",\n",
-               noise_id_to_name(0, id->forward_id));
+    if (id->hybrid_id != NOISE_DH_NONE) {
+        printf("\"hybrid\": \"%s\",\n", noise_id_to_name(0, id->hybrid_id));
     }
     printf("\"cipher\": \"%s\",\n", noise_id_to_name(0, id->cipher_id));
     printf("\"hash\": \"%s\",\n", noise_id_to_name(0, id->hash_id));
@@ -900,9 +899,9 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
         print_key("init_static", &init_static, id->dh_id);
     if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
         print_key("init_ephemeral", &init_ephemeral, id->dh_id);
-        if (id->forward_id != NOISE_DH_NONE) {
-            print_key("init_forward_ephemeral",
-                      &init_ephemeral, id->forward_id);
+        if (id->hybrid_id != NOISE_DH_NONE) {
+            print_key("init_hybrid_ephemeral",
+                      &init_ephemeral, id->hybrid_id);
         }
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
@@ -922,9 +921,9 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
         print_key("resp_static", &resp_static, id->dh_id);
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
         print_key("resp_ephemeral", &resp_ephemeral, id->dh_id);
-        if (id->forward_id != NOISE_DH_NONE) {
-            print_key("resp_forward_ephemeral",
-                      &resp_ephemeral, id->forward_id);
+        if (id->hybrid_id != NOISE_DH_NONE) {
+            print_key("resp_hybrid_ephemeral",
+                      &resp_ephemeral, id->hybrid_id);
         }
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED)
@@ -1098,22 +1097,22 @@ static void newhope_patterns(int with_ssk)
                     }
                 }
                 for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
-                    id.forward_id = NOISE_DH_NEWHOPE;
+                    id.hybrid_id = NOISE_DH_NEWHOPE;
                     for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
                         generate_vector(&id, first, 0, 0);
                         first = 0;
                         if (with_ssk)
                             generate_vector(&id, first, 1, 0);
                     }
-                    id.forward_id = NOISE_DH_NONE;
+                    id.hybrid_id = NOISE_DH_NONE;
                 }
             }
         }
     }
 }
 
-/* Output all of the patterns that involve additional forward secrecy */
-static void forward_patterns(int with_ssk)
+/* Output all of the patterns that involve hybrid forward secrecy */
+static void hybrid_patterns(int with_ssk)
 {
     NoiseProtocolId id;
     int first = 1;
@@ -1122,12 +1121,13 @@ static void forward_patterns(int with_ssk)
         for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
             for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
                 id.dh_id = NOISE_DH_CURVE25519;
-                id.forward_id = NOISE_DH_CURVE448;
-                for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                    generate_vector(&id, first, 0, 0);
-                    first = 0;
-                    if (with_ssk)
-                        generate_vector(&id, first, 1, 0);
+                for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
+                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                        generate_vector(&id, first, 0, 0);
+                        first = 0;
+                        if (with_ssk)
+                            generate_vector(&id, first, 1, 0);
+                    }
                 }
             }
         }
@@ -1139,7 +1139,7 @@ int main(int argc, char *argv[])
     int with_ssk = 0;
     int with_fallback = 0;
     int with_newhope = 0;
-    int with_forward = 0;
+    int with_hybrid = 0;
 
     while (argc > 1) {
         if (!strcmp(argv[1], "--with-ssk"))
@@ -1148,8 +1148,8 @@ int main(int argc, char *argv[])
             with_fallback = 1;
         if (!strcmp(argv[1], "--with-newhope"))
             with_newhope = 1;
-        if (!strcmp(argv[1], "--with-forward"))
-            with_forward = 1;
+        if (!strcmp(argv[1], "--with-hybrid"))
+            with_hybrid = 1;
         ++argv;
         --argc;
     }
@@ -1161,8 +1161,8 @@ int main(int argc, char *argv[])
         newhope_patterns(with_ssk);
     } else if (with_fallback) {
         fallback_patterns(with_ssk);
-    } else if (with_forward) {
-        forward_patterns(with_ssk);
+    } else if (with_hybrid) {
+        hybrid_patterns(with_ssk);
     } else {
         regular_patterns(with_ssk);
     }

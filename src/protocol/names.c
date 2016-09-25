@@ -329,7 +329,7 @@ int noise_protocol_name_to_id
     id->pattern_id = noise_protocol_parse_field
         (NOISE_PATTERN_CATEGORY, name, name_len, &posn, 0, &ok);
     id->dh_id = noise_protocol_parse_dual_field
-        (NOISE_DH_CATEGORY, name, name_len, &posn, &(id->forward_id), &ok);
+        (NOISE_DH_CATEGORY, name, name_len, &posn, &(id->hybrid_id), &ok);
     id->cipher_id = noise_protocol_parse_field
         (NOISE_CIPHER_CATEGORY, name, name_len, &posn, 0, &ok);
     id->hash_id = noise_protocol_parse_field
@@ -439,11 +439,11 @@ int noise_protocol_id_to_name
         (NOISE_PREFIX_CATEGORY, id->prefix_id, name, name_len, &posn, 0, &err);
     noise_protocol_format_field
         (NOISE_PATTERN_CATEGORY, id->pattern_id, name, name_len, &posn, 0, &err);
-    if (!id->forward_id) {
+    if (!id->hybrid_id) {
         noise_protocol_format_field
             (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, 0, &err);
     } else {
-        /* Format the DH names as "dh_id+forward_id"; e.g. "25519+NewHope" */
+        /* Format the DH names as "dh_id+hybrid_id"; e.g. "25519+NewHope" */
         noise_protocol_format_field
             (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, 1, &err);
         if (err == NOISE_ERROR_NONE) {
@@ -453,7 +453,7 @@ int noise_protocol_id_to_name
                 err = NOISE_ERROR_INVALID_LENGTH;
         }
         noise_protocol_format_field
-            (NOISE_DH_CATEGORY, id->forward_id, name, name_len, &posn, 0, &err);
+            (NOISE_DH_CATEGORY, id->hybrid_id, name, name_len, &posn, 0, &err);
     }
     noise_protocol_format_field
         (NOISE_CIPHER_CATEGORY, id->cipher_id, name, name_len, &posn, 0, &err);

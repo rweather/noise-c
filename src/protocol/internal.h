@@ -559,8 +559,8 @@ struct NoiseHandshakeState_s
     /** \brief Points to the DHState object for local ephemeral key */
     NoiseDHState *dh_local_ephemeral;
 
-    /** \brief Points to the DHState object for local extra forward secrecy key */
-    NoiseDHState *dh_local_forward;
+    /** \brief Points to the DHState object for local hybrid forward secrecy key */
+    NoiseDHState *dh_local_hybrid;
 
     /** \brief Points to the DHState object for remote static key */
     NoiseDHState *dh_remote_static;
@@ -568,14 +568,14 @@ struct NoiseHandshakeState_s
     /** \brief Points to the DHState object for remote ephemeral key */
     NoiseDHState *dh_remote_ephemeral;
 
-    /** \brief Points to the DHState object for remote extra forward secrecy key */
-    NoiseDHState *dh_remote_forward;
+    /** \brief Points to the DHState object for remote hybrid forward secrecy key */
+    NoiseDHState *dh_remote_hybrid;
 
     /** \brief Points to the object for the fixed ephemeral test key */
     NoiseDHState *dh_fixed_ephemeral;
 
-    /** \brief Points to the object for the fixed extra forward secrecy test key */
-    NoiseDHState *dh_fixed_forward;
+    /** \brief Points to the object for the fixed hybrid forward secrecy test key */
+    NoiseDHState *dh_fixed_hybrid;
 
     /** \brief Pre-shared key value */
     uint8_t pre_shared_key[NOISE_PSK_LEN];

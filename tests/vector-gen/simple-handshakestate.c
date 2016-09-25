@@ -37,8 +37,8 @@ void HandshakeState_free(HandshakeState *handshake)
     SymmetricState_free(&(handshake->symmetric));
     noise_dhstate_free(handshake->dh_private);
     noise_dhstate_free(handshake->dh_public);
-    noise_dhstate_free(handshake->forward_private);
-    noise_dhstate_free(handshake->forward_public);
+    noise_dhstate_free(handshake->hybrid_private);
+    noise_dhstate_free(handshake->hybrid_public);
 }
 
 void Initialize(HandshakeState *handshake, const char *protocol_name,
@@ -55,8 +55,8 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     size_t name_len = strlen(protocol_name);
     size_t public_key_len;
     size_t private_key_len;
-    size_t forward_public_key_len;
-    size_t forward_private_key_len;
+    size_t hybrid_public_key_len;
+    size_t hybrid_private_key_len;
     const uint8_t *pattern;
     uint8_t flags;
     int err;
@@ -75,15 +75,15 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         noise_perror("Initialize DH Public", err);
         exit(1);
     }
-    if (id.forward_id != NOISE_DH_NONE) {
+    if (id.hybrid_id != NOISE_DH_NONE) {
         err = noise_dhstate_new_by_id
-            (&(handshake->forward_private), id.forward_id);
+            (&(handshake->hybrid_private), id.hybrid_id);
         if (err != NOISE_ERROR_NONE) {
             noise_perror("Initialize Forward DH Private", err);
             exit(1);
         }
         err = noise_dhstate_new_by_id
-            (&(handshake->forward_public), id.forward_id);
+            (&(handshake->hybrid_public), id.hybrid_id);
         if (err != NOISE_ERROR_NONE) {
             noise_perror("Initialize Forward DH Public", err);
             exit(1);
@@ -92,28 +92,28 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     if (is_initiator) {
         noise_dhstate_set_role(handshake->dh_private, NOISE_ROLE_INITIATOR);
         noise_dhstate_set_role(handshake->dh_public, NOISE_ROLE_RESPONDER);
-        noise_dhstate_set_role(handshake->forward_private, NOISE_ROLE_INITIATOR);
-        noise_dhstate_set_role(handshake->forward_public, NOISE_ROLE_RESPONDER);
+        noise_dhstate_set_role(handshake->hybrid_private, NOISE_ROLE_INITIATOR);
+        noise_dhstate_set_role(handshake->hybrid_public, NOISE_ROLE_RESPONDER);
     } else {
         noise_dhstate_set_role(handshake->dh_private, NOISE_ROLE_RESPONDER);
         noise_dhstate_set_role(handshake->dh_public, NOISE_ROLE_INITIATOR);
-        noise_dhstate_set_role(handshake->forward_private, NOISE_ROLE_RESPONDER);
-        noise_dhstate_set_role(handshake->forward_public, NOISE_ROLE_INITIATOR);
+        noise_dhstate_set_role(handshake->hybrid_private, NOISE_ROLE_RESPONDER);
+        noise_dhstate_set_role(handshake->hybrid_public, NOISE_ROLE_INITIATOR);
     }
     public_key_len = noise_dhstate_get_public_key_length(handshake->dh_public);
     private_key_len = noise_dhstate_get_private_key_length(handshake->dh_private);
-    forward_public_key_len =
-        noise_dhstate_get_public_key_length(handshake->forward_public);
-    forward_private_key_len =
-        noise_dhstate_get_private_key_length(handshake->forward_private);
+    hybrid_public_key_len =
+        noise_dhstate_get_public_key_length(handshake->hybrid_public);
+    hybrid_private_key_len =
+        noise_dhstate_get_private_key_length(handshake->hybrid_private);
     if (s_len > private_key_len || e_len > private_key_len ||
             rs_len > public_key_len || re_len > public_key_len ||
-            f_len > forward_private_key_len ||
-            rf_len > forward_public_key_len ||
+            f_len > hybrid_private_key_len ||
+            rf_len > hybrid_public_key_len ||
             private_key_len > MAX_DH_KEY_LEN ||
             public_key_len > MAX_DH_KEY_LEN ||
-            forward_private_key_len > MAX_DH_KEY_LEN ||
-            forward_public_key_len > MAX_DH_KEY_LEN) {
+            hybrid_private_key_len > MAX_DH_KEY_LEN ||
+            hybrid_public_key_len > MAX_DH_KEY_LEN) {
         fprintf(stderr, "Out of range key sizes\n");
         exit(1);
     }
@@ -155,11 +155,11 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     }
     if (handshake->f_len) {
         noise_dhstate_set_keypair_private
-            (handshake->forward_private, handshake->f, handshake->f_len);
+            (handshake->hybrid_private, handshake->f, handshake->f_len);
         handshake->f_public_len =
-            noise_dhstate_get_public_key_length(handshake->forward_private);
+            noise_dhstate_get_public_key_length(handshake->hybrid_private);
         noise_dhstate_get_public_key
-            (handshake->forward_private, handshake->f_public,
+            (handshake->hybrid_private, handshake->f_public,
              handshake->f_public_len);
     } else {
         handshake->f_public_len = 0;
@@ -186,7 +186,7 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
                 MixKey(&(handshake->symmetric), handshake->re,
                        handshake->re_len);
             }
-            if (id.forward_id != NOISE_DH_NONE) {
+            if (id.hybrid_id != NOISE_DH_NONE) {
                 MixHash(&(handshake->symmetric), handshake->rf,
                         handshake->rf_len);
                 if (handshake->psk_len) {
@@ -268,25 +268,25 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
             }
             index += len;
 
-            /* Repeat the above for the additional forward secrecy key */
-            if (handshake->forward_private) {
-                if (noise_dhstate_get_dh_id(handshake->forward_private)
+            /* Repeat the above for the additional hybrid secrecy key */
+            if (handshake->hybrid_private) {
+                if (noise_dhstate_get_dh_id(handshake->hybrid_private)
                             == NOISE_DH_NEWHOPE &&
-                        noise_dhstate_get_role(handshake->forward_private)
+                        noise_dhstate_get_role(handshake->hybrid_private)
                             == NOISE_ROLE_RESPONDER) {
                     len = noise_dhstate_get_public_key_length
-                        (handshake->forward_private);
+                        (handshake->hybrid_private);
                     noise_dhstate_set_keypair_private
-                        (handshake->forward_private, handshake->f,
+                        (handshake->hybrid_private, handshake->f,
                          handshake->f_len);
                     noise_dhstate_set_public_key
-                        (handshake->forward_public, handshake->rf,
+                        (handshake->hybrid_public, handshake->rf,
                          handshake->rf_len);
                     noise_dhstate_calculate
-                        (handshake->forward_private, handshake->forward_public,
+                        (handshake->hybrid_private, handshake->hybrid_public,
                          message->data + index, 32);
                     noise_dhstate_get_public_key
-                        (handshake->forward_private,
+                        (handshake->hybrid_private,
                          message->data + index, len);
                 } else {
                     len = handshake->f_public_len;
@@ -317,18 +317,18 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
             noise_dhstate_calculate
                 (handshake->dh_private, handshake->dh_public, data.data, len);
             MixKey(&(handshake->symmetric), data.data, len);
-            if (handshake->forward_private) {
-                /* Repeat the above for the additional forward secrecy key */
+            if (handshake->hybrid_private) {
+                /* Repeat the above for the additional hybrid secrecy key */
                 noise_dhstate_set_keypair_private
-                    (handshake->forward_private, handshake->f,
+                    (handshake->hybrid_private, handshake->f,
                      handshake->f_len);
                 noise_dhstate_set_public_key
-                    (handshake->forward_public, handshake->rf,
+                    (handshake->hybrid_public, handshake->rf,
                      handshake->rf_len);
                 len = noise_dhstate_get_shared_key_length
-                    (handshake->forward_private);
+                    (handshake->hybrid_private);
                 noise_dhstate_calculate
-                    (handshake->forward_private, handshake->forward_public,
+                    (handshake->hybrid_private, handshake->hybrid_public,
                      data.data, len);
                 MixKey(&(handshake->symmetric), data.data, len);
             }
@@ -404,10 +404,10 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
                 MixKey(&(handshake->symmetric), handshake->re,
                        handshake->re_len);
             }
-            if (handshake->forward_private) {
-                /* Repeat the above for the additional forward secrecy key */
+            if (handshake->hybrid_private) {
+                /* Repeat the above for the additional hybrid secrecy key */
                 handshake->rf_len = noise_dhstate_get_public_key_length
-                    (handshake->forward_public);
+                    (handshake->hybrid_public);
                 memcpy(handshake->rf, message.data + index, handshake->rf_len);
                 index += handshake->rf_len;
                 MixHash(&(handshake->symmetric), handshake->rf,
@@ -443,18 +443,18 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
             noise_dhstate_calculate
                 (handshake->dh_private, handshake->dh_public, data.data, len);
             MixKey(&(handshake->symmetric), data.data, len);
-            if (handshake->forward_private) {
-                /* Repeat the above for the additional forward secrecy key */
+            if (handshake->hybrid_private) {
+                /* Repeat the above for the additional hybrid secrecy key */
                 noise_dhstate_set_keypair_private
-                    (handshake->forward_private, handshake->f,
+                    (handshake->hybrid_private, handshake->f,
                      handshake->f_len);
                 noise_dhstate_set_public_key
-                    (handshake->forward_public, handshake->rf,
+                    (handshake->hybrid_public, handshake->rf,
                      handshake->rf_len);
                 len = noise_dhstate_get_shared_key_length
-                    (handshake->forward_private);
+                    (handshake->hybrid_private);
                 noise_dhstate_calculate
-                    (handshake->forward_private, handshake->forward_public,
+                    (handshake->hybrid_private, handshake->hybrid_public,
                      data.data, len);
                 MixKey(&(handshake->symmetric), data.data, len);
             }

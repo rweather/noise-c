@@ -168,8 +168,8 @@ static int noise_handshakestate_new
     }
     if ((flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE) {
         err = noise_dhstate_new_by_id(&((*state)->dh_local_ephemeral), dh_id);
-        if (symmetric->id.forward_id != NOISE_DH_NONE && err == NOISE_ERROR_NONE) {
-            err = noise_dhstate_new_by_id(&((*state)->dh_local_forward), dh_id);
+        if (symmetric->id.hybrid_id != NOISE_DH_NONE && err == NOISE_ERROR_NONE) {
+            err = noise_dhstate_new_by_id(&((*state)->dh_local_hybrid), symmetric->id.hybrid_id);
         }
     }
     if ((flags & NOISE_PAT_FLAG_REMOTE_STATIC) != 0 && err == NOISE_ERROR_NONE) {
@@ -177,22 +177,22 @@ static int noise_handshakestate_new
     }
     if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE) {
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_ephemeral), dh_id);
-        if (symmetric->id.forward_id != NOISE_DH_NONE && err == NOISE_ERROR_NONE) {
-            err = noise_dhstate_new_by_id(&((*state)->dh_remote_forward), dh_id);
+        if (symmetric->id.hybrid_id != NOISE_DH_NONE && err == NOISE_ERROR_NONE) {
+            err = noise_dhstate_new_by_id(&((*state)->dh_remote_hybrid), symmetric->id.hybrid_id);
         }
     }
 
     /* Set the roles for the DHState objects */
     noise_dhstate_set_role((*state)->dh_local_ephemeral, local_dh_role);
     noise_dhstate_set_role((*state)->dh_local_static, local_dh_role);
-    noise_dhstate_set_role((*state)->dh_local_forward, local_dh_role);
+    noise_dhstate_set_role((*state)->dh_local_hybrid, local_dh_role);
     noise_dhstate_set_role((*state)->dh_remote_ephemeral, remote_dh_role);
     noise_dhstate_set_role((*state)->dh_remote_static, remote_dh_role);
-    noise_dhstate_set_role((*state)->dh_remote_forward, remote_dh_role);
+    noise_dhstate_set_role((*state)->dh_remote_hybrid, remote_dh_role);
 
     /* If the DH algorithm is ephemeral-only, then we need to apply some
      * extra checks on the pattern: essentially, only "NN" is possible.
-     * This check isn't needed for the forward secrecy DH objects as they
+     * This check isn't needed for the hybrid secrecy DH objects as they
      * are by definition ephemeral-only */
     if (err == NOISE_ERROR_NONE) {
         if ((*state)->dh_local_static && (*state)->dh_local_static->ephemeral_only)
@@ -333,18 +333,18 @@ int noise_handshakestate_free(NoiseHandshakeState *state)
         noise_dhstate_free(state->dh_local_static);
     if (state->dh_local_ephemeral)
         noise_dhstate_free(state->dh_local_ephemeral);
-    if (state->dh_local_forward)
-        noise_dhstate_free(state->dh_local_forward);
+    if (state->dh_local_hybrid)
+        noise_dhstate_free(state->dh_local_hybrid);
     if (state->dh_remote_static)
         noise_dhstate_free(state->dh_remote_static);
     if (state->dh_remote_ephemeral)
         noise_dhstate_free(state->dh_remote_ephemeral);
-    if (state->dh_remote_forward)
-        noise_dhstate_free(state->dh_remote_forward);
+    if (state->dh_remote_hybrid)
+        noise_dhstate_free(state->dh_remote_hybrid);
     if (state->dh_fixed_ephemeral)
         noise_dhstate_free(state->dh_fixed_ephemeral);
-    if (state->dh_fixed_forward)
-        noise_dhstate_free(state->dh_fixed_forward);
+    if (state->dh_fixed_hybrid)
+        noise_dhstate_free(state->dh_fixed_hybrid);
     noise_free(state->prologue, state->prologue_len);
 
     /* Clean and free the memory for "state" */
@@ -464,38 +464,38 @@ NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
 
 /**
  * \brief Gets the DHState object that contains the local additional
- * forward secrecy keypair.
+ * hybrid secrecy keypair.
  *
  * \param state The HandshakeState object.
  *
  * \return Returns a pointer to the DHState object for the local additional
- * forward secrecy keypair, or NULL if the system is out of memory,
- * \a state is NULL, or \a state does not support additional forward secrecy.
+ * hybrid secrecy keypair, or NULL if the system is out of memory,
+ * \a state is NULL, or \a state does not support additional hybrid secrecy.
  *
  * \note This function is intended for testing only.  It can be used to
- * establish a fixed forward secrecy key for test vectors.  This function
+ * establish a fixed hybrid secrecy key for test vectors.  This function
  * should not be used in real applications.
  *
  * \sa noise_handshakestate_get_fixed_ephemeral_dh()
  */
-NoiseDHState *noise_handshakestate_get_fixed_forward_dh
+NoiseDHState *noise_handshakestate_get_fixed_hybrid_dh
     (NoiseHandshakeState *state)
 {
-    if (!state || !state->dh_local_forward)
+    if (!state || !state->dh_local_hybrid)
         return 0;
 
-    if (!state->dh_fixed_forward) {
+    if (!state->dh_fixed_hybrid) {
         if (noise_dhstate_new_by_id
-                (&(state->dh_fixed_forward), state->symmetric->id.forward_id)
+                (&(state->dh_fixed_hybrid), state->symmetric->id.hybrid_id)
               != NOISE_ERROR_NONE) {
             return 0;
         }
         noise_dhstate_set_role
-            (state->dh_fixed_forward,
-             noise_dhstate_get_role(state->dh_local_forward));
+            (state->dh_fixed_hybrid,
+             noise_dhstate_get_role(state->dh_local_hybrid));
     }
 
-    return state->dh_fixed_forward;
+    return state->dh_fixed_hybrid;
 }
 
 /**
@@ -828,16 +828,16 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
             noise_handshakestate_mix_public_key(state, state->dh_local_static);
         if (state->requirements & NOISE_REQ_FALLBACK_PREMSG) {
             noise_handshakestate_mix_public_key(state, state->dh_remote_ephemeral);
-            if (state->dh_remote_forward) {
+            if (state->dh_remote_hybrid) {
                 noise_handshakestate_mix_public_key
-                    (state, state->dh_remote_forward);
+                    (state, state->dh_remote_hybrid);
             }
             if ((state->requirements & NOISE_REQ_PSK) != 0) {
                 noise_handshakestate_mix_chaining_key
                     (state, state->dh_remote_ephemeral);
-                if (state->dh_remote_forward) {
+                if (state->dh_remote_hybrid) {
                     noise_handshakestate_mix_chaining_key
-                        (state, state->dh_remote_forward);
+                        (state, state->dh_remote_hybrid);
                 }
             }
         }
@@ -848,16 +848,16 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
             noise_handshakestate_mix_public_key(state, state->dh_remote_static);
         if (state->requirements & NOISE_REQ_FALLBACK_PREMSG) {
             noise_handshakestate_mix_public_key(state, state->dh_local_ephemeral);
-            if (state->dh_local_forward) {
+            if (state->dh_local_hybrid) {
                 noise_handshakestate_mix_public_key
-                    (state, state->dh_local_forward);
+                    (state, state->dh_local_hybrid);
             }
             if ((state->requirements & NOISE_REQ_PSK) != 0) {
                 noise_handshakestate_mix_chaining_key
                     (state, state->dh_local_ephemeral);
-                if (state->dh_local_forward) {
+                if (state->dh_local_hybrid) {
                     noise_handshakestate_mix_chaining_key
-                        (state, state->dh_local_forward);
+                        (state, state->dh_local_hybrid);
                 }
             }
         }
@@ -994,8 +994,8 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
             return NOISE_ERROR_INVALID_STATE;
         if (!noise_dhstate_has_public_key(state->dh_local_ephemeral))
             return NOISE_ERROR_INVALID_STATE;
-        if (state->dh_local_forward &&
-                !noise_dhstate_has_public_key(state->dh_local_forward))
+        if (state->dh_local_hybrid &&
+                !noise_dhstate_has_public_key(state->dh_local_hybrid))
             return NOISE_ERROR_INVALID_STATE;
     } else {
         if (state->action != NOISE_ACTION_FAILED &&
@@ -1003,8 +1003,8 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
             return NOISE_ERROR_INVALID_STATE;
         if (!noise_dhstate_has_public_key(state->dh_remote_ephemeral))
             return NOISE_ERROR_INVALID_STATE;
-        if (state->dh_remote_forward &&
-                !noise_dhstate_has_public_key(state->dh_remote_forward))
+        if (state->dh_remote_hybrid &&
+                !noise_dhstate_has_public_key(state->dh_remote_hybrid))
             return NOISE_ERROR_INVALID_STATE;
     }
 
@@ -1019,12 +1019,12 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
     state->symmetric->id.pattern_id = pattern_id;
     if (state->role == NOISE_ROLE_INITIATOR) {
         noise_dhstate_clear_key(state->dh_remote_ephemeral);
-        noise_dhstate_clear_key(state->dh_remote_forward);
+        noise_dhstate_clear_key(state->dh_remote_hybrid);
         noise_dhstate_clear_key(state->dh_remote_static);
         state->role = NOISE_ROLE_RESPONDER;
     } else {
         noise_dhstate_clear_key(state->dh_local_ephemeral);
-        noise_dhstate_clear_key(state->dh_local_forward);
+        noise_dhstate_clear_key(state->dh_local_hybrid);
         if (!(pattern[0] & NOISE_PAT_FLAG_REMOTE_REQUIRED))
             noise_dhstate_clear_key(state->dh_remote_static);
         state->role = NOISE_ROLE_INITIATOR;
@@ -1203,32 +1203,32 @@ static int noise_handshakestate_write
                      state->dh_local_ephemeral->public_key, len);
             }
 
-            /* Repeat the above if we have an extra forward secrecy key */
-            if (state->dh_local_forward) {
-                if (!state->dh_fixed_forward) {
+            /* Repeat the above if we have an extra hybrid secrecy key */
+            if (state->dh_local_hybrid) {
+                if (!state->dh_fixed_hybrid) {
                     err = noise_dhstate_generate_dependent_keypair
-                        (state->dh_local_forward, state->dh_remote_forward);
+                        (state->dh_local_hybrid, state->dh_remote_hybrid);
                 } else {
-                    state->dh_local_forward->key_type =
-                        state->dh_fixed_forward->key_type;
-                    err = (*(state->dh_local_forward->copy))
-                        (state->dh_local_forward, state->dh_fixed_forward,
-                         state->dh_remote_forward);
+                    state->dh_local_hybrid->key_type =
+                        state->dh_fixed_hybrid->key_type;
+                    err = (*(state->dh_local_hybrid->copy))
+                        (state->dh_local_hybrid, state->dh_fixed_hybrid,
+                         state->dh_remote_hybrid);
                 }
                 if (err != NOISE_ERROR_NONE)
                     break;
-                len = state->dh_local_forward->public_key_len;
+                len = state->dh_local_hybrid->public_key_len;
                 if ((rest.max_size - rest.size) < len)
                     return NOISE_ERROR_INVALID_LENGTH;
                 memcpy(rest.data + rest.size,
-                       state->dh_local_forward->public_key, len);
+                       state->dh_local_hybrid->public_key, len);
                 noise_symmetricstate_mix_hash
                     (state->symmetric, rest.data + rest.size, len);
                 rest.size += len;
                 if (state->symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
                     err = noise_symmetricstate_mix_key
                         (state->symmetric,
-                         state->dh_local_forward->public_key, len);
+                         state->dh_local_hybrid->public_key, len);
                 }
             }
             break;
@@ -1250,9 +1250,9 @@ static int noise_handshakestate_write
             /* DH operation with local and remote ephemeral keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
-            if (err == NOISE_ERROR_NONE && state->dh_local_forward) {
+            if (err == NOISE_ERROR_NONE && state->dh_local_hybrid) {
                 err = noise_handshake_mix_dh
-                    (state, state->dh_local_forward, state->dh_remote_forward);
+                    (state, state->dh_local_hybrid, state->dh_remote_hybrid);
             }
             break;
         case NOISE_TOKEN_DHES:
@@ -1447,9 +1447,9 @@ static int noise_handshakestate_read
                      state->dh_remote_ephemeral->public_key, len);
             }
 
-            /* Repeat the above if we have an extra forward secrecy key */
-            if (state->dh_remote_forward) {
-                len = state->dh_remote_forward->public_key_len;
+            /* Repeat the above if we have an extra hybrid secrecy key */
+            if (state->dh_remote_hybrid) {
+                len = state->dh_remote_hybrid->public_key_len;
                 if (msg.size < len)
                     return NOISE_ERROR_INVALID_LENGTH;
                 err = noise_symmetricstate_mix_hash
@@ -1457,10 +1457,10 @@ static int noise_handshakestate_read
                 if (err != NOISE_ERROR_NONE)
                     break;
                 err = noise_dhstate_set_public_key
-                    (state->dh_remote_forward, msg.data, len);
+                    (state->dh_remote_hybrid, msg.data, len);
                 if (err != NOISE_ERROR_NONE)
                     break;
-                if (noise_dhstate_is_null_public_key(state->dh_remote_forward))
+                if (noise_dhstate_is_null_public_key(state->dh_remote_hybrid))
                     return NOISE_ERROR_INVALID_PUBLIC_KEY;
                 msg.data += len;
                 msg.size -= len;
@@ -1468,7 +1468,7 @@ static int noise_handshakestate_read
                 if (state->symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
                     err = noise_symmetricstate_mix_key
                         (state->symmetric,
-                         state->dh_remote_forward->public_key, len);
+                         state->dh_remote_hybrid->public_key, len);
                 }
             }
             break;
@@ -1499,9 +1499,9 @@ static int noise_handshakestate_read
             /* DH operation with local and remote ephemeral keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
-            if (err == NOISE_ERROR_NONE && state->dh_local_forward) {
+            if (err == NOISE_ERROR_NONE && state->dh_local_hybrid) {
                 err = noise_handshake_mix_dh
-                    (state, state->dh_local_forward, state->dh_remote_forward);
+                    (state, state->dh_local_hybrid, state->dh_remote_hybrid);
             }
             break;
         case NOISE_TOKEN_DHES:
