@@ -39,6 +39,7 @@ typedef struct
     char *protocol_name;            /**< Full name of the protocol */
     char *pattern;                  /**< Name of the handshake pattern */
     char *dh;                       /**< Name of the DH algorithm */
+    char *forward_dh;               /**< Name of the forward DH algorithm */
     char *cipher;                   /**< Name of the cipher algorithm */
     char *hash;                     /**< Name of the hash algorithm */
     uint8_t *init_static;           /**< Initiator's static private key */
@@ -51,8 +52,12 @@ typedef struct
     size_t resp_public_static_len;  /**< Length of resp_public_static in bytes */
     uint8_t *init_ephemeral;        /**< Initiator's ephemeral key */
     size_t init_ephemeral_len;      /**< Length of init_ephemeral in bytes */
-    uint8_t *resp_ephemeral;        /**< Initiator's ephemeral key */
+    uint8_t *resp_ephemeral;        /**< Responder's ephemeral key */
     size_t resp_ephemeral_len;      /**< Length of resp_ephemeral in bytes */
+    uint8_t *init_forward;          /**< Initiator's forward ephemeral key */
+    size_t init_forward_len;        /**< Length of init_forward in bytes */
+    uint8_t *resp_forward;          /**< Responder's forward ephemeral key */
+    size_t resp_forward_len;        /**< Length of resp_forward in bytes */
     uint8_t *init_prologue;         /**< Initiator's prologue data */
     size_t init_prologue_len;       /**< Length of init_prologue in bytes */
     uint8_t *resp_prologue;         /**< Responder's prologue data */
@@ -93,6 +98,7 @@ static void test_vector_free(TestVector *vec)
     free_field(protocol_name);
     free_field(pattern);
     free_field(dh);
+    free_field(forward_dh);
     free_field(cipher);
     free_field(hash);
     free_field(init_static);
@@ -101,6 +107,8 @@ static void test_vector_free(TestVector *vec)
     free_field(resp_public_static);
     free_field(init_ephemeral);
     free_field(resp_ephemeral);
+    free_field(init_forward);
+    free_field(resp_forward);
     free_field(init_prologue);
     free_field(resp_prologue);
     free_field(init_psk);
@@ -231,7 +239,10 @@ static int test_name_parsing(const TestVector *vec)
     check_id(id.dh_id, NOISE_DH_CATEGORY, vec->dh);
     check_id(id.cipher_id, NOISE_CIPHER_CATEGORY, vec->cipher);
     check_id(id.hash_id, NOISE_HASH_CATEGORY, vec->hash);
-    compare(id.forward_id, 0);
+    if (vec->forward_dh)
+        check_id(id.forward_id, NOISE_DH_CATEGORY, vec->forward_dh);
+    else
+        compare(id.forward_id, 0);
     return id.pattern_id == NOISE_PATTERN_N ||
            id.pattern_id == NOISE_PATTERN_X ||
            id.pattern_id == NOISE_PATTERN_K;
@@ -304,12 +315,24 @@ static void test_connection(const TestVector *vec, int is_one_way)
                     (dh, vec->init_ephemeral, vec->init_ephemeral_len),
                 NOISE_ERROR_NONE);
     }
+    if (vec->init_forward) {
+        dh = noise_handshakestate_get_fixed_forward_dh(initiator);
+        compare(noise_dhstate_set_keypair_private
+                    (dh, vec->init_forward, vec->init_forward_len),
+                NOISE_ERROR_NONE);
+    }
     /* Note: The test data contains responder ephemeral keys for one-way
        patterns which doesn't actually make sense.  Ignore those keys. */
     if (vec->resp_ephemeral && strlen(vec->pattern) != 1) {
         dh = noise_handshakestate_get_fixed_ephemeral_dh(responder);
         compare(noise_dhstate_set_keypair_private
                     (dh, vec->resp_ephemeral, vec->resp_ephemeral_len),
+                NOISE_ERROR_NONE);
+    }
+    if (vec->resp_forward && strlen(vec->pattern) != 1) {
+        dh = noise_handshakestate_get_fixed_forward_dh(responder);
+        compare(noise_dhstate_set_keypair_private
+                    (dh, vec->resp_forward, vec->resp_forward_len),
                 NOISE_ERROR_NONE);
     }
 
@@ -663,6 +686,8 @@ static int process_test_vector(JSONReader *reader)
             expect_string_field(reader, &(vec.pattern));
         } else if (json_is_name(reader, "dh")) {
             expect_string_field(reader, &(vec.dh));
+        } else if (json_is_name(reader, "forward_dh")) {
+            expect_string_field(reader, &(vec.forward_dh));
         } else if (json_is_name(reader, "cipher")) {
             expect_string_field(reader, &(vec.cipher));
         } else if (json_is_name(reader, "hash")) {
@@ -689,6 +714,12 @@ static int process_test_vector(JSONReader *reader)
         } else if (json_is_name(reader, "resp_ephemeral")) {
             vec.resp_ephemeral_len =
                 expect_binary_field(reader, &(vec.resp_ephemeral));
+        } else if (json_is_name(reader, "init_forward_ephemeral")) {
+            vec.init_forward_len =
+                expect_binary_field(reader, &(vec.init_forward));
+        } else if (json_is_name(reader, "resp_forward_ephemeral")) {
+            vec.resp_forward_len =
+                expect_binary_field(reader, &(vec.resp_forward));
         } else if (json_is_name(reader, "init_prologue")) {
             vec.init_prologue_len =
                 expect_binary_field(reader, &(vec.init_prologue));
@@ -756,9 +787,12 @@ static int process_test_vector(JSONReader *reader)
             json_error(reader, "Unknown field '%s'", reader->str_value);
         }
     }
-    snprintf(protocol_name, sizeof(protocol_name), "Noise%s_%s_%s_%s_%s",
+    snprintf(protocol_name, sizeof(protocol_name), "Noise%s_%s_%s%s%s_%s_%s",
              (vec.init_psk || vec.resp_psk) ? "PSK" : "",
-             vec.pattern, vec.dh, vec.cipher, vec.hash);
+             vec.pattern, vec.dh,
+             (vec.forward_dh ? "+" : ""),
+             (vec.forward_dh ? vec.forward_dh : ""),
+             vec.cipher, vec.hash);
     vec.protocol_name = strdup(protocol_name);
     if (!reader->errors) {
         retval = test_vector_run(reader, &vec);

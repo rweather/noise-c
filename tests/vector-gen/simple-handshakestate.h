@@ -39,6 +39,8 @@ typedef struct
     SymmetricState symmetric;
     NoiseDHState *dh_private;
     NoiseDHState *dh_public;
+    NoiseDHState *forward_private;
+    NoiseDHState *forward_public;
     uint8_t s[MAX_DH_KEY_LEN];
     size_t s_len;
     uint8_t s_public[MAX_DH_KEY_LEN];
@@ -47,10 +49,16 @@ typedef struct
     size_t e_len;
     uint8_t e_public[MAX_DH_KEY_LEN];
     size_t e_public_len;
+    uint8_t f[MAX_DH_KEY_LEN];
+    size_t f_len;
+    uint8_t f_public[MAX_DH_KEY_LEN];
+    size_t f_public_len;
     uint8_t rs[MAX_DH_KEY_LEN];
     size_t rs_len;
     uint8_t re[MAX_DH_KEY_LEN];
     size_t re_len;
+    uint8_t rf[MAX_DH_KEY_LEN];
+    size_t rf_len;
     uint8_t psk[MAX_PSK_LEN];
     size_t psk_len;
     int action;
@@ -64,8 +72,10 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
                 int is_initiator, const uint8_t *prologue, size_t prologue_len,
                 const uint8_t *s, size_t s_len,
                 const uint8_t *e, size_t e_len,
+                const uint8_t *f, size_t f_len,
                 const uint8_t *rs, size_t rs_len,
                 const uint8_t *re, size_t re_len,
+                const uint8_t *rf, size_t rf_len,
                 const uint8_t *psk, size_t psk_len);
 int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *message);
 int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload);

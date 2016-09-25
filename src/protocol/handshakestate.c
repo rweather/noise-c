@@ -463,6 +463,42 @@ NoiseDHState *noise_handshakestate_get_fixed_ephemeral_dh
 }
 
 /**
+ * \brief Gets the DHState object that contains the local additional
+ * forward secrecy keypair.
+ *
+ * \param state The HandshakeState object.
+ *
+ * \return Returns a pointer to the DHState object for the local additional
+ * forward secrecy keypair, or NULL if the system is out of memory,
+ * \a state is NULL, or \a state does not support additional forward secrecy.
+ *
+ * \note This function is intended for testing only.  It can be used to
+ * establish a fixed forward secrecy key for test vectors.  This function
+ * should not be used in real applications.
+ *
+ * \sa noise_handshakestate_get_fixed_ephemeral_dh()
+ */
+NoiseDHState *noise_handshakestate_get_fixed_forward_dh
+    (NoiseHandshakeState *state)
+{
+    if (!state || !state->dh_local_forward)
+        return 0;
+
+    if (!state->dh_fixed_forward) {
+        if (noise_dhstate_new_by_id
+                (&(state->dh_fixed_forward), state->symmetric->id.forward_id)
+              != NOISE_ERROR_NONE) {
+            return 0;
+        }
+        noise_dhstate_set_role
+            (state->dh_fixed_forward,
+             noise_dhstate_get_role(state->dh_local_forward));
+    }
+
+    return state->dh_fixed_forward;
+}
+
+/**
  * \brief Determine if a HandshakeState object requires a pre shared key.
  *
  * \param state The HandshakeState object.
@@ -1182,10 +1218,12 @@ static int noise_handshakestate_write
                 if (err != NOISE_ERROR_NONE)
                     break;
                 len = state->dh_local_forward->public_key_len;
-                if (rest.max_size < len)
+                if ((rest.max_size - rest.size) < len)
                     return NOISE_ERROR_INVALID_LENGTH;
-                memcpy(rest.data, state->dh_local_forward->public_key, len);
-                noise_symmetricstate_mix_hash(state->symmetric, rest.data, len);
+                memcpy(rest.data + rest.size,
+                       state->dh_local_forward->public_key, len);
+                noise_symmetricstate_mix_hash
+                    (state->symmetric, rest.data + rest.size, len);
                 rest.size += len;
                 if (state->symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
                     err = noise_symmetricstate_mix_key
