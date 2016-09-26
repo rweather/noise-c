@@ -21,7 +21,15 @@
  */
 
 #include "internal.h"
+#if USE_LIBSODIUM
+#include <sodium.h>
+typedef crypto_hash_sha256_state sha256_context_t;
+#define sha256_reset(ctx) crypto_hash_sha256_init(ctx)
+#define sha256_update(ctx, pub, pub_len) crypto_hash_sha256_update(ctx, pub, pub_len)
+#define sha256_finish(ctx, hash) crypto_hash_sha256_final(ctx, hash)
+#else
 #include "crypto/sha2/sha256.h"
+#endif
 #include <stdlib.h>
 
 /**
