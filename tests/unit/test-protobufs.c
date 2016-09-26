@@ -1031,7 +1031,7 @@ static void check_tagged_string(const char *str, int is_valid_utf8, int tag)
             NOISE_ERROR_NONE);
     compare(olen, len);
     verify(!memcmp(bvalue, input, len));
-    free(value);
+    free(bvalue);
 
     /* Truncated input data, shorter than the encoded byte array length */
     if (len > 0) {
