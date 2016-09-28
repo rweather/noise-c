@@ -680,7 +680,7 @@ static void get_public_key(const uint8_t **k, size_t *klen, const Key *key, int 
 }
 
 static void initialize_protocol
-    (HandshakeState *init, HandshakeState *resp, uint8_t flags,
+    (HandshakeState *init, HandshakeState *resp, NoisePatternFlags_t flags,
      const char *protocol_name, const NoiseProtocolId *id, int with_fallback)
 {
     const uint8_t *s = 0;
@@ -702,9 +702,9 @@ static void initialize_protocol
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
         get_key(&e, &e_len, &init_ephemeral, id->dh_id);
-        if (id->hybrid_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &init_ephemeral, id->hybrid_id);
-        }
+    }
+    if (flags & NOISE_PAT_FLAG_LOCAL_HYBRID) {
+        get_key(&f, &f_len, &init_ephemeral, id->hybrid_id);
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
         /* Deliberately use the wrong remote key if we will fallback */
@@ -717,7 +717,7 @@ static void initialize_protocol
         pk = psk;
         pk_len = sizeof(psk);
     }
-    Initialize(init, protocol_name, 1, prologue, sizeof(prologue),
+    Initialize(init, protocol_name, 1, 0, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
     s = 0;
@@ -739,9 +739,9 @@ static void initialize_protocol
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
         get_key(&e, &e_len, &resp_ephemeral, id->dh_id);
-        if (id->hybrid_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &resp_ephemeral, id->hybrid_id);
-        }
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID) {
+        get_key(&f, &f_len, &resp_ephemeral, id->hybrid_id);
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
         get_public_key(&rs, &rs_len, &init_static, id->dh_id);
@@ -750,13 +750,13 @@ static void initialize_protocol
         pk = psk;
         pk_len = sizeof(psk);
     }
-    Initialize(resp, protocol_name, 0, prologue, sizeof(prologue),
+    Initialize(resp, protocol_name, 0, 0, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
 }
 
 static void initialize_protocol_fallback
-    (HandshakeState *init, HandshakeState *resp, uint8_t flags,
+    (HandshakeState *init, HandshakeState *resp, NoisePatternFlags_t flags,
      const char *protocol_name, const NoiseProtocolId *id)
 {
     const uint8_t *s = 0;
@@ -778,24 +778,24 @@ static void initialize_protocol_fallback
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
         get_key(&e, &e_len, &resp_ephemeral, id->dh_id);
-        if (id->hybrid_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &resp_ephemeral, id->hybrid_id);
-        }
+    }
+    if (flags & NOISE_PAT_FLAG_LOCAL_HYBRID) {
+        get_key(&f, &f_len, &resp_ephemeral, id->hybrid_id);
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
         get_public_key(&rs, &rs_len, &init_static, id->dh_id);
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) {
         get_public_key(&re, &re_len, &init_ephemeral, id->dh_id);
-        if (id->hybrid_id != NOISE_DH_NONE) {
-            get_public_key(&rf, &rf_len, &init_ephemeral, id->hybrid_id);
-        }
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID_REQ) {
+        get_public_key(&rf, &rf_len, &init_ephemeral, id->hybrid_id);
     }
     if (id->prefix_id == NOISE_PREFIX_PSK) {
         pk = psk;
         pk_len = sizeof(psk);
     }
-    Initialize(init, protocol_name, 1, prologue, sizeof(prologue),
+    Initialize(init, protocol_name, 1, 1, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
     s = 0;
@@ -817,9 +817,9 @@ static void initialize_protocol_fallback
     }
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
         get_key(&e, &e_len, &init_ephemeral, id->dh_id);
-        if (id->hybrid_id != NOISE_DH_NONE) {
-            get_key(&f, &f_len, &init_ephemeral, id->hybrid_id);
-        }
+    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID) {
+        get_key(&f, &f_len, &init_ephemeral, id->hybrid_id);
     }
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
         get_public_key(&rs, &rs_len, &resp_static, id->dh_id);
@@ -828,7 +828,7 @@ static void initialize_protocol_fallback
         pk = psk;
         pk_len = sizeof(psk);
     }
-    Initialize(resp, protocol_name, 0, prologue, sizeof(prologue),
+    Initialize(resp, protocol_name, 0, 1, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
 }
@@ -839,7 +839,7 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
     char protocol_name[NOISE_MAX_PROTOCOL_NAME];
     char alt_protocol_name[NOISE_MAX_PROTOCOL_NAME];
     const uint8_t *pattern = noise_pattern_lookup(id->pattern_id);
-    uint8_t flags = *pattern;
+    NoisePatternFlags_t flags;
     HandshakeState init;
     HandshakeState resp;
     int payload_num;
@@ -859,6 +859,8 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
     HandshakeState_new(&resp);
 
     /* Convert the identifiers into a name and print out the components */
+    flags = ((NoisePatternFlags_t)(pattern[0])) |
+           (((NoisePatternFlags_t)(pattern[1])) << 8);
     noise_protocol_id_to_name(protocol_name, sizeof(protocol_name), id);
     if (!first)
         printf(",\n");
@@ -897,13 +899,10 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
         print_hex("init_ssk", ssk, sizeof(ssk));
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC)
         print_key("init_static", &init_static, id->dh_id);
-    if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) {
+    if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL)
         print_key("init_ephemeral", &init_ephemeral, id->dh_id);
-        if (id->hybrid_id != NOISE_DH_NONE) {
-            print_key("init_hybrid_ephemeral",
-                      &init_ephemeral, id->hybrid_id);
-        }
-    }
+    if (flags & NOISE_PAT_FLAG_LOCAL_HYBRID)
+        print_key("init_hybrid_ephemeral", &init_ephemeral, id->hybrid_id);
     if (flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) {
         /* If we are going to fall back, then give the initiator the
            wrong static key for the responder */
@@ -919,13 +918,10 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
         print_hex("resp_ssk", ssk, sizeof(ssk));
     if (flags & NOISE_PAT_FLAG_REMOTE_STATIC)
         print_key("resp_static", &resp_static, id->dh_id);
-    if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) {
+    if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL)
         print_key("resp_ephemeral", &resp_ephemeral, id->dh_id);
-        if (id->hybrid_id != NOISE_DH_NONE) {
-            print_key("resp_hybrid_ephemeral",
-                      &resp_ephemeral, id->hybrid_id);
-        }
-    }
+    if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID)
+        print_key("resp_hybrid_ephemeral", &resp_ephemeral, id->hybrid_id);
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED)
         print_public_key("resp_remote_static", &init_static, id->dh_id);
 
@@ -951,7 +947,8 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
             if (fallback) {
                 /* Switch to XXfallback and swap initiator/responder */
                 pattern = noise_pattern_lookup(id2.pattern_id);
-                flags = *pattern;
+                flags = ((NoisePatternFlags_t)(pattern[0])) |
+                       (((NoisePatternFlags_t)(pattern[1])) << 8);
                 initialize_protocol_fallback
                     (&init, &resp, flags, alt_protocol_name, &id2);
                 fallback = 0;
@@ -1078,46 +1075,16 @@ static void fallback_patterns(int with_ssk)
     }
 }
 
-/* Output all of the New Hope patterns */
-static void newhope_patterns(int with_ssk)
-{
-    NoiseProtocolId id;
-    int first = 1;
-    memset(&id, 0, sizeof(id));
-    for (id.pattern_id = NOISE_PATTERN_NN; id.pattern_id <= NOISE_PATTERN_IX; ++id.pattern_id) {
-        for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
-            for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
-                if (id.pattern_id == NOISE_PATTERN_NN) {
-                    id.dh_id = NOISE_DH_NEWHOPE;
-                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                        generate_vector(&id, first, 0, 0);
-                        first = 0;
-                        if (with_ssk)
-                            generate_vector(&id, first, 1, 0);
-                    }
-                }
-                for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
-                    id.hybrid_id = NOISE_DH_NEWHOPE;
-                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                        generate_vector(&id, first, 0, 0);
-                        first = 0;
-                        if (with_ssk)
-                            generate_vector(&id, first, 1, 0);
-                    }
-                    id.hybrid_id = NOISE_DH_NONE;
-                }
-            }
-        }
-    }
-}
-
 /* Output all of the patterns that involve hybrid forward secrecy */
 static void hybrid_patterns(int with_ssk)
 {
     NoiseProtocolId id;
     int first = 1;
+    int fallback_id;
+
+    /* Basic hybrid patterns involving 25519+448 and 25519+NewHope */
     memset(&id, 0, sizeof(id));
-    for (id.pattern_id = NOISE_PATTERN_NN; id.pattern_id <= NOISE_PATTERN_IX; ++id.pattern_id) {
+    for (id.pattern_id = NOISE_PATTERN_NN_HFS; id.pattern_id <= NOISE_PATTERN_IX_HFS; ++id.pattern_id) {
         for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
             for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
                 id.dh_id = NOISE_DH_CURVE25519;
@@ -1132,13 +1099,32 @@ static void hybrid_patterns(int with_ssk)
             }
         }
     }
+
+    /* Fallback hybrid patterns */
+    fallback_id = NOISE_PATTERN_XX_FALLBACK_HFS;
+    memset(&id, 0, sizeof(id));
+    id.pattern_id = NOISE_PATTERN_IK_HFS;
+    for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
+        if (id.prefix_id == NOISE_PREFIX_PSK)
+            continue;   /* Hybrid fallback doesn't work with PSK's */
+        for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+            id.dh_id = NOISE_DH_CURVE25519;
+            for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
+                for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                    generate_vector(&id, first, 0, fallback_id);
+                    first = 0;
+                    if (with_ssk)
+                        generate_vector(&id, first, 1, fallback_id);
+                }
+            }
+        }
+    }
 }
 
 int main(int argc, char *argv[])
 {
     int with_ssk = 0;
     int with_fallback = 0;
-    int with_newhope = 0;
     int with_hybrid = 0;
 
     while (argc > 1) {
@@ -1146,8 +1132,6 @@ int main(int argc, char *argv[])
             with_ssk = 1;
         if (!strcmp(argv[1], "--with-fallback"))
             with_fallback = 1;
-        if (!strcmp(argv[1], "--with-newhope"))
-            with_newhope = 1;
         if (!strcmp(argv[1], "--with-hybrid"))
             with_hybrid = 1;
         ++argv;
@@ -1157,9 +1141,7 @@ int main(int argc, char *argv[])
     printf("{\n");
     printf("\"vectors\": [\n");
 
-    if (with_newhope) {
-        newhope_patterns(with_ssk);
-    } else if (with_fallback) {
+    if (with_fallback) {
         fallback_patterns(with_ssk);
     } else if (with_hybrid) {
         hybrid_patterns(with_ssk);

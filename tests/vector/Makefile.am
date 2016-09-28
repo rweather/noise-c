@@ -13,7 +13,7 @@ VECTORS = \
     noise-c-basic.txt \
     noise-c-ssk.txt \
     noise-c-fallback.txt \
-    noise-c-newhope.txt
+    noise-c-hybrid.txt
 
 check-local:
 	./test-vector $(VECTORS)

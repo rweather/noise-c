@@ -147,8 +147,8 @@ static void check_handshake_protocol(const char *name)
     NoiseProtocolId id, id2;
     NoiseDHState *dh;
     const uint8_t *pattern;
-    uint8_t init_flags;
-    uint8_t resp_flags;
+    NoisePatternFlags_t init_flags;
+    NoisePatternFlags_t resp_flags;
     uint8_t message[4096];
     uint8_t payload[23];
     NoiseBuffer mbuf;
@@ -164,7 +164,8 @@ static void check_handshake_protocol(const char *name)
             NOISE_ERROR_NONE);
     pattern = noise_pattern_lookup(id.pattern_id);
     verify(pattern != 0);
-    init_flags = *pattern;
+    init_flags = ((NoisePatternFlags_t)(pattern[0])) |
+                (((NoisePatternFlags_t)(pattern[1])) << 8);
     resp_flags = noise_pattern_reverse_flags(init_flags);
 
     /* Create two objects for the initiator and responder,

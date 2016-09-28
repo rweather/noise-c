@@ -88,6 +88,24 @@ static void test_id_mappings(void)
     check_id("KXnoidh", NOISE_PATTERN_KX_NOIDH);
     check_id("IKnoidh", NOISE_PATTERN_IK_NOIDH);
     check_id("IXnoidh", NOISE_PATTERN_IX_NOIDH);
+    check_id("NNhfs", NOISE_PATTERN_NN_HFS);
+    check_id("NKhfs", NOISE_PATTERN_NK_HFS);
+    check_id("NXhfs", NOISE_PATTERN_NX_HFS);
+    check_id("XNhfs", NOISE_PATTERN_XN_HFS);
+    check_id("XKhfs", NOISE_PATTERN_XK_HFS);
+    check_id("XXhfs", NOISE_PATTERN_XX_HFS);
+    check_id("KNhfs", NOISE_PATTERN_KN_HFS);
+    check_id("KKhfs", NOISE_PATTERN_KK_HFS);
+    check_id("KXhfs", NOISE_PATTERN_KX_HFS);
+    check_id("INhfs", NOISE_PATTERN_IN_HFS);
+    check_id("IKhfs", NOISE_PATTERN_IK_HFS);
+    check_id("IXhfs", NOISE_PATTERN_IX_HFS);
+    check_id("XXfallback+hfs", NOISE_PATTERN_XX_FALLBACK_HFS);
+    check_id("NXnoidh+hfs", NOISE_PATTERN_NX_NOIDH_HFS);
+    check_id("XXnoidh+hfs", NOISE_PATTERN_XX_NOIDH_HFS);
+    check_id("KXnoidh+hfs", NOISE_PATTERN_KX_NOIDH_HFS);
+    check_id("IKnoidh+hfs", NOISE_PATTERN_IK_NOIDH_HFS);
+    check_id("IXnoidh+hfs", NOISE_PATTERN_IX_NOIDH_HFS);
 
     check_id("Noise", NOISE_PREFIX_STANDARD);
     check_id("NoisePSK", NOISE_PREFIX_PSK);

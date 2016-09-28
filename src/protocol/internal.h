@@ -598,6 +598,9 @@ struct NoiseHandshakeState_s
 #define NOISE_TOKEN_DHES        4   /**< "dhes" token */
 #define NOISE_TOKEN_DHSE        5   /**< "dhse" token */
 #define NOISE_TOKEN_DHSS        6   /**< "dhss" token */
+#define NOISE_TOKEN_F           7   /**< "f" token (hybrid forward secrecy) */
+#define NOISE_TOKEN_G           8   /**< "g" token (hybrid forward secrecy) */
+#define NOISE_TOKEN_FG          9   /**< "fg" token (hybrid forward secrecy) */
 #define NOISE_TOKEN_FLIP_DIR    255 /**< Flip the handshake direction */
 
 /** Pattern requires a local static keypair */
@@ -612,18 +615,30 @@ struct NoiseHandshakeState_s
 /** Pattern requires that the local ephemeral key be provided
     ahead of time to start the protocol (for XXfallback) */
 #define NOISE_PAT_FLAG_LOCAL_EPHEM_REQ  (1 << 3)
+/** Pattern requires a local hybrid keypair */
+#define NOISE_PAT_FLAG_LOCAL_HYBRID     (1 << 4)
+/** Pattern requires that the local hybrid key be provided
+    ahead of time to start the protocol (for XXfallback) */
+#define NOISE_PAT_FLAG_LOCAL_HYBRID_REQ (1 << 5)
+
 /** Pattern requires a remote static public key */
-#define NOISE_PAT_FLAG_REMOTE_STATIC    (1 << 4)
+#define NOISE_PAT_FLAG_REMOTE_STATIC    (1 << 8)
 /** Pattern requires a remote ephemeral public key */
-#define NOISE_PAT_FLAG_REMOTE_EPHEMERAL (1 << 5)
+#define NOISE_PAT_FLAG_REMOTE_EPHEMERAL (1 << 9)
 /** Pattern requires that the remote public key be provided
     ahead of time to start the protocol.  That is, it is not
     sent as part of the protocol but is assumed to already be
     known to the other party. */
-#define NOISE_PAT_FLAG_REMOTE_REQUIRED  (1 << 6)
+#define NOISE_PAT_FLAG_REMOTE_REQUIRED  (1 << 10)
 /** Pattern requires that the remote ephemeral key be provided
     ahead of time to start the protocol (for XXfallback) */
-#define NOISE_PAT_FLAG_REMOTE_EPHEM_REQ (1 << 7) 
+#define NOISE_PAT_FLAG_REMOTE_EPHEM_REQ (1 << 11) 
+/** Pattern requires a remote hybrid public key */
+#define NOISE_PAT_FLAG_REMOTE_HYBRID    (1 << 12)
+/** Pattern requires that the remote hybrid key be provided
+    ahead of time to start the protocol (for XXfallback) */
+#define NOISE_PAT_FLAG_REMOTE_HYBRID_REQ (1 << 13)
+
 /** Local static keypair is required for the handshake */
 #define NOISE_REQ_LOCAL_REQUIRED        (1 << 0)
 /** Remote public key is required for the handshake */
@@ -657,10 +672,12 @@ NoiseDHState *noise_newhope_new(void);
 
 NoiseSignState *noise_ed25519_new(void);
 
+typedef uint16_t NoisePatternFlags_t;
+
 /** @endcond */
 
 const uint8_t *noise_pattern_lookup(int id);
-uint8_t noise_pattern_reverse_flags(uint8_t flags);
+NoisePatternFlags_t noise_pattern_reverse_flags(NoisePatternFlags_t flags);
 
 #ifdef __cplusplus
 };

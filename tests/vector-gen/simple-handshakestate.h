@@ -69,7 +69,8 @@ typedef struct
 void HandshakeState_new(HandshakeState *handshake);
 void HandshakeState_free(HandshakeState *handshake);
 void Initialize(HandshakeState *handshake, const char *protocol_name,
-                int is_initiator, const uint8_t *prologue, size_t prologue_len,
+                int is_initiator, int is_fallback,
+                const uint8_t *prologue, size_t prologue_len,
                 const uint8_t *s, size_t s_len,
                 const uint8_t *e, size_t e_len,
                 const uint8_t *f, size_t f_len,

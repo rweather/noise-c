@@ -58,7 +58,7 @@
  * \return The key requirements for the handshake pattern.
  */
 static int noise_handshakestate_requirements
-    (uint8_t flags, int prefix_id, int role, int is_fallback)
+    (NoisePatternFlags_t flags, int prefix_id, int role, int is_fallback)
 {
     int requirements = 0;
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
@@ -104,7 +104,8 @@ static int noise_handshakestate_new
 {
     const uint8_t *pattern;
     int dh_id;
-    uint8_t flags;
+    int hybrid_id;
+    NoisePatternFlags_t flags;
     int extra_reqs = 0;
     int err;
     int local_dh_role;
@@ -116,7 +117,8 @@ static int noise_handshakestate_new
         noise_symmetricstate_free(symmetric);
         return NOISE_ERROR_UNKNOWN_ID;
     }
-    flags = pattern[0];
+    flags = ((NoisePatternFlags_t)(pattern[0])) |
+           (((NoisePatternFlags_t)(pattern[1])) << 8);
     if ((flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) != 0)
         extra_reqs |= NOISE_REQ_FALLBACK_POSSIBLE;
     if (role == NOISE_ROLE_RESPONDER) {
@@ -156,39 +158,50 @@ static int noise_handshakestate_new
     (*state)->requirements = extra_reqs | noise_handshakestate_requirements
         (flags, symmetric->id.prefix_id, role, 0);
     (*state)->action = NOISE_ACTION_NONE;
-    (*state)->tokens = pattern + 1;
+    (*state)->tokens = pattern + 2;
     (*state)->role = role;
     (*state)->symmetric = symmetric;
 
     /* Create DHState objects for all of the keys we will need later */
     err = NOISE_ERROR_NONE;
     dh_id = symmetric->id.dh_id;
+    hybrid_id = symmetric->id.hybrid_id;
     if ((flags & NOISE_PAT_FLAG_LOCAL_STATIC) != 0) {
         err = noise_dhstate_new_by_id(&((*state)->dh_local_static), dh_id);
     }
     if ((flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE) {
         err = noise_dhstate_new_by_id(&((*state)->dh_local_ephemeral), dh_id);
-        if (symmetric->id.hybrid_id != NOISE_DH_NONE && err == NOISE_ERROR_NONE) {
-            err = noise_dhstate_new_by_id(&((*state)->dh_local_hybrid), symmetric->id.hybrid_id);
-        }
+    }
+    if ((flags & NOISE_PAT_FLAG_LOCAL_HYBRID) != 0 && err == NOISE_ERROR_NONE) {
+        if (hybrid_id != NOISE_DH_NONE)
+            err = noise_dhstate_new_by_id(&((*state)->dh_local_hybrid), hybrid_id);
+        else
+            err = NOISE_ERROR_NOT_APPLICABLE;
+    } else if (hybrid_id != NOISE_DH_NONE) {
+        err = NOISE_ERROR_NOT_APPLICABLE;
     }
     if ((flags & NOISE_PAT_FLAG_REMOTE_STATIC) != 0 && err == NOISE_ERROR_NONE) {
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_static), dh_id);
     }
     if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL) != 0 && err == NOISE_ERROR_NONE) {
         err = noise_dhstate_new_by_id(&((*state)->dh_remote_ephemeral), dh_id);
-        if (symmetric->id.hybrid_id != NOISE_DH_NONE && err == NOISE_ERROR_NONE) {
-            err = noise_dhstate_new_by_id(&((*state)->dh_remote_hybrid), symmetric->id.hybrid_id);
-        }
+    }
+    if ((flags & NOISE_PAT_FLAG_REMOTE_HYBRID) != 0 && err == NOISE_ERROR_NONE) {
+        if (hybrid_id != NOISE_DH_NONE)
+            err = noise_dhstate_new_by_id(&((*state)->dh_remote_hybrid), hybrid_id);
+        else
+            err = NOISE_ERROR_NOT_APPLICABLE;
+    } else if (hybrid_id != NOISE_DH_NONE) {
+        err = NOISE_ERROR_NOT_APPLICABLE;
     }
 
-    /* Set the roles for the DHState objects */
+    /* Set the roles for all DHState objects except those for hybrid
+       forward secrecy.  Those roles are implicit in whether the "f"
+       or "g" token is used to refer to the value */
     noise_dhstate_set_role((*state)->dh_local_ephemeral, local_dh_role);
     noise_dhstate_set_role((*state)->dh_local_static, local_dh_role);
-    noise_dhstate_set_role((*state)->dh_local_hybrid, local_dh_role);
     noise_dhstate_set_role((*state)->dh_remote_ephemeral, remote_dh_role);
     noise_dhstate_set_role((*state)->dh_remote_static, remote_dh_role);
-    noise_dhstate_set_role((*state)->dh_remote_hybrid, remote_dh_role);
 
     /* If the DH algorithm is ephemeral-only, then we need to apply some
      * extra checks on the pattern: essentially, only "NN" is possible.
@@ -490,9 +503,15 @@ NoiseDHState *noise_handshakestate_get_fixed_hybrid_dh
               != NOISE_ERROR_NONE) {
             return 0;
         }
+
+        /* Normally hybrid keys do not get a role until the "f" or "g"
+           tokens are encountered.  However for fixed test vectors we
+           need to know the size of the private key ahead of time and
+           hence the role.  Predict the future hybrid role from the
+           current ephemeral role. */
         noise_dhstate_set_role
             (state->dh_fixed_hybrid,
-             noise_dhstate_get_role(state->dh_local_hybrid));
+             noise_dhstate_get_role(state->dh_local_ephemeral));
     }
 
     return state->dh_fixed_hybrid;
@@ -835,10 +854,6 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
             if ((state->requirements & NOISE_REQ_PSK) != 0) {
                 noise_handshakestate_mix_chaining_key
                     (state, state->dh_remote_ephemeral);
-                if (state->dh_remote_hybrid) {
-                    noise_handshakestate_mix_chaining_key
-                        (state, state->dh_remote_hybrid);
-                }
             }
         }
         if (state->requirements & NOISE_REQ_REMOTE_PREMSG)
@@ -855,10 +870,6 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
             if ((state->requirements & NOISE_REQ_PSK) != 0) {
                 noise_handshakestate_mix_chaining_key
                     (state, state->dh_local_ephemeral);
-                if (state->dh_local_hybrid) {
-                    noise_handshakestate_mix_chaining_key
-                        (state, state->dh_local_hybrid);
-                }
             }
         }
         if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
@@ -966,7 +977,7 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
     size_t name_len;
     NoiseProtocolId id;
     const uint8_t *pattern;
-    uint8_t flags;
+    NoisePatternFlags_t flags;
     int err;
 
     /* Validate the parameter */
@@ -980,7 +991,11 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
 
     /* Check that "pattern_id" supports fallback */
     pattern = noise_pattern_lookup(pattern_id);
-    if (!pattern || (*pattern & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) == 0)
+    if (!pattern)
+        return NOISE_ERROR_NOT_APPLICABLE;
+    flags = ((NoisePatternFlags_t)(pattern[0])) |
+           (((NoisePatternFlags_t)(pattern[1])) << 8);
+    if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) == 0)
         return NOISE_ERROR_NOT_APPLICABLE;
 
     /* The initiator should be waiting for a return message from the
@@ -1025,17 +1040,16 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
     } else {
         noise_dhstate_clear_key(state->dh_local_ephemeral);
         noise_dhstate_clear_key(state->dh_local_hybrid);
-        if (!(pattern[0] & NOISE_PAT_FLAG_REMOTE_REQUIRED))
+        if (!(flags & NOISE_PAT_FLAG_REMOTE_REQUIRED))
             noise_dhstate_clear_key(state->dh_remote_static);
         state->role = NOISE_ROLE_INITIATOR;
     }
 
     /* Start a new token pattern for the fallback */
-    state->tokens = pattern + 1;
+    state->tokens = pattern + 2;
     state->action = NOISE_ACTION_NONE;
 
     /* Set up the key requirements for the fallback */
-    flags = pattern[0];
     if (state->role == NOISE_ROLE_RESPONDER) {
         flags = noise_pattern_reverse_flags(flags);
     }
@@ -1202,35 +1216,6 @@ static int noise_handshakestate_write
                     (state->symmetric,
                      state->dh_local_ephemeral->public_key, len);
             }
-
-            /* Repeat the above if we have an extra hybrid secrecy key */
-            if (state->dh_local_hybrid) {
-                if (!state->dh_fixed_hybrid) {
-                    err = noise_dhstate_generate_dependent_keypair
-                        (state->dh_local_hybrid, state->dh_remote_hybrid);
-                } else {
-                    state->dh_local_hybrid->key_type =
-                        state->dh_fixed_hybrid->key_type;
-                    err = (*(state->dh_local_hybrid->copy))
-                        (state->dh_local_hybrid, state->dh_fixed_hybrid,
-                         state->dh_remote_hybrid);
-                }
-                if (err != NOISE_ERROR_NONE)
-                    break;
-                len = state->dh_local_hybrid->public_key_len;
-                if ((rest.max_size - rest.size) < len)
-                    return NOISE_ERROR_INVALID_LENGTH;
-                memcpy(rest.data + rest.size,
-                       state->dh_local_hybrid->public_key, len);
-                noise_symmetricstate_mix_hash
-                    (state->symmetric, rest.data + rest.size, len);
-                rest.size += len;
-                if (state->symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
-                    err = noise_symmetricstate_mix_key
-                        (state->symmetric,
-                         state->dh_local_hybrid->public_key, len);
-                }
-            }
             break;
         case NOISE_TOKEN_S:
             /* Encrypt the local static public key and add it to the message */
@@ -1250,10 +1235,6 @@ static int noise_handshakestate_write
             /* DH operation with local and remote ephemeral keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
-            if (err == NOISE_ERROR_NONE && state->dh_local_hybrid) {
-                err = noise_handshake_mix_dh
-                    (state, state->dh_local_hybrid, state->dh_remote_hybrid);
-            }
             break;
         case NOISE_TOKEN_DHES:
             /* DH operation with local ephemeral and remote static keys */
@@ -1269,6 +1250,46 @@ static int noise_handshakestate_write
             /* DH operation with local and remote static keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_static, state->dh_remote_static);
+            break;
+        case NOISE_TOKEN_F:
+        case NOISE_TOKEN_G:
+            /* Generate a local hybrid keypair and add the encrypted public
+               key to the message.  If we are running fixed vector tests,
+               then the hybrid key may have already been provided. */
+            if (!state->dh_local_hybrid)
+                return NOISE_ERROR_INVALID_STATE;
+            noise_dhstate_set_role
+                (state->dh_local_hybrid,
+                 token == NOISE_TOKEN_F ? NOISE_ROLE_INITIATOR
+                                        : NOISE_ROLE_RESPONDER);
+            if (!state->dh_fixed_hybrid) {
+                err = noise_dhstate_generate_dependent_keypair
+                    (state->dh_local_hybrid, state->dh_remote_hybrid);
+            } else {
+                /* Use the fixed hybrid key provided by the test harness.
+                   To support New Hope we need to perform a dependent copy */
+                state->dh_local_hybrid->key_type =
+                    state->dh_fixed_hybrid->key_type;
+                err = (*(state->dh_local_hybrid->copy))
+                    (state->dh_local_hybrid, state->dh_fixed_hybrid,
+                     state->dh_remote_hybrid);
+            }
+            if (err != NOISE_ERROR_NONE)
+                break;
+            len = state->dh_local_hybrid->public_key_len;
+            mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
+            if (rest.max_size < (len + mac_len))
+                return NOISE_ERROR_INVALID_LENGTH;
+            memcpy(rest.data, state->dh_local_hybrid->public_key, len);
+            rest.size += len;
+            err = noise_symmetricstate_encrypt_and_hash(state->symmetric, &rest);
+            if (err != NOISE_ERROR_NONE)
+                break;
+            break;
+        case NOISE_TOKEN_FG:
+            /* DH operation with local and remote hybrid keys */
+            err = noise_handshake_mix_dh
+                (state, state->dh_local_hybrid, state->dh_remote_hybrid);
             break;
         default:
             /* Unknown token code in the pattern.  This shouldn't happen.
@@ -1446,31 +1467,6 @@ static int noise_handshakestate_read
                     (state->symmetric,
                      state->dh_remote_ephemeral->public_key, len);
             }
-
-            /* Repeat the above if we have an extra hybrid secrecy key */
-            if (state->dh_remote_hybrid) {
-                len = state->dh_remote_hybrid->public_key_len;
-                if (msg.size < len)
-                    return NOISE_ERROR_INVALID_LENGTH;
-                err = noise_symmetricstate_mix_hash
-                    (state->symmetric, msg.data, len);
-                if (err != NOISE_ERROR_NONE)
-                    break;
-                err = noise_dhstate_set_public_key
-                    (state->dh_remote_hybrid, msg.data, len);
-                if (err != NOISE_ERROR_NONE)
-                    break;
-                if (noise_dhstate_is_null_public_key(state->dh_remote_hybrid))
-                    return NOISE_ERROR_INVALID_PUBLIC_KEY;
-                msg.data += len;
-                msg.size -= len;
-                msg.max_size -= len;
-                if (state->symmetric->id.prefix_id == NOISE_PREFIX_PSK) {
-                    err = noise_symmetricstate_mix_key
-                        (state->symmetric,
-                         state->dh_remote_hybrid->public_key, len);
-                }
-            }
             break;
         case NOISE_TOKEN_S:
             /* Decrypt and read the remote static key */
@@ -1499,10 +1495,6 @@ static int noise_handshakestate_read
             /* DH operation with local and remote ephemeral keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
-            if (err == NOISE_ERROR_NONE && state->dh_local_hybrid) {
-                err = noise_handshake_mix_dh
-                    (state, state->dh_local_hybrid, state->dh_remote_hybrid);
-            }
             break;
         case NOISE_TOKEN_DHES:
             /* DH operation with remote ephemeral and local static keys */
@@ -1518,6 +1510,47 @@ static int noise_handshakestate_read
             /* DH operation with local and remote static keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_static, state->dh_remote_static);
+            break;
+        case NOISE_TOKEN_F:
+        case NOISE_TOKEN_G:
+            /* Decrypt and save the remote hybrid key */
+            if (!state->dh_remote_hybrid)
+                return NOISE_ERROR_INVALID_STATE;
+            noise_dhstate_set_role
+                (state->dh_remote_hybrid,
+                 token == NOISE_TOKEN_F ? NOISE_ROLE_INITIATOR
+                                        : NOISE_ROLE_RESPONDER);
+            mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
+            len = state->dh_remote_hybrid->public_key_len + mac_len;
+            if (msg.size < len)
+                return NOISE_ERROR_INVALID_LENGTH;
+            msg2.data = msg.data;
+            msg2.size = len;
+            msg2.max_size = len;
+            err = noise_symmetricstate_decrypt_and_hash
+                (state->symmetric, &msg2);
+            if (err != NOISE_ERROR_NONE)
+                break;
+            err = noise_dhstate_set_public_key
+                (state->dh_remote_hybrid, msg2.data, msg2.size);
+            if (err != NOISE_ERROR_NONE)
+                break;
+            msg.data += len;
+            msg.size -= len;
+            msg.max_size -= len;
+            if (noise_dhstate_is_null_public_key(state->dh_remote_hybrid)) {
+                /* The remote hybrid key is null, which means that it is
+                   not contributing anything to the security of the session
+                   and is in fact downgrading the security to "none at all"
+                   in some of the message patterns.  Reject all such keys. */
+                err = NOISE_ERROR_INVALID_PUBLIC_KEY;
+                break;
+            }
+            break;
+        case NOISE_TOKEN_FG:
+            /* DH operation with local and remote hybrid keys */
+            err = noise_handshake_mix_dh
+                (state, state->dh_local_hybrid, state->dh_remote_hybrid);
             break;
         default:
             /* Unknown token code in the pattern.  This shouldn't happen.
