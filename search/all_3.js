@@ -17,5 +17,6 @@ var searchData=
   ['ck',['ck',['../internal_8h.html#a1a61d4b68f39148b1bdf56fee5f5e627',1,'NoiseSymmetricState_s']]],
   ['constants_2edox',['constants.dox',['../constants_8dox.html',1,'']]],
   ['constants_2eh',['constants.h',['../constants_8h.html',1,'']]],
+  ['copy',['copy',['../structNoiseDHState__s.html#a05a1e1cfb83dd508a8bd8887fd8c9648',1,'NoiseDHState_s']]],
   ['create',['create',['../structNoiseCipherState__s.html#a2d42882b9ebb8451531ee365b08cabd6',1,'NoiseCipherState_s']]]
 ];

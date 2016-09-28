@@ -2,6 +2,8 @@ var searchData=
 [
   ['salt',['salt',['../certificate_8c.html#a83537bd73b5f18f8330f2d593ff9c35b',1,'_Noise_EncryptedPrivateKey']]],
   ['salt_5fsize_5f',['salt_size_',['../certificate_8c.html#aead1f2774d0d75f998d3ea5e2450b968',1,'_Noise_EncryptedPrivateKey']]],
+  ['set_5fkeypair',['set_keypair',['../structNoiseDHState__s.html#a632420c22b55cbefcf3ac491bfb5cf96',1,'NoiseDHState_s']]],
+  ['set_5fkeypair_5fprivate',['set_keypair_private',['../structNoiseDHState__s.html#ae71209f15c62249720468ea748824916',1,'NoiseDHState_s']]],
   ['shared_5fkey_5flen',['shared_key_len',['../structNoiseDHState__s.html#ab1b932dd8f0412288ffebfdcda429b75',1,'NoiseDHState_s']]],
   ['sign',['sign',['../structNoiseSignState__s.html#a4b76230985723a19a6563c5c672b66c0',1,'NoiseSignState_s']]],
   ['sign_5fid',['sign_id',['../structNoiseSignState__s.html#a7021e66ac834cb6ce601063f5fc80806',1,'NoiseSignState_s']]],
