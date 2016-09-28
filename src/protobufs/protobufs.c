@@ -662,7 +662,7 @@ int noise_protobuf_write_uint64(NoiseProtobuf *pbuf, int tag, uint64_t value)
  */
 int noise_protobuf_write_sint32(NoiseProtobuf *pbuf, int tag, int32_t value)
 {
-    value = (value << 1) ^ (value >> 31);
+    value = ((uint32_t)value << 1) ^ (value >> 31);
     return noise_protobuf_write_integer(pbuf, tag, (uint64_t)(uint32_t)value);
 }
 
@@ -679,7 +679,7 @@ int noise_protobuf_write_sint32(NoiseProtobuf *pbuf, int tag, int32_t value)
  */
 int noise_protobuf_write_sint64(NoiseProtobuf *pbuf, int tag, int64_t value)
 {
-    value = (value << 1) ^ (value >> 63);
+    value = ((uint64_t)value << 1) ^ (value >> 63);
     return noise_protobuf_write_integer(pbuf, tag, (uint64_t)value);
 }
 
