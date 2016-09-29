@@ -10,7 +10,7 @@ test_noise_SOURCES = \
 	test-main.c \
 	test-names.c \
 	test-patterns.c \
-        test-protobufs.c \
+	test-protobufs.c \
 	test-randstate.c \
 	test-signstate.c \
 	test-symmetricstate.c
