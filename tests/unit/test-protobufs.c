@@ -95,7 +95,7 @@ static void check_integer(int64_t value, const char *varint, const char *sint)
     uint64_t uval64;
     int valbool;
 
-    snprintf(number, sizeof(number), "%Ld", (long long)value);
+    snprintf(number, sizeof(number), "%lld", (long long)value);
     data_name = number;
 
     vlen = string_to_data(vinput, sizeof(vinput), varint);

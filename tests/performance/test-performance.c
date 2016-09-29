@@ -34,6 +34,9 @@
 #include <string.h>
 #include <time.h>
 #include "md5.h"
+#if defined(__APPLE__)
+#include <sys/time.h>
+#endif
 #if defined(__WIN32__) || defined(WIN32)
 #include <windows.h>
 #endif
@@ -58,6 +61,20 @@ static timestamp_t current_timestamp(void)
 static double elapsed_to_seconds(timestamp_t start, timestamp_t end)
 {
     return (end - start) / 1000.0;
+}
+
+#elif defined(__APPLE__)
+
+static timestamp_t current_timestamp(void)
+{
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    return ((uint64_t)(now.tv_sec)) * 1000000ULL + now.tv_usec;
+}
+
+static double elapsed_to_seconds(timestamp_t start, timestamp_t end)
+{
+    return (end - start) / 1000000.0;
 }
 
 #else

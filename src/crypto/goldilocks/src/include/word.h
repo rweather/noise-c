@@ -221,6 +221,8 @@ htole64 (uint64_t x) { return x; }
 
 static inline uint64_t
 letoh64 (uint64_t x) { return x; }
+
+#include <string.h> // for memset_s
 #endif
 
 /**

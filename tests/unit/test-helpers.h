@@ -83,8 +83,8 @@ extern int verbose;
             if (data_name) \
                 printf("%s: ", data_name); \
             printf(#actual " != " #expected " at " __FILE__ ":%d\n", __LINE__); \
-            printf("    actual  : %Ld (0x%Lx)\n", _actual, _actual); \
-            printf("    expected: %Ld (0x%Lx)\n", _expected, _expected); \
+            printf("    actual  : %lld (0x%llx)\n", _actual, _actual); \
+            printf("    expected: %lld (0x%llx)\n", _expected, _expected); \
             longjmp(test_jump_back, 1); \
         } \
     } while (0)

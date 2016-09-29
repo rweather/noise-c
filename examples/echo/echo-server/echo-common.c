@@ -51,6 +51,10 @@ typedef BOOL sockopt_type;
 typedef int sockopt_type;
 #endif
 
+#if defined(__APPLE__)
+#define MSG_NOSIGNAL SO_NOSIGPIPE
+#endif
+
 #define MAX_DH_KEY_LEN 2048
 
 int echo_verbose = 0;
