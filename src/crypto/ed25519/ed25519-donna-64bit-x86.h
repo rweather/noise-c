@@ -2,6 +2,11 @@
 
 #define HAVE_GE25519_SCALARMULT_BASE_CHOOSE_NIELS
 
+#if defined(__has_feature)
+#  if __has_feature(address_sanitizer)
+__attribute__((no_sanitize("address")))
+#  endif
+#endif
 DONNA_NOINLINE static void
 ge25519_scalarmult_base_choose_niels(ge25519_niels *t, const uint8_t table[256][96], uint32_t pos, signed char b) {
 	int64_t breg = (int64_t)b;
