@@ -1,6 +1,8 @@
 
 bin_PROGRAMS = noise-protoc
 
+BUILT_SOURCES = proto3-grammar.h
+
 noise_protoc_SOURCES = \
 	main.c \
         proto3-ast.c \
