@@ -13,6 +13,11 @@ GOLDILOCKS_CPPFLAGS = \
 AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src $(GOLDILOCKS_CPPFLAGS)
 AM_CFLAGS = @WARNING_FLAGS@
 
+if USE_OPENSSL
+AM_CPPFLAGS += -DUSE_OPENSSL=1
+AM_CFLAGS += $(openssl_CFLAGS)
+endif
+
 if USE_LIBSODIUM
 AM_CPPFLAGS += -DUSE_LIBSODIUM=1
 AM_CFLAGS += $(libsodium_CFLAGS)
@@ -28,7 +33,7 @@ libnoiseprotocol_a_SOURCES = \
 	errors.c \
 	handshakestate.c \
 	hashstate.c \
-	internal.h \
+	internal.c \
 	names.c \
 	patterns.c \
 	randstate.c \
@@ -57,6 +62,19 @@ libnoiseprotocol_a_SOURCES = \
 	../crypto/newhope/randombytes.h \
 	../crypto/newhope/reduce.c \
 	../crypto/newhope/reduce.h
+
+if USE_OPENSSL
+libnoiseprotocol_a_SOURCES += \
+	../backend/openssl/cipher-aesgcm.c
+else !USE_OPENSSL
+if USE_LIBSODIUM
+libnoiseprotocol_a_SOURCES += \
+	../backend/sodium/cipher-aesgcm.c
+else
+libnoiseprotocol_a_SOURCES += \
+	../backend/ref/cipher-aesgcm.c
+endif
+endif
 
 if USE_LIBSODIUM
 libnoiseprotocol_a_SOURCES += \
