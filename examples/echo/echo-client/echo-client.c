@@ -373,6 +373,11 @@ int main(int argc, char *argv[])
     if (!parse_options(argc, argv))
         return 1;
 
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     /* Check that the echo protocol supports the handshake protocol.
        One-way handshake patterns and XXfallback are not yet supported. */
     if (!echo_get_protocol_id(&id, protocol, post_quantum)) {

@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2016 Topology LP.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,7 +31,15 @@ typedef crypto_hash_sha256_state sha256_context_t;
 #else
 #include "crypto/sha2/sha256.h"
 #endif
+#if USE_OPENSSL
+#include <openssl/err.h>
+#include <openssl/evp.h>
+#endif
 #include <stdlib.h>
+#if HAVE_PTHREAD
+#include <pthread.h>
+static pthread_once_t noise_is_initialized = PTHREAD_ONCE_INIT;
+#endif
 
 /**
  * \file util.h
@@ -41,6 +50,18 @@ typedef crypto_hash_sha256_state sha256_context_t;
  * \file util.c
  * \brief Utility function implementation
  */
+
+void noise_init_helper(void)
+{
+#if USE_LIBSODIUM
+    if (sodium_init() < 0)
+        return;
+#endif
+#if USE_OPENSSL
+    OpenSSL_add_all_algorithms();
+    ERR_load_crypto_strings();
+#endif
+}
 
 /**
  * \defgroup utils Utilities
@@ -53,6 +74,27 @@ typedef crypto_hash_sha256_state sha256_context_t;
  * hopefully not optimize away like it might optimize memset().
  */
 /**@{*/
+
+/**
+ * \fn noise_init()
+ * \brief Initializes the Noise-c library.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ *
+ * This will initialize the underlying crypto libraries.
+ * You don't need to call this if you initialize the crypto libraries (eg. libsodium, OpenSSL) yourself.
+ */
+int noise_init(void)
+{
+#if HAVE_PTHREAD
+    if (pthread_once(&noise_is_initialized, noise_init_helper) != 0)
+        return NOISE_ERROR_SYSTEM;
+#else
+    noise_init_helper();
+#endif
+
+    return NOISE_ERROR_NONE;
+}
 
 /**
  * \def noise_new(type)

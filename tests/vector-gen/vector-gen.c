@@ -1123,6 +1123,11 @@ static void hybrid_patterns(int with_ssk)
 
 int main(int argc, char *argv[])
 {
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     int with_ssk = 0;
     int with_fallback = 0;
     int with_hybrid = 0;

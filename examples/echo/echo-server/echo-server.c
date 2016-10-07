@@ -346,6 +346,11 @@ int main(int argc, char *argv[])
     if (!parse_options(argc, argv))
         return 1;
 
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     /* Change into the key directory and load all of the keys we'll need */
     if (chdir(key_dir) < 0) {
         perror(key_dir);

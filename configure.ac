@@ -1,6 +1,7 @@
 
 AC_INIT([noise-c], [0.0.1])
 AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
 AC_PROG_CC_STDC
@@ -36,6 +37,8 @@ AC_CHECK_LIB(ws2_32, [_head_lib32_libws2_32_a])
 AC_CHECK_LIB(ws2_32, [_head_lib64_libws2_32_a])
 
 AC_CHECK_FUNCS([poll])
+
+AX_PTHREAD
 
 AC_SUBST([WARNING_FLAGS],[-Wall])
 AC_SUBST([GOLDILOCKS_ARCH],[$with_ed448_arch])
