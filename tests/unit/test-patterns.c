@@ -43,33 +43,30 @@ static uint8_t next_token(const char **pattern)
     }
 
     /* Recognize the next token */
-    if (!strncmp(pat, "s", 1)) {
-        pat += 1;
-        token = NOISE_TOKEN_S;
+    if (!strncmp(pat, "ee", 2)) {
+        pat += 2;
+        token = NOISE_TOKEN_EE;
+    } else if (!strncmp(pat, "es", 2)) {
+        pat += 2;
+        token = NOISE_TOKEN_ES;
+    } else if (!strncmp(pat, "se", 2)) {
+        pat += 2;
+        token = NOISE_TOKEN_SE;
     } else if (!strncmp(pat, "e", 1)) {
         pat += 1;
         token = NOISE_TOKEN_E;
-    } else if (!strncmp(pat, "dhee", 4)) {
-        pat += 4;
-        token = NOISE_TOKEN_DHEE;
-    } else if (!strncmp(pat, "dhes", 4)) {
-        pat += 4;
-        token = NOISE_TOKEN_DHES;
-    } else if (!strncmp(pat, "dhse", 4)) {
-        pat += 4;
-        token = NOISE_TOKEN_DHSE;
-    } else if (!strncmp(pat, "dhss", 4)) {
-        pat += 4;
-        token = NOISE_TOKEN_DHSS;
-    } else if (!strncmp(pat, "fg", 2)) {
+    } else if (!strncmp(pat, "ss", 2)) {
         pat += 2;
-        token = NOISE_TOKEN_FG;
+        token = NOISE_TOKEN_SS;
+    } else if (!strncmp(pat, "s", 1)) {
+        pat += 1;
+        token = NOISE_TOKEN_S;
+    } else if (!strncmp(pat, "ff", 2)) {
+        pat += 2;
+        token = NOISE_TOKEN_FF;
     } else if (!strncmp(pat, "f", 1)) {
         pat += 1;
         token = NOISE_TOKEN_F;
-    } else if (!strncmp(pat, "g", 1)) {
-        pat += 1;
-        token = NOISE_TOKEN_G;
     } else if (!strncmp(pat, "<-", 2)) {
         pat += 2;
         token = NOISE_TOKEN_LARROW;
@@ -121,13 +118,13 @@ static void check_for_collapse(int id)
             case NOISE_TOKEN_FLIP_DIR:
                 writing = !writing;
                 break;
-            case NOISE_TOKEN_DHEE:
+            case NOISE_TOKEN_EE:
                 if ((null_check & E_IS_NULL) == 0 &&
                         (null_check & RE_IS_NULL) == 0)
                     all_null = 0;
                 involved |= E_IS_NULL | RE_IS_NULL;
                 break;
-            case NOISE_TOKEN_DHES:
+            case NOISE_TOKEN_ES:
                 if (writing) {
                     if ((null_check & E_IS_NULL) == 0 &&
                             (null_check & RS_IS_NULL) == 0)
@@ -140,7 +137,7 @@ static void check_for_collapse(int id)
                     involved |= S_IS_NULL | RE_IS_NULL;
                 }
                 break;
-            case NOISE_TOKEN_DHSE:
+            case NOISE_TOKEN_SE:
                 if (writing) {
                     if ((null_check & S_IS_NULL) == 0 &&
                             (null_check & RE_IS_NULL) == 0)
@@ -153,7 +150,7 @@ static void check_for_collapse(int id)
                     involved |= E_IS_NULL | RS_IS_NULL;
                 }
                 break;
-            case NOISE_TOKEN_DHSS:
+            case NOISE_TOKEN_SS:
                 if ((null_check & S_IS_NULL) == 0 &&
                         (null_check & RS_IS_NULL) == 0)
                     all_null = 0;
@@ -273,40 +270,29 @@ static void check_pattern(int id, const char *name, const char *required,
                     else
                         seen_flags |= NOISE_PAT_FLAG_REMOTE_EPHEMERAL;
                     break;
-                case NOISE_TOKEN_DHEE:
+                case NOISE_TOKEN_EE:
                     verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL);
                     verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL);
                     break;
-                case NOISE_TOKEN_DHES:
-                    if (role == NOISE_ROLE_INITIATOR) {
-                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL);
-                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_STATIC);
-                    } else {
-                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_STATIC);
-                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL);
-                    }
+                case NOISE_TOKEN_ES:
+                    verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL);
+                    verify(seen_flags & NOISE_PAT_FLAG_REMOTE_STATIC);
                     break;
-                case NOISE_TOKEN_DHSE:
-                    if (role == NOISE_ROLE_INITIATOR) {
-                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_STATIC);
-                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL);
-                    } else {
-                        verify(seen_flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL);
-                        verify(seen_flags & NOISE_PAT_FLAG_REMOTE_STATIC);
-                    }
+                case NOISE_TOKEN_SE:
+                    verify(seen_flags & NOISE_PAT_FLAG_LOCAL_STATIC);
+                    verify(seen_flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL);
                     break;
-                case NOISE_TOKEN_DHSS:
+                case NOISE_TOKEN_SS:
                     verify(seen_flags & NOISE_PAT_FLAG_LOCAL_STATIC);
                     verify(seen_flags & NOISE_PAT_FLAG_REMOTE_STATIC);
                     break;
                 case NOISE_TOKEN_F:
-                case NOISE_TOKEN_G:
                     if (role == NOISE_ROLE_INITIATOR)
                         seen_flags |= NOISE_PAT_FLAG_LOCAL_HYBRID;
                     else
                         seen_flags |= NOISE_PAT_FLAG_REMOTE_HYBRID;
                     break;
-                case NOISE_TOKEN_FG:
+                case NOISE_TOKEN_FF:
                     verify(seen_flags & NOISE_PAT_FLAG_LOCAL_HYBRID);
                     verify(seen_flags & NOISE_PAT_FLAG_REMOTE_HYBRID);
                     break;
@@ -332,247 +318,247 @@ void test_patterns(void)
     check_pattern(NOISE_PATTERN_N,
                   "Noise_N(rs)",
                   "<- s\n",
-                  "-> e, dhes\n");
+                  "-> e, es\n");
 
     check_pattern(NOISE_PATTERN_X,
                   "Noise_X(s, rs)",
                   "<- s\n",
-                  "-> e, dhes, s, dhss\n");
+                  "-> e, es, s, ss\n");
 
     check_pattern(NOISE_PATTERN_K,
                   "Noise_K(s, rs)",
                   "-> s\n"
                   "<- s\n",
-                  "-> e, dhes, dhss\n");
+                  "-> e, es, ss\n");
 
     check_pattern(NOISE_PATTERN_NN,
                   "Noise_NN()",
                   "",
                   "-> e\n"
-                  "<- e, dhee\n");
+                  "<- e, ee\n");
 
     check_pattern(NOISE_PATTERN_NK,
                   "Noise_NK(rs)",
                   "<- s\n",
-                  "-> e, dhes\n"
-                  "<- e, dhee\n");
+                  "-> e, es\n"
+                  "<- e, ee\n");
 
     check_pattern(NOISE_PATTERN_NX,
                   "Noise_NX(rs)",
                   "",
                   "-> e\n"
-                  "<- e, dhee, s, dhse\n");
+                  "<- e, ee, s, es\n");
 
     check_pattern(NOISE_PATTERN_XN,
                   "Noise_XN(s)",
                   "",
                   "-> e\n"
-                  "<- e, dhee\n"
-                  "-> s, dhse\n");
+                  "<- e, ee\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_XK,
                   "Noise_XK(s, rs)",
                   "<- s\n",
-                  "-> e, dhes\n"
-                  "<- e, dhee\n"
-                  "-> s, dhse\n");
+                  "-> e, es\n"
+                  "<- e, ee\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_XX,
                   "Noise_XX(s, rs)",
                   "",
                   "-> e\n"
-                  "<- e, dhee, s, dhse\n"
-                  "-> s, dhse\n");
+                  "<- e, ee, s, es\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_KN,
                   "Noise_KN(s)",
                   "-> s\n",
                   "-> e\n"
-                  "<- e, dhee, dhes\n");
+                  "<- e, ee, se\n");
 
     check_pattern(NOISE_PATTERN_KK,
                   "Noise_KK(s, rs)",
                   "-> s\n"
                   "<- s\n",
-                  "-> e, dhes, dhss\n"
-                  "<- e, dhee, dhes\n");
+                  "-> e, es, ss\n"
+                  "<- e, ee, se\n");
 
     check_pattern(NOISE_PATTERN_KX,
                   "Noise_KX(s, rs)",
                   "-> s\n",
                   "-> e\n"
-                  "<- e, dhee, dhes, s, dhse\n");
+                  "<- e, ee, se, s, es\n");
 
     check_pattern(NOISE_PATTERN_IN,
                   "Noise_IN(s)",
                   "",
                   "-> e, s\n"
-                  "<- e, dhee, dhes\n");
+                  "<- e, ee, se\n");
 
     check_pattern(NOISE_PATTERN_IK,
                   "Noise_IK(s, rs)",
                   "<- s\n",
-                  "-> e, dhes, s, dhss\n"
-                  "<- e, dhee, dhes\n");
+                  "-> e, es, s, ss\n"
+                  "<- e, ee, se\n");
 
     check_pattern(NOISE_PATTERN_IX,
                   "Noise_IX(s, rs)",
                   "",
                   "-> e, s\n"
-                  "<- e, dhee, dhes, s, dhse\n");
+                  "<- e, ee, se, s, es\n");
 
     check_pattern(NOISE_PATTERN_XX_FALLBACK,
                   "Noise_XXfallback(s, rs, re)",
                   "<- e\n",
-                  "-> e, dhee, s, dhse\n"
-                  "<- s, dhse\n");
+                  "-> e, ee, s, se\n"
+                  "<- s, es\n");
 
     check_pattern(NOISE_PATTERN_X_NOIDH,
                   "Noise_Xnoidh(s, rs)",
                   "<- s\n",
-                  "-> e, s, dhes, dhss\n");
+                  "-> e, s, es, ss\n");
 
     check_pattern(NOISE_PATTERN_NX_NOIDH,
                   "Noise_NXnoidh(rs)",
                   "",
                   "-> e\n"
-                  "<- e, s, dhee, dhse\n");
+                  "<- e, s, ee, es\n");
 
     check_pattern(NOISE_PATTERN_XX_NOIDH,
                   "Noise_XXnoidh(s, rs)",
                   "",
                   "-> e\n"
-                  "<- e, s, dhee, dhse\n"
-                  "-> s, dhse\n");
+                  "<- e, s, ee, es\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_KX_NOIDH,
                   "Noise_KXnoidh(s, rs)",
                   "-> s\n",
                   "-> e\n"
-                  "<- e, s, dhee, dhes, dhse\n");
+                  "<- e, s, ee, se, es\n");
 
     check_pattern(NOISE_PATTERN_IK_NOIDH,
                   "Noise_IKnoidh(s, rs)",
                   "<- s\n",
-                  "-> e, s, dhes, dhss\n"
-                  "<- e, dhee, dhes\n");
+                  "-> e, s, es, ss\n"
+                  "<- e, ee, se\n");
 
     check_pattern(NOISE_PATTERN_IX_NOIDH,
                   "Noise_IXnoidh(s, rs)",
                   "",
                   "-> e, s\n"
-                  "<- e, s, dhee, dhes, dhse\n");
+                  "<- e, s, ee, se, es\n");
 
     check_pattern(NOISE_PATTERN_NN_HFS,
                   "Noise_NNhfs()",
                   "",
                   "-> e, f\n"
-                  "<- e, g, dhee, fg\n");
+                  "<- e, f, ee, ff\n");
 
     check_pattern(NOISE_PATTERN_NK_HFS,
                   "Noise_NKhfs(rs)",
                   "<- s\n",
-                  "-> e, f, dhes\n"
-                  "<- e, g, dhee, fg\n");
+                  "-> e, f, es\n"
+                  "<- e, f, ee, ff\n");
 
     check_pattern(NOISE_PATTERN_NX_HFS,
                   "Noise_NXhfs(rs)",
                   "",
                   "-> e, f\n"
-                  "<- e, g, dhee, fg, s, dhse\n");
+                  "<- e, f, ee, ff, s, es\n");
 
     check_pattern(NOISE_PATTERN_XN_HFS,
                   "Noise_XNhfs(s)",
                   "",
                   "-> e, f\n"
-                  "<- e, g, dhee, fg\n"
-                  "-> s, dhse\n");
+                  "<- e, f, ee, ff\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_XK_HFS,
                   "Noise_XKhfs(s, rs)",
                   "<- s\n",
-                  "-> e, f, dhes\n"
-                  "<- e, g, dhee, fg\n"
-                  "-> s, dhse\n");
+                  "-> e, f, es\n"
+                  "<- e, f, ee, ff\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_XX_HFS,
                   "Noise_XXhfs(s, rs)",
                   "",
                   "-> e, f\n"
-                  "<- e, g, dhee, fg, s, dhse\n"
-                  "-> s, dhse\n");
+                  "<- e, f, ee, ff, s, es\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_KN_HFS,
                   "Noise_KNhfs(s)",
                   "-> s\n",
                   "-> e, f\n"
-                  "<- e, g, dhee, fg, dhes\n");
+                  "<- e, f, ee, ff, se\n");
 
     check_pattern(NOISE_PATTERN_KK_HFS,
                   "Noise_KKhfs(s, rs)",
                   "-> s\n"
                   "<- s\n",
-                  "-> e, f, dhes, dhss\n"
-                  "<- e, g, dhee, fg, dhes\n");
+                  "-> e, f, es, ss\n"
+                  "<- e, f, ee, ff, se\n");
 
     check_pattern(NOISE_PATTERN_KX_HFS,
                   "Noise_KXhfs(s, rs)",
                   "-> s\n",
                   "-> e, f\n"
-                  "<- e, g, dhee, fg, dhes, s, dhse\n");
+                  "<- e, f, ee, ff, se, s, es\n");
 
     check_pattern(NOISE_PATTERN_IN_HFS,
                   "Noise_INhfs(s)",
                   "",
                   "-> e, f, s\n"
-                  "<- e, g, dhee, fg, dhes\n");
+                  "<- e, f, ee, ff, se\n");
 
     check_pattern(NOISE_PATTERN_IK_HFS,
                   "Noise_IKhfs(s, rs)",
                   "<- s\n",
-                  "-> e, f, dhes, s, dhss\n"
-                  "<- e, g, dhee, fg, dhes\n");
+                  "-> e, f, es, s, ss\n"
+                  "<- e, f, ee, ff, se\n");
 
     check_pattern(NOISE_PATTERN_IX_HFS,
                   "Noise_IXhfs(s, rs)",
                   "",
                   "-> e, f, s\n"
-                  "<- e, g, dhee, fg, dhes, s, dhse\n");
+                  "<- e, f, ee, ff, se, s, es\n");
 
     check_pattern(NOISE_PATTERN_XX_FALLBACK_HFS,
                   "Noise_XXfallback+hfs(s, rs, re)",
                   "<- e, f\n",
-                  "-> e, g, dhee, fg, s, dhse\n"
-                  "<- s, dhse\n");
+                  "-> e, f, ee, ff, s, se\n"
+                  "<- s, es\n");
 
     check_pattern(NOISE_PATTERN_NX_NOIDH_HFS,
                   "Noise_NXnoidh+hfs(rs)",
                   "",
                   "-> e, f\n"
-                  "<- e, g, s, dhee, fg, dhse\n");
+                  "<- e, f, s, ee, ff, es\n");
 
     check_pattern(NOISE_PATTERN_XX_NOIDH_HFS,
                   "Noise_XXnoidh+hfs(s, rs)",
                   "",
                   "-> e, f\n"
-                  "<- e, g, s, dhee, fg, dhse\n"
-                  "-> s, dhse\n");
+                  "<- e, f, s, ee, ff, es\n"
+                  "-> s, se\n");
 
     check_pattern(NOISE_PATTERN_KX_NOIDH_HFS,
                   "Noise_KXnoidh+hfs(s, rs)",
                   "-> s\n",
                   "-> e, f\n"
-                  "<- e, g, s, dhee, fg, dhes, dhse\n");
+                  "<- e, f, s, ee, ff, se, es\n");
 
     check_pattern(NOISE_PATTERN_IK_NOIDH_HFS,
                   "Noise_IKnoidh+hfs(s, rs)",
                   "<- s\n",
-                  "-> e, f, s, dhes, dhss\n"
-                  "<- e, g, dhee, fg, dhes\n");
+                  "-> e, f, s, es, ss\n"
+                  "<- e, f, ee, ff, se\n");
 
     check_pattern(NOISE_PATTERN_IX_NOIDH_HFS,
                   "Noise_IXnoidh+hfs(s, rs)",
                   "",
                   "-> e, f, s\n"
-                  "<- e, g, s, dhee, fg, dhes, dhse\n");
+                  "<- e, f, s, ee, ff, se, es\n");
 }

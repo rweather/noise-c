@@ -1231,37 +1231,49 @@ static int noise_handshakestate_write
             if (err != NOISE_ERROR_NONE)
                 break;
             break;
-        case NOISE_TOKEN_DHEE:
-            /* DH operation with local and remote ephemeral keys */
+        case NOISE_TOKEN_EE:
+            /* DH operation with initiator and responder ephemeral keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
             break;
-        case NOISE_TOKEN_DHES:
-            /* DH operation with local ephemeral and remote static keys */
-            err = noise_handshake_mix_dh
-                (state, state->dh_local_ephemeral, state->dh_remote_static);
+        case NOISE_TOKEN_ES:
+            /* DH operation with initiator ephemeral and responder static keys */
+            if (state->role == NOISE_ROLE_INITIATOR) {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_ephemeral, state->dh_remote_static);
+            } else {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_static, state->dh_remote_ephemeral);
+            }
             break;
-        case NOISE_TOKEN_DHSE:
-            /* DH operation with local static and remote ephemeral keys */
-            err = noise_handshake_mix_dh
-                (state, state->dh_local_static, state->dh_remote_ephemeral);
+        case NOISE_TOKEN_SE:
+            /* DH operation with initiator static and responder ephemeral keys */
+            if (state->role == NOISE_ROLE_INITIATOR) {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_static, state->dh_remote_ephemeral);
+            } else {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_ephemeral, state->dh_remote_static);
+            }
             break;
-        case NOISE_TOKEN_DHSS:
-            /* DH operation with local and remote static keys */
+        case NOISE_TOKEN_SS:
+            /* DH operation with initiator and responder static keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_static, state->dh_remote_static);
             break;
         case NOISE_TOKEN_F:
-        case NOISE_TOKEN_G:
             /* Generate a local hybrid keypair and add the encrypted public
                key to the message.  If we are running fixed vector tests,
                then the hybrid key may have already been provided. */
-            if (!state->dh_local_hybrid)
+            if (!state->dh_local_hybrid || !state->dh_remote_hybrid)
                 return NOISE_ERROR_INVALID_STATE;
-            noise_dhstate_set_role
-                (state->dh_local_hybrid,
-                 token == NOISE_TOKEN_F ? NOISE_ROLE_INITIATOR
-                                        : NOISE_ROLE_RESPONDER);
+            if (state->dh_remote_hybrid->key_type == NOISE_KEY_TYPE_NO_KEY) {
+                noise_dhstate_set_role
+                    (state->dh_local_hybrid, NOISE_ROLE_INITIATOR);
+            } else {
+                noise_dhstate_set_role
+                    (state->dh_local_hybrid, NOISE_ROLE_RESPONDER);
+            }
             if (!state->dh_fixed_hybrid) {
                 err = noise_dhstate_generate_dependent_keypair
                     (state->dh_local_hybrid, state->dh_remote_hybrid);
@@ -1286,7 +1298,7 @@ static int noise_handshakestate_write
             if (err != NOISE_ERROR_NONE)
                 break;
             break;
-        case NOISE_TOKEN_FG:
+        case NOISE_TOKEN_FF:
             /* DH operation with local and remote hybrid keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_hybrid, state->dh_remote_hybrid);
@@ -1491,35 +1503,47 @@ static int noise_handshakestate_read
             msg.size -= len;
             msg.max_size -= len;
             break;
-        case NOISE_TOKEN_DHEE:
-            /* DH operation with local and remote ephemeral keys */
+        case NOISE_TOKEN_EE:
+            /* DH operation with initiator and responder ephemeral keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
             break;
-        case NOISE_TOKEN_DHES:
-            /* DH operation with remote ephemeral and local static keys */
-            err = noise_handshake_mix_dh
-                (state, state->dh_local_static, state->dh_remote_ephemeral);
+        case NOISE_TOKEN_ES:
+            /* DH operation with initiator ephemeral and responder static keys */
+            if (state->role == NOISE_ROLE_INITIATOR) {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_ephemeral, state->dh_remote_static);
+            } else {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_static, state->dh_remote_ephemeral);
+            }
             break;
-        case NOISE_TOKEN_DHSE:
-            /* DH operation with remote static and local ephemeral keys */
-            err = noise_handshake_mix_dh
-                (state, state->dh_local_ephemeral, state->dh_remote_static);
+        case NOISE_TOKEN_SE:
+            /* DH operation with initiator static and responder ephemeral keys */
+            if (state->role == NOISE_ROLE_INITIATOR) {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_static, state->dh_remote_ephemeral);
+            } else {
+                err = noise_handshake_mix_dh
+                    (state, state->dh_local_ephemeral, state->dh_remote_static);
+            }
             break;
-        case NOISE_TOKEN_DHSS:
-            /* DH operation with local and remote static keys */
+        case NOISE_TOKEN_SS:
+            /* DH operation with initiator and responder static keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_static, state->dh_remote_static);
             break;
         case NOISE_TOKEN_F:
-        case NOISE_TOKEN_G:
             /* Decrypt and save the remote hybrid key */
-            if (!state->dh_remote_hybrid)
+            if (!state->dh_local_hybrid || !state->dh_remote_hybrid)
                 return NOISE_ERROR_INVALID_STATE;
-            noise_dhstate_set_role
-                (state->dh_remote_hybrid,
-                 token == NOISE_TOKEN_F ? NOISE_ROLE_INITIATOR
-                                        : NOISE_ROLE_RESPONDER);
+            if (state->dh_local_hybrid->key_type == NOISE_KEY_TYPE_NO_KEY) {
+                noise_dhstate_set_role
+                    (state->dh_remote_hybrid, NOISE_ROLE_INITIATOR);
+            } else {
+                noise_dhstate_set_role
+                    (state->dh_remote_hybrid, NOISE_ROLE_RESPONDER);
+            }
             mac_len = noise_symmetricstate_get_mac_length(state->symmetric);
             len = state->dh_remote_hybrid->public_key_len + mac_len;
             if (msg.size < len)
@@ -1547,7 +1571,7 @@ static int noise_handshakestate_read
                 break;
             }
             break;
-        case NOISE_TOKEN_FG:
+        case NOISE_TOKEN_FF:
             /* DH operation with local and remote hybrid keys */
             err = noise_handshake_mix_dh
                 (state, state->dh_local_hybrid, state->dh_remote_hybrid);

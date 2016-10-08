@@ -38,7 +38,7 @@
  * Noise_N(rs):
  *   <- s
  *   ...
- *   -> e, dhes
+ *   -> e, es
  * @endcode
  */
 static uint8_t const noise_pattern_N[] = {
@@ -49,7 +49,7 @@ static uint8_t const noise_pattern_N[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -61,7 +61,7 @@ static uint8_t const noise_pattern_N[] = {
  *   -> s
  *   <- s
  *   ...
- *   -> e, dhes, dhss
+ *   -> e, es, ss
  * @endcode
  */
 static uint8_t const noise_pattern_K[] = {
@@ -74,8 +74,8 @@ static uint8_t const noise_pattern_K[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_ES,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_END
 };
 
@@ -86,7 +86,7 @@ static uint8_t const noise_pattern_K[] = {
  * Noise_X(s, rs):
  *   <- s
  *   ...
- *   -> e, dhes, s, dhss
+ *   -> e, es, s, ss
  * @endcode
  */
 static uint8_t const noise_pattern_X[] = {
@@ -98,9 +98,9 @@ static uint8_t const noise_pattern_X[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_END
 };
 
@@ -110,7 +110,7 @@ static uint8_t const noise_pattern_X[] = {
  * @code
  * Noise_NN():
  *   -> e
- *   <- e, dhee
+ *   <- e, ee
  * @endcode
  */
 static uint8_t const noise_pattern_NN[] = {
@@ -122,7 +122,7 @@ static uint8_t const noise_pattern_NN[] = {
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_EE,
     NOISE_TOKEN_END
 };
 
@@ -133,8 +133,8 @@ static uint8_t const noise_pattern_NN[] = {
  * Noise_NK(rs):
  *   <- s
  *   ...
- *   -> e, dhes
- *   <- e, dhee
+ *   -> e, es
+ *   <- e, ee
  * @endcode
  */
 static uint8_t const noise_pattern_NK[] = {
@@ -146,10 +146,10 @@ static uint8_t const noise_pattern_NK[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_EE,
     NOISE_TOKEN_END
 };
 
@@ -159,7 +159,7 @@ static uint8_t const noise_pattern_NK[] = {
  * @code
  * Noise_NX(rs):
  *   -> e
- *   <- e, dhee, s, dhse
+ *   <- e, ee, s, es
  * @endcode
  */
 static uint8_t const noise_pattern_NX[] = {
@@ -172,9 +172,9 @@ static uint8_t const noise_pattern_NX[] = {
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_EE,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -184,8 +184,8 @@ static uint8_t const noise_pattern_NX[] = {
  * @code
  * Noise_XN(s):
  *   -> e
- *   <- e, dhee
- *   -> s, dhse
+ *   <- e, ee
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XN[] = {
@@ -198,10 +198,10 @@ static uint8_t const noise_pattern_XN[] = {
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_EE,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -212,9 +212,9 @@ static uint8_t const noise_pattern_XN[] = {
  * Noise_XK(s, rs):
  *   <- s
  *   ...
- *   -> e, dhes
- *   <- e, dhee
- *   -> s, dhse
+ *   -> e, es
+ *   <- e, ee
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XK[] = {
@@ -227,13 +227,13 @@ static uint8_t const noise_pattern_XK[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_EE,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -243,8 +243,8 @@ static uint8_t const noise_pattern_XK[] = {
  * @code
  * Noise_XX(s, rs):
  *   -> e
- *   <- e, dhee, s, dhse
- *   -> s, dhse
+ *   <- e, ee, s, es
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XX[] = {
@@ -258,12 +258,12 @@ static uint8_t const noise_pattern_XX[] = {
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_EE,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -275,7 +275,7 @@ static uint8_t const noise_pattern_XX[] = {
  *   -> s
  *   ...
  *   -> e
- *   <- e, dhee, dhes
+ *   <- e, ee, se
  * @endcode
  */
 static uint8_t const noise_pattern_KN[] = {
@@ -289,8 +289,8 @@ static uint8_t const noise_pattern_KN[] = {
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -302,8 +302,8 @@ static uint8_t const noise_pattern_KN[] = {
  *   -> s
  *   <- s
  *   ...
- *   -> e, dhes, dhss
- *   <- e, dhee, dhes
+ *   -> e, es, ss
+ *   <- e, ee, se
  * @endcode
  */
 static uint8_t const noise_pattern_KK[] = {
@@ -317,12 +317,12 @@ static uint8_t const noise_pattern_KK[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_ES,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -334,7 +334,7 @@ static uint8_t const noise_pattern_KK[] = {
  *   -> s
  *   ...
  *   -> e
- *   <- e, dhee, dhes, s, dhse
+ *   <- e, ee, se, s, es
  * @endcode
  */
 static uint8_t const noise_pattern_KX[] = {
@@ -349,10 +349,10 @@ static uint8_t const noise_pattern_KX[] = {
     NOISE_TOKEN_E,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -362,7 +362,7 @@ static uint8_t const noise_pattern_KX[] = {
  * @code
  * Noise_IN(s):
  *   -> e, s
- *   <- e, dhee, dhes
+ *   <- e, ee, se
  * @endcode
  */
 static uint8_t const noise_pattern_IN[] = {
@@ -376,8 +376,8 @@ static uint8_t const noise_pattern_IN[] = {
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -388,8 +388,8 @@ static uint8_t const noise_pattern_IN[] = {
  * Noise_IK(s, rs):
  *   <- s
  *   ...
- *   -> e, dhes, s, dhss
- *   <- e, dhee, dhes
+ *   -> e, es, s, ss
+ *   <- e, ee, se
  * @endcode
  */
 static uint8_t const noise_pattern_IK[] = {
@@ -402,13 +402,13 @@ static uint8_t const noise_pattern_IK[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -418,7 +418,7 @@ static uint8_t const noise_pattern_IK[] = {
  * @code
  * Noise_IX(s, rs):
  *   -> e, s
- *   <- e, dhee, dhes, s, dhse
+ *   <- e, ee, se, s, es
  * @endcode
  */
 static uint8_t const noise_pattern_IX[] = {
@@ -433,10 +433,10 @@ static uint8_t const noise_pattern_IX[] = {
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -447,8 +447,8 @@ static uint8_t const noise_pattern_IX[] = {
  * Noise_XXfallback(s, rs, re):
  *   <- e
  *   ...
- *   -> e, dhee, s, dhse
- *   <- s, dhse
+ *   -> e, ee, s, se
+ *   <- s, es
  * @endcode
  */
 static uint8_t const noise_pattern_XXfallback[] = {
@@ -461,12 +461,12 @@ static uint8_t const noise_pattern_XXfallback[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
+    NOISE_TOKEN_EE,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -477,7 +477,7 @@ static uint8_t const noise_pattern_XXfallback[] = {
  * Noise_Xnoidh(s, rs):
  *   <- s
  *   ...
- *   -> e, s, dhes, dhss
+ *   -> e, s, es, ss
  * @endcode
  */
 static uint8_t const noise_pattern_Xnoidh[] = {
@@ -490,8 +490,8 @@ static uint8_t const noise_pattern_Xnoidh[] = {
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_ES,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_END
 };
 
@@ -501,7 +501,7 @@ static uint8_t const noise_pattern_Xnoidh[] = {
  * @code
  * Noise_NXnoidh(rs):
  *   -> e
- *   <- e, s, dhee, dhse
+ *   <- e, s, ee, es
  * @endcode
  */
 static uint8_t const noise_pattern_NXnoidh[] = {
@@ -515,8 +515,8 @@ static uint8_t const noise_pattern_NXnoidh[] = {
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -526,8 +526,8 @@ static uint8_t const noise_pattern_NXnoidh[] = {
  * @code
  * Noise_XXnoidh(s, rs):
  *   -> e
- *   <- e, s, dhee, dhse
- *   -> s, dhse
+ *   <- e, s, ee, es
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XXnoidh[] = {
@@ -542,11 +542,11 @@ static uint8_t const noise_pattern_XXnoidh[] = {
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -558,7 +558,7 @@ static uint8_t const noise_pattern_XXnoidh[] = {
  *   -> s
  *   ...
  *   -> e
- *   <- e, s, dhee, dhes, dhse
+ *   <- e, s, ee, se, es
  * @endcode
  */
 static uint8_t const noise_pattern_KXnoidh[] = {
@@ -574,9 +574,9 @@ static uint8_t const noise_pattern_KXnoidh[] = {
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -587,8 +587,8 @@ static uint8_t const noise_pattern_KXnoidh[] = {
  * Noise_IKnoidh(s, rs):
  *   <- s
  *   ...
- *   -> e, s, dhes, dhss
- *   <- e, dhee, dhes
+ *   -> e, s, es, ss
+ *   <- e, ee, se
  * @endcode
  */
 static uint8_t const noise_pattern_IKnoidh[] = {
@@ -602,12 +602,12 @@ static uint8_t const noise_pattern_IKnoidh[] = {
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_ES,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -617,7 +617,7 @@ static uint8_t const noise_pattern_IKnoidh[] = {
  * @code
  * Noise_IXnoidh(s, rs):
  *   -> e, s
- *   <- e, s, dhee, dhes, dhse
+ *   <- e, s, ee, se, es
  * @endcode
  */
 static uint8_t const noise_pattern_IXnoidh[] = {
@@ -633,9 +633,9 @@ static uint8_t const noise_pattern_IXnoidh[] = {
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_SE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -645,7 +645,7 @@ static uint8_t const noise_pattern_IXnoidh[] = {
  * @code
  * Noise_NNhfs():
  *   -> e, f
- *   <- e, g, dhee, fg
+ *   <- e, f, ee, ff
  * @endcode
  */
 static uint8_t const noise_pattern_NNhfs[] = {
@@ -660,9 +660,9 @@ static uint8_t const noise_pattern_NNhfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
     NOISE_TOKEN_END
 };
 
@@ -673,8 +673,8 @@ static uint8_t const noise_pattern_NNhfs[] = {
  * Noise_NKhfs(rs):
  *   <- s
  *   ...
- *   -> e, f, dhes
- *   <- e, g, dhee, fg
+ *   -> e, f, es
+ *   <- e, f, ee, ff
  * @endcode
  */
 static uint8_t const noise_pattern_NKhfs[] = {
@@ -689,12 +689,12 @@ static uint8_t const noise_pattern_NKhfs[] = {
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_F,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
     NOISE_TOKEN_END
 };
 
@@ -704,7 +704,7 @@ static uint8_t const noise_pattern_NKhfs[] = {
  * @code
  * Noise_NXhfs(rs):
  *   -> e, f
- *   <- e, g, dhee, fg, s, dhse
+ *   <- e, f, ee, ff, s, es
  * @endcode
  */
 static uint8_t const noise_pattern_NXhfs[] = {
@@ -720,11 +720,11 @@ static uint8_t const noise_pattern_NXhfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -734,8 +734,8 @@ static uint8_t const noise_pattern_NXhfs[] = {
  * @code
  * Noise_XNhfs(s):
  *   -> e, f
- *   <- e, g, dhee, fg
- *   -> s, dhse
+ *   <- e, f, ee, ff
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XNhfs[] = {
@@ -751,12 +751,12 @@ static uint8_t const noise_pattern_XNhfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -767,9 +767,9 @@ static uint8_t const noise_pattern_XNhfs[] = {
  * Noise_XKhfs(s, rs):
  *   <- s
  *   ...
- *   -> e, f, dhes
- *   <- e, g, dhee, fg
- *   -> s, dhse
+ *   -> e, f, es
+ *   <- e, f, ee, ff
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XKhfs[] = {
@@ -785,15 +785,15 @@ static uint8_t const noise_pattern_XKhfs[] = {
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_F,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -803,8 +803,8 @@ static uint8_t const noise_pattern_XKhfs[] = {
  * @code
  * Noise_XXhfs(s, rs):
  *   -> e, f
- *   <- e, g, dhee, fg, s, dhse
- *   -> s, dhse
+ *   <- e, f, ee, ff, s, es
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XXhfs[] = {
@@ -821,14 +821,14 @@ static uint8_t const noise_pattern_XXhfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -840,7 +840,7 @@ static uint8_t const noise_pattern_XXhfs[] = {
  *   -> s
  *   ...
  *   -> e, f
- *   <- e, g, dhee, fg, dhes
+ *   <- e, f, ee, ff, se
  * @endcode
  */
 static uint8_t const noise_pattern_KNhfs[] = {
@@ -857,10 +857,10 @@ static uint8_t const noise_pattern_KNhfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -872,8 +872,8 @@ static uint8_t const noise_pattern_KNhfs[] = {
  *   -> s
  *   <- s
  *   ...
- *   -> e, f, dhes, dhss
- *   <- e, g, dhee, fg, dhes
+ *   -> e, f, es, ss
+ *   <- e, f, ee, ff, se
  * @endcode
  */
 static uint8_t const noise_pattern_KKhfs[] = {
@@ -890,14 +890,14 @@ static uint8_t const noise_pattern_KKhfs[] = {
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_F,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_ES,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -909,7 +909,7 @@ static uint8_t const noise_pattern_KKhfs[] = {
  *   -> s
  *   ...
  *   -> e, f
- *   <- e, g, dhee, fg, dhes, s, dhse
+ *   <- e, f, ee, ff, se, s, es
  * @endcode
  */
 static uint8_t const noise_pattern_KXhfs[] = {
@@ -927,12 +927,12 @@ static uint8_t const noise_pattern_KXhfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -942,7 +942,7 @@ static uint8_t const noise_pattern_KXhfs[] = {
  * @code
  * Noise_INhfs(s):
  *   -> e, f, s
- *   <- e, g, dhee, fg, dhes
+ *   <- e, f, ee, ff, se
  * @endcode
  */
 static uint8_t const noise_pattern_INhfs[] = {
@@ -959,10 +959,10 @@ static uint8_t const noise_pattern_INhfs[] = {
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -973,8 +973,8 @@ static uint8_t const noise_pattern_INhfs[] = {
  * Noise_IKhfs(s, rs):
  *   <- s
  *   ...
- *   -> e, f, dhes, s, dhss
- *   <- e, g, dhee, fg, dhes
+ *   -> e, f, es, s, ss
+ *   <- e, f, ee, ff, se
  * @endcode
  */
 static uint8_t const noise_pattern_IKhfs[] = {
@@ -990,15 +990,15 @@ static uint8_t const noise_pattern_IKhfs[] = {
 
     NOISE_TOKEN_E,
     NOISE_TOKEN_F,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -1008,7 +1008,7 @@ static uint8_t const noise_pattern_IKhfs[] = {
  * @code
  * Noise_IXhfs(s, rs):
  *   -> e, f, s
- *   <- e, g, dhee, fg, dhes, s, dhse
+ *   <- e, f, ee, ff, se, s, es
  * @endcode
  */
 static uint8_t const noise_pattern_IXhfs[] = {
@@ -1026,12 +1026,12 @@ static uint8_t const noise_pattern_IXhfs[] = {
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -1042,8 +1042,8 @@ static uint8_t const noise_pattern_IXhfs[] = {
  * Noise_XXfallback+hfs(s, rs, re):
  *   <- e, f
  *   ...
- *   -> e, g, dhee, fg, s, dhse
- *   <- s, dhse
+ *   -> e, f, ee, ff, s, se
+ *   <- s, es
  * @endcode
  */
 static uint8_t const noise_pattern_XXfallback_hfs[] = {
@@ -1059,14 +1059,14 @@ static uint8_t const noise_pattern_XXfallback_hfs[] = {
     ),
 
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -1076,7 +1076,7 @@ static uint8_t const noise_pattern_XXfallback_hfs[] = {
  * @code
  * Noise_NXnoidh+hfs(rs):
  *   -> e, f
- *   <- e, g, s, dhee, fg, dhse
+ *   <- e, f, s, ee, ff, es
  * @endcode
  */
 static uint8_t const noise_pattern_NXnoidh_hfs[] = {
@@ -1092,11 +1092,11 @@ static uint8_t const noise_pattern_NXnoidh_hfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
+    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -1106,8 +1106,8 @@ static uint8_t const noise_pattern_NXnoidh_hfs[] = {
  * @code
  * Noise_XXnoidh+hfs(s, rs):
  *   -> e, f
- *   <- e, g, s, dhee, fg, dhse
- *   -> s, dhse
+ *   <- e, f, s, ee, ff, es
+ *   -> s, se
  * @endcode
  */
 static uint8_t const noise_pattern_XXnoidh_hfs[] = {
@@ -1124,14 +1124,14 @@ static uint8_t const noise_pattern_XXnoidh_hfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
+    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -1143,7 +1143,7 @@ static uint8_t const noise_pattern_XXnoidh_hfs[] = {
  *   -> s
  *   ...
  *   -> e, f
- *   <- e, g, s, dhee, fg, dhes, dhse
+ *   <- e, f, s, ee, ff, se, es
  * @endcode
  */
 static uint8_t const noise_pattern_KXnoidh_hfs[] = {
@@ -1161,12 +1161,12 @@ static uint8_t const noise_pattern_KXnoidh_hfs[] = {
     NOISE_TOKEN_F,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
+    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 
@@ -1177,8 +1177,8 @@ static uint8_t const noise_pattern_KXnoidh_hfs[] = {
  * Noise_IKnoidh+hfs(s, rs):
  *   <- s
  *   ...
- *   -> e, f, s, dhes, dhss
- *   <- e, g, dhee, fg, dhes
+ *   -> e, f, s, es, ss
+ *   <- e, f, ee, ff, se
  * @endcode
  */
 static uint8_t const noise_pattern_IKnoidh_hfs[] = {
@@ -1195,14 +1195,14 @@ static uint8_t const noise_pattern_IKnoidh_hfs[] = {
     NOISE_TOKEN_E,
     NOISE_TOKEN_F,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSS,
+    NOISE_TOKEN_ES,
+    NOISE_TOKEN_SS,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
+    NOISE_TOKEN_F,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
     NOISE_TOKEN_END
 };
 
@@ -1212,7 +1212,7 @@ static uint8_t const noise_pattern_IKnoidh_hfs[] = {
  * @code
  * Noise_IXnoidh+hfs(s, rs):
  *   -> e, f, s
- *   <- e, g, s, dhee, fg, dhes, dhse
+ *   <- e, f, s, ee, ff, se, es
  * @endcode
  */
 static uint8_t const noise_pattern_IXnoidh_hfs[] = {
@@ -1230,12 +1230,12 @@ static uint8_t const noise_pattern_IXnoidh_hfs[] = {
     NOISE_TOKEN_S,
     NOISE_TOKEN_FLIP_DIR,
     NOISE_TOKEN_E,
-    NOISE_TOKEN_G,
+    NOISE_TOKEN_F,
     NOISE_TOKEN_S,
-    NOISE_TOKEN_DHEE,
-    NOISE_TOKEN_FG,
-    NOISE_TOKEN_DHES,
-    NOISE_TOKEN_DHSE,
+    NOISE_TOKEN_EE,
+    NOISE_TOKEN_FF,
+    NOISE_TOKEN_SE,
+    NOISE_TOKEN_ES,
     NOISE_TOKEN_END
 };
 

@@ -594,13 +594,12 @@ struct NoiseHandshakeState_s
 #define NOISE_TOKEN_END         0   /**< End of pattern, start data session */
 #define NOISE_TOKEN_S           1   /**< "s" token */
 #define NOISE_TOKEN_E           2   /**< "e" token */
-#define NOISE_TOKEN_DHEE        3   /**< "dhee" token */
-#define NOISE_TOKEN_DHES        4   /**< "dhes" token */
-#define NOISE_TOKEN_DHSE        5   /**< "dhse" token */
-#define NOISE_TOKEN_DHSS        6   /**< "dhss" token */
+#define NOISE_TOKEN_EE          3   /**< "ee" token */
+#define NOISE_TOKEN_ES          4   /**< "es" token */
+#define NOISE_TOKEN_SE          5   /**< "se" token */
+#define NOISE_TOKEN_SS          6   /**< "ss" token */
 #define NOISE_TOKEN_F           7   /**< "f" token (hybrid forward secrecy) */
-#define NOISE_TOKEN_G           8   /**< "g" token (hybrid forward secrecy) */
-#define NOISE_TOKEN_FG          9   /**< "fg" token (hybrid forward secrecy) */
+#define NOISE_TOKEN_FF          8   /**< "ff" token (hybrid forward secrecy) */
 #define NOISE_TOKEN_FLIP_DIR    255 /**< Flip the handshake direction */
 
 /** Pattern requires a local static keypair */
