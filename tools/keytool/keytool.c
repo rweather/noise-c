@@ -92,7 +92,7 @@ void report_error(const char *file, long line, int err)
 
 char *ask_for_passphrase(int confirm)
 {
-#if defined(__WIN32__) || defined(WIN32)
+#if defined(__WIN32__) || defined(WIN32) || defined(__ANDROID__)
     /* TODO */
     return 0;
 #else
