@@ -123,6 +123,16 @@ $ make
 $ make check
 \endcode
 
+The following parameters can be supplied to <tt>configure</tt> to select
+other crypto back ends:
+
+\li <tt>--with-libsodium</tt> - Use libsodium to provide crypto primitives,
+falling back to the reference back end where libsodium does not have an
+implementation.
+\li <tt>--with-openssl</tt> - Use the AESGCM implementation from OpenSSL.
+
+Both options can be combined to get the best of both worlds.
+
 \section todo TODO
 
 In no particular order:
