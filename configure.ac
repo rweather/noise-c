@@ -38,7 +38,9 @@ AC_CHECK_LIB(ws2_32, [_head_lib64_libws2_32_a])
 
 AC_CHECK_FUNCS([poll])
 
-AX_PTHREAD
+AX_PTHREAD([LIBS="$PTHREAD_LIBS $LIBS"
+    CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+    CC="$PTHREAD_CC"],[])
 
 AC_SUBST([WARNING_FLAGS],[-Wall])
 AC_SUBST([GOLDILOCKS_ARCH],[$with_ed448_arch])
@@ -71,7 +73,7 @@ AC_ARG_WITH([libsodium],
   [AS_HELP_STRING([--with-libsodium],
     [use libsodium for crypto @<:@default=check@:>@])],
   [],
-  [with_libsodium=check])
+  [with_libsodium=no])
 AS_CASE(["$with_libsodium"],
   [yes], [PKG_CHECK_MODULES([libsodium], [libsodium], [HAVE_LIBSODIUM=1])],
   [no], [HAVE_LIBSODIUM=0],
@@ -82,7 +84,7 @@ AC_ARG_WITH([openssl],
   [AS_HELP_STRING([--with-openssl],
     [use openssl for crypto @<:@default=check@:>@])],
   [],
-  [with_openssl=check])
+  [with_openssl=no])
 AS_CASE(["$with_openssl"],
   [yes], [PKG_CHECK_MODULES([openssl], [openssl], [HAVE_OPENSSL=1])],
   [no], [HAVE_OPENSSL=0],
