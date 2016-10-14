@@ -175,11 +175,3 @@ NoiseDHState *noise_newhope_new(void)
     state->parent.change_role = noise_newhope_change_role;
     return &(state->parent);
 }
-
-#if !USE_LIBSODIUM
-/* Implementation of random number generation needed by New Hope */
-void randombytes(unsigned char *x,unsigned long long xlen)
-{
-    noise_rand_bytes(x, (size_t)xlen);
-}
-#endif
