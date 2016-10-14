@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2016 Topology LP.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,33 +21,38 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_UTIL_H
-#define NOISE_UTIL_H
+#include "internal.h"
 
-#include <stddef.h>
-#include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
+#if USE_SODIUM
+NoiseCipherState *noise_aesgcm_new_sodium(void);
+#endif
+#if USE_OPENSSL
+NoiseCipherState *noise_aesgcm_new_openssl(void);
+#else
+NoiseCipherState *noise_aesgcm_new_ref(void);
 #endif
 
-int noise_init(void);
-
-#define noise_new(type) ((type *)noise_new_object(sizeof(type)))
-void *noise_new_object(size_t size);
-void noise_free(void *ptr, size_t size);
-
-void noise_clean(void *data, size_t size);
-
-int noise_is_equal(const void *s1, const void *s2, size_t size);
-int noise_is_zero(const void *data, size_t size);
-
-int noise_format_fingerprint
-    (int fingerprint_type, char *buffer, size_t len,
-     const uint8_t *public_key, size_t public_key_len);
-
-#ifdef __cplusplus
-};
+/**
+ * \brief Creates a new AES-GCM CipherState object.
+ *
+ * \return A NoiseCipherState for AES-GCM cipher use, or NULL if no such state is available.
+ */
+NoiseCipherState *noise_aesgcm_new(void)
+{
+    NoiseCipherState *state = 0;
+#if USE_SODIUM
+    if (crypto_aead_aes256gcm_is_available())
+        state = noise_aesgcm_new_sodium();
+#endif
+#if USE_OPENSSL
+    if (!state)
+        state = noise_aesgcm_new_openssl();
+#else
+    if (!state)
+        state = noise_aesgcm_new_ref();
 #endif
 
-#endif
+    return state;
+}
+
+

@@ -399,6 +399,11 @@ static void perf_sign_verify(int id)
 
 int main(int argc, char *argv[])
 {
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     /* Print the header */
     printf("Algorithm             MB/sec         MD5 units\n");
 

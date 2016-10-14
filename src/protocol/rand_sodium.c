@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
+ * Copyright (C) 2016 Topology LP.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -20,33 +21,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef NOISE_UTIL_H
-#define NOISE_UTIL_H
+#if USE_LIBSODIUM
+#include <sodium.h>
 
-#include <stddef.h>
-#include <stdint.h>
+/**
+ * \file rand_sodium.c
+ * \brief Generate random bytes using libsodium
+ */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/**
+ * \brief Gets cryptographically-strong random bytes from the operating system.
+ *
+ * \param bytes The buffer to fill with random bytes.
+ * \param size The number of random bytes to obtain.
+ *
+ * This function should not block waiting for entropy.
+ *
+ * \note Not part of the public API.
+ */
+void noise_rand_bytes(void *bytes, size_t size)
+{
+    randombytes_buf(bytes, size);
+}
 
-int noise_init(void);
-
-#define noise_new(type) ((type *)noise_new_object(sizeof(type)))
-void *noise_new_object(size_t size);
-void noise_free(void *ptr, size_t size);
-
-void noise_clean(void *data, size_t size);
-
-int noise_is_equal(const void *s1, const void *s2, size_t size);
-int noise_is_zero(const void *data, size_t size);
-
-int noise_format_fingerprint
-    (int fingerprint_type, char *buffer, size_t len,
-     const uint8_t *public_key, size_t public_key_len);
-
-#ifdef __cplusplus
-};
-#endif
 
 #endif

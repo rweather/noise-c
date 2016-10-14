@@ -24,3 +24,15 @@ LDADD = ../../src/keys/libnoisekeys.a \
 
 check-local:
 	./test-noise
+
+if USE_LIBSODIUM
+AM_CPPFLAGS += -DUSE_LIBSODIUM=1
+AM_CFLAGS += $(libsodium_CFLAGS)
+LDADD += $(libsodium_LIBS)
+endif
+
+if USE_OPENSSL
+AM_CPPFLAGS += -DUSE_OPENSSL=1
+AM_CFLAGS += $(openssl_CFLAGS)
+LDADD += $(openssl_LIBS)
+endif

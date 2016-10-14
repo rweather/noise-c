@@ -854,6 +854,11 @@ static int process_file(const char *filename)
 
 int main(int argc, char *argv[])
 {
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     int retval = 0;
     char *srcdir = getenv("srcdir");
     if (argc <= 1 && !srcdir) {

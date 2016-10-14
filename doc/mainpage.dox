@@ -74,6 +74,7 @@ page on the Noise wiki.
 \li \ref signstate "SignState"
 \li \ref randstate "RandState"
 \li \ref keyloader "Key/certificate loading and saving"
+\li \ref utils "Utilities"
 
 \section other_info Other information
 
@@ -94,7 +95,8 @@ page on the Noise wiki.
     \ref cipherstate "CipherState", \ref hashstate "HashState",
     \ref dhstate "DHState", and \ref signstate "SignState" that use the
     reference cryptographic primitives.
-\li <tt>src/backend/xyz/</tt> - Recommended location for alternative backends.
+\li <tt>src/backend/openssl/</tt> - OpenSSL crypto backend
+\li <tt>src/backend/sodium/</tt> - libsodium crypto backend
 \li <tt>tools/protoc/</tt> - Source code for the Noise-C protobufs compiler.
 \li <tt>tools/keytool/</tt> - Command-line key and certificate management tool.
 \li <tt>tests/unit/</tt> - Unit tests to exercise the library's functionality.
@@ -128,8 +130,6 @@ In no particular order:
 \li Examples and overview documentation.
 \li Mechanism to encrypt static keypairs with a passphrase.
 \li Complete the standalone key generation utility for static keypairs.
-\li Port to other platforms (rand_os.c is a particular place that needs work).
-\li Back ends for other cryptography libraries: OpenSSL, libsodium, ...
 \li Compile-time subsetting of the library for applications that only
     need a subset of the algorithms, and for platforms with limited memory.
 

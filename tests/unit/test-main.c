@@ -34,6 +34,11 @@ int main(int argc, char *argv[])
     if (argc > 1 && !strcmp(argv[1], "--verbose"))
         verbose = 1;
 
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     /* Run all tests */
     test(cipherstate);
     test(dhstate);

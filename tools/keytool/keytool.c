@@ -55,6 +55,11 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     /* Determine which subcommand to run */
     if (!strcmp(argv[1], "generate")) {
         retval = main_generate(progname, argc - 1, argv + 1);

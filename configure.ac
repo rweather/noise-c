@@ -1,6 +1,7 @@
 
 AC_INIT([noise-c], [0.0.1])
 AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
 AC_PROG_CC_STDC
@@ -37,6 +38,8 @@ AC_CHECK_LIB(ws2_32, [_head_lib64_libws2_32_a])
 
 AC_CHECK_FUNCS([poll])
 
+AX_PTHREAD
+
 AC_SUBST([WARNING_FLAGS],[-Wall])
 AC_SUBST([GOLDILOCKS_ARCH],[$with_ed448_arch])
 
@@ -63,4 +66,27 @@ examples/echo/echo-client/Makefile
 examples/echo/echo-keygen/Makefile
 examples/echo/echo-server/Makefile
 doc/Makefile])
+
+AC_ARG_WITH([libsodium],
+  [AS_HELP_STRING([--with-libsodium],
+    [use libsodium for crypto @<:@default=check@:>@])],
+  [],
+  [with_libsodium=check])
+AS_CASE(["$with_libsodium"],
+  [yes], [PKG_CHECK_MODULES([libsodium], [libsodium], [HAVE_LIBSODIUM=1])],
+  [no], [HAVE_LIBSODIUM=0],
+  [PKG_CHECK_MODULES([libsodium], [libsodium], [HAVE_LIBSODIUM=1], [HAVE_LIBSODIUM=0])])
+AM_CONDITIONAL([USE_LIBSODIUM], [test "$with_libsodium" != no -a "$HAVE_LIBSODIUM" -eq 1])
+
+AC_ARG_WITH([openssl],
+  [AS_HELP_STRING([--with-openssl],
+    [use openssl for crypto @<:@default=check@:>@])],
+  [],
+  [with_openssl=check])
+AS_CASE(["$with_openssl"],
+  [yes], [PKG_CHECK_MODULES([openssl], [openssl], [HAVE_OPENSSL=1])],
+  [no], [HAVE_OPENSSL=0],
+  [PKG_CHECK_MODULES([openssl], [openssl], [HAVE_OPENSSL=1], [HAVE_OPENSSL=0])])
+AM_CONDITIONAL([USE_OPENSSL], [test "$with_openssl" != no -a "$HAVE_OPENSSL" -eq 1])
+
 AC_OUTPUT

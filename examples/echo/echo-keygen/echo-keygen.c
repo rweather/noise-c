@@ -55,6 +55,11 @@ int main(int argc, char *argv[])
     priv_key_file = argv[2];
     pub_key_file = argv[3];
 
+    if (noise_init() != NOISE_ERROR_NONE) {
+        fprintf(stderr, "Noise initialization failed\n");
+        return 1;
+    }
+
     /* Generate a keypair */
     err = noise_dhstate_new_by_name(&dh, key_type);
     if (err != NOISE_ERROR_NONE) {
