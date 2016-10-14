@@ -461,7 +461,7 @@ NOISE_ERROR_INVALID_STATE if the handshake has not successfully completed yet.</
 <dl class="section note"><dt>Note</dt><dd>The handshake hash is generated from publicly-known values in the handshake. If the application needs a unique secret identifier, then it should combine the handshake hash with other randomly generated data that is sent encrypted during the session.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01796">1796</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01820">1820</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -928,7 +928,7 @@ NOISE_ERROR_PUBLIC_KEY if an invalid remote public key is seen during the proces
 <p>The <em>message</em> buffer will be modified by this function to decrypt sub-components while it is being processed. The contents will be cleared just before the function exits to avoid leaking decrypted message data other than the <em>payload</em>.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#gafdb5b38ecaf77c7c39e0aad49cf880b6" title="Writes a message payload using a HandshakeState. ">noise_handshakestate_write_message()</a>, <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01616">1616</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01640">1640</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1092,7 +1092,7 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on the object that is not needed. Alternatively, the application can pass NULL to <a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> as the <em>send</em> or <em>receive</em> argument and the second CipherState will not be created at all.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga0aae736fc4a04df2cbfdd24973aeb8ae" title="Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key. ">noise_handshakestate_split_with_key()</a>, <a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01679">1679</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01703">1703</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1167,7 +1167,7 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on the object that is not needed. Alternatively, the application can pass NULL to <a class="el" href="group__handshakestate.html#ga0aae736fc4a04df2cbfdd24973aeb8ae" title="Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key. ">noise_handshakestate_split_with_key()</a> as the <em>send</em> or <em>receive</em> argument and the second CipherState will not be created at all.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>, <a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01730">1730</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01754">1754</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1272,14 +1272,14 @@ NOISE_ERROR_INVALID_LENGTH if <em>message</em> is too small to contain all of th
 <div class="line"><span class="comment">// Transmit the message.size bytes starting at message.data if no error.</span></div>
 </div><!-- fragment --><dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga5b86560fccec5c8d9051fa6e30e7cb20" title="Reads a message payload using a HandshakeState. ">noise_handshakestate_read_message()</a>, <a class="el" href="group__handshakestate.html#ga34e785f9102ce47f97292bbb897ace66" title="Gets the next action the application should perform for the handshake phase of the protocol...">noise_handshakestate_get_action()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01368">1368</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01380">1380</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 28 2016 11:02:54 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

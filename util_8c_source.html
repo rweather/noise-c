@@ -91,148 +91,192 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 <a href="util_8c.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="comment">/*</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="comment"> * Copyright (C) 2016 Southern Storm Software, Pty Ltd.</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * copy of this software and associated documentation files (the &quot;Software&quot;),</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * to deal in the Software without restriction, including without limitation</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * the rights to use, copy, modify, merge, publish, distribute, sublicense,</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> * and/or sell copies of the Software, and to permit persons to whom the</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> * Software is furnished to do so, subject to the following conditions:</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"> * The above copyright notice and this permission notice shall be included</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> * in all copies or substantial portions of the Software.</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"> * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * DEALINGS IN THE SOFTWARE.</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="internal_8h.html">internal.h</a>&quot;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;crypto/sha2/sha256.h&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;</div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">   85</a></span>&#160;<span class="keywordtype">void</span> *<a class="code" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">noise_new_object</a>(<span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;{</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> *ptr = calloc(1, size);</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordflow">if</span> (!ptr || size &lt; <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>))</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keywordflow">return</span> ptr;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    *((<span class="keywordtype">size_t</span> *)ptr) = <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordflow">return</span> ptr;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;</div>
-<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">  102</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a>(<span class="keywordtype">void</span> *ptr, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;{</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordflow">if</span> (ptr) {</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(ptr, size);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        free(ptr);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    }</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;}</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;</div>
-<div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">  120</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(<span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;{</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keyword">volatile</span> uint8_t *d = (<span class="keyword">volatile</span> uint8_t *)data;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordflow">while</span> (size &gt; 0) {</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        *d++ = 0;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        --<a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    }</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;}</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;</div>
-<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">  138</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">noise_is_equal</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *s1, <span class="keyword">const</span> <span class="keywordtype">void</span> *s2, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;{</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="keyword">const</span> uint8_t *str1 = (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)s1;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keyword">const</span> uint8_t *str2 = (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)s2;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    uint8_t temp = 0;</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">while</span> (size &gt; 0) {</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        temp |= *str1 ^ *str2;</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        ++str1;</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        ++str2;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;        --<a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    }</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordflow">return</span> (0x0100 - (<span class="keywordtype">int</span>)temp) &gt;&gt; 8;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;}</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;</div>
-<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">  161</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">noise_is_zero</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;{</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="keyword">const</span> uint8_t *d = (<span class="keyword">const</span> uint8_t *)data;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    uint8_t temp = 0;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keywordflow">while</span> (size &gt; 0) {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        temp |= *d++;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        --<a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    }</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    <span class="keywordflow">return</span> (0x0100 - (<span class="keywordtype">int</span>)temp) &gt;&gt; 8;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;}</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">noise_format_fingerprint</a></div>
-<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">  196</a></span>&#160;    (<span class="keywordtype">int</span> fingerprint_type, <span class="keywordtype">char</span> *buffer, <span class="keywordtype">size_t</span> len,</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;     <span class="keyword">const</span> uint8_t *public_key, <span class="keywordtype">size_t</span> public_key_len)</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;{</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">char</span> <span class="keyword">const</span> hexchars[] = <span class="stringliteral">&quot;0123456789abcdef&quot;</span>;</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    sha256_context_t sha256;</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    uint8_t <a class="code" href="internal_8h.html#a8b7c288fc5c182e1c23e00a9b7a8a6a0">hash</a>[32];</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="keywordtype">size_t</span> f_len;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    <span class="keywordtype">size_t</span> posn;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keywordflow">if</span> (!buffer)</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keywordflow">if</span> (!len)</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    *buffer = <span class="charliteral">&#39;\0&#39;</span>; <span class="comment">/* In case we bail out with an error later */</span></div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keywordflow">if</span> (!public_key)</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="comment">/* Validate the fingerprint type and get the desired length */</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="keywordflow">if</span> (fingerprint_type == <a class="code" href="group__fingerprint__types.html#gaa8a60e927531fa7a3f7cdb8aaa569977">NOISE_FINGERPRINT_BASIC</a>)</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        f_len = 16;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (fingerprint_type == <a class="code" href="group__fingerprint__types.html#ga54882ba35bd2f45ea41c48660f245a73">NOISE_FINGERPRINT_FULL</a>)</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        f_len = 32;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="comment"> * Copyright (C) 2016 Topology LP.</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="comment"> * Permission is hereby granted, free of charge, to any person obtaining a</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="comment"> * copy of this software and associated documentation files (the &quot;Software&quot;),</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="comment"> * to deal in the Software without restriction, including without limitation</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment"> * the rights to use, copy, modify, merge, publish, distribute, sublicense,</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment"> * and/or sell copies of the Software, and to permit persons to whom the</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="comment"> * Software is furnished to do so, subject to the following conditions:</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment"> * The above copyright notice and this permission notice shall be included</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment"> * in all copies or substantial portions of the Software.</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="comment"> * THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"> * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="comment"> * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"> * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"> * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> * DEALINGS IN THE SOFTWARE.</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="internal_8h.html">internal.h</a>&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#if USE_LIBSODIUM</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;sodium.h&gt;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">typedef</span> crypto_hash_sha256_state sha256_context_t;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define sha256_reset(ctx) crypto_hash_sha256_init(ctx)</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define sha256_update(ctx, pub, pub_len) crypto_hash_sha256_update(ctx, pub, pub_len)</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#define sha256_finish(ctx, hash) crypto_hash_sha256_final(ctx, hash)</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &quot;crypto/sha2/sha256.h&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#if USE_OPENSSL</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;openssl/err.h&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;openssl/evp.h&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#if HAVE_PTHREAD</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#include &lt;pthread.h&gt;</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">static</span> pthread_once_t noise_is_initialized = PTHREAD_ONCE_INIT;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="util_8c.html#a4e45bcce70a0f1d3bbb68ec647e43f0f">   54</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="util_8c.html#a4e45bcce70a0f1d3bbb68ec647e43f0f">noise_init_helper</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#if USE_LIBSODIUM</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor"></span>    <span class="keywordflow">if</span> (sodium_init() &lt; 0)</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor"></span><span class="preprocessor">#if USE_OPENSSL</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor"></span>    OpenSSL_add_all_algorithms();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    ERR_load_crypto_strings();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor"></span>}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="group__utils.html#ga298be67fc921cb4dc078901dff122aed">   87</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__utils.html#ga298be67fc921cb4dc078901dff122aed">noise_init</a>(<span class="keywordtype">void</span>)</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;{</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#if HAVE_PTHREAD</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor"></span>    <span class="keywordflow">if</span> (pthread_once(&amp;noise_is_initialized, <a class="code" href="util_8c.html#a4e45bcce70a0f1d3bbb68ec647e43f0f">noise_init_helper</a>) != 0)</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga1aa58a4e811fd9f60685e391c193324e">NOISE_ERROR_SYSTEM</a>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor"></span>    <a class="code" href="util_8c.html#a4e45bcce70a0f1d3bbb68ec647e43f0f">noise_init_helper</a>();</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor"></span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;</div>
+<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">  135</a></span>&#160;<span class="keywordtype">void</span> *<a class="code" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">noise_new_object</a>(<span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;{</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordtype">void</span> *ptr = calloc(1, size);</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keywordflow">if</span> (!ptr || size &lt; <span class="keyword">sizeof</span>(<span class="keywordtype">size_t</span>))</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        <span class="keywordflow">return</span> ptr;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    *((<span class="keywordtype">size_t</span> *)ptr) = <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="keywordflow">return</span> ptr;</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;}</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;</div>
+<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">  152</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a>(<span class="keywordtype">void</span> *ptr, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;{</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordflow">if</span> (ptr) {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(ptr, size);</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        free(ptr);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    }</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;}</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;</div>
+<div class="line"><a name="l00170"></a><span class="lineno"><a class="line" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">  170</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(<span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;{</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keyword">volatile</span> uint8_t *d = (<span class="keyword">volatile</span> uint8_t *)data;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordflow">while</span> (size &gt; 0) {</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        *d++ = 0;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        --<a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;}</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;</div>
+<div class="line"><a name="l00188"></a><span class="lineno"><a class="line" href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">  188</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">noise_is_equal</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *s1, <span class="keyword">const</span> <span class="keywordtype">void</span> *s2, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;{</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keyword">const</span> uint8_t *str1 = (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)s1;</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keyword">const</span> uint8_t *str2 = (<span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *)s2;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    uint8_t temp = 0;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <span class="keywordflow">while</span> (size &gt; 0) {</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        temp |= *str1 ^ *str2;</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        ++str1;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        ++str2;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        --<a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    }</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keywordflow">return</span> (0x0100 - (<span class="keywordtype">int</span>)temp) &gt;&gt; 8;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;}</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;</div>
+<div class="line"><a name="l00211"></a><span class="lineno"><a class="line" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">  211</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__utils.html#ga173559bc8517900119baf1cafafebee0">noise_is_zero</a>(<span class="keyword">const</span> <span class="keywordtype">void</span> *data, <span class="keywordtype">size_t</span> <a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>)</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;{</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keyword">const</span> uint8_t *d = (<span class="keyword">const</span> uint8_t *)data;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    uint8_t temp = 0;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="keywordflow">while</span> (size &gt; 0) {</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        temp |= *d++;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        --<a class="code" href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">size</a>;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    }</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    <span class="keywordflow">return</span> (0x0100 - (<span class="keywordtype">int</span>)temp) &gt;&gt; 8;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;}</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="comment">/* Check the length of the buffer */</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="keywordflow">if</span> ((f_len * 3) &gt; len)</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="comment">/* Hash the public key with SHA256 */</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    sha256_reset(&amp;sha256);</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    sha256_update(&amp;sha256, public_key, public_key_len);</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    sha256_finish(&amp;sha256, hash);</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(&amp;sha256, <span class="keyword">sizeof</span>(sha256));</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="comment">/* Format the fingerprint in hexadecimal within the buffer */</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="keywordflow">for</span> (posn = 0; posn &lt; f_len; ++posn) {</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        uint8_t byte = hash[posn];</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        buffer[posn * 3] = hexchars[(byte &gt;&gt; 4) &amp; 0x0F];</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        buffer[posn * 3 + 1] = hexchars[byte &amp; 0x0F];</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        buffer[posn * 3 + 2] = <span class="charliteral">&#39;:&#39;</span>;</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    }</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    buffer[f_len * 3 - 1] = <span class="charliteral">&#39;\0&#39;</span>;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(hash, <span class="keyword">sizeof</span>(hash));</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;}</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;</div>
-<div class="ttc" id="group__utils_html_ga4d7440ace7a148437e229969490f6162"><div class="ttname"><a href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a></div><div class="ttdeci">void noise_clean(void *data, size_t size)</div><div class="ttdoc">Cleans a block of memory to destroy its contents. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00120">util.c:120</a></div></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="keywordtype">int</span> <a class="code" href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">noise_format_fingerprint</a></div>
+<div class="line"><a name="l00246"></a><span class="lineno"><a class="line" href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">  246</a></span>&#160;    (<span class="keywordtype">int</span> fingerprint_type, <span class="keywordtype">char</span> *buffer, <span class="keywordtype">size_t</span> len,</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;     <span class="keyword">const</span> uint8_t *public_key, <span class="keywordtype">size_t</span> public_key_len)</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;{</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">char</span> <span class="keyword">const</span> hexchars[] = <span class="stringliteral">&quot;0123456789abcdef&quot;</span>;</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    sha256_context_t sha256;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    uint8_t <a class="code" href="internal_8h.html#a8b7c288fc5c182e1c23e00a9b7a8a6a0">hash</a>[32];</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="keywordtype">size_t</span> f_len;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <span class="keywordtype">size_t</span> posn;</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;    <span class="comment">/* Validate the parameters */</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    <span class="keywordflow">if</span> (!buffer)</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="keywordflow">if</span> (!len)</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    *buffer = <span class="charliteral">&#39;\0&#39;</span>; <span class="comment">/* In case we bail out with an error later */</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keywordflow">if</span> (!public_key)</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <span class="comment">/* Validate the fingerprint type and get the desired length */</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="keywordflow">if</span> (fingerprint_type == <a class="code" href="group__fingerprint__types.html#gaa8a60e927531fa7a3f7cdb8aaa569977">NOISE_FINGERPRINT_BASIC</a>)</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        f_len = 16;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (fingerprint_type == <a class="code" href="group__fingerprint__types.html#ga54882ba35bd2f45ea41c48660f245a73">NOISE_FINGERPRINT_FULL</a>)</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        f_len = 32;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a>;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="comment">/* Check the length of the buffer */</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="keywordflow">if</span> ((f_len * 3) &gt; len)</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;        <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a>;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="comment">/* Hash the public key with SHA256 */</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    sha256_reset(&amp;sha256);</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    sha256_update(&amp;sha256, public_key, public_key_len);</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    sha256_finish(&amp;sha256, hash);</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(&amp;sha256, <span class="keyword">sizeof</span>(sha256));</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    <span class="comment">/* Format the fingerprint in hexadecimal within the buffer */</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    <span class="keywordflow">for</span> (posn = 0; posn &lt; f_len; ++posn) {</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        uint8_t byte = hash[posn];</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        buffer[posn * 3] = hexchars[(byte &gt;&gt; 4) &amp; 0x0F];</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        buffer[posn * 3 + 1] = hexchars[byte &amp; 0x0F];</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        buffer[posn * 3 + 2] = <span class="charliteral">&#39;:&#39;</span>;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    }</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    buffer[f_len * 3 - 1] = <span class="charliteral">&#39;\0&#39;</span>;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    <a class="code" href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a>(hash, <span class="keyword">sizeof</span>(hash));</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a>;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;}</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;</div>
+<div class="ttc" id="group__utils_html_ga4d7440ace7a148437e229969490f6162"><div class="ttname"><a href="group__utils.html#ga4d7440ace7a148437e229969490f6162">noise_clean</a></div><div class="ttdeci">void noise_clean(void *data, size_t size)</div><div class="ttdoc">Cleans a block of memory to destroy its contents. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00170">util.c:170</a></div></div>
 <div class="ttc" id="internal_8h_html_a8b7c288fc5c182e1c23e00a9b7a8a6a0"><div class="ttname"><a href="internal_8h.html#a8b7c288fc5c182e1c23e00a9b7a8a6a0">NoiseSymmetricState_s::hash</a></div><div class="ttdeci">NoiseHashState * hash</div><div class="ttdoc">Points to the HashState object for this SymmetricState. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00524">internal.h:524</a></div></div>
 <div class="ttc" id="group__errors_html_ga4c2869f005128d7a415e6d941ccc67bb"><div class="ttname"><a href="group__errors.html#ga4c2869f005128d7a415e6d941ccc67bb">NOISE_ERROR_INVALID_PARAM</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_PARAM</div><div class="ttdoc">Invalid parameter to function; e.g. a NULL value. </div></div>
 <div class="ttc" id="group__fingerprint__types_html_ga54882ba35bd2f45ea41c48660f245a73"><div class="ttname"><a href="group__fingerprint__types.html#ga54882ba35bd2f45ea41c48660f245a73">NOISE_FINGERPRINT_FULL</a></div><div class="ttdeci">#define NOISE_FINGERPRINT_FULL</div><div class="ttdoc">Fingerprint format is the hexadecimal encoding of the entire 32 bytes of the SHA256 hash of the publi...</div></div>
 <div class="ttc" id="group__errors_html_ga132b97fab62750f9f1e665c3783455c4"><div class="ttname"><a href="group__errors.html#ga132b97fab62750f9f1e665c3783455c4">NOISE_ERROR_NONE</a></div><div class="ttdeci">#define NOISE_ERROR_NONE</div><div class="ttdoc">Success, no error. </div></div>
 <div class="ttc" id="internal_8h_html_a0769a8253177c4340e493d2c6c7f67a4"><div class="ttname"><a href="internal_8h.html#a0769a8253177c4340e493d2c6c7f67a4">NoiseSymmetricState_s::size</a></div><div class="ttdeci">size_t size</div><div class="ttdoc">Total size of the structure. </div><div class="ttdef"><b>Definition:</b> <a href="internal_8h_source.html#l00508">internal.h:508</a></div></div>
-<div class="ttc" id="group__utils_html_ga173559bc8517900119baf1cafafebee0"><div class="ttname"><a href="group__utils.html#ga173559bc8517900119baf1cafafebee0">noise_is_zero</a></div><div class="ttdeci">int noise_is_zero(const void *data, size_t size)</div><div class="ttdoc">Determine if a block of memory consists of all zero bytes. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00161">util.c:161</a></div></div>
+<div class="ttc" id="group__utils_html_ga173559bc8517900119baf1cafafebee0"><div class="ttname"><a href="group__utils.html#ga173559bc8517900119baf1cafafebee0">noise_is_zero</a></div><div class="ttdeci">int noise_is_zero(const void *data, size_t size)</div><div class="ttdoc">Determine if a block of memory consists of all zero bytes. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00211">util.c:211</a></div></div>
 <div class="ttc" id="group__fingerprint__types_html_gaa8a60e927531fa7a3f7cdb8aaa569977"><div class="ttname"><a href="group__fingerprint__types.html#gaa8a60e927531fa7a3f7cdb8aaa569977">NOISE_FINGERPRINT_BASIC</a></div><div class="ttdeci">#define NOISE_FINGERPRINT_BASIC</div><div class="ttdoc">Fingerprint format is the hexadecimal encoding of the first 16 bytes of the SHA256 hash of the public...</div></div>
-<div class="ttc" id="group__utils_html_ga73effdcce60bbf5d91dcf0bdccb7ca90"><div class="ttname"><a href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">noise_format_fingerprint</a></div><div class="ttdeci">int noise_format_fingerprint(int fingerprint_type, char *buffer, size_t len, const uint8_t *public_key, size_t public_key_len)</div><div class="ttdoc">Formats the fingerprint for a raw public key value. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00196">util.c:196</a></div></div>
-<div class="ttc" id="group__utils_html_ga4ab73808a263b8269bb95e96e05fd08d"><div class="ttname"><a href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">noise_new_object</a></div><div class="ttdeci">void * noise_new_object(size_t size)</div><div class="ttdoc">Allocates memory from the system for an object. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00085">util.c:85</a></div></div>
+<div class="ttc" id="group__utils_html_ga73effdcce60bbf5d91dcf0bdccb7ca90"><div class="ttname"><a href="group__utils.html#ga73effdcce60bbf5d91dcf0bdccb7ca90">noise_format_fingerprint</a></div><div class="ttdeci">int noise_format_fingerprint(int fingerprint_type, char *buffer, size_t len, const uint8_t *public_key, size_t public_key_len)</div><div class="ttdoc">Formats the fingerprint for a raw public key value. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00246">util.c:246</a></div></div>
+<div class="ttc" id="group__utils_html_ga4ab73808a263b8269bb95e96e05fd08d"><div class="ttname"><a href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d">noise_new_object</a></div><div class="ttdeci">void * noise_new_object(size_t size)</div><div class="ttdoc">Allocates memory from the system for an object. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00135">util.c:135</a></div></div>
 <div class="ttc" id="group__errors_html_ga891ac255aebf03d4f8c4423299d79d93"><div class="ttname"><a href="group__errors.html#ga891ac255aebf03d4f8c4423299d79d93">NOISE_ERROR_INVALID_LENGTH</a></div><div class="ttdeci">#define NOISE_ERROR_INVALID_LENGTH</div><div class="ttdoc">Invalid length specified for a key, packet, etc. </div></div>
+<div class="ttc" id="group__utils_html_ga298be67fc921cb4dc078901dff122aed"><div class="ttname"><a href="group__utils.html#ga298be67fc921cb4dc078901dff122aed">noise_init</a></div><div class="ttdeci">int noise_init(void)</div><div class="ttdoc">Initializes the Noise-c library. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00087">util.c:87</a></div></div>
 <div class="ttc" id="internal_8h_html"><div class="ttname"><a href="internal_8h.html">internal.h</a></div><div class="ttdoc">Internal definitions for the library. </div></div>
-<div class="ttc" id="group__utils_html_ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><div class="ttname"><a href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a></div><div class="ttdeci">void noise_free(void *ptr, size_t size)</div><div class="ttdoc">Destroys the contents of a block of memory and free it. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00102">util.c:102</a></div></div>
-<div class="ttc" id="group__utils_html_ga4909ddddf334e298e19c304a5b39f498"><div class="ttname"><a href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">noise_is_equal</a></div><div class="ttdeci">int noise_is_equal(const void *s1, const void *s2, size_t size)</div><div class="ttdoc">Determine if two blocks of memory are equal in constant time. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00138">util.c:138</a></div></div>
+<div class="ttc" id="group__utils_html_ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><div class="ttname"><a href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a></div><div class="ttdeci">void noise_free(void *ptr, size_t size)</div><div class="ttdoc">Destroys the contents of a block of memory and free it. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00152">util.c:152</a></div></div>
+<div class="ttc" id="group__errors_html_ga1aa58a4e811fd9f60685e391c193324e"><div class="ttname"><a href="group__errors.html#ga1aa58a4e811fd9f60685e391c193324e">NOISE_ERROR_SYSTEM</a></div><div class="ttdeci">#define NOISE_ERROR_SYSTEM</div><div class="ttdoc">System error, with more information in errno. </div></div>
+<div class="ttc" id="util_8c_html_a4e45bcce70a0f1d3bbb68ec647e43f0f"><div class="ttname"><a href="util_8c.html#a4e45bcce70a0f1d3bbb68ec647e43f0f">noise_init_helper</a></div><div class="ttdeci">void noise_init_helper(void)</div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00054">util.c:54</a></div></div>
+<div class="ttc" id="group__utils_html_ga4909ddddf334e298e19c304a5b39f498"><div class="ttname"><a href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">noise_is_equal</a></div><div class="ttdeci">int noise_is_equal(const void *s1, const void *s2, size_t size)</div><div class="ttdoc">Determine if two blocks of memory are equal in constant time. </div><div class="ttdef"><b>Definition:</b> <a href="util_8c_source.html#l00188">util.c:188</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 28 2016 11:02:54 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

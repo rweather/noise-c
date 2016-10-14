@@ -100,6 +100,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">noise_free</a> (void *ptr, size_t size)</td></tr>
 <tr class="memdesc:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys the contents of a block of memory and free it.  <a href="#ga7c7fc1bf7455aa40e16e26b78ff4d6eb">More...</a><br/></td></tr>
 <tr class="separator:ga7c7fc1bf7455aa40e16e26b78ff4d6eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga298be67fc921cb4dc078901dff122aed"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga298be67fc921cb4dc078901dff122aed">noise_init</a> (void)</td></tr>
+<tr class="memdesc:ga298be67fc921cb4dc078901dff122aed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the Noise-c library.  <a href="#ga298be67fc921cb4dc078901dff122aed">More...</a><br/></td></tr>
+<tr class="separator:ga298be67fc921cb4dc078901dff122aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4909ddddf334e298e19c304a5b39f498"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__utils.html#ga4909ddddf334e298e19c304a5b39f498">noise_is_equal</a> (const void *s1, const void *s2, size_t size)</td></tr>
 <tr class="memdesc:ga4909ddddf334e298e19c304a5b39f498"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine if two blocks of memory are equal in constant time.  <a href="#ga4909ddddf334e298e19c304a5b39f498">More...</a><br/></td></tr>
 <tr class="separator:ga4909ddddf334e298e19c304a5b39f498"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,7 +142,7 @@ Functions</h2></td></tr>
 <p>The object is assumed to start with a size_t field, which will be initialized with the size of <em>type</em>. This is intended for use with <a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb" title="Destroys the contents of a block of memory and free it. ">noise_free()</a> to destroy the object's contents when it is deallocated. The remaining bytes are initialized to zero.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__utils.html#ga4ab73808a263b8269bb95e96e05fd08d" title="Allocates memory from the system for an object. ">noise_new_object()</a>, <a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb" title="Destroys the contents of a block of memory and free it. ">noise_free()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8h_source.html#l00033">33</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p>Definition at line <a class="el" href="util_8h_source.html#l00035">35</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -178,7 +181,7 @@ Functions</h2></td></tr>
 </dl>
 <p>This function tries to perform the operation in a way that should work around compilers and linkers that optimize away memset() calls for memory that the compiler thinks is no longer live. </p>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00120">120</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00170">170</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -244,7 +247,7 @@ NOISE_ERROR_INVALID_PARAM if <em>fingerprint_type</em> is not a supported finger
 NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entire fingerprint string.</dd></dl>
 <p>This is a low-level formatting function. It is usually better to call one of <a class="el" href="group__dhstate.html#ga3ced2bdae2849e0062f8723556c4da69" title="Formats the public key fingerprint for the key within a DHState. ">noise_dhstate_format_fingerprint()</a>, <a class="el" href="group__signstate.html#ga837e41c302bfadae34e3c4d4fba18d52" title="Formats the public key fingerprint for the key within a SignState. ">noise_signstate_format_fingerprint()</a>, or noise_keystate_format_fingerprint() instead. </p>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00196">196</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00246">246</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -282,7 +285,29 @@ NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entir
 </dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__utils.html#gaa8403b5d2d468366eaed8ecf8b7eea24" title="Allocates an object from the system and initializes it. ">noise_new()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00102">102</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00152">152</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="ga298be67fc921cb4dc078901dff122aed"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">noise_init </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initializes the Noise-c library. </p>
+<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success.</dd></dl>
+<p>This will initialize the underlying crypto libraries. You don't need to call this if you initialize the crypto libraries (eg. libsodium, OpenSSL) yourself. </p>
+
+<p>Definition at line <a class="el" href="util_8c_source.html#l00087">87</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -327,7 +352,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entir
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns 1 if the blocks are equal, 0 if they are not. </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00138">138</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00188">188</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -365,7 +390,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entir
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns 1 if all bytes of <em>data</em> are zero, or 0 if any of the bytes are non-zero. </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00161">161</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00211">211</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
@@ -395,14 +420,14 @@ NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not large enough to hold the entir
 <dl class="section note"><dt>Note</dt><dd>If the caller is allocating a structure, then <a class="el" href="group__utils.html#gaa8403b5d2d468366eaed8ecf8b7eea24" title="Allocates an object from the system and initializes it. ">noise_new()</a> is a better option to ensure type-safety.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__utils.html#gaa8403b5d2d468366eaed8ecf8b7eea24" title="Allocates an object from the system and initializes it. ">noise_new()</a>, <a class="el" href="group__utils.html#ga7c7fc1bf7455aa40e16e26b78ff4d6eb" title="Destroys the contents of a block of memory and free it. ">noise_free()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="util_8c_source.html#l00085">85</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
+<p>Definition at line <a class="el" href="util_8c_source.html#l00135">135</a> of file <a class="el" href="util_8c_source.html">util.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 28 2016 11:02:54 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

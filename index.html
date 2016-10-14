@@ -120,7 +120,8 @@ Supporting API's</h1>
 <li><a class="el" href="group__dhstate.html">DHState</a> </li>
 <li><a class="el" href="group__signstate.html">SignState</a> </li>
 <li><a class="el" href="group__randstate.html">RandState</a> </li>
-<li><a class="el" href="group__keyloader.html">Key/certificate loading and saving</a></li>
+<li><a class="el" href="group__keyloader.html">Key/certificate loading and saving</a> </li>
+<li><a class="el" href="group__utils.html">Utilities</a></li>
 </ul>
 <h1><a class="anchor" id="other_info"></a>
 Other information</h1>
@@ -137,7 +138,8 @@ Directory structure</h1>
 <li><code>src/keys/</code> - Source code for the key and certificate management library. </li>
 <li><code>src/crypto/</code> - Public domain and open source reference implementations of the cryptographic primitives. </li>
 <li><code>src/backend/ref/</code> - Backends for <a class="el" href="group__cipherstate.html">CipherState</a>, <a class="el" href="group__hashstate.html">HashState</a>, <a class="el" href="group__dhstate.html">DHState</a>, and <a class="el" href="group__signstate.html">SignState</a> that use the reference cryptographic primitives. </li>
-<li><code>src/backend/xyz/</code> - Recommended location for alternative backends. </li>
+<li><code>src/backend/openssl/</code> - OpenSSL crypto backend </li>
+<li><code>src/backend/sodium/</code> - libsodium crypto backend </li>
 <li><code>tools/protoc/</code> - Source code for the Noise-C protobufs compiler. </li>
 <li><code>tools/keytool/</code> - Command-line key and certificate management tool. </li>
 <li><code>tests/unit/</code> - Unit tests to exercise the library's functionality. </li>
@@ -155,15 +157,19 @@ Building</h1>
 <div class="line">$ ./configure</div>
 <div class="line">$ make</div>
 <div class="line">$ make check</div>
-</div><!-- fragment --><h1><a class="anchor" id="todo"></a>
+</div><!-- fragment --><p>The following parameters can be supplied to <code>configure</code> to select other crypto back ends:</p>
+<ul>
+<li><code>&ndash;with-libsodium</code> - Use libsodium to provide crypto primitives, falling back to the reference back end where libsodium does not have an implementation. </li>
+<li><code>&ndash;with-openssl</code> - Use the AESGCM implementation from OpenSSL.</li>
+</ul>
+<p>Both options can be combined to get the best of both worlds.</p>
+<h1><a class="anchor" id="todo"></a>
 TODO</h1>
 <p>In no particular order:</p>
 <ul>
 <li>Examples and overview documentation. </li>
 <li>Mechanism to encrypt static keypairs with a passphrase. </li>
 <li>Complete the standalone key generation utility for static keypairs. </li>
-<li>Port to other platforms (<a class="el" href="rand__os_8c.html" title="Access to the system random number generator. ">rand_os.c</a> is a particular place that needs work). </li>
-<li>Back ends for other cryptography libraries: OpenSSL, libsodium, ... </li>
 <li>Compile-time subsetting of the library for applications that only need a subset of the algorithms, and for platforms with limited memory.</li>
 </ul>
 <p>Contributions are welcome to help implement any of these.</p>
@@ -173,7 +179,7 @@ Contact</h1>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 28 2016 11:02:54 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

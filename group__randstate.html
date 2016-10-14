@@ -157,7 +157,7 @@ Functions</h2></td></tr>
 NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__randstate.html#ga119d7d822704ccd7783bf9960ea2f48a" title="Creates a new random number generator. ">noise_randstate_new()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="randstate_8c_source.html#l00133">133</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
+<p>Definition at line <a class="el" href="randstate_8c_source.html#l00147">147</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
 
 </div>
 </div>
@@ -206,7 +206,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>buffer</em> is NULL.</dd></dl
 <p>This function will periodically reseed the random number generator from operating system entropy. The application can force a reseed at any time by calling <a class="el" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3" title="Reseeds the random number generator from operating system entropy. ">noise_randstate_reseed()</a>, but it is usually better to let the RandState API decide when to reseed on its own.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__randstate.html#ga2a45f812e88e15375e193a9716ca9ae1" title="Adds padding bytes to the end of a message payload. ">noise_randstate_pad()</a>, <a class="el" href="group__randstate.html#gae69c043dcb1b967142b947ad27bb4eb3" title="Reseeds the random number generator from operating system entropy. ">noise_randstate_reseed()</a>, <a class="el" href="group__randstate.html#ga449c8ba03209a4213cf70c2e08b6140d" title="Generates random data without first creating a RandState object. ">noise_randstate_generate_simple()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="randstate_8c_source.html#l00224">224</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
+<p>Definition at line <a class="el" href="randstate_8c_source.html#l00264">264</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
 
 </div>
 </div>
@@ -248,7 +248,7 @@ NOISE_ERROR_INVALID_PARAM if <em>buffer</em> is NULL.</dd></dl>
 <p>This function is provided for the convenience of applications that only need to generate a small amount of random data.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0" title="Generates random bytes for use by the application. ">noise_randstate_generate()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="randstate_8c_source.html#l00347">347</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
+<p>Definition at line <a class="el" href="randstate_8c_source.html#l00391">391</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
 
 </div>
 </div>
@@ -280,7 +280,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL. </dd>
 NOISE_ERROR_NO_MEMORY if there is insufficient memory to allocate the new RandState object.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__randstate.html#gaa0617e1f888a7d143324ef983b578b1d" title="Frees a RandState object after destroying all sensitive material. ">noise_randstate_free()</a>, <a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0" title="Generates random bytes for use by the application. ">noise_randstate_generate()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="randstate_8c_source.html#l00106">106</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
+<p>Definition at line <a class="el" href="randstate_8c_source.html#l00115">115</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
 
 </div>
 </div>
@@ -344,7 +344,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>payload</em> is NULL.</dd></d
 <p>The number of padding bytes added will be <em>padded_len</em> - <em>orig_len</em>. If <em>padded_len</em> is less than or equal to <em>orig_len</em>, then no padding bytes will be added. Essentially, this function pads the payload to a minimum length. Larger payloads are transmitted as-is.</p>
 <dl class="section see"><dt>See Also</dt><dd>noise_cipherstate_rand_bytes() </dd></dl>
 
-<p>Definition at line <a class="el" href="randstate_8c_source.html#l00305">305</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
+<p>Definition at line <a class="el" href="randstate_8c_source.html#l00349">349</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
 
 </div>
 </div>
@@ -376,14 +376,14 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <p>If the application needs to generate a highly critical value such as a new keypair then it may want to force a reseed. Even this isn't necessary for <a class="el" href="group__dhstate.html">DHState</a> and <a class="el" href="group__signstate.html">SignState</a> which already seek fresh operating system entropy when generating keypairs.</p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__randstate.html#gab6d527eb906a8ff06743d93fec6ae2c0" title="Generates random bytes for use by the application. ">noise_randstate_generate()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="randstate_8c_source.html#l00163">163</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
+<p>Definition at line <a class="el" href="randstate_8c_source.html#l00177">177</a> of file <a class="el" href="randstate_8c_source.html">randstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Sep 28 2016 11:02:54 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
