@@ -53,11 +53,6 @@ extern "C" {
 #define NOISE_PSK_LEN 32
 
 /**
- * \brief Standard length for secondary keys.
- */
-#define NOISE_SSK_LEN 32
-
-/**
  * \brief Internal structure of the NoiseCipherState type.
  */
 struct NoiseCipherState_s

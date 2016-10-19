@@ -488,19 +488,10 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  * \param c2 Points to the variable where to place the pointer to the
  * second CipherState object.  This can be NULL if the application is
  * using a one-way handshake pattern.
- * \param secondary_key Points to an optional "secondary symmetric key"
- * from a parallel non-DH handshake to mix into the final cipher keys.
- * This may be NULL if \a secondary_key_len is zero.
- * \param secondary_key_len Length of \a secondary_key in bytes.
- * This must be either zero or 32 to comply with the requirements from
- * the Noise protocol specification.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  * \return NOISE_ERROR_INVALID_PARAM if both \a c1 and \a c2 are NULL.
- * \return NOISE_ERROR_INVALID_PARAM if \a secondary_key is NULL and
- * \a secondary_key_len is not zero.
- * \return NOISE_ERROR_INVALID_LENGTH if \a secondary_key_len is not zero or 32.
  * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split.
  * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to create
  * the new CipherState objects.
@@ -521,8 +512,7 @@ size_t noise_symmetricstate_get_mac_length(const NoiseSymmetricState *state)
  * at all.
  */
 int noise_symmetricstate_split
-    (NoiseSymmetricState *state, NoiseCipherState **c1, NoiseCipherState **c2,
-     const uint8_t *secondary_key, size_t secondary_key_len)
+    (NoiseSymmetricState *state, NoiseCipherState **c1, NoiseCipherState **c2)
 {
     uint8_t temp_k1[NOISE_MAX_HASHLEN];
     uint8_t temp_k2[NOISE_MAX_HASHLEN];
@@ -534,10 +524,6 @@ int noise_symmetricstate_split
         return NOISE_ERROR_INVALID_PARAM;
     if (!c1 && !c2)
         return NOISE_ERROR_INVALID_PARAM;
-    if (!secondary_key && secondary_key_len)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (secondary_key_len != 0 && secondary_key_len != 32)
-        return NOISE_ERROR_INVALID_LENGTH;
     if (c1)
         *c1 = 0;
     if (c2)
@@ -550,15 +536,9 @@ int noise_symmetricstate_split
     /* Generate the two encryption keys with HKDF */
     hash_len = noise_hashstate_get_hash_length(state->hash);
     key_len = noise_cipherstate_get_key_length(state->cipher);
-    if (!secondary_key) {
-        noise_hashstate_hkdf
-            (state->hash, state->ck, hash_len, state->ck, 0,
-             temp_k1, key_len, temp_k2, key_len);
-    } else {
-        noise_hashstate_hkdf
-            (state->hash, state->ck, hash_len, secondary_key, secondary_key_len,
-             temp_k1, key_len, temp_k2, key_len);
-    }
+    noise_hashstate_hkdf
+        (state->hash, state->ck, hash_len, state->ck, 0,
+         temp_k1, key_len, temp_k2, key_len);
 
     /* If we only need c2, then re-initialize the key in the internal
        cipher and copy it to c2 */

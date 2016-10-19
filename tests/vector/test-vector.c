@@ -66,10 +66,6 @@ typedef struct
     size_t init_psk_len;            /**< Length of init_psk in bytes */
     uint8_t *resp_psk;              /**< Responder's pre shared key */
     size_t resp_psk_len;            /**< Length of resp_psk in bytes */
-    uint8_t *init_ssk;              /**< Initiator's secondary shared key */
-    size_t init_ssk_len;            /**< Length of init_ssk in bytes */
-    uint8_t *resp_ssk;              /**< Responder's secondary shared key */
-    size_t resp_ssk_len;            /**< Length of resp_ssk in bytes */
     uint8_t *handshake_hash;        /**< Hash at the end of the handshake */
     size_t handshake_hash_len;      /**< Length of handshake_hash in bytes */
     int fail;                       /**< Failure expected on last message */
@@ -113,8 +109,6 @@ static void test_vector_free(TestVector *vec)
     free_field(resp_prologue);
     free_field(init_psk);
     free_field(resp_psk);
-    free_field(init_ssk);
-    free_field(resp_ssk);
     free_field(handshake_hash);
     free_field(fallback_pattern);
     for (index = 0; index < vec->num_messages; ++index) {
@@ -445,24 +439,10 @@ static void test_connection(const TestVector *vec, int is_one_way)
     }
 
     /* Now handle the data transport */
-    if (vec->init_ssk_len) {
-        compare(noise_handshakestate_split_with_key
-                    (initiator, &c1init, &c2init,
-                     vec->init_ssk, vec->init_ssk_len),
-                NOISE_ERROR_NONE);
-    } else {
-        compare(noise_handshakestate_split(initiator, &c1init, &c2init),
-                NOISE_ERROR_NONE);
-    }
-    if (vec->resp_ssk_len) {
-        compare(noise_handshakestate_split_with_key
-                    (responder, &c2resp, &c1resp,
-                     vec->resp_ssk, vec->resp_ssk_len),
-                NOISE_ERROR_NONE);
-    } else {
-        compare(noise_handshakestate_split(responder, &c2resp, &c1resp),
-                NOISE_ERROR_NONE);
-    }
+    compare(noise_handshakestate_split(initiator, &c1init, &c2init),
+            NOISE_ERROR_NONE);
+    compare(noise_handshakestate_split(responder, &c2resp, &c1resp),
+            NOISE_ERROR_NONE);
     mac_len = noise_cipherstate_get_mac_length(c1init);
     for (; index < vec->num_messages; ++index) {
         if (role == NOISE_ROLE_INITIATOR) {
@@ -732,12 +712,6 @@ static int process_test_vector(JSONReader *reader)
         } else if (json_is_name(reader, "resp_psk")) {
             vec.resp_psk_len =
                 expect_binary_field(reader, &(vec.resp_psk));
-        } else if (json_is_name(reader, "init_ssk")) {
-            vec.init_ssk_len =
-                expect_binary_field(reader, &(vec.init_ssk));
-        } else if (json_is_name(reader, "resp_ssk")) {
-            vec.resp_ssk_len =
-                expect_binary_field(reader, &(vec.resp_ssk));
         } else if (json_is_name(reader, "handshake_hash")) {
             vec.handshake_hash_len =
                 expect_binary_field(reader, &(vec.handshake_hash));
@@ -877,7 +851,8 @@ int main(int argc, char *argv[])
         }
         retval |= process_file("cacophony.txt");
         retval |= process_file("noise-c-basic.txt");
-        retval |= process_file("noise-c-ssk.txt");
+        retval |= process_file("noise-c-fallback.txt");
+        retval |= process_file("noise-c-hybrid.txt");
     }
     return retval;
 }

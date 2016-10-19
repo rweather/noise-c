@@ -96,18 +96,12 @@ static HKDFValue HKDF(const HashValue key, const uint8_t *data, size_t data_len)
 static void check_symmetric_object
     (NoiseSymmetricState *state1, NoiseSymmetricState *state2,
      NoiseSymmetricState *state3, const NoiseProtocolId *id,
-     const char *protocol, int with_secondary)
+     const char *protocol)
 {
     static const char *data_vals[] = {
         "abcdefghijklmnopqrstuvwxyz",
         "0123456789",
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-    };
-    static const uint8_t secondary_key[32] = {
-        0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
-        0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-        0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F
     };
     size_t num_data_vals = sizeof(data_vals) / sizeof(data_vals[0]);
     HashValue ck, h;
@@ -124,8 +118,6 @@ static void check_symmetric_object
     NoiseCipherState *c2;
     NoiseProtocolId temp_id;
     NoiseBuffer mbuf;
-    const uint8_t *ssk = (with_secondary ? secondary_key : 0);
-    size_t ssk_len = (with_secondary ? sizeof(secondary_key) : 0);
 
     /* We run two SymmetricState objects in parallel, state1 and state2.
        The state1 object is used to encrypt and state2 is used to decrypt. */
@@ -357,14 +349,12 @@ static void check_symmetric_object
     verify(!memcmp(h.hash, state3->h, hash_len));
 
     /* Split the SymmetricState */
-    compare(noise_symmetricstate_split(0, &c1, &c2, ssk, ssk_len),
+    compare(noise_symmetricstate_split(0, &c1, &c2),
             NOISE_ERROR_INVALID_PARAM);
-    compare(noise_symmetricstate_split(state1, 0, 0, ssk, ssk_len),
-            NOISE_ERROR_INVALID_PARAM);
-    compare(noise_symmetricstate_split(state1, &c1, &c2, 0, 1),
+    compare(noise_symmetricstate_split(state1, 0, 0),
             NOISE_ERROR_INVALID_PARAM);
     c1 = c2 = 0;
-    compare(noise_symmetricstate_split(state1, &c1, &c2, ssk, ssk_len),
+    compare(noise_symmetricstate_split(state1, &c1, &c2),
             NOISE_ERROR_NONE);
     verify(c1 != 0);
     verify(c2 != 0);
@@ -372,10 +362,7 @@ static void check_symmetric_object
     verify(noise_cipherstate_has_key(c2));
 
     /* Check that the encryption keys in c1 and c2 are as expected */
-    if (with_secondary)
-        temp = HKDF(ck, ssk, ssk_len);
-    else
-        temp = HKDF(ck, buffer, 0);
+    temp = HKDF(ck, buffer, 0);
     compare(noise_cipherstate_init_key(cipherstate, temp.v1.hash, key_len),
             NOISE_ERROR_NONE);
     for (index = 0; index < num_data_vals; ++index) {
@@ -427,17 +414,17 @@ static void check_symmetric_object
             NOISE_ERROR_INVALID_STATE);
     compare(noise_symmetricstate_decrypt_and_hash(state1, &mbuf),
             NOISE_ERROR_INVALID_STATE);
-    compare(noise_symmetricstate_split(state1, &c1, &c2, ssk, ssk_len),
+    compare(noise_symmetricstate_split(state1, &c1, &c2),
             NOISE_ERROR_INVALID_STATE);
-    compare(noise_symmetricstate_split(state1, 0, &c2, ssk, ssk_len),
+    compare(noise_symmetricstate_split(state1, 0, &c2),
             NOISE_ERROR_INVALID_STATE);
-    compare(noise_symmetricstate_split(state1, &c1, 0, ssk, ssk_len),
+    compare(noise_symmetricstate_split(state1, &c1, 0),
             NOISE_ERROR_INVALID_STATE);
 
     /* Split the second SymmetricState, with c2 optional */
     c1 = 0;
     c2 = (NoiseCipherState *)(-1);
-    compare(noise_symmetricstate_split(state2, &c1, 0, ssk, ssk_len),
+    compare(noise_symmetricstate_split(state2, &c1, 0),
             NOISE_ERROR_NONE);
     verify(c1 != 0);
     verify(c2 == (NoiseCipherState *)(-1));
@@ -471,7 +458,7 @@ static void check_symmetric_object
     /* Split the third SymmetricState, with c1 optional */
     c1 = (NoiseCipherState *)(-1);
     c2 = 0;
-    compare(noise_symmetricstate_split(state3, 0, &c2, ssk, ssk_len),
+    compare(noise_symmetricstate_split(state3, 0, &c2),
             NOISE_ERROR_NONE);
     verify(c1 == (NoiseCipherState *)(-1));
     verify(c2 != 0);
@@ -509,7 +496,7 @@ static void check_symmetric_object
 }
 
 /* Create SymmetricState objects by id or name and check their behaviour */
-static void check_symmetric(const char *protocol, int with_secondary)
+static void check_symmetric(const char *protocol)
 {
     NoiseSymmetricState *state1;
     NoiseSymmetricState *state2;
@@ -530,7 +517,7 @@ static void check_symmetric(const char *protocol, int with_secondary)
             NOISE_ERROR_NONE);
     compare(noise_symmetricstate_new_by_id(&state3, &id),
             NOISE_ERROR_NONE);
-    check_symmetric_object(state1, state2, state3, &id, protocol, with_secondary);
+    check_symmetric_object(state1, state2, state3, &id, protocol);
     compare(noise_symmetricstate_free(state1), NOISE_ERROR_NONE);
     compare(noise_symmetricstate_free(state2), NOISE_ERROR_NONE);
 
@@ -541,7 +528,7 @@ static void check_symmetric(const char *protocol, int with_secondary)
             NOISE_ERROR_NONE);
     compare(noise_symmetricstate_new_by_name(&state3, protocol),
             NOISE_ERROR_NONE);
-    check_symmetric_object(state1, state2, state3, &id, protocol, with_secondary);
+    check_symmetric_object(state1, state2, state3, &id, protocol);
     compare(noise_symmetricstate_free(state1), NOISE_ERROR_NONE);
     compare(noise_symmetricstate_free(state2), NOISE_ERROR_NONE);
     compare(noise_symmetricstate_free(state3), NOISE_ERROR_NONE);
@@ -549,25 +536,15 @@ static void check_symmetric(const char *protocol, int with_secondary)
 
 static void symmetricstate_check_protocols(void)
 {
-    check_symmetric("Noise_XX_25519_AESGCM_SHA256", 0);
-    check_symmetric("Noise_N_25519_ChaChaPoly_BLAKE2s", 0);
-    check_symmetric("Noise_XXfallback_448_AESGCM_SHA512", 0);
-    check_symmetric("Noise_IK_448_ChaChaPoly_BLAKE2b", 0);
+    check_symmetric("Noise_XX_25519_AESGCM_SHA256");
+    check_symmetric("Noise_N_25519_ChaChaPoly_BLAKE2s");
+    check_symmetric("Noise_XXfallback_448_AESGCM_SHA512");
+    check_symmetric("Noise_IK_448_ChaChaPoly_BLAKE2b");
 
-    check_symmetric("NoisePSK_XX_25519_AESGCM_SHA256", 0);
-    check_symmetric("NoisePSK_N_25519_ChaChaPoly_BLAKE2s", 0);
-    check_symmetric("NoisePSK_XXfallback_448_AESGCM_SHA512", 0);
-    check_symmetric("NoisePSK_IK_448_ChaChaPoly_BLAKE2b", 0);
-
-    check_symmetric("Noise_XX_25519_AESGCM_SHA256", 1);
-    check_symmetric("Noise_N_25519_ChaChaPoly_BLAKE2s", 1);
-    check_symmetric("Noise_XXfallback_448_AESGCM_SHA512", 1);
-    check_symmetric("Noise_IK_448_ChaChaPoly_BLAKE2b", 1);
-
-    check_symmetric("NoisePSK_XX_25519_AESGCM_SHA256", 1);
-    check_symmetric("NoisePSK_N_25519_ChaChaPoly_BLAKE2s", 1);
-    check_symmetric("NoisePSK_XXfallback_448_AESGCM_SHA512", 1);
-    check_symmetric("NoisePSK_IK_448_ChaChaPoly_BLAKE2b", 1);
+    check_symmetric("NoisePSK_XX_25519_AESGCM_SHA256");
+    check_symmetric("NoisePSK_N_25519_ChaChaPoly_BLAKE2s");
+    check_symmetric("NoisePSK_XXfallback_448_AESGCM_SHA512");
+    check_symmetric("NoisePSK_IK_448_ChaChaPoly_BLAKE2b");
 }
 
 /* Check other error conditions that can be reported by the functions */

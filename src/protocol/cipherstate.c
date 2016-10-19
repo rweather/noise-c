@@ -508,8 +508,8 @@ int noise_cipherstate_decrypt(NoiseCipherState *state, NoiseBuffer *buffer)
  * \return NOISE_ERROR_INVALID_STATE if noise_cipherstate_has_key() is false.
  *
  * This function is intended for use with resumption patterns and nested
- * post-quantum handshakes to generate PSK or SSK key material to pass
- * from one handshake to another.
+ * post-quantum handshakes to generate PSK key material to pass from one
+ * handshake to another.
  *
  * Warning: Every time this function is called it will return the same 32
  * bytes of key material until such time that noise_cipherstate_init_key()

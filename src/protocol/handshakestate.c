@@ -1696,63 +1696,10 @@ int noise_handshakestate_read_message
  * \a send or \a receive argument and the second CipherState will not be
  * created at all.
  *
- * \sa noise_handshakestate_split_with_key(),
- * noise_handshakestate_get_handshake_hash()
+ * \sa noise_handshakestate_get_handshake_hash()
  */
 int noise_handshakestate_split
     (NoiseHandshakeState *state, NoiseCipherState **send, NoiseCipherState **receive)
-{
-    return noise_handshakestate_split_with_key(state, send, receive, 0, 0);
-}
-
-/**
- * \brief Splits the transport encryption CipherState objects out of
- * this HandshakeState object, with a secondary symmetric key.
- *
- * \param state The HandshakeState object.
- * \param send Points to the variable where to place the pointer to the
- * CipherState object to use to send packets from local to remote.
- * This can be NULL if the application is using a one-way handshake pattern.
- * \param receive Points to the variable where to place the pointer to the
- * CipherState object to use to receive packets from the remote to local.
- * This can be NULL if the application is using a one-way handshake pattern.
- * \param secondary_key Points to an optional "secondary symmetric key"
- * from a parallel non-DH handshake to mix into the final cipher keys.
- * This may be NULL if \a secondary_key_len is zero.
- * \param secondary_key_len Length of \a secondary_key in bytes.
- * This must be either zero or 32 to comply with the requirements from
- * the Noise protocol specification.
- *
- * \return NOISE_ERROR_NONE on success.
- * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
- * \return NOISE_ERROR_INVALID_PARAM if both \a send and \a receive are NULL.
- * \return NOISE_ERROR_INVALID_PARAM if \a secondary_key is NULL and
- * \a secondary_key_len is not zero.
- * \return NOISE_ERROR_INVALID_LENGTH if \a secondary_key_len is not zero or 32.
- * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split
- * or the handshake protocol has not completed successfully yet.
- * \return NOISE_ERROR_NO_MEMORY if there is insufficient memory to create
- * the new CipherState objects.
- *
- * Once a HandshakeState has been split, it is effectively finished and
- * cannot be used for future handshake operations.  If those operations are
- * invoked, the relevant functions will return NOISE_ERROR_INVALID_STATE.
- *
- * The \a send object should be used to protect messages from the local
- * side to the remote side, and the \a receive object should be used to
- * protect messages from the remote side to the local side.
- *
- * If the handshake pattern is one-way, then the application should call
- * noise_cipherstate_free() on the object that is not needed.  Alternatively,
- * the application can pass NULL to noise_handshakestate_split_with_key() as
- * the \a send or \a receive argument and the second CipherState will not be
- * created at all.
- *
- * \sa noise_handshakestate_split(), noise_handshakestate_get_handshake_hash()
- */
-int noise_handshakestate_split_with_key
-    (NoiseHandshakeState *state, NoiseCipherState **send, NoiseCipherState **receive,
-     const uint8_t *secondary_key, size_t secondary_key_len)
 {
     int swap;
     int err;
@@ -1762,10 +1709,6 @@ int noise_handshakestate_split_with_key
         return NOISE_ERROR_INVALID_PARAM;
     if (!send && !receive)
         return NOISE_ERROR_INVALID_PARAM;
-    if (!secondary_key && secondary_key_len)
-        return NOISE_ERROR_INVALID_PARAM;
-    if (secondary_key_len != 0 && secondary_key_len != NOISE_SSK_LEN)
-        return NOISE_ERROR_INVALID_LENGTH;
     if (state->action != NOISE_ACTION_SPLIT)
         return NOISE_ERROR_INVALID_STATE;
     if (!state->symmetric->cipher)
@@ -1775,13 +1718,10 @@ int noise_handshakestate_split_with_key
     swap = (state->role == NOISE_ROLE_RESPONDER);
 
     /* Split the CipherState objects out of the SymmetricState */
-    if (swap) {
-        err = noise_symmetricstate_split
-            (state->symmetric, receive, send, secondary_key, secondary_key_len);
-    } else {
-        err = noise_symmetricstate_split
-            (state->symmetric, send, receive, secondary_key, secondary_key_len);
-    }
+    if (swap)
+        err = noise_symmetricstate_split(state->symmetric, receive, send);
+    else
+        err = noise_symmetricstate_split(state->symmetric, send, receive);
     if (err == NOISE_ERROR_NONE)
         state->action = NOISE_ACTION_COMPLETE;
     return err;
