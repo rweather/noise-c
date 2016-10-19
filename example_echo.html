@@ -89,7 +89,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <li class="level1"><a href="#example_echo_using">Using the echo example</a><ul><li class="level2"><a href="#example_echo_keygen">Generating keys</a></li>
 <li class="level2"><a href="#example_echo_start_server">Starting an echo server</a></li>
 <li class="level2"><a href="#example_echo_start_client">Running the echo client</a></li>
-<li class="level2"><a href="#example_echo_post_quantum">Post-quantum echo</a></li>
 </ul>
 </li>
 </ul>
@@ -213,22 +212,11 @@ Running the echo client</h2>
 <div class="line">Received: What day is it?</div>
 </div><!-- fragment --><p>If the keys supplied to the client do not match those used by the server, the connection will abort with a "MAC failure".</p>
 <p>The <code>&ndash;padding</code> option can be supplied to cause the client to pad all outgoing messages to a uniform size with random data. The padding will be stripped when the echo returns from the server.</p>
-<p>The <code>&ndash;verbose</code> or <code>-v</code> option can be supplied to dump the verbose packet contents that are transmitted or received.</p>
-<p>The <code>&ndash;fixed-ephemeral</code> or <code>-f</code> option will force the client or the server to use a fixed ephemeral key instead of the usual random ephemeral key. These options can help diagnose interoperability issues between different implementations of the echo protocol.</p>
-<h2><a class="anchor" id="example_echo_post_quantum"></a>
-Post-quantum echo</h2>
-<p>The post-quantum New Hope algorithm can be used with the "NN" pattern:</p>
-<div class="fragment"><div class="line">echo-client Noise_NN_NewHope_AESGCM_SHA256 hostname 7000</div>
-</div><!-- fragment --><p>If you try to use New Hope with any other pattern, you will get an error message like this:</p>
-<div class="fragment"><div class="line">$ echo-client Noise_NX_NewHope_AESGCM_SHA256 hostname 7000</div>
-<div class="line">Noise_NX_NewHope_AESGCM_SHA256: Not applicable</div>
-</div><!-- fragment --><p>However, you can use New Hope with other patterns if you nest a post-quantum handshake inside a regular handshake. This is accomplished with the <code>-q</code> or <code>&ndash;post-quantum</code> options:</p>
-<div class="fragment"><div class="line">echo-client -q Noise_NX_25519_AESGCM_SHA256 hostname 7000</div>
-</div><!-- fragment --><p>The results of the regular and post-quantum handshakes are mixed together to generate a combined key that has the strengths of both Curve25519 and New Hope. </p>
+<p>The <code>&ndash;verbose</code> or <code>-v</code> option can be supplied to dump the verbose packet contents that are transmitted or received. The <code>&ndash;fixed-ephemeral</code> or <code>-f</code> option will force the client or the server to use a fixed ephemeral key instead of the usual random ephemeral key. These options can help diagnose interoperability issues between different implementations of the echo protocol. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 19 2016 20:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

@@ -45,7 +45,6 @@ var searchData=
   ['noise_5freq_5fpsk',['NOISE_REQ_PSK',['../internal_8h.html#a9b69b5bb560916ae89d9e7f10b824678',1,'internal.h']]],
   ['noise_5freq_5fremote_5fpremsg',['NOISE_REQ_REMOTE_PREMSG',['../internal_8h.html#a3a167d41673f5346eb87129cce9ff08a',1,'internal.h']]],
   ['noise_5freq_5fremote_5frequired',['NOISE_REQ_REMOTE_REQUIRED',['../internal_8h.html#adaef0de41e54f3b2f90a91cfdfb8c79a',1,'internal.h']]],
-  ['noise_5fssk_5flen',['NOISE_SSK_LEN',['../internal_8h.html#aff58d6cbc8e228c8f6e2597330c2b5c1',1,'internal.h']]],
   ['noise_5ftoken_5fe',['NOISE_TOKEN_E',['../internal_8h.html#a83dd8de20e08eaee39c24a217208a178',1,'internal.h']]],
   ['noise_5ftoken_5fee',['NOISE_TOKEN_EE',['../internal_8h.html#a23ba1c80451b812b69aa2035e14b26d1',1,'internal.h']]],
   ['noise_5ftoken_5fend',['NOISE_TOKEN_END',['../internal_8h.html#a33266cba0956470272ba0f859adf4f43',1,'internal.h']]],

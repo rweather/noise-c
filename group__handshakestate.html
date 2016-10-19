@@ -161,9 +161,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga3d4bdfb7865f69e456bb5b3e895c6d0a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a">noise_handshakestate_split</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **send, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **receive)</td></tr>
 <tr class="memdesc:ga3d4bdfb7865f69e456bb5b3e895c6d0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits the transport encryption CipherState objects out of this HandshakeState object.  <a href="#ga3d4bdfb7865f69e456bb5b3e895c6d0a">More...</a><br/></td></tr>
 <tr class="separator:ga3d4bdfb7865f69e456bb5b3e895c6d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0aae736fc4a04df2cbfdd24973aeb8ae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#ga0aae736fc4a04df2cbfdd24973aeb8ae">noise_handshakestate_split_with_key</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **send, <a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **receive, const uint8_t *secondary_key, size_t secondary_key_len)</td></tr>
-<tr class="memdesc:ga0aae736fc4a04df2cbfdd24973aeb8ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key.  <a href="#ga0aae736fc4a04df2cbfdd24973aeb8ae">More...</a><br/></td></tr>
-<tr class="separator:ga0aae736fc4a04df2cbfdd24973aeb8ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf76831b18d6d95f7f47986d2c8f873c0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__handshakestate.html#gaf76831b18d6d95f7f47986d2c8f873c0">noise_handshakestate_start</a> (<a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *state)</td></tr>
 <tr class="memdesc:gaf76831b18d6d95f7f47986d2c8f873c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the handshake on a HandshakeState object.  <a href="#gaf76831b18d6d95f7f47986d2c8f873c0">More...</a><br/></td></tr>
 <tr class="separator:gaf76831b18d6d95f7f47986d2c8f873c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -461,7 +458,7 @@ NOISE_ERROR_INVALID_STATE if the handshake has not successfully completed yet.</
 <dl class="section note"><dt>Note</dt><dd>The handshake hash is generated from publicly-known values in the handshake. If the application needs a unique secret identifier, then it should combine the handshake hash with other randomly generated data that is sent encrypted during the session.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01820">1820</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01760">1760</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1090,84 +1087,9 @@ NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherSt
 <p>Once a HandshakeState has been split, it is effectively finished and cannot be used for future handshake operations. If those operations are invoked, the relevant functions will return NOISE_ERROR_INVALID_STATE.</p>
 <p>The <em>send</em> object should be used to protect messages from the local side to the remote side, and the <em>receive</em> object should be used to protect messages from the remote side to the local side.</p>
 <p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on the object that is not needed. Alternatively, the application can pass NULL to <a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a> as the <em>send</em> or <em>receive</em> argument and the second CipherState will not be created at all.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga0aae736fc4a04df2cbfdd24973aeb8ae" title="Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key. ">noise_handshakestate_split_with_key()</a>, <a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
+<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01703">1703</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga0aae736fc4a04df2cbfdd24973aeb8ae"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int noise_handshakestate_split_with_key </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__handshakestate.html#ga00fef5d2b365025653ceea29f9fcd8d5">NoiseHandshakeState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **&#160;</td>
-          <td class="paramname"><em>send</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> **&#160;</td>
-          <td class="paramname"><em>receive</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const uint8_t *&#160;</td>
-          <td class="paramname"><em>secondary_key</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>secondary_key_len</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>The HandshakeState object. </td></tr>
-    <tr><td class="paramname">send</td><td>Points to the variable where to place the pointer to the CipherState object to use to send packets from local to remote. This can be NULL if the application is using a one-way handshake pattern. </td></tr>
-    <tr><td class="paramname">receive</td><td>Points to the variable where to place the pointer to the CipherState object to use to receive packets from the remote to local. This can be NULL if the application is using a one-way handshake pattern. </td></tr>
-    <tr><td class="paramname">secondary_key</td><td>Points to an optional "secondary symmetric key" from a parallel non-DH handshake to mix into the final cipher keys. This may be NULL if <em>secondary_key_len</em> is zero. </td></tr>
-    <tr><td class="paramname">secondary_key_len</td><td>Length of <em>secondary_key</em> in bytes. This must be either zero or 32 to comply with the requirements from the Noise protocol specification.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
-<dd>
-NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL. </dd>
-<dd>
-NOISE_ERROR_INVALID_PARAM if both <em>send</em> and <em>receive</em> are NULL. </dd>
-<dd>
-NOISE_ERROR_INVALID_PARAM if <em>secondary_key</em> is NULL and <em>secondary_key_len</em> is not zero. </dd>
-<dd>
-NOISE_ERROR_INVALID_LENGTH if <em>secondary_key_len</em> is not zero or 32. </dd>
-<dd>
-NOISE_ERROR_INVALID_STATE if the <em>state</em> has already been split or the handshake protocol has not completed successfully yet. </dd>
-<dd>
-NOISE_ERROR_NO_MEMORY if there is insufficient memory to create the new CipherState objects.</dd></dl>
-<p>Once a HandshakeState has been split, it is effectively finished and cannot be used for future handshake operations. If those operations are invoked, the relevant functions will return NOISE_ERROR_INVALID_STATE.</p>
-<p>The <em>send</em> object should be used to protect messages from the local side to the remote side, and the <em>receive</em> object should be used to protect messages from the remote side to the local side.</p>
-<p>If the handshake pattern is one-way, then the application should call <a class="el" href="group__cipherstate.html#ga407f8ce7855758296400eff1eb6c065a" title="Frees a CipherState object after destroying all sensitive material. ">noise_cipherstate_free()</a> on the object that is not needed. Alternatively, the application can pass NULL to <a class="el" href="group__handshakestate.html#ga0aae736fc4a04df2cbfdd24973aeb8ae" title="Splits the transport encryption CipherState objects out of this HandshakeState object, with a secondary symmetric key. ">noise_handshakestate_split_with_key()</a> as the <em>send</em> or <em>receive</em> argument and the second CipherState will not be created at all.</p>
-<dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__handshakestate.html#ga3d4bdfb7865f69e456bb5b3e895c6d0a" title="Splits the transport encryption CipherState objects out of this HandshakeState object. ">noise_handshakestate_split()</a>, <a class="el" href="group__handshakestate.html#ga25cdb5ceb457746f8bf5c99d3596bd00" title="Gets the handshake hash value once the handshake ends. ">noise_handshakestate_get_handshake_hash()</a> </dd></dl>
-
-<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01754">1754</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
+<p>Definition at line <a class="el" href="handshakestate_8c_source.html#l01702">1702</a> of file <a class="el" href="handshakestate_8c_source.html">handshakestate.c</a>.</p>
 
 </div>
 </div>
@@ -1279,7 +1201,7 @@ NOISE_ERROR_INVALID_LENGTH if <em>message</em> is too small to contain all of th
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 19 2016 20:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

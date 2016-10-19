@@ -141,7 +141,7 @@ Functions</h2></td></tr>
 <tr class="separator:ga3a10548dfc0948bb2e29ac416dc8a901"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<p>CipherState objects are used to encrypt or decrypt data during a session. Once the handshake has completed, <a class="el" href="group__symmetricstate.html#gadcb03d5b22400016e003a8d62d0790e1" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> will create two CipherState objects for encrypting packets sent to the other party, and decrypting packets received from the other party. </p>
+<p>CipherState objects are used to encrypt or decrypt data during a session. Once the handshake has completed, <a class="el" href="group__symmetricstate.html#gadf7cef60a64aef703add9b093c3b6c63" title="Splits the transport encryption CipherState objects out of this SymmetricState object. ">noise_symmetricstate_split()</a> will create two CipherState objects for encrypting packets sent to the other party, and decrypting packets received from the other party. </p>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a class="anchor" id="gaed43ed8af5dd6f1a8ce2246c5bb00dc1"></a>
 <div class="memitem">
@@ -329,7 +329,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>data</em> is NULL. </dd>
 NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not 32. </dd>
 <dd>
 NOISE_ERROR_INVALID_STATE if <a class="el" href="group__cipherstate.html#ga7c8497c3f9682d6ac5b6cbce58a4a9e3" title="Determine if the key has been set on a CipherState object. ">noise_cipherstate_has_key()</a> is false.</dd></dl>
-<p>This function is intended for use with resumption patterns and nested post-quantum handshakes to generate PSK or SSK key material to pass from one handshake to another.</p>
+<p>This function is intended for use with resumption patterns and nested post-quantum handshakes to generate PSK key material to pass from one handshake to another.</p>
 <p>Warning: Every time this function is called it will return the same 32 bytes of key material until such time that <a class="el" href="group__cipherstate.html#gac10e4b2b02a43c1e1e23253420eea1d0" title="Initializes the key on a CipherState object. ">noise_cipherstate_init_key()</a> is called to establish a new encryption key. This function should therefore be called only once when the current session is about to be terminated. </p>
 
 <p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00520">520</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
@@ -827,7 +827,7 @@ NOISE_ERROR_INVALID_NONCE if <em>nonce</em> is smaller than the current value.</
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Oct 15 2016 09:12:26 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Oct 19 2016 20:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
