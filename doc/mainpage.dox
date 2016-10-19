@@ -51,10 +51,10 @@ NNhfs, NKhfs, NXhfs, XNhfs, XKhfs, XXhfs, KNhfs, KKhfs, KXhfs, INhfs, IKhfs,
 IXhfs, XXfallback+hfs, NXnoidh+hfs, XXnoidh+hfs, KXnoidh+hfs, IKnoidh+hfs,
 IXnoidh+hfs
 \li Diffie-Hellman: 25519, 448
-\li Post-Quantum Diffie-Hellman: NewHope (experimental)
+\li Post-Quantum: NewHope
 \li Cipher: ChaChaPoly, AESGCM
 \li Hash: BLAKE2s, BLAKE2b, SHA256, SHA512
-\li Other: Support for SSK values and Hybrid Forward Secrecy
+\li Other: Support for Hybrid Forward Secrecy
 
 Note that the post-quantum "NewHope" algorithm only works with the "NN"
 handshake pattern because it does not support long-term static keys.
