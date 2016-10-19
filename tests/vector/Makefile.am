@@ -11,7 +11,6 @@ LDADD = ../../src/protocol/libnoiseprotocol.a
 VECTORS = \
     $(srcdir)/cacophony.txt \
     $(srcdir)/noise-c-basic.txt \
-    $(srcdir)/noise-c-ssk.txt \
     $(srcdir)/noise-c-fallback.txt \
     $(srcdir)/noise-c-hybrid.txt
 
