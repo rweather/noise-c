@@ -219,6 +219,7 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         }
     }
     handshake->pattern = pattern;
+    handshake->is_initiator = is_initiator;
     if (is_initiator) {
         handshake->action = ACTION_WRITE;
     } else {
@@ -336,10 +337,17 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
             break;
 
         case NOISE_TOKEN_ES:
-            noise_dhstate_set_keypair_private
-                (handshake->dh_private, handshake->e, handshake->e_len);
-            noise_dhstate_set_public_key
-                (handshake->dh_public, handshake->rs, handshake->rs_len);
+            if (handshake->is_initiator) {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->e, handshake->e_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->rs, handshake->rs_len);
+            } else {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->s, handshake->s_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->re, handshake->re_len);
+            }
             len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
                 (handshake->dh_private, handshake->dh_public, data.data, len);
@@ -347,10 +355,17 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
             break;
 
         case NOISE_TOKEN_SE:
-            noise_dhstate_set_keypair_private
-                (handshake->dh_private, handshake->s, handshake->s_len);
-            noise_dhstate_set_public_key
-                (handshake->dh_public, handshake->re, handshake->re_len);
+            if (handshake->is_initiator) {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->s, handshake->s_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->re, handshake->re_len);
+            } else {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->e, handshake->e_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->rs, handshake->rs_len);
+            }
             len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
                 (handshake->dh_private, handshake->dh_public, data.data, len);
@@ -468,10 +483,17 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
             break;
 
         case NOISE_TOKEN_ES:
-            noise_dhstate_set_keypair_private
-                (handshake->dh_private, handshake->s, handshake->s_len);
-            noise_dhstate_set_public_key
-                (handshake->dh_public, handshake->re, handshake->re_len);
+            if (handshake->is_initiator) {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->e, handshake->e_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->rs, handshake->rs_len);
+            } else {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->s, handshake->s_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->re, handshake->re_len);
+            }
             len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
                 (handshake->dh_private, handshake->dh_public, data.data, len);
@@ -479,10 +501,17 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
             break;
 
         case NOISE_TOKEN_SE:
-            noise_dhstate_set_keypair_private
-                (handshake->dh_private, handshake->e, handshake->e_len);
-            noise_dhstate_set_public_key
-                (handshake->dh_public, handshake->rs, handshake->rs_len);
+            if (handshake->is_initiator) {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->s, handshake->s_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->re, handshake->re_len);
+            } else {
+                noise_dhstate_set_keypair_private
+                    (handshake->dh_private, handshake->e, handshake->e_len);
+                noise_dhstate_set_public_key
+                    (handshake->dh_public, handshake->rs, handshake->rs_len);
+            }
             len = noise_dhstate_get_shared_key_length(handshake->dh_private);
             noise_dhstate_calculate
                 (handshake->dh_private, handshake->dh_public, data.data, len);

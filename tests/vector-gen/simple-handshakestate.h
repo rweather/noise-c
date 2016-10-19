@@ -63,6 +63,7 @@ typedef struct
     size_t psk_len;
     int action;
     const uint8_t *pattern;
+    int is_initiator;
 
 } HandshakeState;
 
