@@ -88,6 +88,18 @@ int echo_get_protocol_id(EchoProtocolId *id, const char *name)
     case NOISE_PATTERN_IK:          id->pattern = ECHO_PATTERN_IK; break;
     case NOISE_PATTERN_XX:          id->pattern = ECHO_PATTERN_XX; break;
     case NOISE_PATTERN_IX:          id->pattern = ECHO_PATTERN_IX; break;
+    case NOISE_PATTERN_NN_HFS:      id->pattern = ECHO_PATTERN_NN | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_KN_HFS:      id->pattern = ECHO_PATTERN_KN | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_NK_HFS:      id->pattern = ECHO_PATTERN_NK | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_KK_HFS:      id->pattern = ECHO_PATTERN_KK | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_NX_HFS:      id->pattern = ECHO_PATTERN_NX | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_KX_HFS:      id->pattern = ECHO_PATTERN_KX | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_XN_HFS:      id->pattern = ECHO_PATTERN_XN | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_IN_HFS:      id->pattern = ECHO_PATTERN_IN | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_XK_HFS:      id->pattern = ECHO_PATTERN_XK | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_IK_HFS:      id->pattern = ECHO_PATTERN_IK | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_XX_HFS:      id->pattern = ECHO_PATTERN_XX | ECHO_PATTERN_HFS; break;
+    case NOISE_PATTERN_IX_HFS:      id->pattern = ECHO_PATTERN_IX | ECHO_PATTERN_HFS; break;
     default:                        ok = 0; break;
     }
 
@@ -101,6 +113,14 @@ int echo_get_protocol_id(EchoProtocolId *id, const char *name)
     case NOISE_DH_CURVE25519:       id->dh = ECHO_DH_25519; break;
     case NOISE_DH_CURVE448:         id->dh = ECHO_DH_448; break;
     case NOISE_DH_NEWHOPE:          id->dh = ECHO_DH_NEWHOPE; break;
+    default:                        ok = 0; break;
+    }
+
+    switch (nid.hybrid_id) {
+    case NOISE_DH_CURVE25519:       id->dh |= ECHO_HYBRID_25519; break;
+    case NOISE_DH_CURVE448:         id->dh |= ECHO_HYBRID_448; break;
+    case NOISE_DH_NEWHOPE:          id->dh |= ECHO_HYBRID_NEWHOPE; break;
+    case NOISE_DH_NONE:             break;
     default:                        ok = 0; break;
     }
 
@@ -141,6 +161,18 @@ int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id)
     case ECHO_PATTERN_IK:           nid->pattern_id = NOISE_PATTERN_IK; break;
     case ECHO_PATTERN_XX:           nid->pattern_id = NOISE_PATTERN_XX; break;
     case ECHO_PATTERN_IX:           nid->pattern_id = NOISE_PATTERN_IX; break;
+    case ECHO_PATTERN_NN | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_NN_HFS; break;
+    case ECHO_PATTERN_KN | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_KN_HFS; break;
+    case ECHO_PATTERN_NK | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_NK_HFS; break;
+    case ECHO_PATTERN_KK | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_KK_HFS; break;
+    case ECHO_PATTERN_NX | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_NX_HFS; break;
+    case ECHO_PATTERN_KX | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_KX_HFS; break;
+    case ECHO_PATTERN_XN | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_XN_HFS; break;
+    case ECHO_PATTERN_IN | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_IN_HFS; break;
+    case ECHO_PATTERN_XK | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_XK_HFS; break;
+    case ECHO_PATTERN_IK | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_IK_HFS; break;
+    case ECHO_PATTERN_XX | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_XX_HFS; break;
+    case ECHO_PATTERN_IX | ECHO_PATTERN_HFS:    nid->pattern_id = NOISE_PATTERN_IX_HFS; break;
     default:                        ok = 0;
     }
 
@@ -150,10 +182,18 @@ int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id)
     default:                        ok = 0;
     }
 
-    switch (id->dh) {
+    switch (id->dh & ECHO_DH_MASK) {
     case ECHO_DH_25519:             nid->dh_id = NOISE_DH_CURVE25519; break;
     case ECHO_DH_448:               nid->dh_id = NOISE_DH_CURVE448; break;
     case ECHO_DH_NEWHOPE:           nid->dh_id = NOISE_DH_NEWHOPE; break;
+    default:                        ok = 0;
+    }
+
+    switch (id->dh & ECHO_HYBRID_MASK) {
+    case ECHO_HYBRID_25519:         nid->hybrid_id = NOISE_DH_CURVE25519; break;
+    case ECHO_HYBRID_448:           nid->hybrid_id = NOISE_DH_CURVE448; break;
+    case ECHO_HYBRID_NEWHOPE:       nid->hybrid_id = NOISE_DH_NEWHOPE; break;
+    case ECHO_HYBRID_NONE:          nid->hybrid_id = NOISE_DH_NONE; break;
     default:                        ok = 0;
     }
 

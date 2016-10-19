@@ -74,6 +74,14 @@ static uint8_t const fixed_ephemeral_448[56] = {
     0x02, 0x60, 0x39, 0x0f, 0xbc, 0x83, 0x99, 0xa5
 };
 
+/* New Hope private key to use when fixed ephemeral mode is selected */
+static uint8_t const fixed_ephemeral_newhope[32] = {
+    0xba, 0xc5, 0xba, 0x88, 0x1d, 0xd3, 0x5c, 0x59,
+    0x71, 0x96, 0x70, 0x00, 0x46, 0x92, 0xd6, 0x75,
+    0xb8, 0x3c, 0x98, 0xdb, 0x6a, 0x0e, 0x55, 0x80,
+    0x0b, 0xaf, 0xeb, 0x7e, 0x70, 0x49, 0x1b, 0xf4
+};
+
 /* Print usage information */
 static void usage(const char *progname)
 {
@@ -187,9 +195,14 @@ static int initialize_handshake
         if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
             err = noise_dhstate_set_keypair_private
                 (dh, fixed_ephemeral_25519, sizeof(fixed_ephemeral_25519));
-        } else {
+        } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE448) {
             err = noise_dhstate_set_keypair_private
                 (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
+        } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_NEWHOPE) {
+            err = noise_dhstate_set_keypair_private
+                (dh, fixed_ephemeral_newhope, sizeof(fixed_ephemeral_newhope));
+        } else {
+            err = NOISE_ERROR_UNKNOWN_ID;
         }
         if (err != NOISE_ERROR_NONE) {
             noise_perror("fixed ephemeral value", err);

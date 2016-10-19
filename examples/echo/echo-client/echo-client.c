@@ -74,6 +74,18 @@ static uint8_t const fixed_ephemeral_448[56] = {
     0xef, 0x4f, 0x3f, 0x9b, 0x8f, 0x87, 0x9d, 0x4e
 };
 
+/* New Hope private key to use when fixed ephemeral mode is selected */
+static uint8_t const fixed_ephemeral_newhope[64] = {
+    0x93, 0x4d, 0x60, 0xb3, 0x56, 0x24, 0xd7, 0x40,
+    0xb3, 0x0a, 0x7f, 0x22, 0x7a, 0xf2, 0xae, 0x7c,
+    0x67, 0x8e, 0x4e, 0x04, 0xe1, 0x3c, 0x5f, 0x50,
+    0x9e, 0xad, 0xe2, 0xb7, 0x9a, 0xea, 0x77, 0xe2,
+    0x3e, 0x2a, 0x2e, 0xa6, 0xc9, 0xc4, 0x76, 0xfc,
+    0x49, 0x37, 0xb0, 0x13, 0xc9, 0x93, 0xa7, 0x93,
+    0xd6, 0xc0, 0xab, 0x99, 0x60, 0x69, 0x5b, 0xa8,
+    0x38, 0xf6, 0x49, 0xda, 0x53, 0x9c, 0xa3, 0xd0
+};
+
 /* Print usage information */
 static void usage(const char *progname)
 {
@@ -210,9 +222,14 @@ static int initialize_handshake
         if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
             err = noise_dhstate_set_keypair_private
                 (dh, fixed_ephemeral_25519, sizeof(fixed_ephemeral_25519));
-        } else {
+        } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE448) {
             err = noise_dhstate_set_keypair_private
                 (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
+        } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_NEWHOPE) {
+            err = noise_dhstate_set_keypair_private
+                (dh, fixed_ephemeral_newhope, sizeof(fixed_ephemeral_newhope));
+        } else {
+            err = NOISE_ERROR_UNKNOWN_ID;
         }
         if (err != NOISE_ERROR_NONE) {
             noise_perror("fixed ephemeral value", err);
