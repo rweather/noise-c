@@ -60,7 +60,7 @@ typedef int sockopt_type;
 int echo_verbose = 0;
 
 /* Convert a Noise handshake protocol name into an Echo protocol id */
-int echo_get_protocol_id(EchoProtocolId *id, const char *name, int post_quantum)
+int echo_get_protocol_id(EchoProtocolId *id, const char *name)
 {
     NoiseProtocolId nid;
     int ok = 1;
@@ -74,9 +74,6 @@ int echo_get_protocol_id(EchoProtocolId *id, const char *name, int post_quantum)
     case NOISE_PREFIX_PSK:          id->psk = ECHO_PSK_ENABLED; break;
     default:                        ok = 0; break;
     }
-
-    if (post_quantum)
-        id->psk |= ECHO_PQ_ENABLED;
 
     switch (nid.pattern_id) {
     case NOISE_PATTERN_NN:          id->pattern = ECHO_PATTERN_NN; break;
@@ -119,21 +116,16 @@ int echo_get_protocol_id(EchoProtocolId *id, const char *name, int post_quantum)
 }
 
 /* Convert an Echo protocol id into a Noise protocol id */
-int echo_to_noise_protocol_id(NoiseProtocolId *nid, int *post_quantum, const EchoProtocolId *id)
+int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id)
 {
     int ok = 1;
 
     memset(nid, 0, sizeof(NoiseProtocolId));
 
-    if ((id->psk & ECHO_PSK_ENABLED) != 0)
-        nid->prefix_id = NOISE_PREFIX_PSK;
-    else
-        nid->prefix_id = NOISE_PREFIX_STANDARD;
-    if (post_quantum) {
-        if ((id->psk & ECHO_PQ_ENABLED) != 0)
-            *post_quantum = 1;
-        else
-            *post_quantum = 0;
+    switch (id->psk) {
+    case ECHO_PSK_DISABLED:         nid->prefix_id = NOISE_PREFIX_STANDARD; break;
+    case ECHO_PSK_ENABLED:          nid->prefix_id = NOISE_PREFIX_PSK; break;
+    default:                        ok = 0;
     }
 
     switch (id->pattern) {

@@ -308,38 +308,9 @@ be stripped when the echo returns from the server.
 
 The <tt>--verbose</tt> or <tt>-v</tt> option can be supplied to dump the
 verbose packet contents that are transmitted or received.
-
 The <tt>--fixed-ephemeral</tt> or <tt>-f</tt> option will force the client
 or the server to use a fixed ephemeral key instead of the usual random
 ephemeral key.  These options can help diagnose interoperability issues
 between different implementations of the echo protocol.
-
-\subsection example_echo_post_quantum Post-quantum echo
-
-The post-quantum New Hope algorithm can be used with the "NN" pattern:
-
-\code
-echo-client Noise_NN_NewHope_AESGCM_SHA256 hostname 7000
-\endcode
-
-If you try to use New Hope with any other pattern, you will get an error
-message like this:
-
-\code
-$ echo-client Noise_NX_NewHope_AESGCM_SHA256 hostname 7000
-Noise_NX_NewHope_AESGCM_SHA256: Not applicable
-\endcode
-
-However, you can use New Hope with other patterns if you nest a post-quantum
-handshake inside a regular handshake.  This is accomplished with the
-<tt>-q</tt> or <tt>--post-quantum</tt> options:
-
-\code
-echo-client -q Noise_NX_25519_AESGCM_SHA256 hostname 7000
-\endcode
-
-The results of the regular and post-quantum handshakes are mixed together
-to generate a combined key that has the strengths of both Curve25519 and
-New Hope.
 
 */

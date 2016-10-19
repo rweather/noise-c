@@ -32,8 +32,6 @@
 
 #define ECHO_PSK_DISABLED           0x00
 #define ECHO_PSK_ENABLED            0x01
-#define ECHO_PQ_ENABLED             0x02
-#define ECHO_PQ_AND_PSK_ENABLED     0x03
 
 #define ECHO_PATTERN_NN             0x00
 #define ECHO_PATTERN_KN             0x01
@@ -72,8 +70,8 @@ typedef struct
 
 extern int echo_verbose;
 
-int echo_get_protocol_id(EchoProtocolId *id, const char *name, int post_quantum);
-int echo_to_noise_protocol_id(NoiseProtocolId *nid, int *post_quantum, const EchoProtocolId *id);
+int echo_get_protocol_id(EchoProtocolId *id, const char *name);
+int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id);
 
 int echo_load_private_key(const char *filename, uint8_t *key, size_t len);
 int echo_load_public_key(const char *filename, uint8_t *key, size_t len);
