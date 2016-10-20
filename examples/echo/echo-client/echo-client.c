@@ -138,6 +138,25 @@ static int parse_options(int argc, char *argv[])
     return 1;
 }
 
+/* Set a fixed ephemeral key for testing */
+static int set_fixed_ephemeral(NoiseDHState *dh)
+{
+    if (!dh)
+        return NOISE_ERROR_NONE;
+    if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
+        return noise_dhstate_set_keypair_private
+            (dh, fixed_ephemeral_25519, sizeof(fixed_ephemeral_25519));
+    } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE448) {
+        return noise_dhstate_set_keypair_private
+            (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
+    } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_NEWHOPE) {
+        return noise_dhstate_set_keypair_private
+            (dh, fixed_ephemeral_newhope, sizeof(fixed_ephemeral_newhope));
+    } else {
+        return NOISE_ERROR_UNKNOWN_ID;
+    }
+}
+
 /* Initialize's the handshake using command-line options */
 static int initialize_handshake
     (NoiseHandshakeState *handshake, const void *prologue, size_t prologue_len)
@@ -219,20 +238,15 @@ static int initialize_handshake
     /* Set the fixed local ephemeral value if necessary */
     if (fixed_ephemeral) {
         dh = noise_handshakestate_get_fixed_ephemeral_dh(handshake);
-        if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE25519) {
-            err = noise_dhstate_set_keypair_private
-                (dh, fixed_ephemeral_25519, sizeof(fixed_ephemeral_25519));
-        } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_CURVE448) {
-            err = noise_dhstate_set_keypair_private
-                (dh, fixed_ephemeral_448, sizeof(fixed_ephemeral_448));
-        } else if (noise_dhstate_get_dh_id(dh) == NOISE_DH_NEWHOPE) {
-            err = noise_dhstate_set_keypair_private
-                (dh, fixed_ephemeral_newhope, sizeof(fixed_ephemeral_newhope));
-        } else {
-            err = NOISE_ERROR_UNKNOWN_ID;
-        }
+        err = set_fixed_ephemeral(dh);
         if (err != NOISE_ERROR_NONE) {
             noise_perror("fixed ephemeral value", err);
+            return 0;
+        }
+        dh = noise_handshakestate_get_fixed_hybrid_dh(handshake);
+        err = set_fixed_ephemeral(dh);
+        if (err != NOISE_ERROR_NONE) {
+            noise_perror("fixed ephemeral hybrid value", err);
             return 0;
         }
     }
