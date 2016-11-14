@@ -91,4 +91,20 @@ AS_CASE(["$with_openssl"],
   [PKG_CHECK_MODULES([openssl], [openssl], [HAVE_OPENSSL=1], [HAVE_OPENSSL=0])])
 AM_CONDITIONAL([USE_OPENSSL], [test "$with_openssl" != no -a "$HAVE_OPENSSL" -eq 1])
 
+AC_ARG_ENABLE(asan, AC_HELP_STRING([--enable-asan],
+			[Compile with Address Sanitizer]), [
+	if (test "${enableval}" = "yes"); then
+		CFLAGS="$CFLAGS -fsanitize=address";
+		LDFLAGS="$LDFLAGS -fsanitize=address"
+	fi
+])
+
+AC_ARG_ENABLE(ubsan, AC_HELP_STRING([--enable-ubsan],
+			[Compile with Undefined Behavior Sanitizer]), [
+	if (test "${enableval}" = "yes"); then
+		CFLAGS="$CFLAGS -fsanitize=undefined";
+		LDFLAGS="$LDFLAGS -fsanitize=undefined"
+	fi
+])
+
 AC_OUTPUT
