@@ -30,6 +30,7 @@
 
 extern FILE *yyin;
 extern int yylex(void);
+extern int yyparse(void);
 extern void yyrestart(FILE *file);
 
 int error_count = 0;
