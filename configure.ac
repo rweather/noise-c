@@ -80,8 +80,8 @@ AC_ARG_WITH([openssl],
   [],
   [with_openssl=no])
 
-m4_ifdef([PKG_PROG_PKG_CONFIG], [
-  PKG_PROG_PKG_CONFIG
+PKG_PROG_PKG_CONFIG
+AS_IF([test -n "$PKG_CONFIG"], [
   AS_CASE(["$with_libsodium"],
     [yes], [PKG_CHECK_MODULES_STATIC([libsodium], [libsodium], [HAVE_LIBSODIUM=1])],
     [no], [HAVE_LIBSODIUM=0],
