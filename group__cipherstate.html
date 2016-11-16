@@ -97,9 +97,6 @@ Functions</h2></td></tr>
 <tr class="memitem:ga5b626f9fafa5173c9abe60e30e8148b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#ga5b626f9fafa5173c9abe60e30e8148b2">noise_cipherstate_decrypt_with_ad</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, const uint8_t *ad, size_t ad_len, <a class="el" href="group__buffer__management.html#structNoiseBuffer">NoiseBuffer</a> *buffer)</td></tr>
 <tr class="memdesc:ga5b626f9fafa5173c9abe60e30e8148b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decrypts a block of data with this CipherState object.  <a href="#ga5b626f9fafa5173c9abe60e30e8148b2">More...</a><br/></td></tr>
 <tr class="separator:ga5b626f9fafa5173c9abe60e30e8148b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga424497503985e208370d2f159df032ab"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#ga424497503985e208370d2f159df032ab">noise_cipherstate_derive</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, uint8_t *data, size_t len)</td></tr>
-<tr class="memdesc:ga424497503985e208370d2f159df032ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derives key material from the CipherState for use in a future session.  <a href="#ga424497503985e208370d2f159df032ab">More...</a><br/></td></tr>
-<tr class="separator:ga424497503985e208370d2f159df032ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0e764ac8cb75e3da216987232255b9b9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__cipherstate.html#ga0e764ac8cb75e3da216987232255b9b9">noise_cipherstate_encrypt</a> (<a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *state, <a class="el" href="group__buffer__management.html#structNoiseBuffer">NoiseBuffer</a> *buffer)</td></tr>
 <tr class="memdesc:ga0e764ac8cb75e3da216987232255b9b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encrypts a block of data with this CipherState object.  <a href="#ga0e764ac8cb75e3da216987232255b9b9">More...</a><br/></td></tr>
 <tr class="separator:ga0e764ac8cb75e3da216987232255b9b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -280,59 +277,6 @@ NOISE_ERROR_INVALID_LENGTH if the size of <em>buffer</em> is larger than 65535 b
 </div><!-- fragment --><dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#ga11123cb18f5d28e0fd4ed3e700aafeaa" title="Encrypts a block of data with this CipherState object. ">noise_cipherstate_encrypt_with_ad()</a>, <a class="el" href="group__cipherstate.html#gae96037b3451f22ac86e51cfc177a06ad" title="Gets the length of packet MAC values for a CipherState object. ">noise_cipherstate_get_mac_length()</a> </dd></dl>
 
 <p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00374">374</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga424497503985e208370d2f159df032ab"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int noise_cipherstate_derive </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group__cipherstate.html#gaed43ed8af5dd6f1a8ce2246c5bb00dc1">NoiseCipherState</a> *&#160;</td>
-          <td class="paramname"><em>state</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint8_t *&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>len</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Derives key material from the CipherState for use in a future session. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">state</td><td>The CipherState object. </td></tr>
-    <tr><td class="paramname">data</td><td>Points to the buffer to fill with derived key material. </td></tr>
-    <tr><td class="paramname">len</td><td>The length of the key material, which must be 32.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>NOISE_ERROR_NONE on success. </dd>
-<dd>
-NOISE_ERROR_INVALID_PARAM if <em>state</em> or <em>data</em> is NULL. </dd>
-<dd>
-NOISE_ERROR_INVALID_LENGTH if <em>len</em> is not 32. </dd>
-<dd>
-NOISE_ERROR_INVALID_STATE if <a class="el" href="group__cipherstate.html#ga7c8497c3f9682d6ac5b6cbce58a4a9e3" title="Determine if the key has been set on a CipherState object. ">noise_cipherstate_has_key()</a> is false.</dd></dl>
-<p>This function is intended for use with resumption patterns and nested post-quantum handshakes to generate PSK key material to pass from one handshake to another.</p>
-<p>Warning: Every time this function is called it will return the same 32 bytes of key material until such time that <a class="el" href="group__cipherstate.html#gac10e4b2b02a43c1e1e23253420eea1d0" title="Initializes the key on a CipherState object. ">noise_cipherstate_init_key()</a> is called to establish a new encryption key. This function should therefore be called only once when the current session is about to be terminated. </p>
-
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00520">520</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -585,7 +529,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <p>Gets the maximum key length for the supported algorithms. </p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gaea3c5e6b6653ae43054a3e6153f275aa" title="Gets the maximum MAC length for the supported algorithms. ">noise_cipherstate_get_max_mac_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00596">596</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00541">541</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -606,7 +550,7 @@ NOISE_ERROR_INVALID_PARAM if <em>state</em> is NULL.</dd></dl>
 <p>Gets the maximum MAC length for the supported algorithms. </p>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#ga2c5e268f44e795c1b87d95cd2c6f7c77" title="Gets the maximum key length for the supported algorithms. ">noise_cipherstate_get_max_key_length()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00606">606</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00551">551</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
@@ -820,14 +764,14 @@ NOISE_ERROR_INVALID_NONCE if <em>nonce</em> is smaller than the current value.</
 <dl class="section warning"><dt>Warning</dt><dd>This function is intended for testing purposes only. It is dangerous to set the nonce back to a previously-used value so this function will actively prevent that from happening.</dd></dl>
 <dl class="section see"><dt>See Also</dt><dd><a class="el" href="group__cipherstate.html#gac10e4b2b02a43c1e1e23253420eea1d0" title="Initializes the key on a CipherState object. ">noise_cipherstate_init_key()</a> </dd></dl>
 
-<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00572">572</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
+<p>Definition at line <a class="el" href="cipherstate_8c_source.html#l00517">517</a> of file <a class="el" href="cipherstate_8c_source.html">cipherstate.c</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Oct 19 2016 20:30:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Nov 17 2016 05:36:20 for Noise-C by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>
