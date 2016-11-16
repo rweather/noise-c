@@ -74,22 +74,30 @@ AC_ARG_WITH([libsodium],
     [use libsodium for crypto @<:@default=check@:>@])],
   [],
   [with_libsodium=no])
-AS_CASE(["$with_libsodium"],
-  [yes], [PKG_CHECK_MODULES_STATIC([libsodium], [libsodium], [HAVE_LIBSODIUM=1])],
-  [no], [HAVE_LIBSODIUM=0],
-  [PKG_CHECK_MODULES_STATIC([libsodium], [libsodium], [HAVE_LIBSODIUM=1], [HAVE_LIBSODIUM=0])])
-AM_CONDITIONAL([USE_LIBSODIUM], [test "$with_libsodium" != no -a "$HAVE_LIBSODIUM" -eq 1])
-
 AC_ARG_WITH([openssl],
   [AS_HELP_STRING([--with-openssl],
     [use openssl for crypto @<:@default=check@:>@])],
   [],
   [with_openssl=no])
-AS_CASE(["$with_openssl"],
-  [yes], [PKG_CHECK_MODULES_STATIC([openssl], [openssl], [HAVE_OPENSSL=1])],
-  [no], [HAVE_OPENSSL=0],
-  [PKG_CHECK_MODULES_STATIC([openssl], [openssl], [HAVE_OPENSSL=1], [HAVE_OPENSSL=0])])
-AM_CONDITIONAL([USE_OPENSSL], [test "$with_openssl" != no -a "$HAVE_OPENSSL" -eq 1])
+
+m4_ifdef([PKG_PROG_PKG_CONFIG], [
+  PKG_PROG_PKG_CONFIG
+  AS_CASE(["$with_libsodium"],
+    [yes], [PKG_CHECK_MODULES_STATIC([libsodium], [libsodium], [HAVE_LIBSODIUM=1])],
+    [no], [HAVE_LIBSODIUM=0],
+    [PKG_CHECK_MODULES_STATIC([libsodium], [libsodium], [HAVE_LIBSODIUM=1], [HAVE_LIBSODIUM=0])])
+  AM_CONDITIONAL([USE_LIBSODIUM], [test "$with_libsodium" != no -a "$HAVE_LIBSODIUM" -eq 1])
+
+  AS_CASE(["$with_openssl"],
+    [yes], [PKG_CHECK_MODULES_STATIC([openssl], [openssl], [HAVE_OPENSSL=1])],
+    [no], [HAVE_OPENSSL=0],
+    [PKG_CHECK_MODULES_STATIC([openssl], [openssl], [HAVE_OPENSSL=1], [HAVE_OPENSSL=0])])
+  AM_CONDITIONAL([USE_OPENSSL], [test "$with_openssl" != no -a "$HAVE_OPENSSL" -eq 1])
+], [
+  AC_MSG_WARN([Can't find pkg-config. Using built-in reference crypto backend.])
+  AM_CONDITIONAL([USE_LIBSODIUM],[false])
+  AM_CONDITIONAL([USE_OPENSSL],[false])
+])
 
 AC_ARG_ENABLE(asan, AC_HELP_STRING([--enable-asan],
 			[Compile with Address Sanitizer]), [
