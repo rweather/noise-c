@@ -112,7 +112,8 @@ page on the Noise wiki.
 
 The library uses autoconf and automake for the Makefile structure.
 You will need to have these installed to build from the sources in the
-git repository.
+git repository.  Bison and Flex are also requred to build the
+<tt>noise-protoc</tt> protobuf compiler.
 
 To build the library under GNU/Linux and run the tests, type the following:
 
