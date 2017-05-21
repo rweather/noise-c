@@ -196,7 +196,7 @@ static int initialize_handshake
         if (dh_id == NOISE_DH_CURVE25519) {
             err = noise_dhstate_set_public_key
                 (dh, client_key_25519, sizeof(client_key_25519));
-        } else if (dh_id == NOISE_DH_CURVE25519) {
+        } else if (dh_id == NOISE_DH_CURVE448) {
             err = noise_dhstate_set_public_key
                 (dh, client_key_448, sizeof(client_key_448));
         } else {
