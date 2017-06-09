@@ -471,7 +471,7 @@ static void noise_hashstate_hmac
  *
  * Reference: <a href="http://tools.ietf.org/html/rfc5869">RFC 5868</a>
  *
- * \sa noise_hashstate_hash_one()
+ * \sa noise_hashstate_hash_one(), noise_hashstate_hkdf3()
  */
 int noise_hashstate_hkdf
     (NoiseHashState *state, const uint8_t *key, size_t key_len,
@@ -508,6 +508,83 @@ int noise_hashstate_hkdf
     noise_hashstate_hmac
         (state, temp_key, hash_len, temp_hash, hash_len + 1, 0, 0, temp_hash);
     memcpy(output2, temp_hash, output2_len);
+
+    /* Clean up and exit */
+    noise_clean(temp_key, hash_len);
+    noise_clean(temp_hash, hash_len + 1);
+    return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Hashes input data with a key to generate three output values.
+ *
+ * \param state The HashState object.
+ * \param key Points to the key.
+ * \param key_len The length of the \a key in bytes.
+ * \param data Points to the data.
+ * \param data_len The length of the \a data in bytes.
+ * \param output1 The first output buffer to fill.
+ * \param output1_len The length of the first output buffer, which may
+ * be shorter than the hash length of the HashState object.
+ * \param output2 The second output buffer to fill.
+ * \param output2_len The length of the second output buffer, which may
+ * be shorter than the hash length of the HashState object.
+ * \param output3 The third output buffer to fill.
+ * \param output3_len The length of the third output buffer, which may
+ * be shorter than the hash length of the HashState object.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if one of \a state, \a key, \a data,
+ * \a output1, \a output2, or \a output3 is NULL.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a output1_len, \a output2_len,
+ * or \a output3_len is greater than the hash length for the HashState object.
+ *
+ * Reference: <a href="http://tools.ietf.org/html/rfc5869">RFC 5868</a>
+ *
+ * \sa noise_hashstate_hkdf()
+ */
+int noise_hashstate_hkdf3
+    (NoiseHashState *state, const uint8_t *key, size_t key_len,
+     const uint8_t *data, size_t data_len,
+     uint8_t *output1, size_t output1_len,
+     uint8_t *output2, size_t output2_len,
+     uint8_t *output3, size_t output3_len)
+{
+    size_t hash_len;
+    uint8_t *temp_key;
+    uint8_t *temp_hash;
+
+    /* Validate the parameters */
+    if (!state || !key || !data || !output1 || !output2 || !output3)
+        return NOISE_ERROR_INVALID_PARAM;
+    hash_len = state->hash_len;
+    if (output1_len > hash_len || output2_len > hash_len || output3_len > hash_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+
+    /* Allocate local stack space for the temporary hash values */
+    temp_key = alloca(hash_len);
+    temp_hash = alloca(hash_len + 1);
+
+    /* Generate the temporary hashing key */
+    noise_hashstate_hmac(state, key, key_len, data, data_len, 0, 0, temp_key);
+
+    /* Generate the first output */
+    temp_hash[0] = 0x01;
+    noise_hashstate_hmac
+        (state, temp_key, hash_len, temp_hash, 1, 0, 0, temp_hash);
+    memcpy(output1, temp_hash, output1_len);
+
+    /* Generate the second output */
+    temp_hash[hash_len] = 0x02;
+    noise_hashstate_hmac
+        (state, temp_key, hash_len, temp_hash, hash_len + 1, 0, 0, temp_hash);
+    memcpy(output2, temp_hash, output2_len);
+
+    /* Generate the third output */
+    temp_hash[hash_len] = 0x03;
+    noise_hashstate_hmac
+        (state, temp_key, hash_len, temp_hash, hash_len + 1, 0, 0, temp_hash);
+    memcpy(output3, temp_hash, output3_len);
 
     /* Clean up and exit */
     noise_clean(temp_key, hash_len);

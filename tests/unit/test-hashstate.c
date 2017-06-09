@@ -245,7 +245,8 @@ static void hmac(NoiseHashState *state, uint8_t *hash,
 }
 
 /* Simple implementation of HKDF for cross-checking the library */
-static void hkdf(NoiseHashState *state, uint8_t *output1, uint8_t *output2,
+static void hkdf(NoiseHashState *state, uint8_t *output1,
+                 uint8_t *output2, uint8_t *output3,
                  const uint8_t *key, size_t key_len,
                  const uint8_t *data, size_t data_len)
 {
@@ -259,6 +260,9 @@ static void hkdf(NoiseHashState *state, uint8_t *output1, uint8_t *output2,
     output[hash_len] = 0x02;
     hmac(state, output, temp_key, hash_len, output, hash_len + 1);
     memcpy(output2, output, hash_len);
+    output[hash_len] = 0x03;
+    hmac(state, output, temp_key, hash_len, output, hash_len + 1);
+    memcpy(output3, output, hash_len);
 }
 
 /* Check the behaviour of the noise_hashstate_hkdf() function */
@@ -270,8 +274,10 @@ static void hashstate_check_hkdf_algorithm(int id)
     uint8_t data[MAX_HASH_INPUT];
     uint8_t expected1[MAX_HASH_OUTPUT];
     uint8_t expected2[MAX_HASH_OUTPUT];
+    uint8_t expected3[MAX_HASH_OUTPUT];
     uint8_t output1[MAX_HASH_OUTPUT];
     uint8_t output2[MAX_HASH_OUTPUT];
+    uint8_t output3[MAX_HASH_OUTPUT];
 
     /* Create a hash object */
     compare(noise_hashstate_new_by_id(&state, id), NOISE_ERROR_NONE);
@@ -280,7 +286,8 @@ static void hashstate_check_hkdf_algorithm(int id)
     /* Calculate the expected HKDF output with the simple implementation */
     memset(key, 0xAA, sizeof(key));
     memset(data, 0x66, sizeof(data));
-    hkdf(state, expected1, expected2, key, sizeof(key), data, sizeof(data));
+    hkdf(state, expected1, expected2, expected3,
+         key, sizeof(key), data, sizeof(data));
 
     /* Compare against what noise_hashstate_hkdf() produces */
     memset(output1, 0xE6, sizeof(output1));
@@ -305,6 +312,36 @@ static void hashstate_check_hkdf_algorithm(int id)
         compare(output2[index], 0x6E);
     }
 
+    /* Compare against what noise_hashstate_hkdf3() produces */
+    memset(output1, 0xE6, sizeof(output1));
+    memset(output2, 0x6E, sizeof(output2));
+    memset(output3, 0x66, sizeof(output3));
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                 output1, hash_len, output2, hash_len,
+                                 output3, hash_len),
+            NOISE_ERROR_NONE);
+    verify(!memcmp(output1, expected1, hash_len));
+    verify(!memcmp(output2, expected2, hash_len));
+    verify(!memcmp(output3, expected3, hash_len));
+
+    /* Call noise_hashstate_hkdf3() again, but ask it to truncate the output */
+    memset(output1, 0xE6, sizeof(output1));
+    memset(output2, 0x6E, sizeof(output2));
+    memset(output3, 0x66, sizeof(output3));
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                  output1, hash_len / 2, output2, hash_len / 2,
+                                  output3, hash_len / 2),
+            NOISE_ERROR_NONE);
+    verify(!memcmp(output1, expected1, hash_len / 2));
+    verify(!memcmp(output2, expected2, hash_len / 2));
+    verify(!memcmp(output3, expected3, hash_len / 2));
+    for (index = (hash_len / 2); index < hash_len; ++index) {
+        /* Check that the function didn't write beyond our requested length */
+        compare(output1[index], 0xE6);
+        compare(output2[index], 0x6E);
+        compare(output3[index], 0x66);
+    }
+
     /* Check parameter error conditions */
     compare(noise_hashstate_hkdf(0, key, sizeof(key), data, sizeof(data),
                                  output1, hash_len, output2, hash_len),
@@ -326,6 +363,42 @@ static void hashstate_check_hkdf_algorithm(int id)
             NOISE_ERROR_INVALID_LENGTH);
     compare(noise_hashstate_hkdf(state, key, sizeof(key), data, sizeof(data),
                                  output1, hash_len, output2, hash_len + 1),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_hkdf3(0, key, sizeof(key), data, sizeof(data),
+                                  output1, hash_len, output2, hash_len,
+                                  output3, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_hkdf3(state, 0, sizeof(key), data, sizeof(data),
+                                  output1, hash_len, output2, hash_len,
+                                  output3, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), 0, sizeof(data),
+                                  output1, hash_len, output2, hash_len,
+                                  output3, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                  0, hash_len, output2, hash_len,
+                                  output3, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                  output1, hash_len, 0, hash_len,
+                                  output3, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                  output1, hash_len, output2, hash_len,
+                                  0, hash_len),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                  output1, hash_len + 1, output2, hash_len,
+                                  output3, hash_len),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                  output1, hash_len, output2, hash_len + 1,
+                                  output3, hash_len),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_hashstate_hkdf3(state, key, sizeof(key), data, sizeof(data),
+                                  output1, hash_len, output2, hash_len,
+                                  output3, hash_len + 1),
             NOISE_ERROR_INVALID_LENGTH);
 
     /* Clean up */
