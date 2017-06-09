@@ -553,4 +553,53 @@ int noise_cipherstate_get_max_mac_length(void)
     return NOISE_MAX_MAC_LEN;
 }
 
+/**
+ * \brief Rekeys this cipherstate object.
+ *
+ * \param state The CipherState object.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the key has not been set yet.
+ *
+ * This function updates the cipherstate's key so that a compromise of
+ * the cipherstate's current key will not decrypt older messages.
+ * Its main intention is to implement higher-level protocol rules like
+ * "rotate the cipher key every 1000 messages".
+ */
+int noise_cipherstate_rekey(NoiseCipherState *state)
+{
+    uint8_t *buffer;
+    size_t key_len;
+    size_t len;
+    uint64_t save_n;
+
+    /* Bail out if the state is NULL */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* If the key hasn't been set yet, we cannot do this */
+    if (!state->has_key)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Allocate a buffer large enough to hold the output of encrypt() */
+    key_len = state->key_len;
+    len = key_len + state->mac_len;
+    buffer = alloca(len);
+
+    /* Encrypt a block of zeroes using the maximum nonce and an empty AD */
+    memset(buffer, 0, key_len);
+    save_n = state->n;
+    state->n = 0xFFFFFFFFFFFFFFFFULL;
+    (*(state->encrypt))(state, 0, 0, buffer, key_len);
+
+    /* Set the new key while preserving the original nonce */
+    (*(state->init_key))(state, buffer);
+    state->n = save_n;
+
+    /* Clean up and exit */
+    noise_clean(buffer, len);
+    return NOISE_ERROR_NONE;
+}
+
 /**@}*/
