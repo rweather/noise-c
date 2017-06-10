@@ -32,6 +32,9 @@ extern "C" {
 
 typedef struct NoiseHandshakeState_s NoiseHandshakeState;
 
+typedef int (*NoiseHandshakeHookFunc)
+    (NoiseHandshakeState *state, void *user_data);
+
 int noise_handshakestate_new_by_id
     (NoiseHandshakeState **state, const NoiseProtocolId *protocol_id, int role);
 int noise_handshakestate_new_by_name
@@ -52,6 +55,8 @@ int noise_handshakestate_needs_pre_shared_key(const NoiseHandshakeState *state);
 int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state);
 int noise_handshakestate_set_pre_shared_key
     (NoiseHandshakeState *state, const uint8_t *key, size_t key_len);
+int noise_handshakestate_set_pre_shared_key_hook
+    (NoiseHandshakeState *state, NoiseHandshakeHookFunc hook, void *user_data);
 int noise_handshakestate_set_prologue
     (NoiseHandshakeState *state, const void *prologue, size_t prologue_len);
 int noise_handshakestate_needs_local_keypair(const NoiseHandshakeState *state);

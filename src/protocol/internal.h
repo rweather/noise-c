@@ -578,6 +578,12 @@ struct NoiseHandshakeState_s
     /** \brief Length of the pre-shared key value: zero or NOISE_PSK_LEN only */
     size_t pre_shared_key_len;
 
+    /** \brief Hook function to call to obtain the pre-shared key */
+    NoiseHandshakeHookFunc pre_shared_hook_func;
+
+    /** \brief User data to pass to the pre-shared key hook function */
+    void *pre_shared_user_data;
+
     /** \brief Points to the prologue value */
     uint8_t *prologue;
 
@@ -595,6 +601,7 @@ struct NoiseHandshakeState_s
 #define NOISE_TOKEN_SS          6   /**< "ss" token */
 #define NOISE_TOKEN_F           7   /**< "f" token (hybrid forward secrecy) */
 #define NOISE_TOKEN_FF          8   /**< "ff" token (hybrid forward secrecy) */
+#define NOISE_TOKEN_PSK         9   /**< "psk" token */
 #define NOISE_TOKEN_FLIP_DIR    255 /**< Flip the handshake direction */
 
 /** Pattern requires a local static keypair */

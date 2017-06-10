@@ -48,6 +48,15 @@
  */
 
 /**
+ * \typedef NoiseHandshakeHookFunc
+ * \brief A callback hook function for handshake operations.
+ *
+ * This function should return NOISE_ERROR_NONE if it was successful,
+ * or a Noise error code otherwise.  An error return will abort the
+ * current handshake message.
+ */
+
+/**
  * \brief Gets the initial requirements for a handshake pattern.
  *
  * \param flags The flags from the handshake pattern.
@@ -573,7 +582,8 @@ int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
  *
  * \sa noise_handshakestate_start(), noise_handshakestate_set_prologue(),
  * noise_handshakestate_needs_pre_shared_key(),
- * noise_handshakestate_has_pre_shared_key()
+ * noise_handshakestate_has_pre_shared_key(),
+ * noise_handshakestate_set_pre_shared_key_hook()
  */
 int noise_handshakestate_set_pre_shared_key
     (NoiseHandshakeState *state, const uint8_t *key, size_t key_len)
@@ -592,6 +602,43 @@ int noise_handshakestate_set_pre_shared_key
     memcpy(state->pre_shared_key, key, key_len);
     state->pre_shared_key_len = key_len;
     return NOISE_ERROR_NONE;
+}
+
+/**
+ * \brief Sets a hook function to be called just before a "psk"
+ * token is processed in a message.
+ *
+ * \param state The HandshakeState object.
+ * \param hook The hook function to call, or NULL to remove the hook.
+ * \param user_data A user data pointer to pass to the hook function.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ *
+ * The purpose of the PSK hook function is to allow the application to
+ * look up the PSK at runtime based on information earlier in the
+ * current message.  For example, the initiator may send their public
+ * key and then mix in their PSK at the end of the message.  The responder
+ * needs to look up the public key in a database to find the appropriate
+ * PSK to use for that initiator.  The hook function calls
+ * noise_handshakestate_set_pre_shared_key() after it locates the PSK.
+ *
+ * The hook function should return NOISE_ERROR_NONE if the PSK was
+ * set on the \a state or NOISE_ERROR_PSK_REQUIRED if it could not obtain
+ * the PSK for some reason.
+ *
+ * \sa noise_handshakestate_set_pre_shared_key()
+ */
+int noise_handshakestate_set_pre_shared_key_hook
+    (NoiseHandshakeState *state, NoiseHandshakeHookFunc hook, void *user_data)
+{
+    if (state) {
+        state->pre_shared_hook_func = hook;
+        state->pre_shared_user_data = user_data;
+        return NOISE_ERROR_NONE;
+    } else {
+        return NOISE_ERROR_INVALID_PARAM;
+    }
 }
 
 /**
@@ -1303,6 +1350,25 @@ static int noise_handshakestate_write
             err = noise_handshake_mix_dh
                 (state, state->dh_local_hybrid, state->dh_remote_hybrid);
             break;
+        case NOISE_TOKEN_PSK:
+            /* Mix in the pre-shared symmetric key */
+            if (state->pre_shared_hook_func != 0) {
+                /* Call the hook function to possibly obtain the PSK */
+                err = (*(state->pre_shared_hook_func))
+                    (state, state->pre_shared_user_data);
+                if (err != NOISE_ERROR_NONE)
+                    break;
+            }
+            if (state->pre_shared_key_len != 0) {
+                /* Mix the pre-shared key into the chaining key and hash */
+                noise_symmetricstate_mix_key_and_hash
+                    (state->symmetric, state->pre_shared_key,
+                     state->pre_shared_key_len);
+            } else {
+                /* We don't have a pre-shared symmetric key, so fail */
+                err = NOISE_ERROR_PSK_REQUIRED;
+            }
+            break;
         default:
             /* Unknown token code in the pattern.  This shouldn't happen.
                If it does, then abort immediately. */
@@ -1355,6 +1421,8 @@ static int noise_handshakestate_write
  * not NOISE_ACTION_WRITE_MESSAGE.
  * \return NOISE_ERROR_INVALID_LENGTH if \a message is too small to contain
  * all of the bytes that need to be written to it.
+ * \return NOISE_ERROR_PSK_REQUIRED if a "psk" token was encountered in
+ * the message but a pre-shared symmetric key has not been supplied yet.
  *
  * The \a message and \a payload buffers must not overlap in memory.
  *
@@ -1576,6 +1644,25 @@ static int noise_handshakestate_read
             err = noise_handshake_mix_dh
                 (state, state->dh_local_hybrid, state->dh_remote_hybrid);
             break;
+        case NOISE_TOKEN_PSK:
+            /* Mix in the pre-shared symmetric key */
+            if (state->pre_shared_hook_func != 0) {
+                /* Call the hook function to possibly obtain the PSK */
+                err = (*(state->pre_shared_hook_func))
+                    (state, state->pre_shared_user_data);
+                if (err != NOISE_ERROR_NONE)
+                    break;
+            }
+            if (state->pre_shared_key_len != 0) {
+                /* Mix the pre-shared key into the chaining key and hash */
+                noise_symmetricstate_mix_key_and_hash
+                    (state->symmetric, state->pre_shared_key,
+                     state->pre_shared_key_len);
+            } else {
+                /* We don't have a pre-shared symmetric key, so fail */
+                err = NOISE_ERROR_PSK_REQUIRED;
+            }
+            break;
         default:
             /* Unknown token code in the pattern.  This shouldn't happen.
                If it does, then abort immediately. */
@@ -1621,6 +1708,8 @@ static int noise_handshakestate_read
  * which terminates the handshake.
  * \return NOISE_ERROR_PUBLIC_KEY if an invalid remote public key is seen
  * during the processing of this message.
+ * \return NOISE_ERROR_PSK_REQUIRED if a "psk" token was encountered in
+ * the message but a pre-shared symmetric key has not been supplied yet.
  *
  * If \a payload is NULL, then the message payload will be authenticated
  * and then discarded, regardless of its length.  If the application was
