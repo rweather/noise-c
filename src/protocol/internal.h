@@ -644,16 +644,14 @@ struct NoiseHandshakeState_s
 #define NOISE_REQ_LOCAL_REQUIRED        (1 << 0)
 /** Remote public key is required for the handshake */
 #define NOISE_REQ_REMOTE_REQUIRED       (1 << 1)
-/** Pre-shared key has not been provided yet */
-#define NOISE_REQ_PSK                   (1 << 2)
 /** Emphemeral key for fallback pre-message has been provided */
-#define NOISE_REQ_FALLBACK_PREMSG       (1 << 3)
+#define NOISE_REQ_FALLBACK_PREMSG       (1 << 2)
 /** Local public key is part of the pre-message */
-#define NOISE_REQ_LOCAL_PREMSG          (1 << 4)
+#define NOISE_REQ_LOCAL_PREMSG          (1 << 3)
 /** Remote public key is part of the pre-message */
-#define NOISE_REQ_REMOTE_PREMSG         (1 << 5)
+#define NOISE_REQ_REMOTE_PREMSG         (1 << 4)
 /** Fallback is possible from this pattern (two-way, ends in "K") */
-#define NOISE_REQ_FALLBACK_POSSIBLE     (1 << 6)
+#define NOISE_REQ_FALLBACK_POSSIBLE     (1 << 5)
 
 void noise_rand_bytes(void *bytes, size_t size);
 

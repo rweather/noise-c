@@ -572,11 +572,6 @@ static void symmetricstate_check_protocols(void)
     check_symmetric("Noise_N_25519_ChaChaPoly_BLAKE2s");
     check_symmetric("Noise_XXfallback_448_AESGCM_SHA512");
     check_symmetric("Noise_IK_448_ChaChaPoly_BLAKE2b");
-
-    check_symmetric("NoisePSK_XX_25519_AESGCM_SHA256");
-    check_symmetric("NoisePSK_N_25519_ChaChaPoly_BLAKE2s");
-    check_symmetric("NoisePSK_XXfallback_448_AESGCM_SHA512");
-    check_symmetric("NoisePSK_IK_448_ChaChaPoly_BLAKE2b");
 }
 
 /* Check other error conditions that can be reported by the functions */

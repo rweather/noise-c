@@ -225,10 +225,7 @@ static int test_name_parsing(const TestVector *vec)
     compare(noise_protocol_name_to_id
                 (&id, vec->protocol_name, strlen(vec->protocol_name)),
             NOISE_ERROR_NONE);
-    if (vec->init_psk || vec->resp_psk)
-        compare(id.prefix_id, NOISE_PREFIX_PSK);
-    else
-        compare(id.prefix_id, NOISE_PREFIX_STANDARD);
+    compare(id.prefix_id, NOISE_PREFIX_STANDARD);
     check_id(id.pattern_id, NOISE_PATTERN_CATEGORY, vec->pattern);
     check_id(id.dh_id, NOISE_DH_CATEGORY, vec->dh);
     check_id(id.cipher_id, NOISE_CIPHER_CATEGORY, vec->cipher);
@@ -761,8 +758,9 @@ static int process_test_vector(JSONReader *reader)
             json_error(reader, "Unknown field '%s'", reader->str_value);
         }
     }
-    snprintf(protocol_name, sizeof(protocol_name), "Noise%s_%s_%s%s%s_%s_%s",
-             (vec.init_psk || vec.resp_psk) ? "PSK" : "",
+    if (vec.init_psk_len)
+        return 1;   /* Skip NoisePSK tests */
+    snprintf(protocol_name, sizeof(protocol_name), "Noise_%s_%s%s%s_%s_%s",
              vec.pattern, vec.dh,
              (vec.hybrid ? "+" : ""),
              (vec.hybrid ? vec.hybrid : ""),

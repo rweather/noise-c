@@ -71,7 +71,6 @@ int echo_get_protocol_id(EchoProtocolId *id, const char *name)
 
     switch (nid.prefix_id) {
     case NOISE_PREFIX_STANDARD:     id->psk = ECHO_PSK_DISABLED; break;
-    case NOISE_PREFIX_PSK:          id->psk = ECHO_PSK_ENABLED; break;
     default:                        ok = 0; break;
     }
 
@@ -144,7 +143,6 @@ int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id)
 
     switch (id->psk) {
     case ECHO_PSK_DISABLED:         nid->prefix_id = NOISE_PREFIX_STANDARD; break;
-    case ECHO_PSK_ENABLED:          nid->prefix_id = NOISE_PREFIX_PSK; break;
     default:                        ok = 0;
     }
 

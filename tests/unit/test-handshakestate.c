@@ -134,6 +134,13 @@ static void handshakestate_derive_keys(void)
     compare(noise_dhstate_free(dh), NOISE_ERROR_NONE);
 }
 
+/* Determine if a handshake needs a pre-shared key */
+static int needs_pre_shared_key(const char *name)
+{
+    /* Check the protocol name for the presence of "psk" */
+    return strstr(name, "psk") != 0;
+}
+
 /* Check the behaviour of a specific handshake protocol.  These tests check
    whether the initiator and responder can talk to each other via the
    protocol but they do not check for correct bytes on the wire.  Wire checks
@@ -183,14 +190,10 @@ static void check_handshake_protocol(const char *name)
             (init_flags & NOISE_PAT_FLAG_LOCAL_STATIC) != 0);
     compare(noise_handshakestate_needs_remote_public_key(initiator),
             (init_flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) != 0);
-    compare(noise_handshakestate_needs_pre_shared_key(initiator),
-            id.prefix_id == NOISE_PREFIX_PSK);
     compare(noise_handshakestate_needs_local_keypair(responder),
             (resp_flags & NOISE_PAT_FLAG_LOCAL_STATIC) != 0);
     compare(noise_handshakestate_needs_remote_public_key(responder),
             (resp_flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) != 0);
-    compare(noise_handshakestate_needs_pre_shared_key(responder),
-            id.prefix_id == NOISE_PREFIX_PSK);
 
     /* Check other properties */
     compare(noise_handshakestate_get_role(initiator), NOISE_ROLE_INITIATOR);
@@ -294,30 +297,22 @@ static void check_handshake_protocol(const char *name)
             verify(dh == 0);
     }
     compare(noise_handshakestate_has_pre_shared_key(initiator), 0);
-    if (noise_handshakestate_needs_pre_shared_key(initiator)) {
+    if (needs_pre_shared_key(name)) {
         compare(noise_handshakestate_start(initiator),
                 NOISE_ERROR_PSK_REQUIRED);
         compare(noise_handshakestate_set_pre_shared_key
                     (initiator, psk, sizeof(psk)),
                 NOISE_ERROR_NONE);
         compare(noise_handshakestate_has_pre_shared_key(initiator), 1);
-    } else {
-        compare(noise_handshakestate_set_pre_shared_key
-                    (initiator, psk, sizeof(psk)),
-                NOISE_ERROR_NOT_APPLICABLE);
     }
     compare(noise_handshakestate_has_pre_shared_key(responder), 0);
-    if (noise_handshakestate_needs_pre_shared_key(responder)) {
+    if (needs_pre_shared_key(name)) {
         compare(noise_handshakestate_start(responder),
                 NOISE_ERROR_PSK_REQUIRED);
         compare(noise_handshakestate_set_pre_shared_key
                     (responder, psk, sizeof(psk)),
                 NOISE_ERROR_NONE);
         compare(noise_handshakestate_has_pre_shared_key(responder), 1);
-    } else {
-        compare(noise_handshakestate_set_pre_shared_key
-                    (initiator, psk, sizeof(psk)),
-                NOISE_ERROR_NOT_APPLICABLE);
     }
 
     /* Start the handshake running */
@@ -437,41 +432,21 @@ static void handshakestate_check_protocols(void)
     check_handshake_protocol("Noise_K_25519_AESGCM_SHA256");
     check_handshake_protocol("Noise_X_448_AESGCM_SHA512");
 
-    check_handshake_protocol("NoisePSK_N_25519_ChaChaPoly_BLAKE2s");
-    check_handshake_protocol("NoisePSK_K_25519_AESGCM_SHA256");
-    check_handshake_protocol("NoisePSK_X_448_AESGCM_SHA512");
-
     check_handshake_protocol("Noise_NN_25519_ChaChaPoly_BLAKE2s");
     check_handshake_protocol("Noise_NK_448_ChaChaPoly_BLAKE2b");
     check_handshake_protocol("Noise_NX_25519_AESGCM_BLAKE2b");
-
-    check_handshake_protocol("NoisePSK_NN_25519_ChaChaPoly_BLAKE2s");
-    check_handshake_protocol("NoisePSK_NK_448_ChaChaPoly_BLAKE2b");
-    check_handshake_protocol("NoisePSK_NX_25519_AESGCM_BLAKE2b");
 
     check_handshake_protocol("Noise_XN_448_AESGCM_BLAKE2s");
     check_handshake_protocol("Noise_XK_25519_AESGCM_SHA256");
     check_handshake_protocol("Noise_XX_25519_ChaChaPoly_SHA512");
 
-    check_handshake_protocol("NoisePSK_XN_448_AESGCM_BLAKE2s");
-    check_handshake_protocol("NoisePSK_XK_25519_AESGCM_SHA256");
-    check_handshake_protocol("NoisePSK_XX_25519_ChaChaPoly_SHA512");
-
     check_handshake_protocol("Noise_KN_448_ChaChaPoly_SHA512");
     check_handshake_protocol("Noise_KK_25519_AESGCM_BLAKE2b");
     check_handshake_protocol("Noise_KX_448_ChaChaPoly_SHA256");
 
-    check_handshake_protocol("NoisePSK_KN_448_ChaChaPoly_SHA512");
-    check_handshake_protocol("NoisePSK_KK_25519_AESGCM_BLAKE2b");
-    check_handshake_protocol("NoisePSK_KX_448_ChaChaPoly_SHA256");
-
     check_handshake_protocol("Noise_IN_25519_ChaChaPoly_BLAKE2s");
     check_handshake_protocol("Noise_IK_25519_AESGCM_BLAKE2b");
     check_handshake_protocol("Noise_IX_448_AESGCM_SHA512");
-
-    check_handshake_protocol("NoisePSK_IN_25519_ChaChaPoly_BLAKE2s");
-    check_handshake_protocol("NoisePSK_IK_25519_AESGCM_BLAKE2b");
-    check_handshake_protocol("NoisePSK_IX_448_AESGCM_SHA512");
 }
 
 /* Check that "IK" correctly falls back to "XXfallback" */
@@ -547,7 +522,7 @@ static void check_fallback_protocol
                     NOISE_ERROR_NONE);
         }
     }
-    if (noise_handshakestate_needs_pre_shared_key(initiator)) {
+    if (needs_pre_shared_key(name)) {
         compare(noise_handshakestate_set_pre_shared_key
                     (initiator, psk, sizeof(psk)),
                 NOISE_ERROR_NONE);
@@ -589,7 +564,7 @@ static void check_fallback_protocol
     /* Supply the prologue and the PSK again to the responder */
     compare(noise_handshakestate_set_prologue(responder, "Hello", 5),
             NOISE_ERROR_NONE);
-    if (noise_handshakestate_needs_pre_shared_key(responder)) {
+    if (needs_pre_shared_key(name)) {
         compare(noise_handshakestate_set_pre_shared_key
                     (responder, psk, sizeof(psk)),
                 NOISE_ERROR_NONE);
@@ -620,7 +595,7 @@ static void check_fallback_protocol
     /* Supply the prologue and the PSK again to the initiator */
     compare(noise_handshakestate_set_prologue(initiator, "Hello", 5),
             NOISE_ERROR_NONE);
-    if (noise_handshakestate_needs_pre_shared_key(initiator)) {
+    if (needs_pre_shared_key(name)) {
         compare(noise_handshakestate_set_pre_shared_key
                     (initiator, psk, sizeof(psk)),
                 NOISE_ERROR_NONE);
@@ -676,7 +651,6 @@ static void handshakestate_check_errors(void)
     compare(noise_handshakestate_has_local_keypair(0), 0);
     compare(noise_handshakestate_has_remote_public_key(0), 0);
     compare(noise_handshakestate_needs_remote_public_key(0), 0);
-    compare(noise_handshakestate_needs_pre_shared_key(0), 0);
     compare(noise_handshakestate_has_pre_shared_key(0), 0);
     compare(noise_handshakestate_get_role(0), 0);
     compare(noise_handshakestate_get_action(0), NOISE_ACTION_NONE);

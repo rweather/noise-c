@@ -108,7 +108,6 @@ static void test_id_mappings(void)
     check_id("IXnoidh+hfs", NOISE_PATTERN_IX_NOIDH_HFS);
 
     check_id("Noise", NOISE_PREFIX_STANDARD);
-    check_id("NoisePSK", NOISE_PREFIX_PSK);
 
     check_id("Ed25519", NOISE_SIGN_ED25519);
 
@@ -192,7 +191,7 @@ static void check_protocol_name
 
     /* Reserved identifiers cannot be formatted */
     for (posn = 0; posn < (sizeof(expected_id.reserved) / sizeof(expected_id.reserved[0])); ++posn) {
-        expected_id.reserved[posn] = NOISE_PREFIX_PSK;
+        expected_id.reserved[posn] = NOISE_PREFIX_STANDARD;
         memset(buffer, 0x66, sizeof(buffer));
         compare(noise_protocol_id_to_name(buffer, sizeof(buffer), &expected_id),
                 NOISE_ERROR_UNKNOWN_ID);
@@ -228,26 +227,6 @@ static void test_protocol_names(void)
     check_protocol_name
         ("Noise_IK_448_ChaChaPoly_BLAKE2b",
          NOISE_PREFIX_STANDARD, NOISE_PATTERN_IK,
-         NOISE_DH_CURVE448, NOISE_CIPHER_CHACHAPOLY,
-         NOISE_HASH_BLAKE2b, 0);
-    check_protocol_name
-        ("NoisePSK_XX_25519_AESGCM_SHA256",
-         NOISE_PREFIX_PSK, NOISE_PATTERN_XX,
-         NOISE_DH_CURVE25519, NOISE_CIPHER_AESGCM,
-         NOISE_HASH_SHA256, 0);
-    check_protocol_name
-        ("NoisePSK_N_25519_ChaChaPoly_BLAKE2s",
-         NOISE_PREFIX_PSK, NOISE_PATTERN_N,
-         NOISE_DH_CURVE25519, NOISE_CIPHER_CHACHAPOLY,
-         NOISE_HASH_BLAKE2s, 0);
-    check_protocol_name
-        ("NoisePSK_XXfallback_448_AESGCM_SHA512",
-         NOISE_PREFIX_PSK, NOISE_PATTERN_XX_FALLBACK,
-         NOISE_DH_CURVE448, NOISE_CIPHER_AESGCM,
-         NOISE_HASH_SHA512, 0);
-    check_protocol_name
-        ("NoisePSK_IK_448_ChaChaPoly_BLAKE2b",
-         NOISE_PREFIX_PSK, NOISE_PATTERN_IK,
          NOISE_DH_CURVE448, NOISE_CIPHER_CHACHAPOLY,
          NOISE_HASH_BLAKE2b, 0);
     check_protocol_name

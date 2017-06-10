@@ -161,6 +161,7 @@ static int initialize_handshake
     }
 
     /* Set the PSK if one is needed */
+    /*
     if (nid->prefix_id == NOISE_PREFIX_PSK) {
         err = noise_handshakestate_set_pre_shared_key
             (handshake, psk, sizeof(psk));
@@ -169,6 +170,7 @@ static int initialize_handshake
             return 0;
         }
     }
+    */
 
     /* Set the local keypair for the server based on the DH algorithm */
     if (noise_handshakestate_needs_local_keypair(handshake)) {

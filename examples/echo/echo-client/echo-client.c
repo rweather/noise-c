@@ -173,10 +173,8 @@ static int initialize_handshake
         return 0;
     }
 
-    /* Set the PSK if one is present.  This will fail if a PSK is not needed.
-       If a PSK is needed but it wasn't provided then the protocol will
-       fail later when noise_handshakestate_start() is called. */
-    if (psk_file && noise_handshakestate_needs_pre_shared_key(handshake)) {
+    /* Set the PSK if one is present */
+    if (psk_file) {
         if (!echo_load_public_key(psk_file, psk, sizeof(psk)))
             return 0;
         err = noise_handshakestate_set_pre_shared_key

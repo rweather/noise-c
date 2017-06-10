@@ -713,10 +713,12 @@ static void initialize_protocol
         else
             get_public_key(&rs, &rs_len, &resp_static, id->dh_id);
     }
+    /*
     if (id->prefix_id == NOISE_PREFIX_PSK) {
         pk = psk;
         pk_len = sizeof(psk);
     }
+    */
     Initialize(init, protocol_name, 1, 0, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
@@ -746,10 +748,12 @@ static void initialize_protocol
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
         get_public_key(&rs, &rs_len, &init_static, id->dh_id);
     }
+    /*
     if (id->prefix_id == NOISE_PREFIX_PSK) {
         pk = psk;
         pk_len = sizeof(psk);
     }
+    */
     Initialize(resp, protocol_name, 0, 0, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
@@ -791,10 +795,12 @@ static void initialize_protocol_fallback
     if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID_REQ) {
         get_public_key(&rf, &rf_len, &init_ephemeral, id->hybrid_id);
     }
+    /*
     if (id->prefix_id == NOISE_PREFIX_PSK) {
         pk = psk;
         pk_len = sizeof(psk);
     }
+    */
     Initialize(init, protocol_name, 1, 1, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
@@ -824,10 +830,12 @@ static void initialize_protocol_fallback
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
         get_public_key(&rs, &rs_len, &resp_static, id->dh_id);
     }
+    /*
     if (id->prefix_id == NOISE_PREFIX_PSK) {
         pk = psk;
         pk_len = sizeof(psk);
     }
+    */
     Initialize(resp, protocol_name, 0, 1, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
@@ -893,8 +901,10 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
         }
     }
     print_hex("init_prologue", prologue, sizeof(prologue));
+    /*
     if (id->prefix_id == NOISE_PREFIX_PSK)
         print_hex("init_psk", psk, sizeof(psk));
+    */
     if (with_ssk)
         print_hex("init_ssk", ssk, sizeof(ssk));
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC)
@@ -912,8 +922,10 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
             print_public_key("init_remote_static", &resp_static, id->dh_id);
     }
     print_hex("resp_prologue", prologue, sizeof(prologue));
+    /*
     if (id->prefix_id == NOISE_PREFIX_PSK)
         print_hex("resp_psk", psk, sizeof(psk));
+    */
     if (with_ssk)
         print_hex("resp_ssk", ssk, sizeof(ssk));
     if (flags & NOISE_PAT_FLAG_REMOTE_STATIC)
@@ -1025,13 +1037,12 @@ static void regular_patterns(int with_ssk)
     int first = 1;
     memset(&id, 0, sizeof(id));
     for (id.pattern_id = NOISE_PATTERN_N; id.pattern_id <= NOISE_PATTERN_IX; ++id.pattern_id) {
-        for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
-            for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
-                for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
-                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                        generate_vector(&id, first, with_ssk, 0);
-                        first = 0;
-                    }
+        id.prefix_id = NOISE_PREFIX_STANDARD;
+        for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+            for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
+                for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                    generate_vector(&id, first, with_ssk, 0);
+                    first = 0;
                 }
             }
         }
@@ -1042,33 +1053,24 @@ static void regular_patterns(int with_ssk)
 static void fallback_patterns(int with_ssk)
 {
     static int const fallback_patterns[] = {
-        NOISE_PATTERN_IK, NOISE_PATTERN_XX_FALLBACK, 1,
-#if 0
-        NOISE_PATTERN_NK, NOISE_PATTERN_NX_FALLBACK, 1,
-        /* Note: PSK's don't work with IKnoidh / IXfallback */
-        NOISE_PATTERN_IK_NOIDH, NOISE_PATTERN_IX_FALLBACK, 0,
-#endif
+        NOISE_PATTERN_IK, NOISE_PATTERN_XX_FALLBACK,
         0
     };
     NoiseProtocolId id;
     int first = 1;
     int index;
     memset(&id, 0, sizeof(id));
-    for (index = 0; fallback_patterns[index] != 0; index += 3) {
+    for (index = 0; fallback_patterns[index] != 0; index += 2) {
         int fallback_id = fallback_patterns[index + 1];
-        int psk_allowed = fallback_patterns[index + 2];
         id.pattern_id = fallback_patterns[index];
-        for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
-            if (id.prefix_id == NOISE_PREFIX_PSK && !psk_allowed)
-                continue;
-            for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
-                for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
-                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                        generate_vector(&id, first, 0, fallback_id);
-                        first = 0;
-                        if (with_ssk)
-                            generate_vector(&id, first, 1, fallback_id);
-                    }
+        id.prefix_id = NOISE_PREFIX_STANDARD;
+        for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+            for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
+                for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                    generate_vector(&id, first, 0, fallback_id);
+                    first = 0;
+                    if (with_ssk)
+                        generate_vector(&id, first, 1, fallback_id);
                 }
             }
         }
@@ -1085,16 +1087,15 @@ static void hybrid_patterns(int with_ssk)
     /* Basic hybrid patterns involving 25519+448 and 25519+NewHope */
     memset(&id, 0, sizeof(id));
     for (id.pattern_id = NOISE_PATTERN_NN_HFS; id.pattern_id <= NOISE_PATTERN_IX_HFS; ++id.pattern_id) {
-        for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
-            for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
-                id.dh_id = NOISE_DH_CURVE25519;
-                for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
-                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                        generate_vector(&id, first, 0, 0);
-                        first = 0;
-                        if (with_ssk)
-                            generate_vector(&id, first, 1, 0);
-                    }
+        id.prefix_id = NOISE_PREFIX_STANDARD;
+        for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+            id.dh_id = NOISE_DH_CURVE25519;
+            for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
+                for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                    generate_vector(&id, first, 0, 0);
+                    first = 0;
+                    if (with_ssk)
+                        generate_vector(&id, first, 1, 0);
                 }
             }
         }
@@ -1104,18 +1105,15 @@ static void hybrid_patterns(int with_ssk)
     fallback_id = NOISE_PATTERN_XX_FALLBACK_HFS;
     memset(&id, 0, sizeof(id));
     id.pattern_id = NOISE_PATTERN_IK_HFS;
-    for (id.prefix_id = NOISE_PREFIX_STANDARD; id.prefix_id <= NOISE_PREFIX_PSK; ++id.prefix_id) {
-        if (id.prefix_id == NOISE_PREFIX_PSK)
-            continue;   /* Hybrid fallback doesn't work with PSK's */
-        for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
-            id.dh_id = NOISE_DH_CURVE25519;
-            for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
-                for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                    generate_vector(&id, first, 0, fallback_id);
-                    first = 0;
-                    if (with_ssk)
-                        generate_vector(&id, first, 1, fallback_id);
-                }
+    id.prefix_id = NOISE_PREFIX_STANDARD;
+    for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+        id.dh_id = NOISE_DH_CURVE25519;
+        for (id.hybrid_id = NOISE_DH_CURVE448; id.hybrid_id <= NOISE_DH_NEWHOPE; ++id.hybrid_id) {
+            for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                generate_vector(&id, first, 0, fallback_id);
+                first = 0;
+                if (with_ssk)
+                    generate_vector(&id, first, 1, fallback_id);
             }
         }
     }
