@@ -43,6 +43,8 @@ int noise_symmetricstate_mix_key
     (NoiseSymmetricState *state, const uint8_t *input, size_t size);
 int noise_symmetricstate_mix_hash
     (NoiseSymmetricState *state, const uint8_t *input, size_t size);
+int noise_symmetricstate_mix_key_and_hash
+    (NoiseSymmetricState *state, const uint8_t *input, size_t size);
 int noise_symmetricstate_encrypt_and_hash
     (NoiseSymmetricState *state, NoiseBuffer *buffer);
 int noise_symmetricstate_decrypt_and_hash

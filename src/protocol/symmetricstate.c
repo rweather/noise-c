@@ -321,6 +321,53 @@ int noise_symmetricstate_mix_hash
 }
 
 /**
+ * \brief Mixes new input data into the chaining key and the handshake hash.
+ *
+ * \param state The SymmetricState object.
+ * \param input Points to the input data to mix in.
+ * \param size The size of the \a input data in bytes.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a input is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the \a state has already been split.
+ *
+ * \sa noise_symmetricstate_mix_key(), noise_symmetricstate_mix_hash()
+ */
+int noise_symmetricstate_mix_key_and_hash
+    (NoiseSymmetricState *state, const uint8_t *input, size_t size)
+{
+    uint8_t temp_h[NOISE_MAX_HASHLEN];
+    uint8_t temp_k[NOISE_MAX_HASHLEN];
+    size_t hash_len;
+    size_t key_len;
+
+    /* Validate the parameters */
+    if (!state || !input)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* If the state has been split, then we cannot do this */
+    if (!state->cipher)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Mix the input data in using HKDF */
+    hash_len = noise_hashstate_get_hash_length(state->hash);
+    key_len = noise_cipherstate_get_key_length(state->cipher);
+    noise_hashstate_hkdf3
+        (state->hash, state->ck, hash_len, input, size,
+         state->ck, hash_len, temp_h, hash_len, temp_k, key_len);
+
+    /* Mix "temp_h" into the handshake hash */
+    noise_hashstate_hash_two
+        (state->hash, state->h, hash_len, temp_h, hash_len, state->h, hash_len);
+
+    /* Change the cipher key, or set it for the first time */
+    noise_cipherstate_init_key(state->cipher, temp_k, key_len);
+    noise_clean(temp_h, sizeof(temp_h));
+    noise_clean(temp_k, sizeof(temp_k));
+    return NOISE_ERROR_NONE;
+}
+
+/**
  * \brief Encrypts a block of data with this SymmetricState object
  * and adds the ciphertext to the handshake hash.
  *

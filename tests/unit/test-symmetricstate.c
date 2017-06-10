@@ -36,6 +36,7 @@ typedef struct
 {
     HashValue v1;
     HashValue v2;
+    HashValue v3;
 
 } HKDFValue;
 
@@ -82,9 +83,10 @@ static HKDFValue HKDF(const HashValue key, const uint8_t *data, size_t data_len)
 {
     HKDFValue result;
     memset(&result, 0, sizeof(result));
-    compare(noise_hashstate_hkdf
+    compare(noise_hashstate_hkdf3
                 (hashstate, key.hash, hash_len, data, data_len,
-                 result.v1.hash, hash_len, result.v2.hash, hash_len),
+                 result.v1.hash, hash_len, result.v2.hash, hash_len,
+                 result.v3.hash, hash_len),
             NOISE_ERROR_NONE);
     return result;
 }
@@ -276,6 +278,36 @@ static void check_symmetric_object
         compare(noise_symmetricstate_mix_key(0, data, len),
                 NOISE_ERROR_INVALID_PARAM);
         compare(noise_symmetricstate_mix_key(state1, 0, len),
+                NOISE_ERROR_INVALID_PARAM);
+    }
+
+    /* Mix data into the chaining key and the handshake hash */
+    memset(&temp, 0, sizeof(temp));
+    for (index = 0; index < num_data_vals; ++index) {
+        len = strlen(data_vals[index]);
+        data = (const uint8_t *)(data_vals[index]);
+        temp = HKDF(ck, data, len);
+        compare(noise_symmetricstate_mix_key_and_hash(state1, data, len),
+                NOISE_ERROR_NONE);
+        compare(noise_symmetricstate_mix_key_and_hash(state2, data, len),
+                NOISE_ERROR_NONE);
+        compare(noise_symmetricstate_mix_key_and_hash(state3, data, len),
+                NOISE_ERROR_NONE);
+        ck = temp.v1;
+        h = HASHTwo(h, temp.v2.hash, hash_len);
+        temp.v2 = temp.v3;
+        verify(!memcmp(ck.hash, state1->ck, hash_len));
+        verify(!memcmp(h.hash, state1->h, hash_len));
+        verify(!memcmp(ck.hash, state2->ck, hash_len));
+        verify(!memcmp(h.hash, state2->h, hash_len));
+        verify(!memcmp(ck.hash, state3->ck, hash_len));
+        verify(!memcmp(h.hash, state3->h, hash_len));
+        compare(noise_symmetricstate_get_mac_length(state1), mac_len);
+        compare(noise_symmetricstate_get_mac_length(state2), mac_len);
+        compare(noise_symmetricstate_get_mac_length(state3), mac_len);
+        compare(noise_symmetricstate_mix_key_and_hash(0, data, len),
+                NOISE_ERROR_INVALID_PARAM);
+        compare(noise_symmetricstate_mix_key_and_hash(state1, 0, len),
                 NOISE_ERROR_INVALID_PARAM);
     }
 
