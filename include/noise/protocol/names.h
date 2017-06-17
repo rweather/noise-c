@@ -34,6 +34,7 @@ typedef struct
 {
     int prefix_id;      /**< Protocol name prefix */
     int pattern_id;     /**< Handshake pattern */
+    int modifier_ids[NOISE_MAX_MODIFIER_IDS]; /**< Pattern modifiers */
     int dh_id;          /**< Diffie-Hellman algorithm identifier */
     int cipher_id;      /**< Cipher algorithm identifier */
     int hash_id;        /**< Hash algorithm identifier */

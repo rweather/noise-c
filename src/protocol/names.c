@@ -85,31 +85,14 @@ static NoiseIdMapping const algorithm_names[] = {
     {NOISE_PATTERN_IN,          "IN",            2},
     {NOISE_PATTERN_IK,          "IK",            2},
     {NOISE_PATTERN_IX,          "IX",            2},
-    {NOISE_PATTERN_XX_FALLBACK, "XXfallback",   10},
-    {NOISE_PATTERN_X_NOIDH,     "Xnoidh",        6},
-    {NOISE_PATTERN_NX_NOIDH,    "NXnoidh",       7},
-    {NOISE_PATTERN_XX_NOIDH,    "XXnoidh",       7},
-    {NOISE_PATTERN_KX_NOIDH,    "KXnoidh",       7},
-    {NOISE_PATTERN_IK_NOIDH,    "IKnoidh",       7},
-    {NOISE_PATTERN_IX_NOIDH,    "IXnoidh",       7},
-    {NOISE_PATTERN_NN_HFS,      "NNhfs",         5},
-    {NOISE_PATTERN_NK_HFS,      "NKhfs",         5},
-    {NOISE_PATTERN_NX_HFS,      "NXhfs",         5},
-    {NOISE_PATTERN_XN_HFS,      "XNhfs",         5},
-    {NOISE_PATTERN_XK_HFS,      "XKhfs",         5},
-    {NOISE_PATTERN_XX_HFS,      "XXhfs",         5},
-    {NOISE_PATTERN_KN_HFS,      "KNhfs",         5},
-    {NOISE_PATTERN_KK_HFS,      "KKhfs",         5},
-    {NOISE_PATTERN_KX_HFS,      "KXhfs",         5},
-    {NOISE_PATTERN_IN_HFS,      "INhfs",         5},
-    {NOISE_PATTERN_IK_HFS,      "IKhfs",         5},
-    {NOISE_PATTERN_IX_HFS,      "IXhfs",         5},
-    {NOISE_PATTERN_XX_FALLBACK_HFS, "XXfallback+hfs", 14},
-    {NOISE_PATTERN_NX_NOIDH_HFS,"NXnoidh+hfs",  11},
-    {NOISE_PATTERN_XX_NOIDH_HFS,"XXnoidh+hfs",  11},
-    {NOISE_PATTERN_KX_NOIDH_HFS,"KXnoidh+hfs",  11},
-    {NOISE_PATTERN_IK_NOIDH_HFS,"IKnoidh+hfs",  11},
-    {NOISE_PATTERN_IX_NOIDH_HFS,"IXnoidh+hfs",  11},
+
+    /* Handshake pattern modifiers */
+    {NOISE_MODIFIER_FALLBACK,   "fallback",      8},
+    {NOISE_MODIFIER_HFS,        "hfs",           3},
+    {NOISE_MODIFIER_PSK0,       "psk0",          4},
+    {NOISE_MODIFIER_PSK1,       "psk1",          4},
+    {NOISE_MODIFIER_PSK2,       "psk2",          4},
+    {NOISE_MODIFIER_PSK3,       "psk3",          4},
 
     /* Protocol name prefixes */
     {NOISE_PREFIX_STANDARD,     "Noise",         5},
@@ -129,7 +112,7 @@ static NoiseIdMapping const algorithm_names[] = {
  * \param category The category of identifier to look for; one of
  * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
  * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, NOISE_SIGN_CATEGORY,
- * or zero.  Zero indicates "any category".
+ * NOISE_MODIFIER_CATEGORY, or zero.  Zero indicates "any category".
  * \param name Points to the name to map.
  * \param name_len Length of the \a name in bytes.
  *
@@ -166,7 +149,7 @@ int noise_name_to_id(int category, const char *name, size_t name_len)
  * \param category The category of identifier to look for; one of
  * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
  * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, NOISE_SIGN_CATEGORY,
- * or zero.  Zero indicates "any category".
+ * NOISE_MODIFIER_CATEGORY, or zero.  Zero indicates "any category".
  * \param id The algorithm identifier to map.
  *
  * \return The NUL-terminated name of the algorithm, or NULL if the
@@ -247,6 +230,97 @@ static int noise_protocol_parse_field
     if (!id)
         *ok = 0;
     return id;
+}
+
+/**
+ * \brief Parses a pattern name field from a protocol name string.
+ *
+ * \param modifiers Returns the modifiers for the pattern.
+ * \param name Points to the start of the protocol name string.
+ * \param len The total length of the protocol name string.
+ * \param posn The current position in the string, updated once the next
+ * field has been parsed.
+ * \param is_last Non-zero if this is the last expected field, or zero
+ * if we expect further fields to follow.
+ * \param ok Initialized to non-zero by the caller.  Will be set to zero
+ * if a parse error was encountered.
+ *
+ * \return The algorithm identifier for the pattern, or zero
+ * if the field's contents are invalid.
+ */
+static int noise_protocol_parse_pattern_field
+    (int modifiers[NOISE_MAX_MODIFIER_IDS], const char *name,
+     size_t len, size_t *posn, int *ok)
+{
+    size_t start, field_len;
+    size_t index, modifier_num;
+    char ch;
+    int pattern_id;
+    int id;
+
+    /* If the parse already failed, then nothing further to do */
+    if (!(*ok))
+        return 0;
+
+    /* Find the start and end of the current field */
+    start = *posn;
+    while (*posn < len && name[*posn] != '_')
+        ++(*posn);
+    field_len = *posn - start;
+
+    /* There should be a '_' here */
+    if (*posn >= len) {
+        *ok = 0;
+        return 0;
+    }
+    ++(*posn);  /* Skip the '_' */
+
+    /* Extract the base pattern name, which is the all-caps prefix */
+    index = 0;
+    while (index < field_len) {
+        ch = name[start + index];
+        if (ch < 'A' || ch > 'Z')
+            break;
+        ++index;
+    }
+
+    /* Look up the base pattern name */
+    pattern_id = noise_name_to_id(NOISE_PATTERN_CATEGORY, name + start, index);
+    if (!pattern_id) {
+        *ok = 0;
+        return 0;
+    }
+
+    /* Remove the prefix */
+    start += index;
+    field_len -= index;
+
+    /* Parse the modifiers */
+    modifier_num = 0;
+    while (field_len > 0) {
+        index = 0;
+        while (index < field_len && name[start + index] != '+')
+            ++index;
+        id = noise_name_to_id(NOISE_MODIFIER_CATEGORY, name + start, index);
+        if (!id  || modifier_num >= NOISE_MAX_MODIFIER_IDS) {
+            *ok = 0;
+            return 0;
+        }
+        modifiers[modifier_num++] = id;
+        start += index;
+        field_len -= index;
+        if (field_len > 0) {
+            /* Skip the '+' separator */
+            ++start;
+            --field_len;
+            if (!field_len) {
+                /* The modifier list ends in '+' which is not allowed */
+                *ok = 0;
+                return 0;
+            }
+        }
+    }
+    return pattern_id;
 }
 
 /**
@@ -343,8 +417,8 @@ int noise_protocol_name_to_id
     memset(id, 0, sizeof(NoiseProtocolId));
     id->prefix_id = noise_protocol_parse_field
         (NOISE_PREFIX_CATEGORY, name, name_len, &posn, 0, &ok);
-    id->pattern_id = noise_protocol_parse_field
-        (NOISE_PATTERN_CATEGORY, name, name_len, &posn, 0, &ok);
+    id->pattern_id = noise_protocol_parse_pattern_field
+        (id->modifier_ids, name, name_len, &posn, &ok);
     id->dh_id = noise_protocol_parse_dual_field
         (NOISE_DH_CATEGORY, name, name_len, &posn, &(id->hybrid_id), &ok);
     id->cipher_id = noise_protocol_parse_field
@@ -370,14 +444,13 @@ int noise_protocol_name_to_id
  * \param name The name buffer to format the field into.
  * \param len The length of the \a name buffer in bytes.
  * \param posn The current format position within the \a name buffer.
- * \param is_last Non-zero if this is the last field in the name,
- * or zero if this field is not the last.
+ * \param term_char Terminator character: '_', '+', or '\0'.
  * \param err Points to an error code.  Initialized to NOISE_ERROR_NONE
  * by the caller and updated by this function if there is an error.
  */
 static void noise_protocol_format_field
     (int category, int id, char *name, size_t len, size_t *posn,
-     int is_last, int *err)
+     int term_char, int *err)
 {
     const char *alg_name;
     size_t alg_len;
@@ -394,7 +467,7 @@ static void noise_protocol_format_field
     }
     alg_len = strlen(alg_name);
 
-    /* Will the name fit into the buffer, followed by either '_' or '\0'? */
+    /* Will the name fit into the buffer, followed by the terminator? */
     if (alg_len >= (len - *posn)) {
         *err = NOISE_ERROR_INVALID_LENGTH;
         return;
@@ -403,8 +476,8 @@ static void noise_protocol_format_field
     *posn += alg_len;
 
     /* Add either a separator or a terminator */
-    if (!is_last)
-        name[(*posn)++] = '_';
+    if (term_char != '\0')
+        name[(*posn)++] = term_char;
     else
         name[*posn] = '\0';
 }
@@ -435,8 +508,8 @@ static void noise_protocol_format_field
 int noise_protocol_id_to_name
     (char *name, size_t name_len, const NoiseProtocolId *id)
 {
-    size_t posn;
-    int err;
+    size_t posn, modifier_num;
+    int err, term_char;
 
     /* Bail out if the parameters are incorrect */
     if (!id) {
@@ -453,29 +526,38 @@ int noise_protocol_id_to_name
     posn = 0;
     err = NOISE_ERROR_NONE;
     noise_protocol_format_field
-        (NOISE_PREFIX_CATEGORY, id->prefix_id, name, name_len, &posn, 0, &err);
+        (NOISE_PREFIX_CATEGORY, id->prefix_id, name, name_len, &posn, '_', &err);
+    term_char = '_';
+    if (id->modifier_ids[0] != NOISE_MODIFIER_NONE)
+        term_char = '\0';
     noise_protocol_format_field
-        (NOISE_PATTERN_CATEGORY, id->pattern_id, name, name_len, &posn, 0, &err);
+        (NOISE_PATTERN_CATEGORY, id->pattern_id, name, name_len,
+         &posn, term_char, &err);
+    for (modifier_num = 0; modifier_num < NOISE_MAX_MODIFIER_IDS &&
+         id->modifier_ids[modifier_num] != NOISE_MODIFIER_NONE; ++modifier_num) {
+        /* Append the modifier names to the base pattern name */
+        term_char = '+';
+        if ((modifier_num + 1) >= NOISE_MAX_MODIFIER_IDS ||
+                id->modifier_ids[modifier_num + 1] == NOISE_MODIFIER_NONE)
+            term_char = '_';
+        noise_protocol_format_field
+            (NOISE_MODIFIER_CATEGORY, id->modifier_ids[modifier_num],
+             name, name_len, &posn, term_char, &err);
+    }
     if (!id->hybrid_id) {
         noise_protocol_format_field
-            (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, 0, &err);
+            (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, '_', &err);
     } else {
         /* Format the DH names as "dh_id+hybrid_id"; e.g. "25519+NewHope" */
         noise_protocol_format_field
-            (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, 1, &err);
-        if (err == NOISE_ERROR_NONE) {
-            if ((posn + 1) < name_len)
-                name[posn++] = '+';
-            else
-                err = NOISE_ERROR_INVALID_LENGTH;
-        }
+            (NOISE_DH_CATEGORY, id->dh_id, name, name_len, &posn, '+', &err);
         noise_protocol_format_field
-            (NOISE_DH_CATEGORY, id->hybrid_id, name, name_len, &posn, 0, &err);
+            (NOISE_DH_CATEGORY, id->hybrid_id, name, name_len, &posn, '_', &err);
     }
     noise_protocol_format_field
-        (NOISE_CIPHER_CATEGORY, id->cipher_id, name, name_len, &posn, 0, &err);
+        (NOISE_CIPHER_CATEGORY, id->cipher_id, name, name_len, &posn, '_', &err);
     noise_protocol_format_field
-        (NOISE_HASH_CATEGORY, id->hash_id, name, name_len, &posn, 1, &err);
+        (NOISE_HASH_CATEGORY, id->hash_id, name, name_len, &posn, '\0', &err);
 
     /* The reserved identifiers must be zero.  We don't know how to
        format reserved identifiers other than zero */

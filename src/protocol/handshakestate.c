@@ -809,9 +809,11 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
         return NOISE_ERROR_INVALID_PARAM;
     if (state->action != NOISE_ACTION_NONE)
         return NOISE_ERROR_INVALID_STATE;
+    /* FIXME
     if (state->symmetric->id.pattern_id == NOISE_PATTERN_XX_FALLBACK &&
             (state->requirements & NOISE_REQ_FALLBACK_PREMSG) == 0)
         return NOISE_ERROR_NOT_APPLICABLE;
+    */
 
     /* Check that we have satisfied all of the pattern requirements */
     if ((state->requirements & NOISE_REQ_LOCAL_REQUIRED) != 0 &&
@@ -914,7 +916,9 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  */
 int noise_handshakestate_fallback(NoiseHandshakeState *state)
 {
-    return noise_handshakestate_fallback_to(state, NOISE_PATTERN_XX_FALLBACK);
+    // FIXME
+    return NOISE_ERROR_INVALID_PARAM;
+    //return noise_handshakestate_fallback_to(state, NOISE_PATTERN_XX_FALLBACK);
 }
 
 /**

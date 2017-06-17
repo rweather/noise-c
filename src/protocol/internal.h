@@ -53,6 +53,11 @@ extern "C" {
 #define NOISE_PSK_LEN 32
 
 /**
+ * \brief Maximum number of tokens in a message pattern.
+ */
+#define NOISE_MAX_TOKENS 64
+
+/**
  * \brief Internal structure of the NoiseCipherState type.
  */
 struct NoiseCipherState_s
@@ -542,6 +547,9 @@ struct NoiseHandshakeState_s
     /** \brief Next action to be taken by the application */
     int action;
 
+    /** \brief Expanded message pattern for the current handshake */
+    uint8_t pattern[NOISE_MAX_TOKENS];
+
     /** \brief Points to the next message pattern tokens to be processed */
     const uint8_t *tokens;
 
@@ -677,6 +685,8 @@ typedef uint16_t NoisePatternFlags_t;
 
 const uint8_t *noise_pattern_lookup(int id);
 NoisePatternFlags_t noise_pattern_reverse_flags(NoisePatternFlags_t flags);
+int noise_pattern_expand
+    (uint8_t pattern[NOISE_MAX_TOKENS], const NoiseProtocolId *id);
 
 #ifdef __cplusplus
 };

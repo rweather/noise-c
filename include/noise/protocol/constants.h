@@ -70,31 +70,16 @@ extern "C" {
 #define NOISE_PATTERN_IN                NOISE_ID('P', 13)
 #define NOISE_PATTERN_IK                NOISE_ID('P', 14)
 #define NOISE_PATTERN_IX                NOISE_ID('P', 15)
-#define NOISE_PATTERN_XX_FALLBACK       NOISE_ID('P', 16)
-#define NOISE_PATTERN_X_NOIDH           NOISE_ID('P', 32)
-#define NOISE_PATTERN_NX_NOIDH          NOISE_ID('P', 33)
-#define NOISE_PATTERN_XX_NOIDH          NOISE_ID('P', 34)
-#define NOISE_PATTERN_KX_NOIDH          NOISE_ID('P', 35)
-#define NOISE_PATTERN_IK_NOIDH          NOISE_ID('P', 36)
-#define NOISE_PATTERN_IX_NOIDH          NOISE_ID('P', 37)
-#define NOISE_PATTERN_NN_HFS            NOISE_ID('P', 48)
-#define NOISE_PATTERN_NK_HFS            NOISE_ID('P', 49)
-#define NOISE_PATTERN_NX_HFS            NOISE_ID('P', 50)
-#define NOISE_PATTERN_XN_HFS            NOISE_ID('P', 51)
-#define NOISE_PATTERN_XK_HFS            NOISE_ID('P', 52)
-#define NOISE_PATTERN_XX_HFS            NOISE_ID('P', 53)
-#define NOISE_PATTERN_KN_HFS            NOISE_ID('P', 54)
-#define NOISE_PATTERN_KK_HFS            NOISE_ID('P', 55)
-#define NOISE_PATTERN_KX_HFS            NOISE_ID('P', 56)
-#define NOISE_PATTERN_IN_HFS            NOISE_ID('P', 57)
-#define NOISE_PATTERN_IK_HFS            NOISE_ID('P', 58)
-#define NOISE_PATTERN_IX_HFS            NOISE_ID('P', 59)
-#define NOISE_PATTERN_XX_FALLBACK_HFS   NOISE_ID('P', 60)
-#define NOISE_PATTERN_NX_NOIDH_HFS      NOISE_ID('P', 80)
-#define NOISE_PATTERN_XX_NOIDH_HFS      NOISE_ID('P', 81)
-#define NOISE_PATTERN_KX_NOIDH_HFS      NOISE_ID('P', 82)
-#define NOISE_PATTERN_IK_NOIDH_HFS      NOISE_ID('P', 83)
-#define NOISE_PATTERN_IX_NOIDH_HFS      NOISE_ID('P', 84)
+
+/* Handshake pattern modifiers */
+#define NOISE_MODIFIER_NONE             0
+#define NOISE_MODIFIER_CATEGORY         NOISE_ID('M', 0)
+#define NOISE_MODIFIER_FALLBACK         NOISE_ID('M', 1)
+#define NOISE_MODIFIER_HFS              NOISE_ID('M', 2)
+#define NOISE_MODIFIER_PSK0             NOISE_ID('M', 20)
+#define NOISE_MODIFIER_PSK1             NOISE_ID('M', 21)
+#define NOISE_MODIFIER_PSK2             NOISE_ID('M', 22)
+#define NOISE_MODIFIER_PSK3             NOISE_ID('M', 23)
 
 /* Protocol name prefixes */
 #define NOISE_PREFIX_NONE               0
@@ -149,11 +134,14 @@ extern "C" {
 /* Maximum length of a packet payload */
 #define NOISE_MAX_PAYLOAD_LEN           65535
 
-/* Maximum length of a protocol name string */
-#define NOISE_MAX_PROTOCOL_NAME         128
+/* Maximum length of a protocol name string including terminating '\0' */
+#define NOISE_MAX_PROTOCOL_NAME         256
 
 /* Recommended maximum length for fingerprint buffers */
 #define NOISE_MAX_FINGERPRINT_LEN       256
+
+/* Maximum number of modifiers to a base pattern name */
+#define NOISE_MAX_MODIFIER_IDS          16
 
 #ifdef __cplusplus
 };
