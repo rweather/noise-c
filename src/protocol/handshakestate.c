@@ -108,6 +108,8 @@ static int noise_handshakestate_requirements
 static int noise_handshakestate_new
     (NoiseHandshakeState **state, NoiseSymmetricState *symmetric, int role)
 {
+    uint8_t tokens[NOISE_MAX_TOKENS];
+    size_t num_modifiers;
     const uint8_t *pattern;
     int dh_id;
     int hybrid_id;
@@ -118,11 +120,18 @@ static int noise_handshakestate_new
     int remote_dh_role;
 
     /* Locate the information for the current handshake pattern */
-    pattern = noise_pattern_lookup(symmetric->id.pattern_id);
-    if (!pattern) {
+    num_modifiers = 0;
+    while (num_modifiers < NOISE_MAX_MODIFIER_IDS &&
+                symmetric->id.modifier_ids[num_modifiers] != 0) {
+        ++num_modifiers;
+    }
+    if (noise_pattern_expand(tokens, symmetric->id.pattern_id,
+                             symmetric->id.modifier_ids, num_modifiers)
+            != NOISE_ERROR_NONE) {
         noise_symmetricstate_free(symmetric);
         return NOISE_ERROR_UNKNOWN_ID;
     }
+    pattern = tokens;
     flags = ((NoisePatternFlags_t)(pattern[0])) |
            (((NoisePatternFlags_t)(pattern[1])) << 8);
     if ((flags & NOISE_PAT_FLAG_REMOTE_REQUIRED) != 0)
@@ -164,7 +173,8 @@ static int noise_handshakestate_new
     (*state)->requirements = extra_reqs | noise_handshakestate_requirements
         (flags, symmetric->id.prefix_id, role, 0);
     (*state)->action = NOISE_ACTION_NONE;
-    (*state)->tokens = pattern + 2;
+    memcpy((*state)->pattern, tokens, NOISE_MAX_TOKENS);
+    (*state)->tokens = (*state)->pattern + 2;
     (*state)->role = role;
     (*state)->symmetric = symmetric;
 
@@ -1314,7 +1324,7 @@ static int noise_handshakestate_write
             }
             if (state->pre_shared_key_len != 0) {
                 /* Mix the pre-shared key into the chaining key and hash */
-                noise_symmetricstate_mix_key_and_hash
+                err = noise_symmetricstate_mix_key_and_hash
                     (state->symmetric, state->pre_shared_key,
                      state->pre_shared_key_len);
             } else {
@@ -1600,7 +1610,7 @@ static int noise_handshakestate_read
             }
             if (state->pre_shared_key_len != 0) {
                 /* Mix the pre-shared key into the chaining key and hash */
-                noise_symmetricstate_mix_key_and_hash
+                err = noise_symmetricstate_mix_key_and_hash
                     (state->symmetric, state->pre_shared_key,
                      state->pre_shared_key_len);
             } else {
