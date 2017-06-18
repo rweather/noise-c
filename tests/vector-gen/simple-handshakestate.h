@@ -24,6 +24,7 @@
 #define __SIMPLE_HANDSHAKESTATE_H__
 
 #include "simple-symmetricstate.h"
+#include "internal.h"
 
 #define MAX_DH_KEY_LEN  2048
 #define MAX_PSK_LEN     32
@@ -62,6 +63,7 @@ typedef struct
     uint8_t psk[MAX_PSK_LEN];
     size_t psk_len;
     int action;
+    uint8_t tokens[NOISE_MAX_TOKENS];
     const uint8_t *pattern;
     int is_initiator;
 
@@ -69,16 +71,16 @@ typedef struct
 
 void HandshakeState_new(HandshakeState *handshake);
 void HandshakeState_free(HandshakeState *handshake);
-void Initialize(HandshakeState *handshake, const char *protocol_name,
-                int is_initiator, int is_fallback,
-                const uint8_t *prologue, size_t prologue_len,
-                const uint8_t *s, size_t s_len,
-                const uint8_t *e, size_t e_len,
-                const uint8_t *f, size_t f_len,
-                const uint8_t *rs, size_t rs_len,
-                const uint8_t *re, size_t re_len,
-                const uint8_t *rf, size_t rf_len,
-                const uint8_t *psk, size_t psk_len);
+int Initialize(HandshakeState *handshake, const char *protocol_name,
+               int is_initiator, int is_fallback,
+               const uint8_t *prologue, size_t prologue_len,
+               const uint8_t *s, size_t s_len,
+               const uint8_t *e, size_t e_len,
+               const uint8_t *f, size_t f_len,
+               const uint8_t *rs, size_t rs_len,
+               const uint8_t *re, size_t re_len,
+               const uint8_t *rf, size_t rf_len,
+               const uint8_t *psk, size_t psk_len);
 int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *message);
 int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload);
 

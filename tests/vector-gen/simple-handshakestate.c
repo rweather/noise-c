@@ -41,16 +41,24 @@ void HandshakeState_free(HandshakeState *handshake)
     noise_dhstate_free(handshake->hybrid_public);
 }
 
-void Initialize(HandshakeState *handshake, const char *protocol_name,
-                int is_initiator, int is_fallback,
-                const uint8_t *prologue, size_t prologue_len,
-                const uint8_t *s, size_t s_len,
-                const uint8_t *e, size_t e_len,
-                const uint8_t *f, size_t f_len,
-                const uint8_t *rs, size_t rs_len,
-                const uint8_t *re, size_t re_len,
-                const uint8_t *rf, size_t rf_len,
-                const uint8_t *psk, size_t psk_len)
+static size_t CountModifiers(const NoiseProtocolId *id)
+{
+    size_t count = 0;
+    while (count < NOISE_MAX_MODIFIER_IDS && id->modifier_ids[count] != 0)
+        ++count;
+    return count;
+}
+
+int Initialize(HandshakeState *handshake, const char *protocol_name,
+               int is_initiator, int is_fallback,
+               const uint8_t *prologue, size_t prologue_len,
+               const uint8_t *s, size_t s_len,
+               const uint8_t *e, size_t e_len,
+               const uint8_t *f, size_t f_len,
+               const uint8_t *rs, size_t rs_len,
+               const uint8_t *re, size_t re_len,
+               const uint8_t *rf, size_t rf_len,
+               const uint8_t *psk, size_t psk_len)
 {
     NoiseProtocolId id;
     size_t name_len = strlen(protocol_name);
@@ -118,7 +126,11 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         fprintf(stderr, "Out of range key sizes\n");
         exit(1);
     }
-    pattern = noise_pattern_lookup(id.pattern_id);
+    if (noise_pattern_expand
+            (handshake->tokens, id.pattern_id, id.modifier_ids,
+             CountModifiers(&id)) != NOISE_ERROR_NONE)
+        return 0;
+    pattern = handshake->tokens;
     flags = ((NoisePatternFlags_t)(pattern[0])) |
            (((NoisePatternFlags_t)(pattern[1])) << 8);
     pattern += 2;
@@ -169,15 +181,6 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     }
     InitializeSymmetric(&(handshake->symmetric), protocol_name);
     MixHash(&(handshake->symmetric), prologue, prologue_len);
-    if (handshake->psk_len) {
-        uint8_t temp[MAX_HASHLEN];
-        noise_hashstate_hkdf
-            (handshake->symmetric.hash, handshake->symmetric.ck,
-             handshake->symmetric.hash_len, handshake->psk, handshake->psk_len,
-             handshake->symmetric.ck, handshake->symmetric.hash_len,
-             temp, handshake->symmetric.hash_len);
-        MixHash(&(handshake->symmetric), temp, handshake->symmetric.hash_len);
-    }
     if (is_initiator) {
         if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
             MixHash(&(handshake->symmetric), handshake->s_public,
@@ -185,10 +188,6 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         }
         if (flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) {
             MixHash(&(handshake->symmetric), handshake->re, handshake->re_len);
-            if (handshake->psk_len) {
-                MixKey(&(handshake->symmetric), handshake->re,
-                       handshake->re_len);
-            }
         }
         if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID_REQ) {
             MixHash(&(handshake->symmetric), handshake->rf,
@@ -204,10 +203,6 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
         if (flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) {
             MixHash(&(handshake->symmetric), handshake->e_public,
                     handshake->e_public_len);
-            if (handshake->psk_len) {
-                MixKey(&(handshake->symmetric), handshake->e_public,
-                       handshake->e_public_len);
-            }
         }
         if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID_REQ) {
             MixHash(&(handshake->symmetric), handshake->f_public,
@@ -225,6 +220,7 @@ void Initialize(HandshakeState *handshake, const char *protocol_name,
     } else {
         handshake->action = ACTION_READ;
     }
+    return 1;
 }
 
 int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *message)
@@ -261,9 +257,6 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
                 memcpy(message->data + index, handshake->e_public, len);
             }
             MixHash(&(handshake->symmetric), message->data + index, len);
-            if (handshake->psk_len) {
-                MixKey(&(handshake->symmetric), message->data + index, len);
-            }
             index += len;
             break;
 
@@ -382,6 +375,10 @@ int WriteMessage(HandshakeState *handshake, const Buffer payload, Buffer *messag
                 (handshake->dh_private, handshake->dh_public, data.data, len);
             MixKey(&(handshake->symmetric), data.data, len);
             break;
+
+        case NOISE_TOKEN_PSK:
+            MixKeyAndHash(&(handshake->symmetric), handshake->psk, handshake->psk_len);
+            break;
         }
     }
     data = EncryptAndHash(&(handshake->symmetric), payload);
@@ -416,10 +413,6 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
             memcpy(handshake->re, message.data + index, handshake->re_len);
             index += handshake->re_len;
             MixHash(&(handshake->symmetric), handshake->re, handshake->re_len);
-            if (handshake->psk_len) {
-                MixKey(&(handshake->symmetric), handshake->re,
-                       handshake->re_len);
-            }
             break;
 
         case NOISE_TOKEN_F:
@@ -527,6 +520,10 @@ int ReadMessage(HandshakeState *handshake, const Buffer message, Buffer *payload
             noise_dhstate_calculate
                 (handshake->dh_private, handshake->dh_public, data.data, len);
             MixKey(&(handshake->symmetric), data.data, len);
+            break;
+
+        case NOISE_TOKEN_PSK:
+            MixKeyAndHash(&(handshake->symmetric), handshake->psk, handshake->psk_len);
             break;
         }
     }

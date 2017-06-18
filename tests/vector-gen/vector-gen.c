@@ -53,12 +53,6 @@ static uint8_t const psk[] = {
     0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
     0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f
 };
-static uint8_t const ssk[] = {
-    0xe0, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7,
-    0xe8, 0xe9, 0xea, 0xeb, 0xec, 0xed, 0xee, 0xef,
-    0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7,
-    0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
-};
 static Key const init_ephemeral = {
     {
         0x89, 0x3e, 0x28, 0xb9, 0xdc, 0x6c, 0xa8, 0xd6,
@@ -619,6 +613,18 @@ static void print_hex(const char *field, const uint8_t *data, size_t len)
     printf("\",\n");
 }
 
+static void print_hex_array(const char *field, const uint8_t *data, size_t len)
+{
+    static char const hexchars[] = "0123456789abcdef";
+    printf("\"%s\": [\"", field);
+    while (len > 0) {
+        int ch = *data++;
+        printf("%c%c", hexchars[(ch >> 4) & 0x0F], hexchars[ch & 0x0F]);
+        --len;
+    }
+    printf("\"],\n");
+}
+
 static void print_hex_no_comma(const char *field, const uint8_t *data, size_t len)
 {
     static char const hexchars[] = "0123456789abcdef";
@@ -713,12 +719,10 @@ static void initialize_protocol
         else
             get_public_key(&rs, &rs_len, &resp_static, id->dh_id);
     }
-    /*
-    if (id->prefix_id == NOISE_PREFIX_PSK) {
+    if (strstr(protocol_name, "psk")) {
         pk = psk;
         pk_len = sizeof(psk);
     }
-    */
     Initialize(init, protocol_name, 1, 0, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
@@ -748,12 +752,10 @@ static void initialize_protocol
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
         get_public_key(&rs, &rs_len, &init_static, id->dh_id);
     }
-    /*
-    if (id->prefix_id == NOISE_PREFIX_PSK) {
+    if (strstr(protocol_name, "psk")) {
         pk = psk;
         pk_len = sizeof(psk);
     }
-    */
     Initialize(resp, protocol_name, 0, 0, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
@@ -795,12 +797,10 @@ static void initialize_protocol_fallback
     if (flags & NOISE_PAT_FLAG_REMOTE_HYBRID_REQ) {
         get_public_key(&rf, &rf_len, &init_ephemeral, id->hybrid_id);
     }
-    /*
-    if (id->prefix_id == NOISE_PREFIX_PSK) {
+    if (strstr(protocol_name, "psk")) {
         pk = psk;
         pk_len = sizeof(psk);
     }
-    */
     Initialize(init, protocol_name, 1, 1, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
@@ -830,18 +830,16 @@ static void initialize_protocol_fallback
     if (flags & NOISE_PAT_FLAG_LOCAL_REQUIRED) {
         get_public_key(&rs, &rs_len, &resp_static, id->dh_id);
     }
-    /*
-    if (id->prefix_id == NOISE_PREFIX_PSK) {
+    if (strstr(protocol_name, "psk")) {
         pk = psk;
         pk_len = sizeof(psk);
     }
-    */
     Initialize(resp, protocol_name, 0, 1, prologue, sizeof(prologue),
                s, s_len, e, e_len, f, f_len, rs, rs_len,
                re, re_len, rf, rf_len, pk, pk_len);
 }
 
-static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, int with_fallback)
+static void generate_vector(const NoiseProtocolId *id, int first, int with_fallback)
 {
     NoiseProtocolId id2;
     char protocol_name[NOISE_MAX_PROTOCOL_NAME];
@@ -877,20 +875,16 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
     if (with_fallback) {
         /* Put the name of the fallback pattern into the "name" field
            to make it clear what we are doing */
-        id2.pattern_id = with_fallback;
+        memmove(id2.modifier_ids + 1, id2.modifier_ids,
+                (NOISE_MAX_MODIFIER_IDS - 1) * sizeof(int));
+        id2.modifier_ids[0] = NOISE_MODIFIER_FALLBACK;
         noise_protocol_id_to_name(alt_protocol_name, sizeof(alt_protocol_name), &id2);
-        printf("\"name\": \"%s%s\",\n", alt_protocol_name, with_ssk ? ":SSK" : "");
+        printf("\"name\": \"%s\",\n", alt_protocol_name);
     } else {
-        printf("\"name\": \"%s%s\",\n", protocol_name, with_ssk ? ":SSK" : "");
         alt_protocol_name[0] = '\0';
     }
-    printf("\"pattern\": \"%s\",\n", noise_id_to_name(0, id->pattern_id));
-    printf("\"dh\": \"%s\",\n", noise_id_to_name(0, id->dh_id));
-    if (id->hybrid_id != NOISE_DH_NONE) {
-        printf("\"hybrid\": \"%s\",\n", noise_id_to_name(0, id->hybrid_id));
-    }
-    printf("\"cipher\": \"%s\",\n", noise_id_to_name(0, id->cipher_id));
-    printf("\"hash\": \"%s\",\n", noise_id_to_name(0, id->hash_id));
+    printf("\"protocol_name\": \"%s\",\n", protocol_name);
+#if 0 // FIXME
     if (with_fallback) {
         printf("\"fallback\": true,\n");
         if (with_fallback != NOISE_PATTERN_XX_FALLBACK) {
@@ -900,13 +894,10 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
                    noise_id_to_name(0, with_fallback));
         }
     }
+#endif
     print_hex("init_prologue", prologue, sizeof(prologue));
-    /*
-    if (id->prefix_id == NOISE_PREFIX_PSK)
-        print_hex("init_psk", psk, sizeof(psk));
-    */
-    if (with_ssk)
-        print_hex("init_ssk", ssk, sizeof(ssk));
+    if (strstr(protocol_name, "psk"))
+        print_hex_array("init_psks", psk, sizeof(psk));
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC)
         print_key("init_static", &init_static, id->dh_id);
     if (flags & NOISE_PAT_FLAG_LOCAL_EPHEMERAL)
@@ -922,12 +913,8 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
             print_public_key("init_remote_static", &resp_static, id->dh_id);
     }
     print_hex("resp_prologue", prologue, sizeof(prologue));
-    /*
-    if (id->prefix_id == NOISE_PREFIX_PSK)
-        print_hex("resp_psk", psk, sizeof(psk));
-    */
-    if (with_ssk)
-        print_hex("resp_ssk", ssk, sizeof(ssk));
+    if (strstr(protocol_name, "psk"))
+        print_hex_array("resp_psks", psk, sizeof(psk));
     if (flags & NOISE_PAT_FLAG_REMOTE_STATIC)
         print_key("resp_static", &resp_static, id->dh_id);
     if (flags & NOISE_PAT_FLAG_REMOTE_EPHEMERAL)
@@ -981,12 +968,7 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
     }
 
     /* Split both ends of the communication */
-    if (with_ssk) {
-        memcpy(message.data, ssk, sizeof(ssk));
-        message.size = sizeof(ssk);
-    } else {
-        message.size = 0;
-    }
+    message.size = 0;
     Split(&(init.symmetric), message, &init_c1, &init_c2);
     Split(&(resp.symmetric), message, &resp_c1, &resp_c2);
 
@@ -1031,18 +1013,28 @@ static void generate_vector(const NoiseProtocolId *id, int first, int with_ssk, 
 }
 
 /* Output all of the regular patterns */
-static void regular_patterns(int with_ssk)
+static void regular_patterns(void)
 {
+    static int modifier_list[][NOISE_MAX_MODIFIER_IDS] = {
+        {0},
+        {NOISE_MODIFIER_PSK0, 0},
+    };
+    size_t modifier_count = sizeof(modifier_list) / sizeof(modifier_list[0]);
+    size_t modifier_index;
     NoiseProtocolId id;
     int first = 1;
     memset(&id, 0, sizeof(id));
     for (id.pattern_id = NOISE_PATTERN_N; id.pattern_id <= NOISE_PATTERN_IX; ++id.pattern_id) {
         id.prefix_id = NOISE_PREFIX_STANDARD;
-        for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
-            for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
-                for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
-                    generate_vector(&id, first, with_ssk, 0);
-                    first = 0;
+        for (modifier_index = 0; modifier_index < modifier_count; ++modifier_index) {
+            memcpy(id.modifier_ids, modifier_list[modifier_index],
+                   NOISE_MAX_MODIFIER_IDS * sizeof(int));
+            for (id.cipher_id = NOISE_CIPHER_CHACHAPOLY; id.cipher_id <= NOISE_CIPHER_AESGCM; ++id.cipher_id) {
+                for (id.dh_id = NOISE_DH_CURVE25519; id.dh_id <= NOISE_DH_CURVE448; ++id.dh_id) {
+                    for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
+                        generate_vector(&id, first, 0);
+                        first = 0;
+                    }
                 }
             }
         }
@@ -1050,8 +1042,9 @@ static void regular_patterns(int with_ssk)
 }
 
 /* Output fallback patterns */
-static void fallback_patterns(int with_ssk)
+static void fallback_patterns(void)
 {
+#if 0 // FIXME
     static int const fallback_patterns[] = {
         NOISE_PATTERN_IK, NOISE_PATTERN_XX_FALLBACK,
         0
@@ -1069,17 +1062,17 @@ static void fallback_patterns(int with_ssk)
                 for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
                     generate_vector(&id, first, 0, fallback_id);
                     first = 0;
-                    if (with_ssk)
-                        generate_vector(&id, first, 1, fallback_id);
                 }
             }
         }
     }
+#endif
 }
 
 /* Output all of the patterns that involve hybrid forward secrecy */
-static void hybrid_patterns(int with_ssk)
+static void hybrid_patterns(void)
 {
+#if 0 // FIXME
     NoiseProtocolId id;
     int first = 1;
     int fallback_id;
@@ -1094,8 +1087,6 @@ static void hybrid_patterns(int with_ssk)
                 for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
                     generate_vector(&id, first, 0, 0);
                     first = 0;
-                    if (with_ssk)
-                        generate_vector(&id, first, 1, 0);
                 }
             }
         }
@@ -1112,11 +1103,10 @@ static void hybrid_patterns(int with_ssk)
             for (id.hash_id = NOISE_HASH_BLAKE2s; id.hash_id <= NOISE_HASH_SHA512; ++id.hash_id) {
                 generate_vector(&id, first, 0, fallback_id);
                 first = 0;
-                if (with_ssk)
-                    generate_vector(&id, first, 1, fallback_id);
             }
         }
     }
+#endif
 }
 
 int main(int argc, char *argv[])
@@ -1126,13 +1116,10 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    int with_ssk = 0;
     int with_fallback = 0;
     int with_hybrid = 0;
 
     while (argc > 1) {
-        if (!strcmp(argv[1], "--with-ssk"))
-            with_ssk = 1;
         if (!strcmp(argv[1], "--with-fallback"))
             with_fallback = 1;
         if (!strcmp(argv[1], "--with-hybrid"))
@@ -1145,11 +1132,11 @@ int main(int argc, char *argv[])
     printf("\"vectors\": [\n");
 
     if (with_fallback) {
-        fallback_patterns(with_ssk);
+        fallback_patterns();
     } else if (with_hybrid) {
-        hybrid_patterns(with_ssk);
+        hybrid_patterns();
     } else {
-        regular_patterns(with_ssk);
+        regular_patterns();
     }
 
     printf("\n]\n");

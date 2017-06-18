@@ -42,6 +42,7 @@ void SymmetricState_free(SymmetricState *symmetric);
 void InitializeSymmetric(SymmetricState *symmetric, const char *protocol_name);
 void MixKey(SymmetricState *symmetric, const uint8_t *data, size_t len);
 void MixHash(SymmetricState *symmetric, const uint8_t *data, size_t len);
+void MixKeyAndHash(SymmetricState *symmetric, const uint8_t *data, size_t len);
 Buffer EncryptAndHash(SymmetricState *symmetric, const Buffer plaintext);
 int DecryptAndHash(SymmetricState *symmetric, const Buffer ciphertext, Buffer *result);
 void Split(SymmetricState *symmetric, const Buffer ssk, CipherState *c1, CipherState *c2);

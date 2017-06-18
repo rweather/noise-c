@@ -80,6 +80,17 @@ void MixHash(SymmetricState *symmetric, const uint8_t *data, size_t len)
                              data, len, symmetric->h, symmetric->hash_len);
 }
 
+void MixKeyAndHash(SymmetricState *symmetric, const uint8_t *data, size_t len)
+{
+    uint8_t temp[MAX_HASHLEN];
+    uint8_t key[32];
+    noise_hashstate_hkdf3(symmetric->hash, symmetric->ck, symmetric->hash_len,
+                          data, len, symmetric->ck, symmetric->hash_len,
+                          temp, symmetric->hash_len, key, sizeof(key));
+    MixHash(symmetric, temp, symmetric->hash_len);
+    InitializeKey(&(symmetric->cipher), key, sizeof(key));
+}
+
 Buffer EncryptAndHash(SymmetricState *symmetric, const Buffer plaintext)
 {
     Buffer result;
