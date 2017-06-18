@@ -686,7 +686,8 @@ typedef uint16_t NoisePatternFlags_t;
 const uint8_t *noise_pattern_lookup(int id);
 NoisePatternFlags_t noise_pattern_reverse_flags(NoisePatternFlags_t flags);
 int noise_pattern_expand
-    (uint8_t pattern[NOISE_MAX_TOKENS], const NoiseProtocolId *id);
+    (uint8_t pattern[NOISE_MAX_TOKENS], int pattern_id,
+     const int *modifiers, size_t num_modifiers);
 
 #ifdef __cplusplus
 };

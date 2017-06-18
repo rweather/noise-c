@@ -659,7 +659,9 @@ int noise_pattern_expand_psk
  * \brief Expands a base pattern using a set of modifiers.
  *
  * \param pattern The fully expanded pattern.
- * \param id The protocol identifier, including pattern and modifiers.
+ * \param pattern_id The identifier for the base pattern.
+ * \param modifiers The modifiers to apply to the base pattern.
+ * \param num_modifiers The number of modifiers to apply to the base pattern.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_LENGTH if the fully expanded pattern is
@@ -668,7 +670,8 @@ int noise_pattern_expand_psk
  * are not supported, or the combination of modifiers is not supported.
  */
 int noise_pattern_expand
-    (uint8_t pattern[NOISE_MAX_TOKENS], const NoiseProtocolId *id)
+    (uint8_t pattern[NOISE_MAX_TOKENS], int pattern_id,
+     const int *modifiers, size_t num_modifiers)
 {
     const uint8_t *base_pattern;
     const uint8_t *pattern_end;
@@ -679,7 +682,7 @@ int noise_pattern_expand
     int err;
 
     /* Look up the base pattern */
-    base_pattern = noise_pattern_lookup(id->pattern_id);
+    base_pattern = noise_pattern_lookup(pattern_id);
     if (!base_pattern)
         return NOISE_ERROR_UNKNOWN_NAME;
 
@@ -698,10 +701,9 @@ int noise_pattern_expand
 
     /* Apply the modifiers to the base pattern */
     err = NOISE_ERROR_NONE;
-    for (index = 0; index < NOISE_MAX_MODIFIER_IDS &&
-                    id->modifier_ids[index] != NOISE_MODIFIER_NONE &&
+    for (index = 0; index < num_modifiers &&
                     err == NOISE_ERROR_NONE; ++index) {
-        switch (id->modifier_ids[index]) {
+        switch (modifiers[index]) {
         case NOISE_MODIFIER_FALLBACK:
             err = noise_pattern_expand_fallback(temp, pattern, &flags);
             break;
@@ -714,7 +716,7 @@ int noise_pattern_expand
         case NOISE_MODIFIER_PSK3:
             err = noise_pattern_expand_psk
                 (temp, pattern, &flags,
-                 id->modifier_ids[index] - NOISE_MODIFIER_PSK0);
+                 modifiers[index] - NOISE_MODIFIER_PSK0);
             break;
         default:
             return NOISE_ERROR_UNKNOWN_NAME;
