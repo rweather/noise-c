@@ -46,6 +46,13 @@ typedef struct
 int noise_name_to_id(int category, const char *name, size_t name_len);
 const char *noise_id_to_name(int category, int id);
 
+int noise_name_list_to_ids(int *ids, size_t ids_len,
+                           const char *name, size_t name_len,
+                           int category1, int category2);
+int noise_ids_to_name_list(char *name, size_t name_len,
+                           const int *ids, size_t ids_len,
+                           int category1, int category2);
+
 int noise_protocol_name_to_id
     (NoiseProtocolId *id, const char *name, size_t name_len);
 int noise_protocol_id_to_name

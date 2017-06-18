@@ -21,6 +21,7 @@
  */
 
 #include "test-helpers.h"
+#include <stdarg.h>
 
 /* Check that a known mapping is present in the algorithm_names table */
 static void check_id(const char *name, int id)
@@ -98,6 +99,154 @@ static void test_id_mappings(void)
     compare(noise_name_to_id(0, "AESGCM-128", 10), 0);
     verify(noise_id_to_name(NOISE_CIPHER_CATEGORY, NOISE_ID('C', 200)) == 0);
     verify(noise_id_to_name(0, NOISE_ID('C', 200)) == 0);
+}
+
+#define MAX_IDS 16
+
+/* Check the parsing and construction of name lists */
+static void check_name_list(const char *name, int error,
+                            int category1, int category2, ...)
+{
+    int ids[MAX_IDS];
+    int expected_ids[MAX_IDS];
+    int expected_ids_len = 0;
+    char output_name[NOISE_MAX_PROTOCOL_NAME];
+    va_list va;
+
+    /* Build the identifier list from the function arguments */
+    va_start(va, category2);
+    while (expected_ids_len < MAX_IDS) {
+        expected_ids[expected_ids_len] = va_arg(va, int);
+        if (!(expected_ids[expected_ids_len]))
+            break;
+        ++expected_ids_len;
+    }
+    va_end(va);
+
+    /* Parse the name into an identifier list */
+    if (error == NOISE_ERROR_NONE) {
+        compare(noise_name_list_to_ids(ids, MAX_IDS, name, strlen(name),
+                                       category1, category2), expected_ids_len);
+        verify(!memcmp(ids, expected_ids, expected_ids_len * sizeof(int)));
+    } else {
+        compare(noise_name_list_to_ids(ids, MAX_IDS, name, strlen(name),
+                                       category1, category2), -error);
+        return;
+    }
+
+    /* Format the list back into a name */
+    memset(output_name, 0x66, sizeof(output_name));
+    compare(noise_ids_to_name_list(output_name, sizeof(output_name),
+                                   expected_ids, expected_ids_len,
+                                   category1, category2),
+            NOISE_ERROR_NONE);
+    verify(memchr(output_name, '\0', sizeof(output_name)) != 0);
+    verify(!strcmp(output_name, name));
+
+    /* Check for parameter error conditions */
+    compare(noise_name_list_to_ids(0, MAX_IDS, name, strlen(name),
+                                   category1, category2),
+            -NOISE_ERROR_INVALID_PARAM);
+    compare(noise_name_list_to_ids(ids, 0, name, strlen(name),
+                                   category1, category2),
+            -NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_name_list_to_ids(ids, MAX_IDS, 0, strlen(name),
+                                   category1, category2),
+            -NOISE_ERROR_INVALID_PARAM);
+    compare(noise_name_list_to_ids(ids, MAX_IDS, name, 0,
+                                   category1, category2),
+            -NOISE_ERROR_UNKNOWN_NAME);
+    compare(noise_name_list_to_ids(ids, MAX_IDS, name, strlen(name),
+                                   NOISE_SIGN_CATEGORY, category2),
+            -NOISE_ERROR_UNKNOWN_NAME);
+    compare(noise_ids_to_name_list(0, sizeof(output_name),
+                                   expected_ids, expected_ids_len,
+                                   category1, category2),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_ids_to_name_list(output_name, 0,
+                                   expected_ids, expected_ids_len,
+                                   category1, category2),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_ids_to_name_list(output_name, sizeof(output_name),
+                                   0, expected_ids_len,
+                                   category1, category2),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_ids_to_name_list(output_name, sizeof(output_name),
+                                   expected_ids, 0,
+                                   category1, category2),
+            NOISE_ERROR_INVALID_PARAM);
+    compare(noise_ids_to_name_list(output_name, sizeof(output_name),
+                                   expected_ids, expected_ids_len,
+                                   NOISE_SIGN_CATEGORY, category2),
+            NOISE_ERROR_UNKNOWN_ID);
+    compare(noise_ids_to_name_list(output_name, 1,
+                                   expected_ids, expected_ids_len,
+                                   category1, category2),
+            NOISE_ERROR_INVALID_LENGTH);
+    compare(noise_ids_to_name_list(output_name, strlen(name),
+                                   expected_ids, expected_ids_len,
+                                   category1, category2),
+            NOISE_ERROR_INVALID_LENGTH);
+}
+
+static void test_name_lists(void)
+{
+    check_name_list("25519", NOISE_ERROR_NONE,
+                    NOISE_DH_CATEGORY, NOISE_DH_CATEGORY,
+                    NOISE_DH_CURVE25519, 0);
+    check_name_list("25519+448", NOISE_ERROR_NONE,
+                    NOISE_DH_CATEGORY, 0,
+                    NOISE_DH_CURVE25519, NOISE_DH_CURVE448, 0);
+    check_name_list("25519+BLAKE2s", NOISE_ERROR_NONE,
+                    NOISE_DH_CATEGORY, NOISE_HASH_CATEGORY,
+                    NOISE_DH_CURVE25519, NOISE_HASH_BLAKE2s, 0);
+    check_name_list("25519+BLAKE2s+SHA512", NOISE_ERROR_NONE,
+                    NOISE_DH_CATEGORY, NOISE_HASH_CATEGORY,
+                    NOISE_DH_CURVE25519, NOISE_HASH_BLAKE2s,
+                    NOISE_HASH_SHA512, 0);
+
+    check_name_list("KX", NOISE_ERROR_NONE,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY,
+                    NOISE_PATTERN_KX, 0);
+    check_name_list("IKhfs", NOISE_ERROR_NONE,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY,
+                    NOISE_PATTERN_IK, NOISE_MODIFIER_HFS, 0);
+    check_name_list("XXfallback+psk1", NOISE_ERROR_NONE,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY,
+                    NOISE_PATTERN_XX, NOISE_MODIFIER_FALLBACK,
+                    NOISE_MODIFIER_PSK1, 0);
+    check_name_list("XXfallback+hfs+psk0+psk1", NOISE_ERROR_NONE,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY,
+                    NOISE_PATTERN_XX, NOISE_MODIFIER_FALLBACK,
+                    NOISE_MODIFIER_HFS, NOISE_MODIFIER_PSK0,
+                    NOISE_MODIFIER_PSK1, 0);
+    check_name_list("KX+N", NOISE_ERROR_NONE,
+                    NOISE_PATTERN_CATEGORY, 0,
+                    NOISE_PATTERN_KX, NOISE_PATTERN_N, 0);
+
+    /* Parsing errors due to invalid inputs */
+    check_name_list("", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_DH_CATEGORY, 0, 0);
+    check_name_list("+25519", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_DH_CATEGORY, 0, 0);
+    check_name_list("25519+", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_DH_CATEGORY, 0, 0);
+    check_name_list("Curve25519+448", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_DH_CATEGORY, 0, 0);
+    check_name_list("25519+448", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_DH_CATEGORY, NOISE_HASH_CATEGORY, 0);
+    check_name_list("25519+448+", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_DH_CATEGORY, 0, 0);
+    check_name_list("", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY, 0);
+    check_name_list("XX+", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY, 0);
+    check_name_list("XXxfs", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY, 0);
+    check_name_list("XX+hfs", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY, 0);
+    check_name_list("XXfallback+hfs+", NOISE_ERROR_UNKNOWN_NAME,
+                    NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY, 0);
 }
 
 /* Check the parsing and formatting of a specific protocol name */
@@ -249,5 +398,6 @@ static void test_protocol_names(void)
 void test_names(void)
 {
     test_id_mappings();
+    test_name_lists();
     test_protocol_names();
 }

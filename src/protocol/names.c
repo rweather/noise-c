@@ -178,6 +178,216 @@ const char *noise_id_to_name(int category, int id)
 }
 
 /**
+ * \brief Maps a '+'-separated algorithm name into a list of identifier.
+ *
+ * \param ids Returns the list of identifiers parsed from the \a name.
+ * \param ids_len The maximum length of \a ids.
+ * \param name Points to the name to map.
+ * \param name_len Length of the \a name in bytes.
+ * \param category1 The category of the first identifier in the list; one of
+ * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
+ * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, NOISE_SIGN_CATEGORY,
+ * NOISE_MODIFIER_CATEGORY.
+ * \param category2 The category of the second and subsequent identifiers
+ * in the list; one of NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY,
+ * NOISE_DH_CATEGORY, NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY,
+ * NOISE_SIGN_CATEGORY, NOISE_MODIFIER_CATEGORY, or zero.  Zero indicates
+ * that the second category is identical to \a category1.
+ *
+ * \return The number of elements in the returned list or a negative
+ * error code otherwise.
+ *
+ * The algorithm names are expected to be separated with the '+'
+ * character.  As a special case when \a category1 is NOISE_PATTERN_CATEGORY
+ * and \category2 is NOISE_MODIFIER_CATEGORY, the first and second identifiers
+ * may be directly concatenated.
+ *
+ * \sa noise_ids_to_name_list()
+ */
+int noise_name_list_to_ids(int *ids, size_t ids_len,
+                           const char *name, size_t name_len,
+                           int category1, int category2)
+{
+    size_t index = 0;
+    size_t field_len;
+    int id;
+
+    /* Validate the parameters */
+    if (!ids || !name)
+        return -NOISE_ERROR_INVALID_PARAM;
+    if (!category2)
+        category2 = category1;
+
+    /* Extract the first identifier.  Special case for patterns */
+    if (category1 == NOISE_PATTERN_CATEGORY &&
+            category2 == NOISE_MODIFIER_CATEGORY) {
+        field_len = 0;
+        while (field_len < name_len && name[field_len] >= 'A' &&
+               name[field_len] <= 'Z') {
+            ++field_len;
+        }
+        if (field_len < name_len && name[field_len] == '+') {
+            /* Pattern base names cannot be followed by a '+'.
+               The first modifier should up right up against the name. */
+            return -NOISE_ERROR_UNKNOWN_NAME;
+        }
+        id = noise_name_to_id(category1, name, field_len);
+        name += field_len;
+        name_len -= field_len;
+    } else {
+        field_len = 0;
+        while (field_len < name_len && name[field_len] != '+') {
+            ++field_len;
+        }
+        id = noise_name_to_id(category1, name, field_len);
+        if (field_len < name_len) {
+            /* Skip the '+' separator and check that we have more text */
+            ++field_len;
+            if (field_len >= name_len) {
+                /* Name lists cannot end in '+' */
+                return -NOISE_ERROR_UNKNOWN_NAME;
+            }
+        }
+        name += field_len;
+        name_len -= field_len;
+    }
+    if (!id) {
+        /* Unknown name for the primary identifier */
+        return -NOISE_ERROR_UNKNOWN_NAME;
+    }
+    if (index >= ids_len) {
+        /* Not enough room in the return array */
+        return -NOISE_ERROR_INVALID_LENGTH;
+    }
+    ids[index++] = id;
+
+    /* Parse the secondary identifiers */
+    while (name_len > 0) {
+        field_len = 0;
+        while (field_len < name_len && name[field_len] != '+') {
+            ++field_len;
+        }
+        id = noise_name_to_id(category2, name, field_len);
+        if (!id) {
+            /* Unknown name for a secondary identifier */
+            return -NOISE_ERROR_UNKNOWN_NAME;
+        }
+        if (field_len < name_len) {
+            /* Skip the '+' separator and check that we have more text */
+            ++field_len;
+            if (field_len >= name_len) {
+                /* Name lists cannot end in '+' */
+                return -NOISE_ERROR_UNKNOWN_NAME;
+            }
+        }
+        name += field_len;
+        name_len -= field_len;
+        if (index >= ids_len) {
+            /* Not enough room in the return array */
+            return -NOISE_ERROR_INVALID_LENGTH;
+        }
+        ids[index++] = id;
+    }
+
+    /* Return the length of the parsed list to the caller */
+    return (int)index;
+}
+
+/**
+ * \brief Maps a list of algorithm identifiers to the corresponding name.
+ *
+ * \param name Output buffer for the name.
+ * \param name_len Length of the output buffer.
+ * \param ids List of algorithm identifiers to map.
+ * \param ids_len Number of algorithm identifiers in \a ids.
+ * \param category1 The category of the first identifier in the list; one of
+ * NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY, NOISE_DH_CATEGORY,
+ * NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY, NOISE_SIGN_CATEGORY,
+ * NOISE_MODIFIER_CATEGORY.
+ * \param category2 The category of the second and subsequent identifiers
+ * in the list; one of NOISE_CIPHER_CATEGORY, NOISE_HASH_CATEGORY,
+ * NOISE_DH_CATEGORY, NOISE_PATTERN_CATEGORY, NOISE_PREFIX_CATEGORY,
+ * NOISE_SIGN_CATEGORY, NOISE_MODIFIER_CATEGORY, or zero.  Zero indicates
+ * that the second category is identical to \a category1.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a name or \a ids are NULL,
+ * or \a name_len or \a ids_len is zero.
+ * \return NOISE_ERROR_UNKNOWN_ID if one or more of the identifiers in
+ * the \a ids array is unknown.
+ * \return NOISE_ERROR_INVALID_LENGTH if \a name_len is not large
+ * enough to hold the full name plus a terminating '\0'.
+ *
+ * The algorithm names in the list will be separated with the '+'
+ * character.  As a special case when \a category1 is NOISE_PATTERN_CATEGORY
+ * and \category2 is NOISE_MODIFIER_CATEGORY, the first and second identifiers
+ * will be directly concatenated.
+ *
+ * \sa noise_name_list_to_ids()
+ */
+int noise_ids_to_name_list(char *name, size_t name_len,
+                           const int *ids, size_t ids_len,
+                           int category1, int category2)
+{
+    const char *component;
+    size_t component_len;
+    size_t index = 0;
+
+    /* Validate the parameters */
+    if (!name || !name_len)
+        return NOISE_ERROR_INVALID_PARAM;
+    *name = '\0';
+    if (!ids || !ids_len)
+        return NOISE_ERROR_INVALID_PARAM;
+    if (!category2)
+        category2 = category1;
+
+    /* Output the first identifier followed optionally by a '+' separator */
+    component = noise_id_to_name(category1, ids[index++]);
+    if (!component)
+        return NOISE_ERROR_UNKNOWN_ID;
+    component_len = strlen(component);
+    if (component_len >= name_len)
+        return NOISE_ERROR_INVALID_LENGTH;
+    memcpy(name, component, component_len);
+    name += component_len;
+    name_len -= component_len;
+    name[0] = '\0';
+    if (index < ids_len && (category1 != NOISE_PATTERN_CATEGORY ||
+                            category2 != NOISE_MODIFIER_CATEGORY)) {
+        if (name_len < 2)
+            return NOISE_ERROR_INVALID_LENGTH;
+        name[0] = '+';
+        name[1] = '\0';
+        ++name;
+        --name_len;
+    }
+
+    /* Output the remaining identifiers separated by '+' */
+    while (index < ids_len) {
+        component = noise_id_to_name(category2, ids[index++]);
+        if (!component)
+            return NOISE_ERROR_UNKNOWN_ID;
+        component_len = strlen(component);
+        if (component_len >= name_len)
+            return NOISE_ERROR_INVALID_LENGTH;
+        memcpy(name, component, component_len);
+        name += component_len;
+        name_len -= component_len;
+        name[0] = '\0';
+        if (index < ids_len) {
+            if (name_len < 2)
+                return NOISE_ERROR_INVALID_LENGTH;
+            name[0] = '+';
+            name[1] = '\0';
+            ++name;
+            --name_len;
+        }
+    }
+    return NOISE_ERROR_NONE;
+}
+
+/**
  * \brief Parses a field from a protocol name string.
  *
  * \param category The category of identifier that we expect in this field.
@@ -253,10 +463,8 @@ static int noise_protocol_parse_pattern_field
      size_t len, size_t *posn, int *ok)
 {
     size_t start, field_len;
-    size_t index, modifier_num;
-    char ch;
-    int pattern_id;
-    int id;
+    int ids[NOISE_MAX_MODIFIER_IDS + 1];
+    int num_ids;
 
     /* If the parse already failed, then nothing further to do */
     if (!(*ok))
@@ -275,52 +483,16 @@ static int noise_protocol_parse_pattern_field
     }
     ++(*posn);  /* Skip the '_' */
 
-    /* Extract the base pattern name, which is the all-caps prefix */
-    index = 0;
-    while (index < field_len) {
-        ch = name[start + index];
-        if (ch < 'A' || ch > 'Z')
-            break;
-        ++index;
-    }
-
-    /* Look up the base pattern name */
-    pattern_id = noise_name_to_id(NOISE_PATTERN_CATEGORY, name + start, index);
-    if (!pattern_id) {
+    /* Parse the field into pattern and modifier identifiers */
+    num_ids = noise_name_list_to_ids
+        (ids, NOISE_MAX_MODIFIER_IDS + 1, name + start, field_len,
+         NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY);
+    if (num_ids < 1) {
         *ok = 0;
         return 0;
     }
-
-    /* Remove the prefix */
-    start += index;
-    field_len -= index;
-
-    /* Parse the modifiers */
-    modifier_num = 0;
-    while (field_len > 0) {
-        index = 0;
-        while (index < field_len && name[start + index] != '+')
-            ++index;
-        id = noise_name_to_id(NOISE_MODIFIER_CATEGORY, name + start, index);
-        if (!id  || modifier_num >= NOISE_MAX_MODIFIER_IDS) {
-            *ok = 0;
-            return 0;
-        }
-        modifiers[modifier_num++] = id;
-        start += index;
-        field_len -= index;
-        if (field_len > 0) {
-            /* Skip the '+' separator */
-            ++start;
-            --field_len;
-            if (!field_len) {
-                /* The modifier list ends in '+' which is not allowed */
-                *ok = 0;
-                return 0;
-            }
-        }
-    }
-    return pattern_id;
+    memcpy(modifiers, ids + 1, (num_ids - 1) * sizeof(int));
+    return ids[0];
 }
 
 /**
@@ -345,7 +517,8 @@ static int noise_protocol_parse_dual_field
      size_t *posn, int *second_id, int *ok)
 {
     size_t start, field_len;
-    int first_id;
+    int ids[2];
+    int num_ids;
 
     /* Clear the second identifier before we start in case we don't find one */
     *second_id = 0;
@@ -356,35 +529,28 @@ static int noise_protocol_parse_dual_field
 
     /* Find the start and end of the current field */
     start = *posn;
-    while (*posn < len && name[*posn] != '_' && name[*posn] != '+')
+    while (*posn < len && name[*posn] != '_')
         ++(*posn);
     if (*posn >= len) {
-        /* Should be terminated with either '_' or '+' */
+        /* Should be terminated with '_' */
         *ok = 0;
         return 0;
     }
     field_len = *posn - start;
 
-    /* Look up the first name in the current category */
-    first_id = noise_name_to_id(category, name + start, field_len);
-    if (!first_id) {
+    /* Skip the terminating '_' */
+    ++(*posn);
+
+    /* Parse the dual field */
+    num_ids = noise_name_list_to_ids(ids, 2, name + start, field_len,
+                                     category, category);
+    if (num_ids < 1) {
         *ok = 0;
         return 0;
     }
-
-    /* If the next character is '_', then we are finished */
-    if (name[*posn] == '_') {
-        ++(*posn);
-        return first_id;
-    }
-
-    /* Parse the rest of the field until the next '_' as the second id */
-    ++(*posn);
-    *second_id = noise_protocol_parse_field(category, name, len, posn, 0, ok);
-    if (*second_id)
-        return first_id;
-    else
-        return 0;
+    if (num_ids >= 2)
+        *second_id = ids[1];
+    return ids[0];
 }
 
 /**
