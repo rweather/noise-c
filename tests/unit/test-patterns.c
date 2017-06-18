@@ -85,101 +85,6 @@ static uint8_t next_token(const char **pattern)
     return token;
 }
 
-#define CHECK_FOR_COLLAPSE  0   /* Check for entropy collapse */
-#define CHECK_STATIC_ONLY   0   /* Only check s/rs null, assume e/re non-null */
-
-#define E_IS_NULL       (1 << 0)
-#define S_IS_NULL       (1 << 1)
-#define RE_IS_NULL      (1 << 2)
-#define RS_IS_NULL      (1 << 3)
-
-/* Check for scenarios that could cause entropy collapse due to the
-   use of null public keys.  Entropy collapse occurs when the final
-   encryption key is the hash of all-null DH outputs even if some
-   of the keys were non-null during the handshake. */
-static void check_for_collapse(int id)
-{
-#if CHECK_FOR_COLLAPSE
-    const uint8_t *pattern;
-    int null_check;
-    int writing;
-    int all_null;
-    int involved;
-    uint8_t token;
-    int reported[16] = {0};
-    for (null_check = 0; null_check < 16; ++null_check) {
-#if CHECK_STATIC_ONLY
-        if ((null_check & (E_IS_NULL | RE_IS_NULL)) != 0)
-            continue;
-#endif
-        pattern = noise_pattern_lookup(id) + 2;
-        all_null = 1;
-        writing = 1;
-        involved = 0;
-        while ((token = *pattern++) != NOISE_TOKEN_END) {
-            switch (token) {
-            case NOISE_TOKEN_FLIP_DIR:
-                writing = !writing;
-                break;
-            case NOISE_TOKEN_EE:
-                if ((null_check & E_IS_NULL) == 0 &&
-                        (null_check & RE_IS_NULL) == 0)
-                    all_null = 0;
-                involved |= E_IS_NULL | RE_IS_NULL;
-                break;
-            case NOISE_TOKEN_ES:
-                if (writing) {
-                    if ((null_check & E_IS_NULL) == 0 &&
-                            (null_check & RS_IS_NULL) == 0)
-                        all_null = 0;
-                    involved |= E_IS_NULL | RS_IS_NULL;
-                } else {
-                    if ((null_check & S_IS_NULL) == 0 &&
-                            (null_check & RE_IS_NULL) == 0)
-                        all_null = 0;
-                    involved |= S_IS_NULL | RE_IS_NULL;
-                }
-                break;
-            case NOISE_TOKEN_SE:
-                if (writing) {
-                    if ((null_check & S_IS_NULL) == 0 &&
-                            (null_check & RE_IS_NULL) == 0)
-                        all_null = 0;
-                    involved |= S_IS_NULL | RE_IS_NULL;
-                } else {
-                    if ((null_check & E_IS_NULL) == 0 &&
-                            (null_check & RS_IS_NULL) == 0)
-                        all_null = 0;
-                    involved |= E_IS_NULL | RS_IS_NULL;
-                }
-                break;
-            case NOISE_TOKEN_SS:
-                if ((null_check & S_IS_NULL) == 0 &&
-                        (null_check & RS_IS_NULL) == 0)
-                    all_null = 0;
-                involved |= S_IS_NULL | RS_IS_NULL;
-                break;
-            }
-        }
-        involved &= null_check;
-        if (all_null && involved != 0 && !reported[involved]) {
-            /* We have found an entropy collapse scenario */
-            printf("%s:", data_name);
-            if (involved & E_IS_NULL)
-                printf(" e");
-            if (involved & S_IS_NULL)
-                printf(" s");
-            if (involved & RE_IS_NULL)
-                printf(" re");
-            if (involved & RS_IS_NULL)
-                printf(" rs");
-            printf("\n");
-            reported[involved] = 1;
-        }
-    }
-#endif /* CHECK_FOR_COLLAPSE */
-}
-
 /* Checks a specific pattern to verify that it matches the specification
    and that the pattern flags make sense with respect to the pattern */
 static void check_pattern(int id, const char *name, const char *required,
@@ -311,9 +216,6 @@ static void check_pattern(int id, const char *name, const char *required,
 
     /* Check that the seen flags match the expected flags */
     compare(seen_flags, expected_flags);
-
-    /* Check for entropy collapse scenarios in this pattern */
-    check_for_collapse(id);
 }
 
 void test_patterns(void)
