@@ -386,21 +386,18 @@ static void test_connection(const TestVector *vec, int is_one_way)
                        vec->messages[index].ciphertext_len);
         if (fallback) {
             /* Look up the pattern to fall back to */
-            int fallback_id = NOISE_PATTERN_XX_FALLBACK;
-            if (vec->fallback_pattern) {
-                fallback_id = noise_name_to_id
-                    (NOISE_PATTERN_CATEGORY, vec->fallback_pattern,
-                     strlen(vec->fallback_pattern));
-            }
+            const char *fallback_pattern = vec->fallback_pattern;
+            if (!fallback_pattern)
+                fallback_pattern = "XXfallback";
 
             /* Perform a read on the responder, which will fail */
             compare(noise_handshakestate_read_message(recv, &mbuf, &pbuf),
                     NOISE_ERROR_MAC_FAILURE);
 
             /* Initiate fallback on both sides */
-            compare(noise_handshakestate_fallback_to(responder, fallback_id),
+            compare(noise_handshakestate_fallback_to(responder, fallback_pattern),
                     NOISE_ERROR_NONE);
-            compare(noise_handshakestate_fallback_to(initiator, fallback_id),
+            compare(noise_handshakestate_fallback_to(initiator, fallback_pattern),
                     NOISE_ERROR_NONE);
 
             /* Restart the protocols */

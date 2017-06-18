@@ -916,26 +916,25 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
  */
 int noise_handshakestate_fallback(NoiseHandshakeState *state)
 {
-    // FIXME
-    return NOISE_ERROR_INVALID_PARAM;
-    //return noise_handshakestate_fallback_to(state, NOISE_PATTERN_XX_FALLBACK);
+    return noise_handshakestate_fallback_to(state, "XXfallback");
 }
 
 /**
  * \brief Falls back to another handshake pattern.
  *
  * \param state The HandshakeState object.
- * \param pattern_id The identifier for the pattern to fallback to;
- * e.g. NOISE_PATTERN_XX_FALLBACK, NOISE_PATTERN_NX_FALLBACK, etc.
+ * \param pattern The name of the pattern to fallback to;
+ * e.g. "XXfallback", "NXfallback", etc.
  *
  * \return NOISE_ERROR_NONE on error.
- * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a pattern is NULL.
+ * \return NOISE_ERROR_UNKNOWN_NAME if \a pattern is not a valid pattern name.
  * \return NOISE_ERROR_INVALID_STATE if the previous protocol has not
  * been started or has not reached the fallback position yet.
  * \return NOISE_ERROR_INVALID_LENGTH if the new protocol name is too long.
  * \return NOISE_ERROR_NOT_APPLICABLE if the handshake pattern in the
- * original protocol name is not compatible with \a pattern_id.
- * \return NOISE_ERROR_NOT_APPLICABLE if \a pattern_id does not
+ * original protocol name is not compatible with \a pattern.
+ * \return NOISE_ERROR_NOT_APPLICABLE if \a pattern does not
  * identify a fallback pattern.
  *
  * This function is a generalization of the "Noise Pipes" protocol,
@@ -945,7 +944,7 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
  *
  * This function resets a HandshakeState object with the original
  * handshake pattern, and converts it into an object with the new handshake
- * \a pattern_id.  Information from the previous session such as the local
+ * \a pattern.  Information from the previous session such as the local
  * keypair, the initiator's ephemeral key, the prologue value, and the
  * pre-shared key, are passed to the new session.
  *
@@ -968,18 +967,20 @@ int noise_handshakestate_fallback(NoiseHandshakeState *state)
  *
  * \sa noise_handshakestate_start(), noise_handshakestate_fallback()
  */
-int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
+int noise_handshakestate_fallback_to(NoiseHandshakeState *state, const char *pattern)
 {
     char name[NOISE_MAX_PROTOCOL_NAME];
     size_t hash_len;
     size_t name_len;
     NoiseProtocolId id;
-    const uint8_t *pattern;
+    uint8_t tokens[NOISE_MAX_TOKENS];
     NoisePatternFlags_t flags;
+    int ids[NOISE_MAX_MODIFIER_IDS + 1];
+    int num_ids;
     int err;
 
-    /* Validate the parameter */
-    if (!state)
+    /* Validate the parameters */
+    if (!state || !pattern)
         return NOISE_ERROR_INVALID_PARAM;
 
     /* The original pattern must end in "K" for fallback to be possible */
@@ -987,10 +988,15 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
             (state->requirements & NOISE_REQ_FALLBACK_POSSIBLE) == 0)
         return NOISE_ERROR_NOT_APPLICABLE;
 
-    /* Check that "pattern_id" supports fallback */
-    pattern = noise_pattern_lookup(pattern_id);
-    if (!pattern)
-        return NOISE_ERROR_NOT_APPLICABLE;
+    /* Check that the new pattern supports fallback */
+    num_ids = noise_name_list_to_ids
+        (ids, NOISE_MAX_MODIFIER_IDS + 1, pattern, strlen(pattern),
+         NOISE_PATTERN_CATEGORY, NOISE_MODIFIER_CATEGORY);
+    if (num_ids < 1)
+        return NOISE_ERROR_UNKNOWN_NAME;
+    if (noise_pattern_expand(tokens, ids[0], ids + 1, num_ids - 1)
+            != NOISE_ERROR_NONE)
+        return NOISE_ERROR_UNKNOWN_NAME;
     flags = ((NoisePatternFlags_t)(pattern[0])) |
            (((NoisePatternFlags_t)(pattern[1])) << 8);
     if ((flags & NOISE_PAT_FLAG_REMOTE_EPHEM_REQ) == 0)
@@ -1023,13 +1029,16 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
 
     /* Format a new protocol name for the fallback variant */
     id = state->symmetric->id;
-    id.pattern_id = pattern_id;
+    id.pattern_id = ids[0];
+    memcpy(id.modifier_ids, ids + 1, (num_ids - 1) * sizeof(int));
+    if (num_ids <= NOISE_MAX_MODIFIER_IDS)
+        id.modifier_ids[num_ids - 1] = 0;
     err = noise_protocol_id_to_name(name, sizeof(name), &id);
     if (err != NOISE_ERROR_NONE)
         return err;
 
     /* Convert the HandshakeState to the fallback pattern */
-    state->symmetric->id.pattern_id = pattern_id;
+    state->symmetric->id = id;
     if (state->role == NOISE_ROLE_INITIATOR) {
         noise_dhstate_clear_key(state->dh_remote_ephemeral);
         noise_dhstate_clear_key(state->dh_remote_hybrid);
@@ -1044,7 +1053,8 @@ int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id)
     }
 
     /* Start a new token pattern for the fallback */
-    state->tokens = pattern + 2;
+    memcpy(state->pattern, tokens, NOISE_MAX_TOKENS);
+    state->tokens = state->pattern + 2;
     state->action = NOISE_ACTION_NONE;
 
     /* Set up the key requirements for the fallback */

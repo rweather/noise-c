@@ -64,7 +64,7 @@ int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *stat
 int noise_handshakestate_has_remote_public_key(const NoiseHandshakeState *state);
 int noise_handshakestate_start(NoiseHandshakeState *state);
 int noise_handshakestate_fallback(NoiseHandshakeState *state);
-int noise_handshakestate_fallback_to(NoiseHandshakeState *state, int pattern_id);
+int noise_handshakestate_fallback_to(NoiseHandshakeState *state, const char *pattern);
 int noise_handshakestate_get_action(const NoiseHandshakeState *state);
 int noise_handshakestate_write_message
     (NoiseHandshakeState *state, NoiseBuffer *message, const NoiseBuffer *payload);
