@@ -20,9 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/chacha/chacha.h"
-#include "crypto/donna/poly1305-donna.h"
+#include <protocol/internal.h>
+#include <crypto/chacha/chacha.c>
+#include <crypto/donna/poly1305-donna.c>
 #include <string.h>
 
 typedef struct

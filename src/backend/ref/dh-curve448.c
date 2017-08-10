@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/curve448/curve448.h"
+#include <protocol/internal.h>
+#include <crypto/curve448/curve448.c>
 #include <string.h>
 
 typedef struct
