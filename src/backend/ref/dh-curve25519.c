@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/ed25519/ed25519.h"
+#include <protocol/internal.h>
+#include <crypto/ed25519/ed25519.c>
 #include <string.h>
 
 /* We use ed25519's faster curved25519_scalarmult_basepoint() function

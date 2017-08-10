@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/newhope/newhope.h"
+#include <protocol/internal.h>
+#include <crypto/newhope/newhope.c>
 #include <string.h>
 
 #define MAX_OF(a, b) ((a) > (b) ? (a) : (b))

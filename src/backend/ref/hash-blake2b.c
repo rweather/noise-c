@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/blake2/blake2b.h"
+#include <protocol/internal.h>
+#include <crypto/blake2/blake2b.c>
 
 typedef struct
 {

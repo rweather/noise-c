@@ -21,7 +21,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
+#include <protocol/internal.h>
 #include <sodium.h>
 #include <string.h>
 

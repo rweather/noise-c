@@ -20,9 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/aes/rijndael-alg-fst.h"
-#include "crypto/ghash/ghash.h"
+#include <protocol/internal.h>
+#include <crypto/aes/rijndael-alg-fst.h>
+#include <crypto/ghash/ghash.c>
 #include <string.h>
 
 typedef struct

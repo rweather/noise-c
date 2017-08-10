@@ -20,8 +20,8 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "internal.h"
-#include "crypto/sha2/sha512.h"
+#include <protocol/internal.h>
+#include <crypto/sha2/sha512.c>
 
 typedef struct
 {
