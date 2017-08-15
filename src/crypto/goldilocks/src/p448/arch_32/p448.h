@@ -29,14 +29,14 @@ p448_add_RAW (
     const p448_t *a,
     const p448_t *b
 ) __attribute__((unused,always_inline));
-             
+
 static __inline__ void
 p448_sub_RAW (
     p448_t *out,
     const p448_t *a,
     const p448_t *b
 ) __attribute__((unused,always_inline));
-             
+
 static __inline__ void
 p448_neg_RAW (
     p448_t *out,
@@ -48,24 +48,24 @@ p448_addw (
     p448_t *a,
     uint32_t x
 ) __attribute__((unused,always_inline));
-             
+
 static __inline__ void
 p448_subw (
     p448_t *a,
     uint32_t x
 ) __attribute__((unused,always_inline));
-             
+
 static __inline__ void
 p448_copy (
     p448_t *out,
     const p448_t *a
 ) __attribute__((unused,always_inline));
-             
+
 static __inline__ void
 p448_weak_reduce (
     p448_t *inout
 ) __attribute__((unused,always_inline));
-             
+
 void
 p448_strong_reduce (
     p448_t *inout
@@ -75,7 +75,7 @@ mask_t
 p448_is_zero (
     const p448_t *in
 );
-             
+
 static __inline__ void
 p448_bias (
     p448_t *inout,
@@ -135,16 +135,9 @@ p448_add_RAW (
     const p448_t *a,
     const p448_t *b
 ) {
-    unsigned int i;
-    for (i=0; i<sizeof(*out)/sizeof(uint32xn_t); i++) {
-        ((uint32xn_t*)out)[i] = ((const uint32xn_t*)a)[i] + ((const uint32xn_t*)b)[i];
-    }
-    /*
-    unsigned int i;
-    for (i=0; i<sizeof(*out)/sizeof(out->limb[0]); i++) {
+    for (unsigned int i=0; i<sizeof(*out)/sizeof(out->limb[0]); i++) {
         out->limb[i] = a->limb[i] + b->limb[i];
     }
-    */
 }
 
 void
@@ -153,16 +146,9 @@ p448_sub_RAW (
     const p448_t *a,
     const p448_t *b
 ) {
-    unsigned int i;
-    for (i=0; i<sizeof(*out)/sizeof(uint32xn_t); i++) {
-        ((uint32xn_t*)out)[i] = ((const uint32xn_t*)a)[i] - ((const uint32xn_t*)b)[i];
-    }
-    /*
-    unsigned int i;
-    for (i=0; i<sizeof(*out)/sizeof(out->limb[0]); i++) {
+    for (unsigned int i=0; i<sizeof(*out)/sizeof(out->limb[0]); i++) {
         out->limb[i] = a->limb[i] - b->limb[i];
     }
-    */
 }
 
 void
@@ -170,16 +156,9 @@ p448_neg_RAW (
     p448_t *out,
     const p448_t *a
 ) {
-    unsigned int i;
-    for (i=0; i<sizeof(*out)/sizeof(uint32xn_t); i++) {
-        ((uint32xn_t*)out)[i] = -((const uint32xn_t*)a)[i];
-    }
-    /*
-    unsigned int i;
-    for (i=0; i<sizeof(*out)/sizeof(out->limb[0]); i++) {
+    for (unsigned int i=0; i<sizeof(*out)/sizeof(out->limb[0]); i++) {
         out->limb[i] = -a->limb[i];
     }
-    */
 }
 
 void
@@ -189,7 +168,7 @@ p448_addw (
 ) {
   a->limb[0] += x;
 }
-             
+
 void
 p448_subw (
     p448_t *a,
@@ -212,12 +191,9 @@ p448_bias (
     int amt
 ) {
     uint32_t co1 = ((1ull<<28)-1)*amt, co2 = co1-amt;
-    uint32x4_t lo = {co1,co1,co1,co1}, hi = {co2,co1,co1,co1};
-    uint32x4_t *aa = (uint32x4_t*) a;
-    aa[0] += lo;
-    aa[1] += lo;
-    aa[2] += hi;
-    aa[3] += lo;
+    for (unsigned int i=0; i<sizeof(*a)/sizeof(a->limb[0]); i++) {
+      a->limb[i] += (i==sizeof(*a)/sizeof(a->limb[0])/2) ? co2 : co1;
+    }
 }
 
 void
