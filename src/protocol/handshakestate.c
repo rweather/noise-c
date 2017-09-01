@@ -1627,7 +1627,7 @@ static int noise_handshakestate_read
  * expecting an empty payload and wants to verify that, then \a payload
  * should point to a non-NULL zero-length buffer.
  *
- * The \a mesaage and \a payload buffers must not overlap in memory.
+ * The \a message and \a payload buffers must not overlap in memory.
  *
  * The \a message buffer will be modified by this function to decrypt
  * sub-components while it is being processed.  The contents will be
