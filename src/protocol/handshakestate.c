@@ -843,18 +843,6 @@ int noise_handshakestate_start(NoiseHandshakeState *state)
             (state->symmetric, state->pre_shared_key, 0);
     }
 
-    /* Mix the pre shared key into the chaining key and handshake hash */
-    if (state->pre_shared_key_len) {
-        uint8_t temp[NOISE_MAX_HASHLEN];
-        NoiseHashState *hash = state->symmetric->hash;
-        noise_hashstate_hkdf
-            (hash, state->symmetric->ck, hash->hash_len,
-             state->pre_shared_key, state->pre_shared_key_len,
-             state->symmetric->ck, hash->hash_len, temp, hash->hash_len);
-        noise_symmetricstate_mix_hash(state->symmetric, temp, hash->hash_len);
-        noise_clean(temp, sizeof(temp));
-    }
-
     /* Mix the pre-supplied public keys into the handshake hash */
     if (state->role == NOISE_ROLE_INITIATOR) {
         if (state->requirements & NOISE_REQ_LOCAL_PREMSG)
