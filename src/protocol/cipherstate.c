@@ -399,9 +399,10 @@ int noise_cipherstate_decrypt_with_ad
     /* Decrypt the ciphertext and check the MAC */
     err = (*(state->decrypt))
         (state, ad, ad_len, buffer->data, buffer->size - state->mac_len);
-    ++(state->n);
     if (err != NOISE_ERROR_NONE)
         return err;
+
+    ++(state->n);
 
     /* Adjust the output length for the MAC and return */
     buffer->size -= state->mac_len;
