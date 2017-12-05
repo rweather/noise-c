@@ -167,7 +167,8 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
             NOISE_ERROR_MAC_FAILURE);   /* MAC will fail, but that's OK */
     noise_buffer_set_input(mbuf, buffer, pt_len + mac_len);
     compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
-            NOISE_ERROR_INVALID_NONCE);
+            NOISE_ERROR_MAC_FAILURE);   /* MAC will fail again, nonce is not
+                                          incremented on failed decryption */
 
     /* Reset the key to clear the "invalid nonce" state */
     compare(noise_cipherstate_init_key(state, k, key_len), NOISE_ERROR_NONE);
