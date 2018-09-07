@@ -1407,12 +1407,8 @@ int noise_handshakestate_write_message
  *
  * \param state The HandshakeState object.
  * \param message Points to the incoming handshake message to be unpacked.
- * \param message_size The length of the incoming handshake message in bytes.
  * \param payload Points to the buffer to fill with the message payload.
  * This can be NULL if the application does not need the message payload.
- * \param payload_size On exit, set to the number of bytes that were actually
- * written to \a payload.
- * \param max_size Maximum payload size that can be written to \a payload.
  *
  * \sa noise_handshakestate_read_message()
  */

@@ -394,8 +394,8 @@ static void noise_hashstate_xor_key(uint8_t *key, size_t key_len, uint8_t value)
  * \param key_len The length of the key in bytes.
  * \param data1 Points to the first data block.
  * \param data1_len The length of the first data block in bytes.
- * \param data1 Points to the second data block (may be NULL).
- * \param data1_len The length of the second data block in bytes.
+ * \param data2 Points to the second data block (may be NULL).
+ * \param data2_len The length of the second data block in bytes.
  * \param hash The final output HMAC hash value.
  *
  * The \a data and \a hash buffers are allowed to overlap, but neither
