@@ -104,7 +104,7 @@ montgomery_ladder (
  *
  * Currently the scalar is always exactly 448 bits long.
  *
- * @param [inout] working The point to multply.
+ * @param [in,out] working The point to multply.
  * @param [in] scalar The scalar, in little-endian form.
  */
 void
@@ -125,7 +125,7 @@ scalarmul (
  * for microbenchmarking, to see how much constant-time arithmetic
  * costs us.
  *
- * @param [inout] working The point to multply.
+ * @param [in,out] working The point to multply.
  * @param [in] scalar The scalar, in little-endian form.
  */
 void
@@ -209,7 +209,7 @@ scalarmul_fixed_base (
  * @warning This function takes variable time.  It is intended for
  * microbenchmarking.
  *
- * @param [inout] working The input and output point.
+ * @param [in,out] working The input and output point.
  * @param [in] scalar The scalar.
  * @param [in] nbits The number of bits in the scalar
  */ 
@@ -226,7 +226,7 @@ scalarmul_vt (
  * multiplication (and, more importantly, linear combos)
  * using the "windowed non-adjacent form" approach.
  *
- * @param [out] out The output table.  Must have room for 1<<i entries.
+ * @param [out] out The output table.  Must have room for 1\<\<i entries.
  * @param [in] base The base point.
  * @param [in] tbits The number of bits to put in the table.
  *
@@ -271,7 +271,7 @@ scalarmul_fixed_base_wnaf_vt (
  * @warning This function takes variable time.  It is intended for
  * signature verification.
  *
- * @param [inout] working The output point, and also the variable input.
+ * @param [in,out] working The output point, and also the variable input.
  * @param [in] scalar_var The scalar for the variable input.
  * @param [in] nbits_var The number of bits in scalar_var.
  * @param [in] scalar_pre The scalar for the fixed input.
@@ -296,13 +296,13 @@ linear_combo_var_fixed_vt (
  * @warning This function takes variable time.  It is intended for
  * signature verification.
  *
- * @param [out] working The output point.
+ * @param [out] out The output point.
  * @param [in] scalar1 The first scalar.
  * @param [in] nbits1 The number of bits in the first scalar.
  * @param [in] table1 The first precomputed table.
  * @param [in] scalar2 The second scalar.
- * @param [in] nbits1 The number of bits in the second scalar.
- * @param [in] table1 The second precomputed table.
+ * @param [in] nbits2 The number of bits in the second scalar.
+ * @param [in] table2 The second precomputed table.
  *
  * @retval MASK_SUCCESS Success.
  * @retval MASK_FAILURE Failure, because eg the tables are too small.
