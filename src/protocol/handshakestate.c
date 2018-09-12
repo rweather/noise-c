@@ -714,7 +714,7 @@ int noise_handshakestate_needs_remote_public_key(const NoiseHandshakeState *stat
         return 0;
     if ((state->requirements & NOISE_REQ_REMOTE_REQUIRED) == 0)
         return 0;
-    return !noise_dhstate_has_keypair(state->dh_remote_static);
+    return !noise_dhstate_has_public_key(state->dh_remote_static);
 }
 
 /**
