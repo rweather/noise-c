@@ -70,7 +70,8 @@ int noise_handshakestate_split
     (NoiseHandshakeState *state, NoiseCipherState **send, NoiseCipherState **receive);
 int noise_handshakestate_get_handshake_hash
     (const NoiseHandshakeState *state, uint8_t *hash, size_t max_len);
-
+int noise_handshakestate_get_action_pattern
+    (const NoiseHandshakeState *state, char *pattern, size_t max_len);
 #ifdef __cplusplus
 };
 #endif
