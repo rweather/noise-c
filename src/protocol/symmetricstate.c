@@ -281,6 +281,10 @@ int noise_symmetricstate_mix_key
         (state->hash, state->ck, hash_len, input, size,
          state->ck, hash_len, temp_k, key_len);
 
+    /* Truncate temp_k */
+    if (hash_len == 64 && key_len > 32)
+        key_len = 32;
+
     /* Change the cipher key, or set it for the first time */
     noise_cipherstate_init_key(state->cipher, temp_k, key_len);
     noise_clean(temp_k, sizeof(temp_k));
@@ -359,6 +363,10 @@ int noise_symmetricstate_mix_key_and_hash
     /* Mix "temp_h" into the handshake hash */
     noise_hashstate_hash_two
         (state->hash, state->h, hash_len, temp_h, hash_len, state->h, hash_len);
+
+    /* Truncate temp_k */
+    if (hash_len == 64 && key_len > 32)
+        key_len = 32;
 
     /* Change the cipher key, or set it for the first time */
     noise_cipherstate_init_key(state->cipher, temp_k, key_len);
