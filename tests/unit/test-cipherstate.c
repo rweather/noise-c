@@ -214,7 +214,6 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     /* Re-create the object by name and check its properties again */
     compare(noise_cipherstate_free(state), NOISE_ERROR_NONE);
     compare(noise_cipherstate_new_by_name(&state, name), NOISE_ERROR_NONE);
-    compare(noise_cipherstate_new_by_id(&state, id), NOISE_ERROR_NONE);
     compare(noise_cipherstate_get_cipher_id(state), id);
     compare(noise_cipherstate_get_key_length(state), key_len);
     compare(noise_cipherstate_get_mac_length(state), mac_len);
