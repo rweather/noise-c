@@ -520,6 +520,7 @@ static void check_symmetric(const char *protocol)
     check_symmetric_object(state1, state2, state3, &id, protocol);
     compare(noise_symmetricstate_free(state1), NOISE_ERROR_NONE);
     compare(noise_symmetricstate_free(state2), NOISE_ERROR_NONE);
+    compare(noise_symmetricstate_free(state3), NOISE_ERROR_NONE);
 
     /* Check the behaviour of SymmetricState when creating by name */
     compare(noise_symmetricstate_new_by_name(&state1, protocol),
