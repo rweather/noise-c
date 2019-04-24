@@ -123,6 +123,16 @@ static int noise_handshakestate_new
     num_modifiers = 0;
     while (num_modifiers < NOISE_MAX_MODIFIER_IDS &&
                 symmetric->id.modifier_ids[num_modifiers] != 0) {
+        switch(symmetric->id.modifier_ids[num_modifiers]) {
+        case NOISE_MODIFIER_PSK0:
+        case NOISE_MODIFIER_PSK1:
+        case NOISE_MODIFIER_PSK2:
+        case NOISE_MODIFIER_PSK3:
+            extra_reqs |= NOISE_REQ_PSK;
+            break;
+        default:
+            break;
+        }
         ++num_modifiers;
     }
     if (noise_pattern_expand(tokens, symmetric->id.pattern_id,
@@ -534,6 +544,25 @@ NoiseDHState *noise_handshakestate_get_fixed_hybrid_dh
 }
 
 /**
+ * \brief Determine if a HandshakeState object requires a pre shared key.
+ *
+ * \param state The HandshakeState object.
+ *
+ * \return Returns 1 if \a state requires a pre shared key, zero if the
+ * pre shared key has already been supplied or it is not required.
+ *
+ * \sa noise_handshakestate_set_pre_shared_key(),
+ * noise_handshakestate_has_pre_shared_key()
+ */
+int noise_handshakestate_needs_pre_shared_key(const NoiseHandshakeState *state)
+{
+    if (!state || state->pre_shared_key_len)
+        return 0;
+    else
+        return (state->requirements & NOISE_REQ_PSK) != 0;
+}
+
+/**
  * \brief Determine if a HandshakeState object has already been configured
  * with a pre shared key.
  *
@@ -541,7 +570,8 @@ NoiseDHState *noise_handshakestate_get_fixed_hybrid_dh
  *
  * \return Returns 1 if \a state has a pre shared key, zero if not.
  *
- * \sa noise_handshakestate_set_pre_shared_key()
+ * \sa noise_handshakestate_set_pre_shared_key(),
+ * noise_handshakestate_needs_pre_shared_key()
  */
 int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
 {
@@ -569,6 +599,7 @@ int noise_handshakestate_has_pre_shared_key(const NoiseHandshakeState *state)
  * then the value will be ignored.
  *
  * \sa noise_handshakestate_start(), noise_handshakestate_set_prologue(),
+ * noise_handshakestate_needs_pre_shared_key(),
  * noise_handshakestate_has_pre_shared_key(),
  * noise_handshakestate_set_pre_shared_key_hook()
  */
@@ -1213,6 +1244,9 @@ static int noise_handshakestate_write
                 return NOISE_ERROR_INVALID_LENGTH;
             memcpy(rest.data, state->dh_local_ephemeral->public_key, len);
             noise_symmetricstate_mix_hash(state->symmetric, rest.data, len);
+            if (state->requirements & NOISE_REQ_PSK) {
+                noise_symmetricstate_mix_key(state->symmetric, rest.data, len);
+            }
             rest.size += len;
             break;
         case NOISE_TOKEN_S:
@@ -1476,6 +1510,12 @@ static int noise_handshakestate_read
                 (state->symmetric, msg.data, len);
             if (err != NOISE_ERROR_NONE)
                 break;
+            if (state->requirements & NOISE_REQ_PSK) {
+                err = noise_symmetricstate_mix_key
+                    (state->symmetric, msg.data, len);
+                if (err != NOISE_ERROR_NONE)
+                    break;
+            }
             err = noise_dhstate_set_public_key
                 (state->dh_remote_ephemeral, msg.data, len);
             if (err != NOISE_ERROR_NONE)
