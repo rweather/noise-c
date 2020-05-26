@@ -596,7 +596,7 @@ static void echo_print_packet(const char *tag, const uint8_t *packet, size_t len
     printf("\n");
 }
 
-/* Recevies an exact number of bytes, blocking until they are all available.
+/* Receives an exact number of bytes, blocking until they are all available.
    Returns non-zero if OK, zero if the connection has been lost. */
 static int echo_recv_exact_internal(int fd, uint8_t *packet, size_t len)
 {
@@ -623,7 +623,7 @@ static int echo_recv_exact_internal(int fd, uint8_t *packet, size_t len)
     return received;
 }
 
-/* Recevies an exact number of bytes, blocking until they are all available.
+/* Receives an exact number of bytes, blocking until they are all available.
    Returns non-zero if OK, zero if the connection has been lost. */
 int echo_recv_exact(int fd, uint8_t *packet, size_t len)
 {

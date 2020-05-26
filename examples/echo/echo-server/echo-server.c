@@ -144,7 +144,7 @@ static int set_fixed_ephemeral(NoiseDHState *dh)
     }
 }
 
-/* Initialize's the handshake with all necessary keys */
+/* Initializes the handshake with all necessary keys */
 static int initialize_handshake
     (NoiseHandshakeState *handshake, const NoiseProtocolId *nid,
      const void *prologue, size_t prologue_len)

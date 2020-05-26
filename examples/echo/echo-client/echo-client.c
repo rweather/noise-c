@@ -157,7 +157,7 @@ static int set_fixed_ephemeral(NoiseDHState *dh)
     }
 }
 
-/* Initialize's the handshake using command-line options */
+/* Initialize the handshake using command-line options */
 static int initialize_handshake
     (NoiseHandshakeState *handshake, const void *prologue, size_t prologue_len)
 {
