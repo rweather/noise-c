@@ -463,5 +463,3 @@ int main(int argc, char *argv[])
     echo_close(fd);
     return ok ? 0 : 1;
 }
-
-#include "echo-common.c"
