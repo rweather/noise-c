@@ -26,7 +26,11 @@
 #ifndef _BSD_SOURCE
 #define _BSD_SOURCE 1
 #endif
+#ifdef __LEDGER_VAULT__
+#include <machine/endian.h>
+#else
 #include <endian.h>
+#endif
 #endif
 #endif
 
