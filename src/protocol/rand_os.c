@@ -35,6 +35,13 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#if defined(__LEDGER_VAULT__)
+/* #include <bolos_config.h> */
+/* #include <bolos_core.h> */
+/* #include <bolos_crypto_common.h> */
+/* #include <bolos_crypto.h> */
+int bls_rng(uint8_t *buffer, size_t len);
+#endif
 #endif
 
 /**
@@ -99,6 +106,10 @@ void noise_rand_bytes(void *bytes, size_t size)
         CryptReleaseContext(provider, 0);
         return;
     }
+#elif defined(__LEDGER_VAULT__)
+    if (bls_rng(bytes, size))
+      return;
+    fprintf(stderr, "bls_rng failed\n");
 #endif
     fprintf(stderr, "Do not know how to generate random numbers!  Abort!\n");
     exit(1);
