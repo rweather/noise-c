@@ -3,8 +3,6 @@ AC_INIT([noise-c], [0.0.1])
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 
-AC_DEFINE(__LEDGER_VAULT__)
-
 AC_PROG_CC
 AC_PROG_CC_STDC
 AC_PROG_RANLIB
@@ -114,6 +112,13 @@ AC_ARG_ENABLE(ubsan, AC_HELP_STRING([--enable-ubsan],
 	if (test "${enableval}" = "yes"); then
 		CFLAGS="$CFLAGS -fsanitize=undefined";
 		LDFLAGS="$LDFLAGS -fsanitize=undefined"
+	fi
+])
+
+AC_ARG_ENABLE(moxie, AC_HELP_STRING([--enable-moxie],
+			[Compile for moxie VM]), [
+	if (test "${enableval}" = "yes"); then
+		AC_DEFINE(__LEDGER_VAULT__)
 	fi
 ])
 
