@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     test(hashstate);
     test(names);
     test(patterns);
-    test(protobufs);
+    /* test(protobufs); */
     test(randstate);
     test(signstate);
     test(symmetricstate);
