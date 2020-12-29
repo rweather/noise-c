@@ -217,7 +217,7 @@ NoiseCipherState *noise_aesgcm_new_ref(void)
 //#if defined(VAULT)
 uint8_t *get_aesgcm_counter(NoiseCipherState *state)
 {
-    NoiseAESGCMState *st = (NoiseAESGCMState *)state)
+    NoiseAESGCMState *st = (NoiseAESGCMState *)state;
     return st->counter;
 }
 //#endif
