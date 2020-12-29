@@ -234,7 +234,7 @@ uint8_t *get_aesgcm_hash(NoiseCipherState *state)
 uint8_t *get_aesgcm_aes(NoiseCipherState *state)
 {
     NoiseAESGCMState *st = (NoiseAESGCMState *)state;
-    return st->aes;
+    return (uint8_t *)(st->aes);
 }
 
 
