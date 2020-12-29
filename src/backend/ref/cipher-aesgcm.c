@@ -201,3 +201,23 @@ NoiseCipherState *noise_aesgcm_new_ref(void)
     state->parent.decrypt = noise_aesgcm_decrypt;
     return &(state->parent);
 }
+
+
+// Define getters on internal state
+// typedef struct
+// {
+//     struct NoiseCipherState_s parent;
+//     uint32_t aes[4 * (MAXNR + 1)];
+//     ghash_state ghash;
+//     uint8_t counter[16];
+//     uint8_t hash[16];
+
+// } NoiseAESGCMState;
+
+//#if defined(VAULT)
+uint8_t *get_aesgcm_counter(NoiseCipherState *state)
+{
+    NoiseAESGCMState *st = (NoiseAESGCMState *)state)
+    return st->counter;
+}
+//#endif
