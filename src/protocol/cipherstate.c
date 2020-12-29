@@ -586,4 +586,10 @@ uint8_t *noise_cipherstate_get_aesgcm_ghash_Y(NoiseCipherState *state)
 }
 
 
+size_t noise_cipherstate_get_size(NoiseCipherState *state) {
+    return state->size;
+}
+
+
+
 /**@}*/

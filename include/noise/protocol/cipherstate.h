@@ -60,6 +60,10 @@ uint8_t *noise_cipherstate_get_aesgcm_ghash_H(NoiseCipherState *state);
 uint8_t *noise_cipherstate_get_aesgcm_ghash_Y(NoiseCipherState *state);
 uint8_t noise_cipherstate_get_aesgcm_ghash_posn(NoiseCipherState *state);
 
+
+size_t noise_cipherstate_get_size(NoiseCipherState *state);
+
+
 #ifdef __cplusplus
 };
 #endif
