@@ -574,4 +574,16 @@ uint8_t *noise_cipherstate_get_aesgcm_aes(NoiseCipherState *state)
 }
 
 
+uint8_t *noise_cipherstate_get_aesgcm_ghash_H(NoiseCipherState *state)
+{
+    return get_aesgcm_ghash_H(state);
+}
+
+
+uint8_t *noise_cipherstate_get_aesgcm_ghash_Y(NoiseCipherState *state)
+{
+    return get_aesgcm_ghash_Y(state);
+}
+
+
 /**@}*/

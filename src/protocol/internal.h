@@ -678,6 +678,9 @@ uint8_t *get_aesgcm_counter(NoiseCipherState *state);
 uint8_t *get_aesgcm_hash(NoiseCipherState *state);
 uint8_t *get_aesgcm_aes(NoiseCipherState *state);
 
+uint8_t *get_aesgcm_ghash_H(NoiseCipherState *state);
+uint8_t *get_aesgcm_ghash_Y(NoiseCipherState *state);
+uint8_t get_aesgcm_ghash_posn(NoiseCipherState *state);
 
 #ifdef __cplusplus
 };
