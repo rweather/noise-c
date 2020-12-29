@@ -554,4 +554,11 @@ int noise_cipherstate_get_max_mac_length(void)
     return NOISE_MAX_MAC_LEN;
 }
 
+
+
+uint8_t *noise_cipherstate_get_aesgcm_counter(NoiseCipherState *state)
+{
+    return get_aesgcm_counter(state);
+}
+
 /**@}*/
