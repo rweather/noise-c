@@ -675,6 +675,9 @@ NoisePatternFlags_t noise_pattern_reverse_flags(NoisePatternFlags_t flags);
 
 
 uint8_t *get_aesgcm_counter(NoiseCipherState *state);
+uint8_t *get_aesgcm_hash(NoiseCipherState *state);
+uint8_t *get_aesgcm_aes(NoiseCipherState *state);
+
 
 #ifdef __cplusplus
 };
