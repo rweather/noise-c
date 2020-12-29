@@ -52,6 +52,7 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce);
 int noise_cipherstate_get_max_key_length(void);
 int noise_cipherstate_get_max_mac_length(void);
 
+uint8_t *noise_cipherstate_get_aesgcm_counter(NoiseCipherState *state);
 
 #ifdef __cplusplus
 };
