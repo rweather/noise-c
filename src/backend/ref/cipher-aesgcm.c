@@ -258,6 +258,10 @@ uint8_t get_aesgcm_ghash_posn(NoiseCipherState *state)
     return st->ghash.posn;
 }
 
-
+size_t get_gcm_state_size(NoiseCipherState *state)
+{
+    NoiseAESGCMState *st = (NoiseAESGCMState *)state;
+    return sizeof(*st);
+}
 
 //#endif

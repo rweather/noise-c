@@ -62,7 +62,7 @@ uint8_t noise_cipherstate_get_aesgcm_ghash_posn(NoiseCipherState *state);
 
 
 size_t noise_cipherstate_get_size(NoiseCipherState *state);
-
+size_t noise_cipherstate_get_gcm_state_size(NoiseCipherState *state);
 
 #ifdef __cplusplus
 };
