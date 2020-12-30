@@ -598,4 +598,9 @@ size_t noise_cipherstate_get_gcm_state_size(NoiseCipherState *state)
 }
 
 
+void noise_cipherstate_set_aes_gcm_functions(NoiseCipherState *state)
+{
+    set_aes_gcm_functions(state);
+}
+
 /**@}*/

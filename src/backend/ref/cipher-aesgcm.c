@@ -264,4 +264,19 @@ size_t get_gcm_state_size(NoiseCipherState *state)
     return sizeof(*st);
 }
 
+
+void set_aes_gcm_functions(NoiseCipherState *state)
+{
+    NoiseAESGCMState *st = (NoiseAESGCMState *)state;
+    // state->parent.cipher_id = NOISE_CIPHER_AESGCM;
+    // state->parent.key_len = 32;
+    // state->parent.mac_len = 16;
+    st->parent.create = noise_aesgcm_new_ref;
+    st->parent.init_key = noise_aesgcm_init_key;
+    st->parent.encrypt = noise_aesgcm_encrypt;
+    st->parent.decrypt = noise_aesgcm_decrypt;
+}
+
+
+
 //#endif
