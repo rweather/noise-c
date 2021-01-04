@@ -44,7 +44,9 @@
 #define __LITTLE_ENDIAN __DARWIN_LITTLE_ENDIAN
 #endif
 #elif defined(__LEDGER_VAULT__)
-#include <machine/endian.h>
+//#include <machine/endian.h>
+#define __LITTLE_ENDIAN 1234
+#define __BYTE_ORDER __LITTLE_ENDIAN
 #else
 #include <endian.h>
 #endif
