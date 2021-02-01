@@ -44,7 +44,7 @@
 #if !defined( __LITTLE_ENDIAN) && defined(__DARWIN_LITTLE_ENDIAN)
 #define __LITTLE_ENDIAN __DARWIN_LITTLE_ENDIAN
 #endif
-#elif defined(__LEDGER_VAULT__)
+#elif defined(LEDGER_VAULTHSM)
 #include <machine/endian.h>
 #else
 #include <endian.h>

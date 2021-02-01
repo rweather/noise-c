@@ -31,11 +31,14 @@
 #if defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN32__)
 #include <windows.h>
 #include <wincrypt.h>
+#elif defined(LEDGER_VAULTAPP)
+#include "os.h"
+#include "cx.h"
 #else
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#if defined(__LEDGER_VAULT__)
+#if defined(LEDGER_VAULTHSM)
 /* #include <bolos_config.h> */
 /* #include <bolos_core.h> */
 /* #include <bolos_crypto_common.h> */
@@ -106,13 +109,16 @@ void noise_rand_bytes(void *bytes, size_t size)
         CryptReleaseContext(provider, 0);
         return;
     }
-#elif defined(__LEDGER_VAULT__)
+#elif defined(LEDGER_VAULTHSM)
     if (bls_rng(bytes, size))
       return;
     fprintf(stderr, "bls_rng failed\n");
-#endif
+#elif defined(LEDGER_VAULTAPP)
+    cx_rng(bytes, size);
+#else
     fprintf(stderr, "Do not know how to generate random numbers!  Abort!\n");
     exit(1);
+#endif
 }
 
 #ifdef ED25519_CUSTOMRANDOM
