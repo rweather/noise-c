@@ -31,6 +31,9 @@
 #if defined(__WIN32__) || defined(WIN32) || defined(__CYGWIN32__)
 #include <windows.h>
 #include <wincrypt.h>
+#elif defined(LEDGER_VAULTAPP)
+#include "os.h"
+#include "cx.h"
 #else
 #include <unistd.h>
 #include <fcntl.h>
@@ -99,9 +102,12 @@ void noise_rand_bytes(void *bytes, size_t size)
         CryptReleaseContext(provider, 0);
         return;
     }
-#endif
+#elif defined(LEDGER_VAULTAPP)
+    cx_rng(bytes, size);
+#else
     fprintf(stderr, "Do not know how to generate random numbers!  Abort!\n");
     exit(1);
+#endif
 }
 
 #ifdef ED25519_CUSTOMRANDOM
