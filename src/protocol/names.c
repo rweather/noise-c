@@ -23,6 +23,8 @@
 #include "internal.h"
 #include <string.h>
 
+#include "os.h"
+
 /**
  * \file names.h
  * \brief Mapping algorithm names to/from identifiers
@@ -151,12 +153,12 @@ int noise_name_to_id(int category, const char *name, size_t name_len)
         return 0;
     while (mapping->name_len) {
         if ((mapping->id & mask) == category) {
-            if (mapping->name_len == name_len &&
-                    !memcmp(mapping->name, name, name_len)) {
-                return mapping->id;
-            }
-        }
-        ++mapping;
+	    if (mapping->name_len == name_len &&
+		!memcmp((const char *)PIC(mapping->name), name, name_len)) {
+		return mapping->id;
+	    }
+	}
+	++mapping;
     }
     return 0;
 }
@@ -188,7 +190,7 @@ const char *noise_id_to_name(int category, int id)
     while (mapping->name_len) {
         if ((mapping->id & mask) == category) {
             if (mapping->id == id)
-                return mapping->name;
+		 return (const char *)PIC(mapping->name);
         }
         ++mapping;
     }
