@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
- * Copyright (C) 2016 Topology LP.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,48 +21,43 @@
  */
 
 #include "internal.h"
+#include "crypto/blake2/blake2s.h"
 
-#if NOISE_USE_BOLOS_BACKEND
-NoiseCipherState *noise_aesgcm_new_bolos(void);
-#else
-
-#if USE_SODIUM
-NoiseCipherState *noise_aesgcm_new_sodium(void);
-#endif
-#if USE_OPENSSL
-NoiseCipherState *noise_aesgcm_new_openssl(void);
-#endif
-NoiseCipherState *noise_aesgcm_new_ref(void);
-
-#endif
-
-/**
- * \brief Creates a new AES-GCM CipherState object.
- *
- * \return A NoiseCipherState for AES-GCM cipher use, or NULL if no such state is available.
- */
-NoiseCipherState *noise_aesgcm_new(void)
+typedef struct
 {
-    NoiseCipherState *state = 0;
+    struct NoiseHashState_s parent;
+    BLAKE2s_context_t blake2;
 
-#if NOISE_USE_BOLOS_BACKEND
-    if (!state)
-      state = noise_aesgcm_new_bolos();
-#else
+} NoiseBLAKE2sState;
 
-#if USE_SODIUM
-    if (crypto_aead_aes256gcm_is_available())
-        state = noise_aesgcm_new_sodium();
-#endif
-#if USE_OPENSSL
-    if (!state)
-        state = noise_aesgcm_new_openssl();
-#endif
-    if (!state)
-        state = noise_aesgcm_new_ref();
-
-#endif
-    return state;
+static void noise_blake2s_reset(NoiseHashState *state)
+{
+    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
+    BLAKE2s_reset(&(st->blake2));
 }
 
+static void noise_blake2s_update(NoiseHashState *state, const uint8_t *data, size_t len)
+{
+    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
+    BLAKE2s_update(&(st->blake2), data, len);
+}
 
+static void noise_blake2s_finalize(NoiseHashState *state, uint8_t *hash)
+{
+    NoiseBLAKE2sState *st = (NoiseBLAKE2sState *)state;
+    BLAKE2s_finish(&(st->blake2), hash);
+}
+
+NoiseHashState *noise_blake2s_new(void)
+{
+    NoiseBLAKE2sState *state = noise_new(NoiseBLAKE2sState);
+    if (!state)
+        return 0;
+    state->parent.hash_id = NOISE_HASH_BLAKE2s;
+    state->parent.hash_len = 32;
+    state->parent.block_len = 64;
+    state->parent.reset = noise_blake2s_reset;
+    state->parent.update = noise_blake2s_update;
+    state->parent.finalize = noise_blake2s_finalize;
+    return &(state->parent);
+}

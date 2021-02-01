@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2016 Southern Storm Software, Pty Ltd.
- * Copyright (C) 2016 Topology LP.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,47 +22,8 @@
 
 #include "internal.h"
 
-#if NOISE_USE_BOLOS_BACKEND
-NoiseCipherState *noise_aesgcm_new_bolos(void);
-#else
-
-#if USE_SODIUM
-NoiseCipherState *noise_aesgcm_new_sodium(void);
-#endif
-#if USE_OPENSSL
-NoiseCipherState *noise_aesgcm_new_openssl(void);
-#endif
-NoiseCipherState *noise_aesgcm_new_ref(void);
-
-#endif
-
-/**
- * \brief Creates a new AES-GCM CipherState object.
- *
- * \return A NoiseCipherState for AES-GCM cipher use, or NULL if no such state is available.
- */
-NoiseCipherState *noise_aesgcm_new(void)
+NoiseDHState *noise_curve448_new(void)
 {
-    NoiseCipherState *state = 0;
-
-#if NOISE_USE_BOLOS_BACKEND
-    if (!state)
-      state = noise_aesgcm_new_bolos();
-#else
-
-#if USE_SODIUM
-    if (crypto_aead_aes256gcm_is_available())
-        state = noise_aesgcm_new_sodium();
-#endif
-#if USE_OPENSSL
-    if (!state)
-        state = noise_aesgcm_new_openssl();
-#endif
-    if (!state)
-        state = noise_aesgcm_new_ref();
-
-#endif
-    return state;
+  __builtin_trap();
+  return NULL;
 }
-
-
