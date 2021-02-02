@@ -21,56 +21,16 @@
  */
 
 #include "internal.h"
-#include "crypto/blake2/blake2b.h"
 
-//#include "cx.h"
-
-/* cx_blake2b_init */
-/* cx_blake2b_t */
-/* src/#keys.c#:    cx_blake2b_t hash_state; */
-/* src/#keys.c#:    cx_blake2b_init(&hash_state, HASH_SIZE*8); // cx_blake2b_init takes size in bits. */
-
+/* TODO : plug this blake2b implementation to bolos */
 /* cx_blake2b_t hash_state; */
-/*     cx_blake2b_init(&hash_state, HASH_SIZE*8); // cx_blake2b_init takes size in bits. */
-/*     cx_hash((cx_hash_t *) &hash_state, CX_LAST, compressed->W, compressed->W_len, out, HASH_SIZE); */
+/* cx_blake2b_init(&hash_state, HASH_SIZE*8); // cx_blake2b_init takes size in bits. */
 
-typedef struct
-{
-  struct NoiseHashState_s parent;
-  BLAKE2b_context_t blake2;
-  /* cx_blake2b_t hash_state; */
-
-} NoiseBLAKE2bState;
-
-static void noise_blake2b_reset(NoiseHashState *state)
-{
-    NoiseBLAKE2bState *st = (NoiseBLAKE2bState *)state;
-    /* cx_blake2b_init(&hash_state, HASH_SIZE*8); */
-    BLAKE2b_reset(&(st->blake2));
-}
-
-static void noise_blake2b_update(NoiseHashState *state, const uint8_t *data, size_t len)
-{
-    NoiseBLAKE2bState *st = (NoiseBLAKE2bState *)state;
-    BLAKE2b_update(&(st->blake2), data, len);
-}
-
-static void noise_blake2b_finalize(NoiseHashState *state, uint8_t *hash)
-{
-    NoiseBLAKE2bState *st = (NoiseBLAKE2bState *)state;
-    BLAKE2b_finish(&(st->blake2), hash);
-}
+/* cx_blake2b_init(&hash_state, HASH_SIZE*8); // cx_blake2b_init takes size in bits. */
+/* cx_hash((cx_hash_t *) &hash_state, CX_LAST, compressed->W, compressed->W_len, out, HASH_SIZE); */
 
 NoiseHashState *noise_blake2b_new(void)
 {
-    NoiseBLAKE2bState *state = noise_new(NoiseBLAKE2bState);
-    if (!state)
-        return 0;
-    state->parent.hash_id = NOISE_HASH_BLAKE2b;
-    state->parent.hash_len = 64;
-    state->parent.block_len = 128;
-    state->parent.reset = noise_blake2b_reset;
-    state->parent.update = noise_blake2b_update;
-    state->parent.finalize = noise_blake2b_finalize;
-    return &(state->parent);
+  __builtin_trap();
+  return NULL;
 }
