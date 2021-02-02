@@ -20,6 +20,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#include <string.h>
 #include "internal.h"
 
 #include "os.h"
@@ -81,7 +82,7 @@ static int noise_curve25519_set_keypair
   int equal;
 
   memcpy(&temp, st, sizeof(temp));
-  noise_curve25519_set_keypair_private(&temp, private_key);
+  noise_curve25519_set_keypair_private((NoiseDHState *)(&temp), private_key);
   equal = noise_is_equal(temp.public_key, public_key, sizeof(public_key));
 
   memcpy(st->private_key, private_key, sizeof(st->private_key));
