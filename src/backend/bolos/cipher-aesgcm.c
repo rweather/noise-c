@@ -20,8 +20,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#include <string.h>
+
 #include "internal.h"
 #include "aes-gcm.h"
+#include "malloc.h"
 
 typedef struct
 {
