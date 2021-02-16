@@ -535,6 +535,36 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
 }
 
 /**
+ * \brief Sets the nonce value for this cipherstate object.
+ *
+ * \param state The CipherState object.
+ * \param nonce The new nonce value to set.  This must be greater than
+ * or equal to the current nonce value in the state.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the key has not been set yet.
+ *
+ * \warning This function must be used for deciphering only
+ *
+ * \sa noise_cipherstate_init_key()
+ */
+int noise_cipherstate_set_nonce_for_psd(NoiseCipherState *state, uint64_t nonce)
+{
+    /* Bail out if the state is NULL */
+    if (!state)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* If the key hasn't been set yet, we cannot do this */
+    if (!state->has_key)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Set the nonce and return */
+    state->n = nonce;
+    return NOISE_ERROR_NONE;
+}
+
+/**
  * \brief Gets the maximum key length for the supported algorithms.
  *
  * \sa noise_cipherstate_get_max_mac_length()
