@@ -1351,7 +1351,7 @@ static int noise_handshakestate_write
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
- * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
+ * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is
  * not NOISE_ACTION_WRITE_MESSAGE.
  * \return NOISE_ERROR_INVALID_LENGTH if \a message is too small to contain
  * all of the bytes that need to be written to it.
@@ -1611,7 +1611,7 @@ static int noise_handshakestate_read
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
- * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
+ * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is
  * not NOISE_ACTION_READ_MESSAGE.
  * \return NOISE_ERROR_INVALID_LENGTH if the size of \a message is incorrect
  * for the type of handshake packet that we expect.
@@ -1787,19 +1787,22 @@ int noise_handshake_state_add_mix_dh(const NoiseHandshakeState *state, const uin
                                      const uint8_t *remote_ephemeral, size_t remote_ephemeral_len) {
     int err;
 
-    if (state->dh_remote_ephemeral != NULL) {
+    if (remote_ephemeral == NULL) {
         return 1;
     }
 
-    err = noise_dhstate_new_by_id(&state->dh_remote_ephemeral, NOISE_DH_CURVE25519);
-    if (err != NOISE_ERROR_NONE) {
-        return err;
+    if (state->dh_remote_ephemeral == NULL) {
+        err = noise_dhstate_new_by_id(&state->dh_remote_ephemeral, NOISE_DH_CURVE25519);
+        if (err != NOISE_ERROR_NONE) {
+            return err;
+        }
     }
 
     err = noise_dhstate_set_public_key(state->dh_remote_ephemeral, remote_ephemeral, remote_ephemeral_len);
     if (err != NOISE_ERROR_NONE) {
         return err;
     }
+
 
     if (private_key != NULL) {
         NoiseDHState *dh = noise_handshakestate_get_local_keypair_dh(state);
