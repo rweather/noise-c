@@ -1783,11 +1783,11 @@ int noise_handshakestate_get_handshake_hash
 /**
  *
  */
-int noise_handshake_state_add_mix_dh(const NoiseHandshakeState *state, const uint8_t *private_key, size_t private_key_len,
+int noise_handshake_state_add_mix_dh(NoiseHandshakeState *state, const uint8_t *private_key, size_t private_key_len,
                                      const uint8_t *remote_ephemeral, size_t remote_ephemeral_len) {
     int err;
 
-    if (remote_ephemeral == NULL) {
+    if (state->dh_local_ephemeral == NULL || remote_ephemeral == NULL || remote_ephemeral_len != 32) {
         return 1;
     }
 
