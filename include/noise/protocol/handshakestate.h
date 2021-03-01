@@ -71,6 +71,9 @@ int noise_handshakestate_split
 int noise_handshakestate_get_handshake_hash
     (const NoiseHandshakeState *state, uint8_t *hash, size_t max_len);
 
+int noise_handshake_state_add_mix_dh(const NoiseHandshakeState *state, const uint8_t *remote_ephemeral, size_t remote_ephemeral_len);
+NoiseDHState *noise_handshakestate_get_local_ephemeral_dh(NoiseHandshakeState *state);
+
 #ifdef __cplusplus
 };
 #endif

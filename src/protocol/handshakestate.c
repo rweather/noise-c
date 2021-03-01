@@ -1779,4 +1779,48 @@ int noise_handshakestate_get_handshake_hash
     return NOISE_ERROR_NONE;
 }
 
+
+/**
+ *
+ */
+int noise_handshake_state_add_mix_dh(const NoiseHandshakeState *state, const uint8_t *remote_ephemeral, size_t remote_ephemeral_len) {
+    int err;
+
+    if (state->dh_remote_ephemeral != NULL) {
+        return 1;
+    }
+
+    err = noise_dhstate_new_by_id(&state->dh_remote_ephemeral, NOISE_DH_CURVE25519);
+    if (err != NOISE_ERROR_NONE) {
+        return err;
+    }
+
+    err = noise_dhstate_set_public_key(state->dh_remote_ephemeral, remote_ephemeral, remote_ephemeral_len);
+    if (err != NOISE_ERROR_NONE) {
+        return err;
+    }
+
+    return noise_handshake_mix_dh(state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
+}
+
+
+NoiseDHState *noise_handshakestate_get_local_ephemeral_dh(NoiseHandshakeState *state)
+{
+    if (!state || !state->dh_local_ephemeral)
+        return 0;
+
+    // if (!state->dh_fixed_ephemeral) {
+    //     if (noise_dhstate_new_by_id
+    //             (&(state->dh_fixed_ephemeral), state->symmetric->id.dh_id)
+    //           != NOISE_ERROR_NONE) {
+    //         return 0;
+    //     }
+    //     noise_dhstate_set_role
+    //         (state->dh_fixed_ephemeral,
+    //          noise_dhstate_get_role(state->dh_local_ephemeral));
+    // }
+
+    return state->dh_local_ephemeral;
+}
+
 /**@}*/
