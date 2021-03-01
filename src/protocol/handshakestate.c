@@ -1351,7 +1351,7 @@ static int noise_handshakestate_write
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
- * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is
+ * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
  * not NOISE_ACTION_WRITE_MESSAGE.
  * \return NOISE_ERROR_INVALID_LENGTH if \a message is too small to contain
  * all of the bytes that need to be written to it.
@@ -1611,7 +1611,7 @@ static int noise_handshakestate_read
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
- * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is
+ * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
  * not NOISE_ACTION_READ_MESSAGE.
  * \return NOISE_ERROR_INVALID_LENGTH if the size of \a message is incorrect
  * for the type of handshake packet that we expect.
@@ -1777,63 +1777,6 @@ int noise_handshakestate_get_handshake_hash
         memcpy(hash, state->symmetric->h, max_len);
     }
     return NOISE_ERROR_NONE;
-}
-
-
-/**
- *
- */
-int noise_handshake_state_add_mix_dh(NoiseHandshakeState *state, const uint8_t *private_key, size_t private_key_len,
-                                     const uint8_t *remote_ephemeral, size_t remote_ephemeral_len) {
-    int err;
-
-    if (state->dh_local_ephemeral == NULL || remote_ephemeral == NULL || remote_ephemeral_len != 32) {
-        return 1;
-    }
-
-    if (state->dh_remote_ephemeral == NULL) {
-        err = noise_dhstate_new_by_id(&state->dh_remote_ephemeral, NOISE_DH_CURVE25519);
-        if (err != NOISE_ERROR_NONE) {
-            return err;
-        }
-    }
-
-    err = noise_dhstate_set_public_key(state->dh_remote_ephemeral, remote_ephemeral, remote_ephemeral_len);
-    if (err != NOISE_ERROR_NONE) {
-        return err;
-    }
-
-
-    if (private_key != NULL) {
-        NoiseDHState *dh = noise_handshakestate_get_local_keypair_dh(state);
-        err = noise_dhstate_set_keypair_private(dh, private_key, private_key_len);
-        if (err != NOISE_ERROR_NONE) {
-            return err;
-        }
-    }
-
-
-    return noise_handshake_mix_dh(state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
-}
-
-
-NoiseDHState *noise_handshakestate_get_local_ephemeral_dh(NoiseHandshakeState *state)
-{
-    if (!state || !state->dh_local_ephemeral)
-        return 0;
-
-    // if (!state->dh_fixed_ephemeral) {
-    //     if (noise_dhstate_new_by_id
-    //             (&(state->dh_fixed_ephemeral), state->symmetric->id.dh_id)
-    //           != NOISE_ERROR_NONE) {
-    //         return 0;
-    //     }
-    //     noise_dhstate_set_role
-    //         (state->dh_fixed_ephemeral,
-    //          noise_dhstate_get_role(state->dh_local_ephemeral));
-    // }
-
-    return state->dh_local_ephemeral;
 }
 
 /**@}*/
