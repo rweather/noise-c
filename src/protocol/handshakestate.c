@@ -1783,7 +1783,8 @@ int noise_handshakestate_get_handshake_hash
 /**
  *
  */
-int noise_handshake_state_add_mix_dh(const NoiseHandshakeState *state, const uint8_t *remote_ephemeral, size_t remote_ephemeral_len) {
+int noise_handshake_state_add_mix_dh(const NoiseHandshakeState *state, const uint8_t *private_key, size_t private_key_len,
+                                     const uint8_t *remote_ephemeral, size_t remote_ephemeral_len) {
     int err;
 
     if (state->dh_remote_ephemeral != NULL) {
@@ -1799,6 +1800,15 @@ int noise_handshake_state_add_mix_dh(const NoiseHandshakeState *state, const uin
     if (err != NOISE_ERROR_NONE) {
         return err;
     }
+
+    if (private_key != NULL) {
+        NoiseDHState *dh = noise_handshakestate_get_local_keypair_dh(state);
+        err = noise_dhstate_set_keypair_private(dh, private_key, private_key_len);
+        if (err != NOISE_ERROR_NONE) {
+            return err;
+        }
+    }
+
 
     return noise_handshake_mix_dh(state, state->dh_local_ephemeral, state->dh_remote_ephemeral);
 }
