@@ -1779,4 +1779,9 @@ int noise_handshakestate_get_handshake_hash
     return NOISE_ERROR_NONE;
 }
 
+
+size_t noise_handshakestate_get_size(const NoiseHandshakeState *state) {
+    return state->size;
+}
+
 /**@}*/
