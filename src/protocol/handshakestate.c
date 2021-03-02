@@ -1351,7 +1351,7 @@ static int noise_handshakestate_write
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
- * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
+ * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is
  * not NOISE_ACTION_WRITE_MESSAGE.
  * \return NOISE_ERROR_INVALID_LENGTH if \a message is too small to contain
  * all of the bytes that need to be written to it.
@@ -1611,7 +1611,7 @@ static int noise_handshakestate_read
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state or \a message is NULL.
- * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is 
+ * \return NOISE_ERROR_INVALID_STATE if noise_handshakestate_get_action() is
  * not NOISE_ACTION_READ_MESSAGE.
  * \return NOISE_ERROR_INVALID_LENGTH if the size of \a message is incorrect
  * for the type of handshake packet that we expect.
@@ -1780,8 +1780,16 @@ int noise_handshakestate_get_handshake_hash
 }
 
 
-size_t noise_handshakestate_get_size(const NoiseHandshakeState *state) {
+size_t noise_handshakestate_get_size(const NoiseHandshakeState *state)
+{
     return state->size;
 }
+
+
+NoiseDHState *noise_handshakestate_get_ephemeral_dh(NoiseHandshakeState *state)
+{
+    return state ? state->dh_local_ephemeral : 0;
+}
+
 
 /**@}*/

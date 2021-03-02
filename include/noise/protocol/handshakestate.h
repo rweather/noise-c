@@ -73,6 +73,9 @@ int noise_handshakestate_get_handshake_hash
 
 size_t noise_handshakestate_get_size(const NoiseHandshakeState *state);
 
+NoiseDHState *noise_handshakestate_get_ephemeral_dh(NoiseHandshakeState *state);
+
+
 #ifdef __cplusplus
 };
 #endif
