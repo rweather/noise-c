@@ -154,7 +154,11 @@ int noise_name_to_id(int category, const char *name, size_t name_len)
     while (mapping->name_len) {
         if ((mapping->id & mask) == category) {
 	    if (mapping->name_len == name_len &&
+#ifdef LEDGER_VAULTAPP
 		!memcmp((const char *)PIC(mapping->name), name, name_len)) {
+#else
+		!memcmp(mapping->name, name, name_len)) {
+#endif
 		return mapping->id;
 	    }
 	}
@@ -190,7 +194,11 @@ const char *noise_id_to_name(int category, int id)
     while (mapping->name_len) {
         if ((mapping->id & mask) == category) {
             if (mapping->id == id)
-		 return (const char *)PIC(mapping->name);
+#ifdef LEDGER_VAULTAPP
+	      return (const char *)PIC(mapping->name);
+#else
+	      return mapping->name;
+#endif
         }
         ++mapping;
     }

@@ -534,6 +534,7 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
     return NOISE_ERROR_NONE;
 }
 
+#ifdef LEDGER_VAULTAPP
 /**
  * \brief Sets the nonce value for this cipherstate object.
  *
@@ -563,6 +564,7 @@ int noise_cipherstate_set_nonce_for_psd(NoiseCipherState *state, uint64_t nonce)
     state->n = nonce;
     return NOISE_ERROR_NONE;
 }
+#endif
 
 /**
  * \brief Gets the maximum key length for the supported algorithms.
