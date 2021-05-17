@@ -23,8 +23,9 @@
 #include "internal.h"
 #include <string.h>
 
+#ifdef defined(LEDGER_VAULTAPP)
 #include "os.h"
-
+#endif
 /**
  * \file names.h
  * \brief Mapping algorithm names to/from identifiers
