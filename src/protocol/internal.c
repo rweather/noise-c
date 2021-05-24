@@ -24,6 +24,7 @@
 #include "internal.h"
 
 #if USE_SODIUM
+int crypto_aead_aes256gcm_is_available(void);
 NoiseCipherState *noise_aesgcm_new_sodium(void);
 #endif
 #if USE_OPENSSL

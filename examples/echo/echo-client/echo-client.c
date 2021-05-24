@@ -464,4 +464,3 @@ int main(int argc, char *argv[])
     return ok ? 0 : 1;
 }
 
-#include "echo-common.c"

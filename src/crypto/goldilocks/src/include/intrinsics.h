@@ -203,7 +203,7 @@ INTRINSIC ssereg xop_rotate(int amount, ssereg x) {
  * @brief Detect platform features and return them as a flagfield int.
  */
 extern_c
-unsigned int crandom_detect_features();
+unsigned int crandom_detect_features(void);
 /** @endcond */
 
 #ifndef likely
@@ -219,7 +219,7 @@ unsigned int crandom_detect_features();
  * Equivalent to:
  * ret = *target; if (*target == old) *target = new; return ret;
  *
- * @param [inout] target The volatile memory area to be CAS'd
+ * @param [in,out] target The volatile memory area to be CAS'd
  * @param [in] old The expected old value of the target.
  * @param [in] new A value to replace the target on success.
  */
@@ -238,7 +238,7 @@ compare_and_swap (
  * Equivalent to:
  * if (*target == old) { *target = new; return nonzero; } else { return 0; }
  *
- * @param [inout] target The volatile memory area to be CAS'd
+ * @param [in,out] target The volatile memory area to be CAS'd
  * @param [in] old The expected old value of the target.
  * @param [in] new A value to replace the target on success.
  */
