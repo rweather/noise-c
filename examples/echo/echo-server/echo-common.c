@@ -211,13 +211,14 @@ int echo_to_noise_protocol_id(NoiseProtocolId *nid, const EchoProtocolId *id)
 /* Loads a binary private key from a file.  Returns non-zero if OK. */
 int echo_load_private_key(const char *filename, uint8_t *key, size_t len)
 {
-    FILE *file = fopen(filename, "rb");
+    FILE *file;
     size_t posn = 0;
     int ch;
     if (len > MAX_DH_KEY_LEN) {
         fprintf(stderr, "private key length is not supported\n");
         return 0;
     }
+    file = fopen(filename, "rb");
     if (!file) {
         perror(filename);
         return 0;
@@ -242,7 +243,7 @@ int echo_load_private_key(const char *filename, uint8_t *key, size_t len)
 /* Loads a base64-encoded public key from a file.  Returns non-zero if OK. */
 int echo_load_public_key(const char *filename, uint8_t *key, size_t len)
 {
-    FILE *file = fopen(filename, "rb");
+    FILE *file;
     uint32_t group = 0;
     size_t group_size = 0;
     uint32_t digit = 0;
@@ -252,6 +253,7 @@ int echo_load_public_key(const char *filename, uint8_t *key, size_t len)
         fprintf(stderr, "public key length is not supported\n");
         return 0;
     }
+    file = fopen(filename, "rb");
     if (!file) {
         perror(filename);
         return 0;
