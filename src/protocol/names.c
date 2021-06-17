@@ -23,7 +23,7 @@
 #include "internal.h"
 #include <string.h>
 
-#ifdef defined(LEDGER_VAULTAPP)
+#if defined(LEDGER_VAULTAPP)
 #include "os.h"
 #endif
 /**
