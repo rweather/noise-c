@@ -115,11 +115,14 @@ AC_ARG_ENABLE(ubsan, AC_HELP_STRING([--enable-ubsan],
 	fi
 ])
 
-AC_ARG_ENABLE(moxie, AC_HELP_STRING([--enable-moxie],
-			[Compile for moxie VM]), [
+AC_ARG_ENABLE(vaulthsm, AC_HELP_STRING([--enable-vaulthsm],
+			[Compile for Vault HSM]), [
 	if (test "${enableval}" = "yes"); then
-		AC_DEFINE(LEDGER_VAULTHSM)
+	   	 AM_CONDITIONAL([USE_BOLOS_VAULHSM_BACKEND],[true])
+		 AC_DEFINE(LEDGER_VAULTHSM)
 	fi
 ])
+
+AM_CONDITIONAL([USE_BOLOS_VAULHSM_BACKEND],[true])
 
 AC_OUTPUT

@@ -70,9 +70,14 @@ else !USE_OPENSSL
 if USE_LIBSODIUM
 libnoiseprotocol_a_SOURCES += \
 	../backend/sodium/cipher-aesgcm.c
+else !USE_LIBSODIUM
+if USE_BOLOS_VAULHSM_BACKEND
+libnoiseprotocol_a_SOURCES += \
+	../backend/vault-hsm/cipher-aesgcm.c
 else
 libnoiseprotocol_a_SOURCES += \
 	../backend/ref/cipher-aesgcm.c
+endif
 endif
 endif
 
@@ -89,7 +94,6 @@ libnoiseprotocol_a_SOURCES += \
 else !USE_LIBSODIUM
 libnoiseprotocol_a_SOURCES += \
 	rand_os.c \
-	../backend/ref/cipher-aesgcm.c \
 	../backend/ref/cipher-chachapoly.c \
 	../backend/ref/dh-curve25519.c \
 	../backend/ref/hash-blake2b.c \
