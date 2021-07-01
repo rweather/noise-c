@@ -587,43 +587,6 @@ int noise_cipherstate_get_max_mac_length(void)
 }
 
 
-
-uint8_t *noise_cipherstate_get_aesgcm_counter(NoiseCipherState *state)
-{
-    return get_aesgcm_counter(state);
-}
-
-
-uint8_t *noise_cipherstate_get_aesgcm_hash(NoiseCipherState *state)
-{
-    return get_aesgcm_hash(state);
-}
-
-
-uint8_t *noise_cipherstate_get_aesgcm_aes(NoiseCipherState *state)
-{
-    return get_aesgcm_aes(state);
-}
-
-
-uint8_t *noise_cipherstate_get_aesgcm_ghash_H(NoiseCipherState *state)
-{
-    return get_aesgcm_ghash_H(state);
-}
-
-
-uint8_t *noise_cipherstate_get_aesgcm_ghash_Y(NoiseCipherState *state)
-{
-    return get_aesgcm_ghash_Y(state);
-}
-
-
-size_t noise_cipherstate_get_size(NoiseCipherState *state)
-{
-    return state->size;
-}
-
-
 size_t noise_cipherstate_get_gcm_state_size(NoiseCipherState *state)
 {
     return get_gcm_state_size(state);
