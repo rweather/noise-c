@@ -2,8 +2,6 @@
 #ifndef _AES_GCM_H_
 # define _AES_GCM_H_
 
-#include "os.h"
-
 #include <stdint.h>
 #include <stddef.h>
 
