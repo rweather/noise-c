@@ -25,6 +25,8 @@
 
 #if USE_BOLOS_VAULTAPP_BACKEND
 NoiseCipherState *noise_aesgcm_new_bolos(void);
+#elif USE_BOLOS_VAULHSM_BACKEND
+NoiseCipherState *noise_aesgcm_new_vaulthsm(void);
 #else
 
 #if USE_SODIUM
@@ -47,8 +49,9 @@ NoiseCipherState *noise_aesgcm_new(void)
     NoiseCipherState *state = 0;
 
 #if USE_BOLOS_VAULTAPP_BACKEND
-    if (!state)
-      state = noise_aesgcm_new_bolos();
+    state = noise_aesgcm_new_bolos();
+#elif USE_BOLOS_VAULHSM_BACKEND
+    state = noise_aesgcm_new_vaulthsm();
 #else
 
 #if USE_SODIUM
