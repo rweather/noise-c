@@ -115,14 +115,16 @@ AC_ARG_ENABLE(ubsan, AC_HELP_STRING([--enable-ubsan],
 	fi
 ])
 
-AC_ARG_ENABLE(vaulthsm, AC_HELP_STRING([--enable-vaulthsm],
-			[Compile for Vault HSM]), [
-	if (test "${enableval}" = "yes"); then
-	   	 AM_CONDITIONAL([USE_BOLOS_VAULHSM_BACKEND],[true])
-		 AC_DEFINE(LEDGER_VAULTHSM)
-	fi
-])
+AC_ARG_WITH([vaulthsm],
+  [AS_HELP_STRING([--with-vaulthsm],
+    [use vaulthsm for crypto @<:@default=check@:>@])],
+  [],
+  [with_vaulthsm=no])
 
-AM_CONDITIONAL([USE_BOLOS_VAULHSM_BACKEND],[true])
+AM_CONDITIONAL([USE_BOLOS_VAULTHSM_BACKEND], [test "$with_vaulthsm" != no])
+
+AS_IF([test "$with_vaulthsm" != no], [
+  AC_DEFINE(LEDGER_VAULTHSM)
+  ])
 
 AC_OUTPUT

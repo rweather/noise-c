@@ -27,6 +27,10 @@ ED25519_CPPFLAGS = -DED25519_CUSTOMHASH -DED25519_CUSTOMRANDOM
 AM_CPPFLAGS += $(ED25519_CPPFLAGS)
 endif
 
+if USE_BOLOS_VAULTHSM_BACKEND
+AM_CPPFLAGS += -DUSE_BOLOS_VAULTHSM_BACKEND=1
+endif
+
 libnoiseprotocol_a_SOURCES = \
 	cipherstate.c \
 	dhstate.c \
@@ -71,7 +75,7 @@ if USE_LIBSODIUM
 libnoiseprotocol_a_SOURCES += \
 	../backend/sodium/cipher-aesgcm.c
 else !USE_LIBSODIUM
-if USE_BOLOS_VAULHSM_BACKEND
+if USE_BOLOS_VAULTHSM_BACKEND
 libnoiseprotocol_a_SOURCES += \
 	../backend/vault-hsm/cipher-aesgcm.c
 else
