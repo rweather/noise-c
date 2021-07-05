@@ -77,7 +77,8 @@ libnoiseprotocol_a_SOURCES += \
 else !USE_LIBSODIUM
 if USE_BOLOS_VAULTHSM_BACKEND
 libnoiseprotocol_a_SOURCES += \
-	../backend/vault-hsm/cipher-aesgcm.c
+	../backend/vault-hsm/cipher-aesgcm.c \
+	../backend/vault-hsm/aes-gcm.c
 else
 libnoiseprotocol_a_SOURCES += \
 	../backend/ref/cipher-aesgcm.c
