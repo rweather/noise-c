@@ -28,7 +28,10 @@ AM_CPPFLAGS += $(ED25519_CPPFLAGS)
 endif
 
 if USE_BOLOS_VAULTHSM_BACKEND
-AM_CPPFLAGS += -DUSE_BOLOS_VAULTHSM_BACKEND=1
+AM_CFLAGS += -DUSE_BOLOS_VAULTHSM_BACKEND=1
+AM_CFLAGS += $(vaulthsm_CFLAGS)
+AM_CFLAGS += -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/../api
+AM_CFLAGS += -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/crypto_core/ed25519/ref10/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/crypto_sign/ed25519/ref10/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/../../api -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/include/sodium/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/crypto_generichash/blake2b/ref/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium
 endif
 
 libnoiseprotocol_a_SOURCES = \

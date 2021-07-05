@@ -9,9 +9,51 @@
 
 
 #include <string.h>
-
+#include <stdint.h>
 #include "aes-gcm.h"
+
+
+#ifdef USE_BOLOS_VAULTAPP_BACKEND
 #include "cx.h"
+#define AES_CONTEXT_T  cx_aes_key_t
+#define AES_BLOCK_SIZE CX_AES_BLOCK_SIZE
+#define AES(key, mode, in, in_len, out, out_len) cx_aes(key, mode, in, in_len, out, out_len)
+#define AES_INIT_KEY(raw_key, key_len, key_context) (cx_aes_init_key(raw_key, key_len, key_context) == key_len)
+
+#define AES_LAST CX_LAST
+#define AES_ENCRYPT CX_ENCRYPT
+#define AES_PAD_NONE CX_PAD_NONE
+#define AES_CHAIN_ECB CX_CHAIN_ECB
+
+#define memcpy os_memcpy
+#define memset os_memset
+
+#elif USE_BOLOS_VAULTHSM_BACKEND
+#include <bolos.h>
+#define AES_CONTEXT_T bls_aes_key_t
+#define AES_BLOCK_SIZE BLS_AES_BLOCK_SIZE
+#define AES(key, mode, in, in_len, out, out_len) \
+  do { \
+    bls_aes(key, mode, \
+	    &((const bls_area_t){.buffer=in, .length=in_len}), \
+	    &((bls_area_t){.buffer=out, .length=out_len})); \
+  } while (0);
+#define AES_INIT_KEY(raw_key, key_len, key_context) (bls_aes_init_key(raw_key, key_len, key_context) == 1)
+
+#define AES_LAST BLS_LAST
+#define AES_ENCRYPT BLS_ENCRYPT
+#define AES_PAD_NONE BLS_PAD_NONE
+#define AES_CHAIN_ECB BLS_CHAIN_ECB
+
+typedef bls_area_t area_t;
+
+#else
+#error USE_BOLOS_VAULTAPP_BACKEND or USE_BOLOS_VAULTHSM_BACKEND should be defined
+#endif
+
+/* bolos handles a limited number of crypto handles and does not allow release them once allocated.*/
+/* So we reuse the same handle for all operations in this file. */
+AES_CONTEXT_T aes = {0};
 
 static int os_memcmp_const(const void *a, const void *b, size_t len)
 {
@@ -29,9 +71,9 @@ static int os_memcmp_const(const void *a, const void *b, size_t len)
 static void inc32(uint8_t *block)
 {
 	uint32_t val;
-	val = WPA_GET_BE32(block + CX_AES_BLOCK_SIZE - 4);
+	val = WPA_GET_BE32(block + AES_BLOCK_SIZE - 4);
 	val++;
-	WPA_PUT_BE32(block + CX_AES_BLOCK_SIZE - 4, val);
+	WPA_PUT_BE32(block + AES_BLOCK_SIZE - 4, val);
 }
 
 
@@ -95,8 +137,8 @@ static void gf_mult(const uint8_t *x, const uint8_t *y, uint8_t *z)
 	uint8_t v[16];
 	int i, j;
 
-	os_memset(z, 0, 16); /* Z_0 = 0^128 */
-	os_memcpy(v, y, 16); /* V_0 = Y */
+	memset(z, 0, 16); /* Z_0 = 0^128 */
+	memcpy(v, y, 16); /* V_0 = Y */
 
 	for (i = 0; i < 16; i++) {
 		for (j = 0; j < 8; j++) {
@@ -124,7 +166,7 @@ static void gf_mult(const uint8_t *x, const uint8_t *y, uint8_t *z)
 static void ghash_start(uint8_t *y)
 {
 	/* Y_0 = 0^128 */
-	os_memset(y, 0, 16);
+	memset(y, 0, 16);
 }
 
 
@@ -145,14 +187,14 @@ static void ghash(const uint8_t *h, const uint8_t *x, size_t xlen, uint8_t *y)
 		 * multiplication operation for binary Galois (finite) field of
 		 * 2^128 elements */
 		gf_mult(y, h, tmp);
-		os_memcpy(y, tmp, 16);
+		memcpy(y, tmp, 16);
 	}
 
 	if (x + xlen > xpos) {
 		/* Add zero padded last block */
 		size_t last = x + xlen - xpos;
-		os_memcpy(tmp, xpos, last);
-		os_memset(tmp + last, 0, sizeof(tmp) - last);
+		memcpy(tmp, xpos, last);
+		memset(tmp + last, 0, sizeof(tmp) - last);
 
 		/* Y_i = (Y^(i-1) XOR X_i) dot H */
 		xor_block(y, tmp);
@@ -161,16 +203,16 @@ static void ghash(const uint8_t *h, const uint8_t *x, size_t xlen, uint8_t *y)
 		 * multiplication operation for binary Galois (finite) field of
 		 * 2^128 elements */
 		gf_mult(y, h, tmp);
-		os_memcpy(y, tmp, 16);
+		memcpy(y, tmp, 16);
 	}
 	/* Return Y_m */
 }
 
 
-static void aes_gctr(cx_aes_key_t *aes, const uint8_t *icb, const uint8_t *x, size_t xlen, uint8_t *y)
+static void aes_gctr(AES_CONTEXT_T *aes, const uint8_t *icb, const uint8_t *x, size_t xlen, uint8_t *y)
 {
 	size_t i, n, last;
-	uint8_t cb[CX_AES_BLOCK_SIZE], tmp[CX_AES_BLOCK_SIZE];
+	uint8_t cb[AES_BLOCK_SIZE], tmp[AES_BLOCK_SIZE];
 	const uint8_t *xpos = x;
 	uint8_t *ypos = y;
 
@@ -179,21 +221,21 @@ static void aes_gctr(cx_aes_key_t *aes, const uint8_t *icb, const uint8_t *x, si
 
 	n = xlen / 16;
 
-	os_memcpy(cb, icb, CX_AES_BLOCK_SIZE);
+	memcpy(cb, icb, AES_BLOCK_SIZE);
 	/* Full blocks */
 	for (i = 0; i < n; i++) {
 	  /* aes_encrypt(aes, cb, ypos); */
-	  cx_aes(aes, CX_LAST | CX_ENCRYPT | CX_PAD_NONE | CX_CHAIN_ECB, cb, sizeof(cb), ypos, CX_AES_BLOCK_SIZE);
+	  AES(aes, AES_LAST | AES_ENCRYPT | AES_PAD_NONE | AES_CHAIN_ECB, cb, sizeof(cb), ypos, AES_BLOCK_SIZE);
 	  xor_block(ypos, xpos);
-	  xpos += CX_AES_BLOCK_SIZE;
-	  ypos += CX_AES_BLOCK_SIZE;
+	  xpos += AES_BLOCK_SIZE;
+	  ypos += AES_BLOCK_SIZE;
 	  inc32(cb);
 	}
 
 	last = x + xlen - xpos;
 	if (last) {
 	  /* Last, partial block */
-	  cx_aes(aes, CX_LAST | CX_ENCRYPT | CX_PAD_NONE | CX_CHAIN_ECB, cb, sizeof(cb), tmp, sizeof(tmp));
+	  AES(aes, AES_LAST | AES_ENCRYPT | AES_PAD_NONE | AES_CHAIN_ECB, cb, sizeof(cb), tmp, sizeof(tmp));
 	  /* aes_encrypt(aes, cb, tmp); */
 	  for (i = 0; i < last; i++)
 	    *ypos++ = *xpos++ ^ tmp[i];
@@ -201,27 +243,26 @@ static void aes_gctr(cx_aes_key_t *aes, const uint8_t *icb, const uint8_t *x, si
 }
 
 
-static int aes_gcm_init_hash_subkey(const uint8_t *key, size_t key_len, cx_aes_key_t *aes, uint8_t *H)
+static int aes_gcm_init_hash_subkey(const uint8_t *key, size_t key_len, AES_CONTEXT_T *aes, uint8_t *H)
 {
-  int ret;
-
   /* void *aes; */
 
   /* aes = aes_encrypt_init(key, key_len); */
   /* if (aes == NULL) */
   /* 	return NULL; */
-  ret = cx_aes_init_key(key, key_len, aes);
-  if (ret != (int)key_len) {
+  // TODO: remove this comment 
+  /* memset(aes, 0, sizeof(*aes)); */
+  if (!AES_INIT_KEY(key, key_len, aes)) {
     return -1;
   }
 
-  memset(H, 0, CX_AES_BLOCK_SIZE);
-  cx_aes(aes, CX_LAST | CX_ENCRYPT | CX_PAD_NONE | CX_CHAIN_ECB, H, CX_AES_BLOCK_SIZE, H, CX_AES_BLOCK_SIZE);
+  memset(H, 0, AES_BLOCK_SIZE);
+  AES(aes, AES_LAST | AES_ENCRYPT | AES_PAD_NONE | AES_CHAIN_ECB, H, AES_BLOCK_SIZE, H, AES_BLOCK_SIZE);
   /* Generate hash subkey H = AES_K(0^128) */
-  /* os_memset(H, 0, CX_AES_BLOCK_SIZE); */
+  /* memset(H, 0, AES_BLOCK_SIZE); */
   /* aes_encrypt(aes, H, H); */
   /* wpa_hexdump_key(MSG_EXCESSIVE, "Hash subkey H for GHASH", */
-  /* 		H, CX_AES_BLOCK_SIZE); */
+  /* 		H, AES_BLOCK_SIZE); */
   return 0;
 }
 
@@ -232,9 +273,9 @@ static void aes_gcm_prepare_j0(const uint8_t *iv, size_t iv_len, const uint8_t *
 
 	if (iv_len == 12) {
 		/* Prepare block J_0 = IV || 0^31 || 1 [len(IV) = 96] */
-		os_memcpy(J0, iv, iv_len);
-		os_memset(J0 + iv_len, 0, CX_AES_BLOCK_SIZE - iv_len);
-		J0[CX_AES_BLOCK_SIZE - 1] = 0x01;
+		memcpy(J0, iv, iv_len);
+		memset(J0 + iv_len, 0, AES_BLOCK_SIZE - iv_len);
+		J0[AES_BLOCK_SIZE - 1] = 0x01;
 	} else {
 		/*
 		 * s = 128 * ceil(len(IV)/128) - len(IV)
@@ -249,15 +290,15 @@ static void aes_gcm_prepare_j0(const uint8_t *iv, size_t iv_len, const uint8_t *
 }
 
 
-static void aes_gcm_gctr(cx_aes_key_t *aes, const uint8_t *J0, const uint8_t *in, size_t len,
+static void aes_gcm_gctr(AES_CONTEXT_T *aes, const uint8_t *J0, const uint8_t *in, size_t len,
 			 uint8_t *out)
 {
-	uint8_t J0inc[CX_AES_BLOCK_SIZE];
+	uint8_t J0inc[AES_BLOCK_SIZE];
 
 	if (len == 0)
 		return;
 
-	os_memcpy(J0inc, J0, CX_AES_BLOCK_SIZE);
+	memcpy(J0inc, J0, AES_BLOCK_SIZE);
 	inc32(J0inc);
 	aes_gctr(aes, J0inc, in, len, out);
 }
@@ -292,10 +333,11 @@ int aes_gcm_ae(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	       const uint8_t *plain, size_t plain_len,
 	       const uint8_t *aad, size_t aad_len, uint8_t *crypt, uint8_t *tag)
 {
-	uint8_t H[CX_AES_BLOCK_SIZE];
-	uint8_t J0[CX_AES_BLOCK_SIZE];
+	uint8_t H[AES_BLOCK_SIZE];
+	uint8_t J0[AES_BLOCK_SIZE];
 	uint8_t S[16];
-	cx_aes_key_t aes;
+	// TODO remove this comment
+	/* AES_CONTEXT_T aes = {0}; */
 
 	if (iv == NULL || iv_len < 1) {
 	  return -1;
@@ -320,7 +362,8 @@ int aes_gcm_ae(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	/* Return (C, T) */
 
 	/* aes_encrypt_deinit(aes); */
-	memset(&aes, 0, sizeof(aes));
+	// TODO: remove this comment
+	/* memset(&aes, 0, sizeof(aes)); */
 
 	return 0;
 }
@@ -333,10 +376,11 @@ int aes_gcm_ad(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	       const uint8_t *crypt, size_t crypt_len,
 	       const uint8_t *aad, size_t aad_len, const uint8_t *tag, uint8_t *plain)
 {
-	uint8_t H[CX_AES_BLOCK_SIZE];
-	uint8_t J0[CX_AES_BLOCK_SIZE];
+	uint8_t H[AES_BLOCK_SIZE];
+	uint8_t J0[AES_BLOCK_SIZE];
 	uint8_t S[16], T[16];
-	cx_aes_key_t aes;
+	// TODO remove this comment
+	/* AES_CONTEXT_T aes = {0}; */
 
 	if (iv == NULL || iv_len < 1) {
 	  return -1;
@@ -357,7 +401,8 @@ int aes_gcm_ad(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	aes_gctr(&aes, J0, S, sizeof(S), T);
 
 	/* aes_encrypt_deinit(aes); */
-	memset(&aes, 0, sizeof(aes));
+	// TODO remove this comment
+	/* memset(&aes, 0, sizeof(aes)); */
 
 	if (os_memcmp_const(tag, T, 16) != 0) {
 	  return -1;
