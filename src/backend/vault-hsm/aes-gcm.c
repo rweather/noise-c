@@ -12,7 +12,6 @@
 #include <stdint.h>
 #include "aes-gcm.h"
 
-
 #ifdef USE_BOLOS_VAULTAPP_BACKEND
 #include "cx.h"
 #define AES_CONTEXT_T  cx_aes_key_t
@@ -45,6 +44,9 @@
 #define AES_PAD_NONE BLS_PAD_NONE
 #define AES_CHAIN_ECB BLS_CHAIN_ECB
 
+// Found in enclave but not exposed in sdk
+#define MAX_SYMMETRIC_KEY_LEN 32
+
 typedef bls_area_t area_t;
 
 #else
@@ -67,6 +69,21 @@ static int os_memcmp_const(const void *a, const void *b, size_t len)
 
 	return res;
 }
+
+/* fill the aes key with 0 */
+static int aes_wipe_key(AES_CONTEXT_T *aes) {
+#ifdef USE_BOLOS_VAULTHSM_BACKEND
+  const uint8_t zero_key[MAX_SYMMETRIC_KEY_LEN] = {0};
+
+  if (!AES_INIT_KEY(zero_key, MAX_SYMMETRIC_KEY_LEN, aes))
+    return -1;
+  return 0;
+#else /* USE_BOLOS_VAULTHSM_BACKEND */
+  memset(&aes, 0, sizeof(*aes));
+  return 0;
+#endif
+}
+
 
 static void inc32(uint8_t *block)
 {
@@ -250,19 +267,17 @@ static int aes_gcm_init_hash_subkey(const uint8_t *key, size_t key_len, AES_CONT
   /* aes = aes_encrypt_init(key, key_len); */
   /* if (aes == NULL) */
   /* 	return NULL; */
-  // TODO: remove this comment 
-  /* memset(aes, 0, sizeof(*aes)); */
   if (!AES_INIT_KEY(key, key_len, aes)) {
     return -1;
   }
 
-  memset(H, 0, AES_BLOCK_SIZE);
-  AES(aes, AES_LAST | AES_ENCRYPT | AES_PAD_NONE | AES_CHAIN_ECB, H, AES_BLOCK_SIZE, H, AES_BLOCK_SIZE);
   /* Generate hash subkey H = AES_K(0^128) */
   /* memset(H, 0, AES_BLOCK_SIZE); */
   /* aes_encrypt(aes, H, H); */
   /* wpa_hexdump_key(MSG_EXCESSIVE, "Hash subkey H for GHASH", */
   /* 		H, AES_BLOCK_SIZE); */
+  memset(H, 0, AES_BLOCK_SIZE);
+  AES(aes, AES_LAST | AES_ENCRYPT | AES_PAD_NONE | AES_CHAIN_ECB, H, AES_BLOCK_SIZE, H, AES_BLOCK_SIZE);
   return 0;
 }
 
@@ -336,8 +351,6 @@ int aes_gcm_ae(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	uint8_t H[AES_BLOCK_SIZE];
 	uint8_t J0[AES_BLOCK_SIZE];
 	uint8_t S[16];
-	// TODO remove this comment
-	/* AES_CONTEXT_T aes = {0}; */
 
 	if (iv == NULL || iv_len < 1) {
 	  return -1;
@@ -360,12 +373,8 @@ int aes_gcm_ae(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	aes_gctr(&aes, J0, S, sizeof(S), tag);
 
 	/* Return (C, T) */
-
 	/* aes_encrypt_deinit(aes); */
-	// TODO: remove this comment
-	/* memset(&aes, 0, sizeof(aes)); */
-
-	return 0;
+	return aes_wipe_key(&aes);
 }
 
 
@@ -379,8 +388,6 @@ int aes_gcm_ad(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	uint8_t H[AES_BLOCK_SIZE];
 	uint8_t J0[AES_BLOCK_SIZE];
 	uint8_t S[16], T[16];
-	// TODO remove this comment
-	/* AES_CONTEXT_T aes = {0}; */
 
 	if (iv == NULL || iv_len < 1) {
 	  return -1;
@@ -401,8 +408,9 @@ int aes_gcm_ad(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	aes_gctr(&aes, J0, S, sizeof(S), T);
 
 	/* aes_encrypt_deinit(aes); */
-	// TODO remove this comment
-	/* memset(&aes, 0, sizeof(aes)); */
+	if (aes_wipe_key(&aes) != 0) {
+	  return -1;
+	}
 
 	if (os_memcmp_const(tag, T, 16) != 0) {
 	  return -1;
