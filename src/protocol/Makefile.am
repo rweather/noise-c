@@ -30,6 +30,7 @@ endif
 if USE_BOLOS_VAULTHSM_BACKEND
 AM_CFLAGS += -DUSE_BOLOS_VAULTHSM_BACKEND=1
 AM_CFLAGS += $(vaulthsm_CFLAGS)
+AM_CFLAGS += -I$(top_srcdir)/src/backend/vault-common
 AM_CFLAGS += -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/../api
 AM_CFLAGS += -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/crypto_core/ed25519/ref10/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/crypto_sign/ed25519/ref10/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/../../api -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/include/sodium/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium/libsodium-1.0.16/crypto_generichash/blake2b/ref/ -I/home/pcollet/work/bolos/bolos-enclave-sdk/moxie-runtime/embedded_sodium
 endif
@@ -81,7 +82,7 @@ else !USE_LIBSODIUM
 if USE_BOLOS_VAULTHSM_BACKEND
 libnoiseprotocol_a_SOURCES += \
 	../backend/vault-hsm/cipher-aesgcm.c \
-	../backend/vault-hsm/aes-gcm.c
+	../backend/vault-common/aes-gcm.c
 else
 libnoiseprotocol_a_SOURCES += \
 	../backend/ref/cipher-aesgcm.c

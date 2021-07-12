@@ -13,11 +13,12 @@
 #include "aes-gcm.h"
 
 #ifdef USE_BOLOS_VAULTAPP_BACKEND
+#include "os.h"
 #include "cx.h"
 #define AES_CONTEXT_T  cx_aes_key_t
 #define AES_BLOCK_SIZE CX_AES_BLOCK_SIZE
 #define AES(key, mode, in, in_len, out, out_len) cx_aes(key, mode, in, in_len, out, out_len)
-#define AES_INIT_KEY(raw_key, key_len, key_context) (cx_aes_init_key(raw_key, key_len, key_context) == key_len)
+#define AES_INIT_KEY(raw_key, key_len, key_context) (cx_aes_init_key(raw_key, key_len, key_context) == (int)key_len)
 
 #define AES_LAST CX_LAST
 #define AES_ENCRYPT CX_ENCRYPT
