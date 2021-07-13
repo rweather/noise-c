@@ -79,6 +79,11 @@ AC_ARG_WITH([openssl],
     [use openssl for crypto @<:@default=check@:>@])],
   [],
   [with_openssl=no])
+AC_ARG_WITH([vaulthsm],
+  [AS_HELP_STRING([--with-vaulthsm],
+    [use vaulthsm for crypto @<:@default=check@:>@])],
+  [],
+  [with_vaulthsm=no])
 
 PKG_PROG_PKG_CONFIG
 AS_IF([test -n "$PKG_CONFIG"], [
@@ -93,10 +98,18 @@ AS_IF([test -n "$PKG_CONFIG"], [
     [no], [HAVE_OPENSSL=0],
     [PKG_CHECK_MODULES_STATIC([openssl], [openssl], [HAVE_OPENSSL=1], [HAVE_OPENSSL=0])])
   AM_CONDITIONAL([USE_OPENSSL], [test "$with_openssl" != no -a "$HAVE_OPENSSL" -eq 1])
+
+  AS_CASE(["$with_vaulthsm"],
+    [yes], [PKG_CHECK_MODULES_STATIC([vaulthsm], [vaulthsm], [HAVE_VAULTHSM=1])],
+    [no], [HAVE_VAULTHSM=0],
+    [PKG_CHECK_MODULES_STATIC([vaulthsm], [vaulthsm], [HAVE_VAULTHSM=1], [HAVE_VAULTHSM=0])])
+  AM_CONDITIONAL([USE_BOLOS_VAULTHSM_BACKEND], [test "$with_vaulthsm" != no -a "$HAVE_VAULTHSM" -eq 1])
+
 ], [
   AC_MSG_WARN([Can't find pkg-config. Using built-in reference crypto backend.])
   AM_CONDITIONAL([USE_LIBSODIUM],[false])
   AM_CONDITIONAL([USE_OPENSSL],[false])
+  AM_CONDITIONAL([USE_BOLOS_VAULTHSM_BACKEND],[false])
 ])
 
 AC_ARG_ENABLE(asan, AC_HELP_STRING([--enable-asan],
@@ -115,13 +128,6 @@ AC_ARG_ENABLE(ubsan, AC_HELP_STRING([--enable-ubsan],
 	fi
 ])
 
-AC_ARG_WITH([vaulthsm],
-  [AS_HELP_STRING([--with-vaulthsm],
-    [use vaulthsm for crypto @<:@default=check@:>@])],
-  [],
-  [with_vaulthsm=no])
-
-AM_CONDITIONAL([USE_BOLOS_VAULTHSM_BACKEND], [test "$with_vaulthsm" != no])
 
 AS_IF([test "$with_vaulthsm" != no], [
   AC_DEFINE(LEDGER_VAULTHSM)
