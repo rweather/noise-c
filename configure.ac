@@ -8,6 +8,7 @@ AC_PROG_CC_STDC
 AC_PROG_RANLIB
 AC_PROG_LEX
 AC_PROG_YACC
+AM_PROG_AR
 AC_PATH_PROG(DOXYGEN, doxygen)
 
 dnl Determine the default Ed448-Goldilocks architecture to use.
