@@ -10,6 +10,10 @@
 
 #include "arch_config.h"
 
+#include <stdint.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <inttypes.h>
 
 #ifndef __APPLE__
 #if defined(__WIN32__) || defined(WIN32)
@@ -29,11 +33,6 @@
 #include <endian.h>
 #endif
 #endif
-
-#include <stdint.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <inttypes.h>
 
 #if defined(__ARM_NEON__)
 #include <arm_neon.h>
