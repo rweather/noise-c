@@ -71,6 +71,8 @@ libnoiseprotocol_a_SOURCES = \
 
 if USE_OPENSSL
 libnoiseprotocol_a_SOURCES += \
+	../backend/ref/hash-sha256.c \
+	../backend/ref/hash-sha512.c \
 	../backend/openssl/cipher-aesgcm.c
 else !USE_OPENSSL
 if USE_LIBSODIUM
@@ -80,9 +82,13 @@ else !USE_LIBSODIUM
 if USE_BOLOS_VAULTHSM_BACKEND
 libnoiseprotocol_a_SOURCES += \
 	../backend/vault-hsm/cipher-aesgcm.c \
-	../backend/vault-common/aes-gcm.c
+	../backend/vault-common/aes-gcm.c \
+	../backend/vault-hsm/hash-sha256.c \
+	../backend/vault-hsm/hash-sha512.c
 else
 libnoiseprotocol_a_SOURCES += \
+	../backend/ref/hash-sha256.c \
+	../backend/ref/hash-sha512.c \
 	../backend/ref/cipher-aesgcm.c
 endif
 endif
@@ -104,8 +110,6 @@ libnoiseprotocol_a_SOURCES += \
 	../backend/ref/cipher-chachapoly.c \
 	../backend/ref/dh-curve25519.c \
 	../backend/ref/hash-blake2b.c \
-	../backend/ref/hash-sha256.c \
-	../backend/ref/hash-sha512.c \
 	../backend/ref/sign-ed25519.c \
 	../crypto/aes/rijndael-alg-fst.c \
 	../crypto/blake2/blake2b.c \

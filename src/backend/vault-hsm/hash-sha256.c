@@ -20,32 +20,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#include <bolos.h>
 #include "internal.h"
-#include "crypto/sha2/sha256.h"
 
 typedef struct
 {
     struct NoiseHashState_s parent;
-    sha256_context_t sha256;
+    bls_sha256_t sha256;
 
 } NoiseSHA256State;
 
 static void noise_sha256_reset(NoiseHashState *state)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
-    sha256_reset(&(st->sha256));
+    bls_sha256_init(&(st->sha256));
 }
 
 static void noise_sha256_update(NoiseHashState *state, const uint8_t *data, size_t len)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
-    sha256_update(&(st->sha256), data, len);
+    bls_hash(&(st->sha256.header), 0, data, len, NULL);
 }
 
 static void noise_sha256_finalize(NoiseHashState *state, uint8_t *hash)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
-    sha256_finish(&(st->sha256), hash);
+    /* bls_hash requires a valid input buffer even with len=0. Here we use *st */
+    bls_hash(&(st->sha256.header), BLS_LAST, st, 0, hash);
 }
 
 NoiseHashState *noise_sha256_new(void)

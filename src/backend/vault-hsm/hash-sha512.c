@@ -20,32 +20,33 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
+#include <bolos.h>
 #include "internal.h"
-#include "crypto/sha2/sha512.h"
 
 typedef struct
 {
     struct NoiseHashState_s parent;
-    sha512_context_t sha512;
+    bls_sha256_t sha512;
 
 } NoiseSHA512State;
 
 static void noise_sha512_reset(NoiseHashState *state)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
-    sha512_reset(&(st->sha512));
+    bls_sha512_init(&(st->sha512));
 }
 
 static void noise_sha512_update(NoiseHashState *state, const uint8_t *data, size_t len)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
-    sha512_update(&(st->sha512), data, len);
+    bls_hash(&(st->sha512.header), 0, data, len, NULL);
 }
 
 static void noise_sha512_finalize(NoiseHashState *state, uint8_t *hash)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
-    sha512_finish(&(st->sha512), hash);
+    /* bls_hash requires a valid input buffer even with len=0. Here we use *st */
+    bls_hash(&(st->sha512.header), BLS_LAST, st, 0, hash);
 }
 
 NoiseHashState *noise_sha512_new(void)
