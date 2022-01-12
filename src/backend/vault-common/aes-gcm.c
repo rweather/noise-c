@@ -80,7 +80,7 @@ static int aes_wipe_key(AES_CONTEXT_T *aes) {
     return -1;
   return 0;
 #else /* USE_BOLOS_VAULTHSM_BACKEND */
-  memset(&aes, 0, sizeof(*aes));
+  memset(aes, 0, sizeof(*aes));
   return 0;
 #endif
 }
@@ -397,6 +397,7 @@ int aes_gcm_ad(const uint8_t *key, size_t key_len, const uint8_t *iv, size_t iv_
 	if (aes_gcm_init_hash_subkey(key, key_len, &aes, H) < 0) {
 	  return -1;
 	}
+
 
 	aes_gcm_prepare_j0(iv, iv_len, H, J0);
 
