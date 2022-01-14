@@ -81,7 +81,7 @@ static int noise_curve25519_set_keypair
 
   memcpy(&temp, st, sizeof(temp));
   noise_curve25519_set_keypair_private((NoiseDHState *)(&temp), private_key);
-  equal = noise_is_equal(temp.public_key, public_key, sizeof(public_key));
+  equal = noise_is_equal(temp.public_key, public_key, sizeof(temp.public_key));
 
   memcpy(st->private_key, private_key, sizeof(st->private_key));
   memcpy(st->public_key, public_key, sizeof(st->public_key));
