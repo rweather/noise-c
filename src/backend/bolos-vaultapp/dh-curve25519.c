@@ -155,7 +155,7 @@ static int noise_curve25519_calculate
   be2le(tmp + 1, 32);
 
   memcpy(shared_key, tmp + 1, 32);
-
+  explicit_bzero(tmp, sizeof(tmp));
   return NOISE_ERROR_NONE;
 }
 
