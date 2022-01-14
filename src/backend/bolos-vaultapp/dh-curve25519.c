@@ -41,7 +41,7 @@ typedef struct
 {
   struct NoiseDHState_s parent;
   uint8_t private_key[32];
-  uint8_t public_key[sizeof(C_Curve25519_G)];
+  uint8_t public_key[32];
 } NoiseCurve25519State;
 
 static void be2le(uint8_t *v, size_t len)
@@ -114,7 +114,7 @@ static int noise_curve25519_set_keypair_private
 
   be2le(tmp_public + 1, sizeof(tmp_public) - 1);
 
-  memcpy(st->public_key, tmp_public + 1, sizeof(st->public_key));
+  memcpy(st->public_key, tmp_public + 1, 32);
 
   explicit_bzero(tmp_private, sizeof(tmp_private));
   return NOISE_ERROR_NONE;
