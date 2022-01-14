@@ -24,7 +24,7 @@
 #include "internal.h"
 
 #if USE_BOLOS_VAULTAPP_BACKEND
-NoiseCipherState *noise_aesgcm_new_bolos(void);
+NoiseCipherState *noise_aesgcm_new_vaultapp(void);
 #elif USE_BOLOS_VAULTHSM_BACKEND
 NoiseCipherState *noise_aesgcm_new_vaulthsm(void);
 #else
@@ -49,7 +49,7 @@ NoiseCipherState *noise_aesgcm_new(void)
     NoiseCipherState *state = 0;
 
 #if USE_BOLOS_VAULTAPP_BACKEND
-    state = noise_aesgcm_new_bolos();
+    state = noise_aesgcm_new_vaultapp();
 #elif USE_BOLOS_VAULTHSM_BACKEND
     state = noise_aesgcm_new_vaulthsm();
 #else

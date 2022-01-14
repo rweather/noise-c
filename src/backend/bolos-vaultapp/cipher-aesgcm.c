@@ -128,7 +128,7 @@ static int noise_aesgcm_decrypt
     return ret;
 }
 
-NoiseCipherState *noise_aesgcm_new_bolos(void)
+NoiseCipherState *noise_aesgcm_new_vaultapp(void)
 {
     NoiseAESGCMState *state = noise_new(NoiseAESGCMState);
     if (!state)
@@ -136,7 +136,7 @@ NoiseCipherState *noise_aesgcm_new_bolos(void)
     state->parent.cipher_id = NOISE_CIPHER_AESGCM;
     state->parent.key_len = 32;
     state->parent.mac_len = 16;
-    state->parent.create = noise_aesgcm_new_bolos;
+    state->parent.create = noise_aesgcm_new_vaultapp;
     state->parent.init_key = noise_aesgcm_init_key;
     state->parent.encrypt = noise_aesgcm_encrypt;
     state->parent.decrypt = noise_aesgcm_decrypt;
