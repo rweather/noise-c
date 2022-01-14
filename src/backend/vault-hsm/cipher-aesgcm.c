@@ -79,6 +79,7 @@ static int noise_aesgcm_encrypt
 {
     NoiseAESGCMState *st = (NoiseAESGCMState *)state;
     uint8_t *tmp = NULL;
+    int ret = NOISE_ERROR_NONE;
 
     if (len > 0) {
         tmp = malloc(len);
@@ -87,17 +88,17 @@ static int noise_aesgcm_encrypt
         }
         memcpy(tmp, data, len);
     }
-    
+
     noise_aesgcm_setup_iv(st);
     if (aes_gcm_ae(st->k, st->k_len, st->iv, st->iv_len, tmp, len, ad, ad_len,
     		   data /* cipher */, data + len /* tag */) < 0) {
 
-      free(tmp);
-      return NOISE_ERROR_MAC_FAILURE;
+      ret = NOISE_ERROR_MAC_FAILURE;
     }
 
+    explicit_bzero(tmp, len);
     free(tmp);
-    return NOISE_ERROR_NONE;
+    return ret;
 }
 
 static int noise_aesgcm_decrypt
@@ -106,6 +107,7 @@ static int noise_aesgcm_decrypt
 {
     NoiseAESGCMState *st = (NoiseAESGCMState *)state;
     uint8_t *tmp = NULL;
+    int ret = NOISE_ERROR_NONE;
 
     if (len > 0) {
         tmp = malloc(len);
@@ -114,16 +116,16 @@ static int noise_aesgcm_decrypt
         }
         memcpy(tmp, data, len);
     }
+
     noise_aesgcm_setup_iv(st);
     if (aes_gcm_ad(st->k, st->k_len, st->iv, st->iv_len, tmp, len, ad, ad_len,
     		   data + len, data) < 0) {
-      free(tmp);
-      return NOISE_ERROR_MAC_FAILURE;
+      ret = NOISE_ERROR_MAC_FAILURE;
     }
 
+    explicit_bzero(tmp, len);
     free(tmp);
-
-    return NOISE_ERROR_NONE;
+    return ret;
 }
 
 NoiseCipherState *noise_aesgcm_new_vaulthsm(void)
