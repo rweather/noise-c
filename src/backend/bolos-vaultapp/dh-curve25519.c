@@ -67,9 +67,7 @@ static int noise_curve25519_generate_keypair
   NoiseCurve25519State *st = (NoiseCurve25519State *)state;
 
   noise_rand_bytes(st->private_key, sizeof(st->private_key));
-  noise_curve25519_set_keypair_private(state, st->private_key);
-
-  return NOISE_ERROR_NONE;
+  return noise_curve25519_set_keypair_private(state, st->private_key);
 }
 
 static int noise_curve25519_set_keypair
@@ -108,11 +106,17 @@ static int noise_curve25519_set_keypair_private
   tmp_private[31] |= 0x40u;
   be2le(tmp_private, 32);
 
-  cx_ecfp_scalar_mult(CX_CURVE_Curve25519, tmp_public, sizeof(tmp_public), tmp_private, sizeof(tmp_private));
+  if (cx_ecfp_scalar_mult(CX_CURVE_Curve25519, tmp_public, sizeof(tmp_public), tmp_private, sizeof(tmp_private)) == 0) {
+      explicit_bzero(st->private_key, 32);
+      explicit_bzero(tmp_private, sizeof(tmp_private));
+      return NOISE_ERROR_INVALID_PRIVATE_KEY;
+  }
 
   be2le(tmp_public + 1, sizeof(tmp_public) - 1);
 
   memcpy(st->public_key, tmp_public + 1, sizeof(st->public_key));
+
+  explicit_bzero(tmp_private, sizeof(tmp_private));
   return NOISE_ERROR_NONE;
 }
 
