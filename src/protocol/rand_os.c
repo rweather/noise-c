@@ -109,6 +109,7 @@ void noise_rand_bytes(void *bytes, size_t size)
     if (bls_rng(bytes, size))
       return;
     fprintf(stderr, "bls_rng failed\n");
+    exit(1);
 #elif defined(LEDGER_VAULTAPP)
     cx_rng(bytes, size);
 #else
