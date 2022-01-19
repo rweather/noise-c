@@ -26,7 +26,7 @@
 typedef struct
 {
     struct NoiseHashState_s parent;
-    bls_sha256_t sha512;
+    bls_sha512_t sha512;
 
 } NoiseSHA512State;
 
@@ -46,7 +46,7 @@ static void noise_sha512_finalize(NoiseHashState *state, uint8_t *hash)
 {
     NoiseSHA512State *st = (NoiseSHA512State *)state;
     /* bls_hash requires a valid input buffer even with len=0. Here we use *st */
-    bls_hash(&(st->sha512.header), BLS_LAST, st, 0, hash);
+    bls_hash(&(st->sha512.header), BLS_LAST, (const uint8_t *)st, 0, hash);
 }
 
 NoiseHashState *noise_sha512_new(void)

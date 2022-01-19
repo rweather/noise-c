@@ -46,7 +46,7 @@ static void noise_sha256_finalize(NoiseHashState *state, uint8_t *hash)
 {
     NoiseSHA256State *st = (NoiseSHA256State *)state;
     /* bls_hash requires a valid input buffer even with len=0. Here we use *st */
-    bls_hash(&(st->sha256.header), BLS_LAST, st, 0, hash);
+    bls_hash(&(st->sha256.header), BLS_LAST, (const uint8_t *)st, 0, hash);
 }
 
 NoiseHashState *noise_sha256_new(void)
