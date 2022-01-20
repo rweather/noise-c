@@ -55,16 +55,7 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce);
 int noise_cipherstate_get_max_key_length(void);
 int noise_cipherstate_get_max_mac_length(void);
 
-uint8_t *noise_cipherstate_get_aesgcm_counter(NoiseCipherState *state);
-uint8_t *noise_cipherstate_get_aesgcm_hash(NoiseCipherState *state);
-uint8_t *noise_cipherstate_get_aesgcm_aes(NoiseCipherState *state);
 
-uint8_t *noise_cipherstate_get_aesgcm_ghash_H(NoiseCipherState *state);
-uint8_t *noise_cipherstate_get_aesgcm_ghash_Y(NoiseCipherState *state);
-uint8_t noise_cipherstate_get_aesgcm_ghash_posn(NoiseCipherState *state);
-
-
-size_t noise_cipherstate_get_size(NoiseCipherState *state);
 size_t noise_cipherstate_get_gcm_state_size(NoiseCipherState *state);
 
 void noise_cipherstate_set_aes_gcm_functions(NoiseCipherState *state);
