@@ -23,8 +23,11 @@
 #include <string.h>
 #include "internal.h"
 
-#include "os.h"
-#include "cx.h"
+#ifdef STAX
+    #include <cx.h>
+#else
+    #include "os.h"
+#endif 
 
 static int noise_curve25519_set_keypair_private(NoiseDHState *state, const uint8_t *private_key);
 

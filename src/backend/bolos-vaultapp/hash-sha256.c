@@ -21,7 +21,12 @@
  */
 
 #include "internal.h"
-#include "os.h"
+
+#ifdef STAX
+    #include <cx.h>
+#else
+    #include "os.h"
+#endif 
 
 /* os.h #define "reset" as "halt", which conflict with the */
 /* parent.reset attribute below  so we redefine "halt" as "reset" */
