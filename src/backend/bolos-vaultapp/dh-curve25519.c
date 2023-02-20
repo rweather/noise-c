@@ -45,23 +45,6 @@ typedef struct
   uint8_t public_key[32];
 } NoiseCurve25519State;
 
-static void be2le(uint8_t *v, size_t len)
-{
-  uint8_t t;
-  int i, j;
-
-  j = len - 1;
-  len /= 2;
-
-  for (i = 0; len > 0; i++, j--, len--) {
-    t = v[i];
-    v[i] = v[j];
-    v[j] = t;
-    i++;
-    j--;
-  }
-}
-
 static int noise_curve25519_generate_keypair
     (NoiseDHState *state, const NoiseDHState *other)
 {
