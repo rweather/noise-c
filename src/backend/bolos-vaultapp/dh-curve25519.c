@@ -110,24 +110,12 @@ static int noise_curve25519_calculate
      const NoiseDHState *public_key_state,
      uint8_t *shared_key)
 {
-  uint8_t tmp[1 + 32];
-  memcpy(tmp + 1, public_key_state->public_key, 32);
-  tmp[31 + 1] &= 0x7fu;
-  be2le(tmp + 1, 32);
-  tmp[0] = 0x02;
+  memcpy(shared_key, public_key_state->public_key, public_key_state->public_key_len);
+  cx_err_t ret = cx_x25519(shared_key, private_key_state->private_key, public_key_state->private_key_len);
+  if (ret != CX_OK) {
+    return NOISE_ERROR_SYSTEM;
+  }
 
-  uint8_t tmp_private[32];
-  memcpy(tmp_private, private_key_state->private_key, 32);
-  tmp_private[0] &= 0xf8u;
-  tmp_private[31] &= 0x7fu;
-  tmp_private[31] |= 0x40u;
-  be2le(tmp_private, 32);
-
-  cx_ecfp_scalar_mult(CX_CURVE_Curve25519, tmp, 33, tmp_private, 32); // Receive little endian
-  be2le(tmp + 1, 32);
-
-  memcpy(shared_key, tmp + 1, 32);
-  explicit_bzero(tmp, sizeof(tmp));
   return NOISE_ERROR_NONE;
 }
 
