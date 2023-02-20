@@ -25,17 +25,15 @@
 
 #ifdef STAX
     #include <cx.h>
+    #include <cx_errors.h>
 #else
     #include "os.h"
-#endif 
+#endif
 
 static int noise_curve25519_set_keypair_private(NoiseDHState *state, const uint8_t *private_key);
 
-// Big endian compressed curve25519 generator point
+// U-coordinate (in little endian) of the generator point of Curve25519
 static uint8_t const C_Curve25519_G[] = {
-  //compressed
-  0x02,
-  //x big endian
   0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
@@ -95,31 +93,15 @@ static int noise_curve25519_set_keypair_private
         (NoiseDHState *state, const uint8_t *private_key)
 {
   NoiseCurve25519State *st = (NoiseCurve25519State *)state;
-  uint8_t tmp_public[sizeof(C_Curve25519_G)];
-  uint8_t tmp_private[32];
 
-  memcpy(st->private_key, private_key, 32);
-  memcpy(tmp_public, C_Curve25519_G, sizeof(C_Curve25519_G)); // little endian
-  //tmp_public[31 + 1] &= 0x7fu;
-  be2le(tmp_public + 1, sizeof(tmp_public) - 1);
+  memcpy(st->private_key, private_key, sizeof(st->private_key));
+  memcpy(st->public_key, C_Curve25519_G, sizeof(st->public_key));
+  cx_err_t ret = cx_x25519(st->public_key, st->private_key, sizeof(st->private_key));
 
-  memcpy(tmp_private, private_key, sizeof(tmp_private));
-  tmp_private[0] &= 0xf8u;
-  tmp_private[31] &= 0x7fu;
-  tmp_private[31] |= 0x40u;
-  be2le(tmp_private, 32);
-
-  if (cx_ecfp_scalar_mult(CX_CURVE_Curve25519, tmp_public, sizeof(tmp_public), tmp_private, sizeof(tmp_private)) == 0) {
-      explicit_bzero(st->private_key, 32);
-      explicit_bzero(tmp_private, sizeof(tmp_private));
-      return NOISE_ERROR_INVALID_PRIVATE_KEY;
+  if (ret != CX_OK) {
+    return NOISE_ERROR_INVALID_PRIVATE_KEY;
   }
 
-  be2le(tmp_public + 1, sizeof(tmp_public) - 1);
-
-  memcpy(st->public_key, tmp_public + 1, 32);
-
-  explicit_bzero(tmp_private, sizeof(tmp_private));
   return NOISE_ERROR_NONE;
 }
 
