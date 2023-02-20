@@ -46,7 +46,7 @@ typedef struct
 } NoiseCurve25519State;
 
 static int noise_curve25519_generate_keypair
-    (NoiseDHState *state, const NoiseDHState *other)
+    (NoiseDHState *state, __attribute__((unused)) const NoiseDHState *other)
 {
   NoiseCurve25519State *st = (NoiseCurve25519State *)state;
 
@@ -89,14 +89,14 @@ static int noise_curve25519_set_keypair_private
 }
 
 static int noise_curve25519_validate_public_key
-        (const NoiseDHState *state, const uint8_t *public_key)
+        (__attribute__((unused)) const NoiseDHState *state, __attribute__((unused)) const uint8_t *public_key)
 {
     /* Nothing to do here yet */
     return NOISE_ERROR_NONE;
 }
 
 static int noise_curve25519_copy
-    (NoiseDHState *state, const NoiseDHState *from, const NoiseDHState *other)
+    (NoiseDHState *state, const NoiseDHState *from, __attribute__((unused)) const NoiseDHState *other)
 {
     NoiseCurve25519State *st = (NoiseCurve25519State *)state;
     const NoiseCurve25519State *from_st = (const NoiseCurve25519State *)from;
