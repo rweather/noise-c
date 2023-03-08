@@ -69,7 +69,8 @@ libnoiseprotocol_a_SOURCES += \
 else !USE_OPENSSL
 if USE_LIBSODIUM
 libnoiseprotocol_a_SOURCES += \
-	../backend/sodium/cipher-aesgcm.c
+	../backend/sodium/cipher-aesgcm.c \
+	../backend/ref/cipher-aesgcm.c
 else
 libnoiseprotocol_a_SOURCES += \
 	../backend/ref/cipher-aesgcm.c
@@ -85,7 +86,9 @@ libnoiseprotocol_a_SOURCES += \
 	../backend/sodium/hash-blake2b.c \
 	../backend/sodium/hash-sha256.c \
 	../backend/sodium/hash-sha512.c \
-	../backend/sodium/sign-ed25519.c
+	../backend/sodium/sign-ed25519.c \
+	../crypto/aes/rijndael-alg-fst.c \
+	../crypto/ghash/ghash.c
 else !USE_LIBSODIUM
 libnoiseprotocol_a_SOURCES += \
 	rand_os.c \

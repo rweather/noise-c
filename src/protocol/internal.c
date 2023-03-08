@@ -23,7 +23,7 @@
 
 #include "internal.h"
 
-#if USE_SODIUM
+#if USE_LIBSODIUM
 NoiseCipherState *noise_aesgcm_new_sodium(void);
 #endif
 #if USE_OPENSSL
@@ -40,7 +40,7 @@ NoiseCipherState *noise_aesgcm_new_ref(void);
 NoiseCipherState *noise_aesgcm_new(void)
 {
     NoiseCipherState *state = 0;
-#if USE_SODIUM
+#if USE_LIBSODIUM
     if (crypto_aead_aes256gcm_is_available())
         state = noise_aesgcm_new_sodium();
 #endif
