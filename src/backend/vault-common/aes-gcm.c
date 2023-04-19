@@ -25,8 +25,7 @@
 #define AES_PAD_NONE CX_PAD_NONE
 #define AES_CHAIN_ECB CX_CHAIN_ECB
 
-#define memcpy os_memcpy
-#define memset os_memset
+#define memcpy memmove
 
 #elif USE_BOLOS_VAULTHSM_BACKEND
 #include <bolos.h>
