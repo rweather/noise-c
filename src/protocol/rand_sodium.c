@@ -21,7 +21,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#if USE_LIBSODIUM
+#ifdef USE_LIBSODIUM
 #include <sodium.h>
 
 /**
