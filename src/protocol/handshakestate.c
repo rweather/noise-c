@@ -52,13 +52,13 @@
  *
  * \param flags The flags from the handshake pattern.
  * \param prefix_id The prefix identifier from the protocol name.
- * \param role The role, either initiator or responder.
+ * \param role (UNUSED) The role, either initiator or responder.
  * \param is_fallback Non-zero if we are processing a fallback pattern.
  *
  * \return The key requirements for the handshake pattern.
  */
 static int noise_handshakestate_requirements
-    (NoisePatternFlags_t flags, int prefix_id, int role, int is_fallback)
+    (NoisePatternFlags_t flags, int prefix_id, __attribute__((unused)) int role, int is_fallback)
 {
     int requirements = 0;
     if (flags & NOISE_PAT_FLAG_LOCAL_STATIC) {
