@@ -25,8 +25,6 @@
 #define AES_PAD_NONE CX_PAD_NONE
 #define AES_CHAIN_ECB CX_CHAIN_ECB
 
-#define memcpy memmove
-
 #elif USE_BOLOS_VAULTHSM_BACKEND
 #include <bolos.h>
 #define AES_CONTEXT_T bls_aes_key_t
