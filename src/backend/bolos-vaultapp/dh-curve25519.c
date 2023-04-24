@@ -72,6 +72,14 @@ static int noise_curve25519_set_keypair
   return NOISE_ERROR_INVALID_PUBLIC_KEY & (equal - 1);
 }
 
+
+#define SWAP_XOR(a, b) (((a) ^= (b)), ((b) ^= (a)), ((a) ^= (b)))
+static void reverse_buffer(uint8_t *buf, uint16_t len) {
+    for (uint16_t i = 0; i < len / 2; i++) {
+        SWAP_XOR(buf[i], buf[len - i - 1]);
+    }
+}
+
 static int noise_curve25519_set_keypair_private
         (NoiseDHState *state, const uint8_t *private_key)
 {
@@ -84,6 +92,9 @@ static int noise_curve25519_set_keypair_private
   if (ret != CX_OK) {
     return NOISE_ERROR_INVALID_PRIVATE_KEY;
   }
+
+  // Set it in little endian
+  reverse_buffer(st->public_key, 32);
 
   return NOISE_ERROR_NONE;
 }
@@ -115,6 +126,9 @@ static int noise_curve25519_calculate
   if (ret != CX_OK) {
     return NOISE_ERROR_SYSTEM;
   }
+
+  // Set it in little endian
+  reverse_buffer(shared_key, 32);
 
   return NOISE_ERROR_NONE;
 }
