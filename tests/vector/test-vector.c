@@ -22,7 +22,7 @@
 
 #include <noise/protocol.h>
 #include "json-reader.h"
-#include <setjmp.h>
+// #include <setjmp.h>
 #include <stdlib.h>
 #include <unistd.h>
 
