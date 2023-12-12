@@ -80,6 +80,7 @@ endif
 if USE_LIBSODIUM
 libnoiseprotocol_a_SOURCES += \
 	rand_sodium.c \
+	../crypto/ghash/ghash.c \
 	../backend/sodium/cipher-aesgcm.c \
 	../backend/sodium/cipher-chachapoly.c \
 	../backend/sodium/dh-curve25519.c \
