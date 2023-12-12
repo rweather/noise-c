@@ -80,6 +80,9 @@ int main(int argc, char *argv[])
     pub_key = (uint8_t *)malloc(pub_key_len);
     if (!priv_key || !pub_key) {
         fprintf(stderr, "Out of memory\n");
+        noise_free(priv_key, priv_key_len);
+        noise_free(pub_key, pub_key_len);
+        noise_dhstate_free(dh);
         return 1;
     }
     err = noise_dhstate_get_keypair
