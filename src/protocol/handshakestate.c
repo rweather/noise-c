@@ -1779,4 +1779,99 @@ int noise_handshakestate_get_handshake_hash
     return NOISE_ERROR_NONE;
 }
 
+
+int noise_handshakestate_get_action_pattern
+(const NoiseHandshakeState *state, char *pattern, size_t max_len)
+{
+    uint8_t token = 0;
+    int err = NOISE_ERROR_NONE;
+    int p = 0;
+    int t = 0;
+    
+    for (;;) {
+        token = *(state->tokens + t);
+        if (token == NOISE_TOKEN_END) {
+            break;
+        } else if (token == NOISE_TOKEN_FLIP_DIR) {
+            break;
+        }
+        if (p != 0) {
+            if (max_len - p > 1) {
+                pattern[p++] = ',';
+            }
+        }
+        
+        /* Process the token */
+        switch (token) {
+            case NOISE_TOKEN_E:
+                if (max_len - p > 1) {
+                    pattern[p++] = 'e';
+                }
+                break;
+            case NOISE_TOKEN_S:
+                if (max_len - p > 1) {
+                    pattern[p++] = 's';
+                }
+                break;
+            case NOISE_TOKEN_EE:
+                if (max_len - p > 1) {
+                    pattern[p++] = 'e';
+                }
+                if (max_len - p > 1) {
+                    pattern[p++] = 'e';
+                }
+                break;
+            case NOISE_TOKEN_ES:
+                if (max_len - p > 1) {
+                    pattern[p++] = 'e';
+                }
+                if (max_len - p > 1) {
+                    pattern[p++] = 's';
+                }
+                break;
+            case NOISE_TOKEN_SE:
+                if (max_len - p > 1) {
+                    pattern[p++] = 's';
+                }
+                if (max_len - p > 1) {
+                    pattern[p++] = 'e';
+                }
+                break;
+            case NOISE_TOKEN_SS:
+                if (max_len - p > 1) {
+                    pattern[p++] = 's';
+                }
+                if (max_len - p > 1) {
+                    pattern[p++] = 's';
+                }
+                break;
+            case NOISE_TOKEN_F:
+                if (max_len - p > 1) {
+                    pattern[p++] = 'f';
+                }
+                break;
+            case NOISE_TOKEN_FF:
+                if (max_len - p > 1) {
+                    pattern[p++] = 'f';
+                }
+                if (max_len - p > 1) {
+                    pattern[p++] = 'f';
+                }
+                break;
+            default:
+                err = NOISE_ERROR_INVALID_STATE;
+                break;
+        }
+        if (err != NOISE_ERROR_NONE) {
+            return err;
+        }
+        t++;
+    }
+
+    if (max_len - p > 0) {
+        pattern[p++] = '\0';
+    }
+    return err;
+}
+
 /**@}*/
