@@ -279,12 +279,12 @@ be provided via options:
 \code
 echo-client --client-private-key=client_key_448 \
             --server-public-key=server_key_448.pub \
-            Noise_KK_448_ChaChaPoly_BLAKE2b hostname 7000
+            Noise_NN_448_ChaChaPoly_BLAKE2b hostname 7000
 
 echo-client --client-private-key=client_key_448 \
             --server-public-key=server_key_448.pub \
             --psk=pskfile \
-            NoisePSK_KK_448_ChaChaPoly_BLAKE2b hostname 7000
+            NoisePSK_NN_448_ChaChaPoly_BLAKE2b hostname 7000
 \endcode
 
 After performing the handshake, the client reads lines of text from its
