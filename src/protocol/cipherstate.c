@@ -554,4 +554,35 @@ int noise_cipherstate_get_max_mac_length(void)
     return NOISE_MAX_MAC_LEN;
 }
 
+/**
+ * \brief Rekeys the cipherstate as described in Noise protocol spec section 4.2.
+ */
+int noise_cipherstate_rekey(NoiseCipherState* state)
+{
+    int err;
+    uint64_t n;
+    uint8_t new_key[NOISE_MAX_KEY_LEN + NOISE_MAX_MAC_LEN];
+    if (!state)
+        return NOISE_ERROR_INVALID_STATE;
+    if (!state->has_key)
+        return NOISE_ERROR_INVALID_STATE;
+
+    memset(new_key, 0, sizeof(new_key));
+
+    /* we call encrypt with max nonce, then reset to the current value */
+    n = state->n;
+    state->n = 0xFFFFFFFFFFFFFFFFULL;
+
+    /* Encrypt the plaintext and authenticate it */
+    err = (*(state->encrypt))(state, NULL, 0, new_key, state->key_len);
+    state->n = n;
+
+    if (err != NOISE_ERROR_NONE)
+        return err;
+
+    (*(state->init_key))(state, new_key);
+
+    return NOISE_ERROR_NONE;
+}
+
 /**@}*/

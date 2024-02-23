@@ -51,6 +51,7 @@ int noise_cipherstate_decrypt(NoiseCipherState *state, NoiseBuffer *buffer);
 int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce);
 int noise_cipherstate_get_max_key_length(void);
 int noise_cipherstate_get_max_mac_length(void);
+int noise_cipherstate_rekey(NoiseCipherState* state);
 
 #ifdef __cplusplus
 };

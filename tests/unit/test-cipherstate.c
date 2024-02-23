@@ -136,6 +136,10 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
        to encrypt one more block, and then the next request will be rejected */
     compare(noise_cipherstate_set_nonce(state, 0xFFFFFFFFFFFFFFFEULL),
             NOISE_ERROR_NONE);
+    /* Rekey, which should not affect the nonce and should still allow us to
+       encrypt one more block. */
+    compare(noise_cipherstate_rekey(state),
+            NOISE_ERROR_NONE);
     noise_buffer_set_inout(mbuf, buffer, pt_len, sizeof(buffer));
     compare(noise_cipherstate_encrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_NONE);
