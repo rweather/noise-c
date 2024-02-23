@@ -567,8 +567,7 @@ int noise_cipherstate_rekey(NoiseCipherState* state)
     if (!state->has_key)
         return NOISE_ERROR_INVALID_STATE;
 
-    new_key[state->key_len + state->mac_len];
-    memset(new_key, 0, state->key_len + state->mac_len);
+    memset(new_key, 0, sizeof(new_key));
 
     /* we call encrypt with max nonce, then reset to the current value */
     n = state->n;
