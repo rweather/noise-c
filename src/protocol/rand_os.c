@@ -65,8 +65,12 @@
  *
  * \note Not part of the public API.
  */
-void noise_rand_bytes(void *bytes, size_t size)
-{
+void noise_rand_bytes(void *bytes, size_t size) {
+    if (size == 0 || bytes == NULL) {
+        fprintf(stderr, "Invalid size or buffer provided for noise_rand_bytes.  Abort!\n");
+        exit(1);
+    }
+
 #if defined(RANDOM_DEVICE)
     int fd = open(RANDOM_DEVICE, O_RDONLY);
     if (fd >= 0) {
@@ -95,9 +99,10 @@ void noise_rand_bytes(void *bytes, size_t size)
     memset(bytes, 0, size);
     if (CryptAcquireContextW(&provider, 0, 0, PROV_RSA_FULL,
                              CRYPT_VERIFYCONTEXT | CRYPT_SILENT)) {
-        CryptGenRandom(provider, size, bytes);
+        BOOL success = CryptGenRandom(provider, size, bytes);
         CryptReleaseContext(provider, 0);
-        return;
+        if (success)
+            return;
     }
 #endif
     fprintf(stderr, "Do not know how to generate random numbers!  Abort!\n");
