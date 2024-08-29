@@ -535,6 +535,35 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
 }
 
 /**
+ * \brief Gets the nonce value for this cipherstate object.
+ *
+ * \param state The CipherState object.
+ * \param nonce The nonce value to get.
+ *
+ * \return NOISE_ERROR_NONE on success.
+ * \return NOISE_ERROR_INVALID_PARAM if \a state or \a nonce is NULL.
+ * \return NOISE_ERROR_INVALID_STATE if the key has not been set yet.
+ *
+ * \warning This function is intended for testing purposes only.
+ *
+ * \sa noise_cipherstate_init_key()
+ */
+int noise_cipherstate_get_nonce(const NoiseCipherState *state, uint64_t * nonce)
+{
+    /* Bail out if the state or the nonce is NULL */
+    if (!state || !nonce)
+        return NOISE_ERROR_INVALID_PARAM;
+
+    /* If the key hasn't been set yet, we cannot do this */
+    if (!state->has_key)
+        return NOISE_ERROR_INVALID_STATE;
+
+    /* Set the nonce param and return */
+    *nonce = state->n;
+    return NOISE_ERROR_NONE;
+}
+
+/**
  * \brief Gets the maximum key length for the supported algorithms.
  *
  * \sa noise_cipherstate_get_max_mac_length()
