@@ -25,8 +25,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <getopt.h>
+
+#ifdef _WIN32
+  #include <io.h>
+  #include <direct.h>
+  #define chdir _chdir
+#else
+  #include <unistd.h>
+#endif
+
+#ifdef _MSC_VER
+  #include "getopt.h"
+#else
+  #include <getopt.h>
+#endif
 
 #define short_options "k:vf"
 

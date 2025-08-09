@@ -4,9 +4,20 @@
 #include <stdint.h>
 #include "params.h"
 
+//alignment to 32-byte boundaries in memory.
+#ifdef __GNUC__
+typedef struct __attribute__ ((aligned (32))) {
+  uint16_t coeffs[PARAM_N];
+} poly;
+#elif defined(_MSC_VER)
+typedef __declspec(align(32)) struct {
+  uint16_t coeffs[PARAM_N];
+} poly;
+#else
 typedef struct {
   uint16_t coeffs[PARAM_N];
-} poly __attribute__ ((aligned (32)));
+} poly;
+#endif
 
 void poly_uniform(poly *a, const unsigned char *seed);
 void poly_getnoise(poly *r, unsigned char *seed, unsigned char nonce);

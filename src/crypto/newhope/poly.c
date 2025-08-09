@@ -6,6 +6,8 @@
 #include "crypto_stream_chacha20.h"
 #include "batcher.h"
 
+#include <stdlib.h>
+
 void poly_frombytes(poly *r, const unsigned char *a)
 {
   int i;
@@ -64,7 +66,9 @@ static int discardtopoly(poly* a, unsigned char *buf, unsigned int nblocks)
 {
   int r=0;
   unsigned int i;
-  uint16_t x[SHAKE128_RATE*nblocks/2];
+  uint16_t *x = (uint16_t*)malloc(SHAKE128_RATE*nblocks/2 * sizeof(uint16_t));
+  
+  if (!x) return -1; // allocation failed
 
   for(i=0;i<SHAKE128_RATE*nblocks/2;i++)
     x[i] = buf[2*i] | (uint16_t)buf[2*i+1] << 8; //handle endianess
@@ -75,12 +79,16 @@ static int discardtopoly(poly* a, unsigned char *buf, unsigned int nblocks)
   // Check whether we're safe:
   for(i=1008;i<1024;i++)
     r |= 61444 - x[i];
-  if(r >>= 31) return -1;
+  if(r >>= 31) {
+    free(x);
+    return -1;
+  }
 
   // If we are, copy coefficients to polynomial:
   for(i=0;i<PARAM_N;i++)
     a->coeffs[i] = x[i];
   
+  free(x);
   return 0;
 }
 
@@ -88,7 +96,9 @@ void poly_uniform(poly *a, const unsigned char *seed)
 {
   uint64_t state[25];
   unsigned int nblocks=16;
-  uint8_t buf[SHAKE128_RATE*nblocks];
+  uint8_t *buf = (uint8_t*)malloc(SHAKE128_RATE*nblocks);
+  
+  if (!buf) return; // allocation failed
 
   shake128_absorb(state, seed, NEWHOPE_SEEDBYTES);
 
@@ -97,6 +107,8 @@ void poly_uniform(poly *a, const unsigned char *seed)
     shake128_squeezeblocks((unsigned char *) buf, nblocks, state);
   }
   while (discardtopoly(a, buf, nblocks));
+  
+  free(buf);
 }
 
 void poly_getnoise(poly *r, unsigned char *seed, unsigned char nonce)
