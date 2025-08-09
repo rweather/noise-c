@@ -37,20 +37,35 @@
  * that there are no regressions.
  */
 
+#ifdef _MSC_VER
+#pragma pack(push, 1)
+#endif
 
 /**
  * Unaligned big (vector?) register.
  */
 typedef struct {
     big_register_t unaligned;
+#ifdef __GNUC__
 } __attribute__((packed)) unaligned_br_t;
+#else
+} unaligned_br_t;
+#endif
 
 /**
  * Unaligned word register, for architectures where that matters.
  */
 typedef struct {
     word_t unaligned;
+#ifdef __GNUC__
 } __attribute__((packed)) unaligned_word_t;
+#else
+} unaligned_word_t;
+#endif
+
+#ifdef _MSC_VER
+#pragma pack(pop)
+#endif
 
 /**
  * @brief Constant-time conditional swap.
@@ -60,11 +75,10 @@ typedef struct {
  * *a and *b must not alias.  Also, they must be at least as aligned
  * as their sizes, if the CPU cares about that sort of thing.
  */
-static __inline__ void
-__attribute__((unused,always_inline))
+static inline void
 constant_time_cond_swap (
-    void *__restrict__ a_,
-    void *__restrict__ b_,
+    void *__restrict a_,
+    void *__restrict b_,
     word_t elem_bytes,
     mask_t doswap
 ) {
@@ -133,10 +147,9 @@ constant_time_cond_swap (
  *
  * The table and output must not alias.
  */
-static __inline__ void
-__attribute__((unused,always_inline))
+static inline void
 constant_time_lookup (
-    void *__restrict__ out_,
+    void *__restrict out_,
     const void *table_,
     word_t elem_bytes,
     word_t n_table,
@@ -189,10 +202,9 @@ constant_time_lookup (
  *
  * The input and output must be at least as aligned as elem_bytes.
  */
-static __inline__ void
-__attribute__((unused,always_inline))
+static inline void
 constant_time_mask (
-    void *__restrict__ a_,
+    void *__restrict a_,
     const void *b_,
     word_t elem_bytes,
     mask_t mask
@@ -239,8 +251,7 @@ constant_time_mask (
  * Note that the output is not __restrict__, but if it overlaps either
  * input, it must be equal and not partially overlap.
  */
-static __inline__ void
-__attribute__((unused,always_inline))
+static inline void
 constant_time_select (
     void *a_,
     const void *bTrue_,

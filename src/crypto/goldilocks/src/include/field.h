@@ -14,6 +14,12 @@
 #include "f_field.h"
 #include <string.h>
 
+#ifdef _MSC_VER
+    #define FORCE_INLINE __forceinline
+#else
+    #define FORCE_INLINE __attribute__((unused,always_inline))
+#endif
+
 typedef struct field_t field_a_t[1];
 #define field_a_restrict_t struct field_t *__restrict__
 
@@ -55,7 +61,7 @@ extern const uint8_t FIELD_MODULUS[FIELD_BYTES];
  * Copy one field element to another.
  */
 static inline void
-__attribute__((unused,always_inline))        
+FORCE_INLINE        
 field_copy (
     field_a_restrict_t a,
     const field_a_restrict_t b
@@ -112,8 +118,8 @@ field_eq (
 /**
  * Square x, n times.
  */
-static __inline__ void
-__attribute__((unused,always_inline))
+static inline void
+FORCE_INLINE
 field_sqrn (
     field_a_restrict_t y,
     const field_a_t x,
@@ -136,7 +142,7 @@ field_sqrn (
 }
 
 /* Multiply by signed curve constant */
-static __inline__ void
+static inline void
 field_mulw_scc (
     field_a_restrict_t out,
     const field_a_t a,
@@ -152,7 +158,7 @@ field_mulw_scc (
 }
 
 /* Multiply by signed curve constant and weak reduce if biased */
-static __inline__ void
+static inline void
 field_mulw_scc_wr (
     field_a_restrict_t out,
     const field_a_t a,
@@ -163,7 +169,7 @@ field_mulw_scc_wr (
         field_weak_reduce(out);
 }
 
-static __inline__ void
+static inline void
 field_subx_RAW (
     field_a_t d,
     const field_a_t a,
@@ -174,7 +180,7 @@ field_subx_RAW (
     IF32( field_weak_reduce ( d ) );
 }
 
-static __inline__ void
+static inline void
 field_sub (
     field_a_t d,
     const field_a_t a,
@@ -185,7 +191,7 @@ field_sub (
     field_weak_reduce ( d );
 }
 
-static __inline__ void
+static inline void
 field_add (
     field_a_t d,
     const field_a_t a,
@@ -195,7 +201,7 @@ field_add (
     field_weak_reduce ( d );
 }
 
-static __inline__ void
+static inline void
 field_subw (
     field_a_t d,
     word_t c
@@ -205,7 +211,7 @@ field_subw (
     field_weak_reduce ( d );
 }
 
-static __inline__ void
+static inline void
 field_neg (
     field_a_t d,
     const field_a_t a
@@ -219,7 +225,7 @@ field_neg (
  * Negate a in place if doNegate.
  */
 static inline void
-__attribute__((unused,always_inline)) 
+FORCE_INLINE 
 field_cond_neg (
     field_a_t a,
     mask_t doNegate

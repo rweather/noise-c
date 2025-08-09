@@ -25,8 +25,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#ifdef _WIN32
+#include <io.h>
+#include <direct.h>
+#else
 #include <unistd.h>
+#endif
+
+#ifdef _MSC_VER
+#include "getopt.h"
+#else
 #include <getopt.h>
+#endif
 
 #define short_options "c:s:p:gvf"
 

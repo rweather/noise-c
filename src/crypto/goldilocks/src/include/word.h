@@ -10,9 +10,8 @@
 
 #include "arch_config.h"
 
-
 #ifndef __APPLE__
-#if defined(__WIN32__) || defined(WIN32)
+#if defined(__WIN32__) || defined(WIN32) || defined(_MSC_VER)
 #ifndef __BIG_ENDIAN
 #define __BIG_ENDIAN 4321
 #endif
@@ -44,14 +43,22 @@
 #if (WORD_BITS == 64)
 typedef uint32_t hword_t;
 typedef uint64_t word_t;
+#if defined(_MSC_VER)
+typedef struct { uint64_t low, high; } dword_t;
+typedef struct { int64_t low; int64_t high; } dsword_t;
+#elif defined(__GNUC__) || defined(__clang__)
 typedef __uint128_t dword_t;
+typedef __int128_t dsword_t;
+#else
+typedef struct { uint64_t low, high; } dword_t;
+typedef struct { int64_t low; int64_t high; } dsword_t;
+#endif
 typedef int32_t hsword_t;
 typedef int64_t sword_t;
-typedef __int128_t dsword_t;
 #define PRIxWORD PRIx64
 #define PRIxWORDfull "%016" PRIx64
 #define PRIxWORD56   "%014" PRIx64
-#define PRIxWORD60   "%015" PRIx60
+#define PRIxWORD60   "%015" PRIx64
 #define U64LE(x) x##ull
 #define U58LE(x) x##ull
 #define U56LE(x) x##ull
@@ -81,9 +88,8 @@ typedef int64_t dsword_t;
 #define WORDS_FOR_BITS(_x) (DIV_CEIL((_x),WORD_BITS))
 
 typedef word_t mask_t;
-static const mask_t MASK_FAILURE = 0, MASK_SUCCESS = -(mask_t)1;
-
-
+static const mask_t MASK_FAILURE = 0;
+static const mask_t MASK_SUCCESS = (mask_t)-1;
 
 #ifdef __ARM_NEON__
 typedef uint32x4_t vecmask_t;
@@ -99,6 +105,18 @@ typedef int32_t  int32x2_t __attribute__((ext_vector_type(2)));
 typedef uint32_t uint32x8_t __attribute__((ext_vector_type(8)));
 typedef int32_t  int32x8_t __attribute__((ext_vector_type(8)));
 typedef word_t vecmask_t __attribute__((ext_vector_type(4)));
+#elif defined(_MSC_VER)
+typedef struct { uint64_t v[2]; } uint64x2_t;
+typedef struct { int64_t v[2]; } int64x2_t;
+typedef struct { uint64_t v[4]; } uint64x4_t;
+typedef struct { int64_t v[4]; } int64x4_t;
+typedef struct { uint32_t v[4]; } uint32x4_t;
+typedef struct { int32_t v[4]; } int32x4_t;
+typedef struct { uint32_t v[2]; } uint32x2_t;
+typedef struct { int32_t v[2]; } int32x2_t;
+typedef struct { uint32_t v[8]; } uint32x8_t;
+typedef struct { int32_t v[8]; } int32x8_t;
+typedef struct { word_t v[4]; } vecmask_t;
 #else /* GCC-cleanliness */
 typedef uint64_t uint64x2_t __attribute__((vector_size(16)));
 typedef int64_t  int64x2_t __attribute__((vector_size(16)));
@@ -114,59 +132,89 @@ typedef word_t vecmask_t __attribute__((vector_size(32)));
 #endif
 
 #if __AVX2__
+    #ifdef _MSC_VER
+    #define VECTOR_ALIGNED __declspec(align(32))
+    #else
     #define VECTOR_ALIGNED __attribute__((aligned(32)))
+    #endif
     typedef uint32x8_t big_register_t;
     typedef uint64x4_t uint64xn_t;
     typedef uint32x8_t uint32xn_t;
 
-    static __inline__ big_register_t
+    static inline big_register_t
     br_set_to_mask(mask_t x) {
         uint32_t y = (uint32_t)x;
-        big_register_t ret = {y,y,y,y,y,y,y,y};
+        big_register_t ret = {{y,y,y,y,y,y,y,y}};
         return ret;
     }
 #elif __SSE2__
+    #ifdef _MSC_VER
+    #define VECTOR_ALIGNED __declspec(align(16))
+    #else
     #define VECTOR_ALIGNED __attribute__((aligned(16)))
+    #endif
     typedef uint32x4_t big_register_t;
     typedef uint64x2_t uint64xn_t;
     typedef uint32x4_t uint32xn_t;
 
-    static __inline__ big_register_t
+    static inline big_register_t
     br_set_to_mask(mask_t x) {
-        uint32_t y = x;
-        big_register_t ret = {y,y,y,y};
+        uint32_t y = (uint32_t)x;
+        big_register_t ret = {{y,y,y,y}};
         return ret;
     }
 #elif __ARM_NEON__
+    #ifdef _MSC_VER
+    #define VECTOR_ALIGNED __declspec(align(16))
+    #else
     #define VECTOR_ALIGNED __attribute__((aligned(16)))
+    #endif
     typedef uint32x4_t big_register_t;
     typedef uint64x2_t uint64xn_t;
     typedef uint32x4_t uint32xn_t;
-    static __inline__ big_register_t
+    static inline big_register_t
     br_set_to_mask(mask_t x) {
         return vdupq_n_u32(x);
     }
 #elif _WIN64 || __amd64__ || __X86_64__ || __aarch64__
+    #ifdef _MSC_VER
+    #define VECTOR_ALIGNED __declspec(align(8))
+    #else
     #define VECTOR_ALIGNED __attribute__((aligned(8)))
+    #endif
     typedef uint64_t big_register_t, uint64xn_t;
-
     typedef uint32_t uint32xn_t;
-    static __inline__ big_register_t
+    static inline big_register_t
     br_set_to_mask(mask_t x) {
         return (big_register_t)x;
     }
 #else
+    #ifdef _MSC_VER
+    #define VECTOR_ALIGNED __declspec(align(4))
+    #else
     #define VECTOR_ALIGNED __attribute__((aligned(4)))
+    #endif
     typedef uint64_t uint64xn_t;
     typedef uint32_t uint32xn_t;
     typedef uint32_t big_register_t;
 
-    static __inline__ big_register_t
+    static inline big_register_t
     br_set_to_mask(mask_t x) {
         return (big_register_t)x;
     }
 #endif
 
+#ifdef _MSC_VER
+#pragma pack(push, 1)
+typedef struct {
+    uint64xn_t unaligned;
+} unaligned_uint64xn_t;
+
+typedef struct {
+    uint32xn_t unaligned;
+} unaligned_uint32xn_t;
+#pragma pack(pop)
+#else
 typedef struct {
     uint64xn_t unaligned;
 } __attribute__((packed)) unaligned_uint64xn_t;
@@ -174,41 +222,59 @@ typedef struct {
 typedef struct {
     uint32xn_t unaligned;
 } __attribute__((packed)) unaligned_uint32xn_t;
+#endif
     
 /**
  * Return -1 if x==0, and 0 otherwise.
  */
-static __inline__ mask_t
-__attribute__((always_inline,unused))
+static inline mask_t
 word_is_zero(word_t x) {
+#if defined(_MSC_VER) && (WORD_BITS == 64)
+    dword_t dx = {x, 0}; // create struct with low=x, high=0
+    // for struct version, we need to manually implement the subtraction and shift
+    if (dx.low == 0) 
+    {
+        return (mask_t)-1; // all bits set for zero input
+    } else 
+    {
+        return (mask_t)0;   // all bits clear for non-zero input
+    }
+#else
     return (mask_t)((((dword_t)(x)) - 1)>>WORD_BITS);
+#endif
 }
 
 #if __AVX2__
-static __inline__ big_register_t
+static inline big_register_t
 br_is_zero(big_register_t x) {
     return (big_register_t)(x == br_set_to_mask(0));
 }
 #elif __SSE2__
-static __inline__ big_register_t
+static inline big_register_t
 br_is_zero(big_register_t x) {
     return (big_register_t)_mm_cmpeq_epi32((__m128i)x, _mm_setzero_si128());
-    //return (big_register_t)(x == br_set_to_mask(0));
 }
 #elif __ARM_NEON__
-static __inline__ big_register_t
+static inline big_register_t
 br_is_zero(big_register_t x) {
     return vceqq_u32(x,x^x);
 }
 #else
-static __inline__ mask_t
+static inline mask_t
 br_is_zero(word_t x) {
-    return (((dword_t)x) - 1)>>WORD_BITS;
+#if defined(_MSC_VER) && (WORD_BITS == 64)
+    // for MSVC 64-bit where dword_t is a struct, we can't cast directly
+    // return -1 if x==0, and 0 otherwise (same logic as word_is_zero)
+    if (x == 0) {
+        return (mask_t)-1; // all bits set for zero input
+    } else {
+        return (mask_t)0;   // all bits clear for non-zero input
+    }
+#else
+    return (mask_t)((((dword_t)x) - 1)>>WORD_BITS);
+#endif
 }
 #endif
-
-
-
 
 #ifdef __APPLE__
 static inline uint64_t
@@ -242,14 +308,18 @@ letoh64 (uint64_t x) { return x; }
 
 #ifdef HAS_MEMSET_S
 #ifdef NEED_MEMSET_S_EXTERN
+#ifdef _MSC_VER
+#include <string.h>
+#else
 extern int memset_s(void *, size_t, int, size_t);
 #endif
-static __inline__ void
+#endif
+static inline void
 really_memset(void *p, char c, size_t s) {
     memset_s(p, s, c, s);
 }
 #else
-static __inline__ void __attribute__((always_inline,unused))
+static inline void
 really_memset(void *p, char c, size_t s) {
     volatile char *pv = (volatile char *)p;
     size_t i;
@@ -268,15 +338,17 @@ really_memset(void *p, char c, size_t s) {
  * @return A suitable pointer, which can be free'd with free(),
  * or NULL if no memory can be allocated.
  */
-static __inline__ void *
-malloc_vector (
-    size_t size
-) __attribute__((always_inline, unused));
+static inline void *
+malloc_vector(size_t size);
 
 void *
 malloc_vector(size_t size) {
     void *out = NULL;
     
+#ifdef _MSC_VER
+    out = _aligned_malloc(size, sizeof(big_register_t));
+    return out;
+#else
     int ret = posix_memalign(&out, sizeof(big_register_t), size);
     
     if (ret) {
@@ -284,6 +356,7 @@ malloc_vector(size_t size) {
     } else {
         return out;
     }
+#endif
 }
 
 #endif /* __WORD_H__ */

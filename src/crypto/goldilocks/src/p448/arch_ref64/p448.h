@@ -10,6 +10,15 @@
 
 #include "word.h"
 
+/* Compiler compatibility macros */
+#ifdef _MSC_VER
+    #define __attribute__(x)
+    #define __inline__ __forceinline
+    #define __restrict__ __restrict
+#elif defined(__GNUC__)
+    #define __restrict__ __restrict__
+#endif
+
 typedef struct p448_t {
   uint64_t limb[8];
 } __attribute__((aligned(32))) p448_t;

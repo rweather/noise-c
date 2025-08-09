@@ -2,14 +2,37 @@ cmake_minimum_required(VERSION 3.10)
 project(noise-c)
 set(CMAKE_C_STANDARD 99)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set(USE_OPENSSL ON)
 
 message(STATUS "Source directory is " ${CMAKE_SOURCE_DIR})
 message(STATUS "Build directory is " ${CMAKE_CURRENT_BINARY_DIR})
+
+
+if(USE_OPENSSL)
+  if (MSVC)
+    set(OPENSSL_ROOT_DIR $ENV{OPENSSL_ROOT_DIR})
+    message(STATUS "OpenSSL root folder from environment, (OPENSSL_ROOT_DIR): ${OPENSSL_ROOT_DIR}")
+  elseif(APPLE)
+    execute_process(COMMAND brew list --versions openssl OUTPUT_VARIABLE brew_version)
+    message(STATUS "OpenSSL version: ${brew_version}")
+    set(OPENSSL_ROOT_DIR "/usr/local/Cellar/openssl@3/3.2.0")
+    set(OPENSSL_SSL_LIBRARY "/usr/local/Cellar/openssl@3/3.2.0/lib/libssl.dylib")
+    set(OPENSSL_CRYPTO_LIBRARY "/usr/local/Cellar/openssl@3/3.2.0/lib/libcrypto.dylib")
+  endif()
+  find_package(OpenSSL REQUIRED)
+  message(STATUS "OpenSSL include: ${OPENSSL_INCLUDE_DIR}")
+  message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
+  include_directories(${OPENSSL_INCLUDE_DIR})
+endif()
+
 
 include_directories(include)
 include_directories(src)
 include_directories(src/protocol)
 include_directories(src/crypto/goldilocks/src/include)
+
+include_directories(src/crypto/goldilocks/src/p448/arch_x86_64)
+include_directories(src/crypto/goldilocks/src/p448)
 
 #//////////////////////////
 # sources 
@@ -114,6 +137,14 @@ set(src_cry ${src_cry} src/crypto/newhope/precomp.c)
 set(src_cry ${src_cry} src/crypto/newhope/error_correction.h)
 set(src_cry ${src_cry} src/crypto/newhope/error_correction.c)
 
+set(src_cry ${src_cry} src/crypto/curve448/curve448.h)
+set(src_cry ${src_cry} src/crypto/curve448/curve448.c)
+set(src_cry ${src_cry} src/crypto/goldilocks/src/p448/arch_ref64/p448.h)
+set(src_cry ${src_cry} src/crypto/goldilocks/src/p448/arch_ref64/p448.c)
+
+set(src_cry ${src_cry} src/crypto/ed25519/ed25519.h)
+set(src_cry ${src_cry} src/crypto/ed25519/ed25519.c)
+set(src_cry ${src_cry} src/crypto/ed25519/ed25519-randombytes.h)
 
 add_library(noise ${src_pro} ${src_ref} ${src_cry})
 
@@ -129,6 +160,7 @@ source_group("crypto" FILES ${src_cry})
 #//////////////////////////
 
 include_directories(examples/echo)
+include_directories(examples/echo/echo-server)
 
 set(src_srv ${src_srv})
 set(src_srv ${src_srv} examples/echo/echo-server/echo-common.c)
@@ -140,9 +172,39 @@ if (MSVC)
 endif()
 add_executable(echo-server ${src_srv}) 
 
-target_link_libraries(echo-server noise)
-if(WIN32)
-  target_link_libraries(echo-server ws2_32 wsock32)
+
+set(src_cli ${src_cli})
+set(src_cli ${src_cli} examples/echo/echo-client/echo-client.c)
+if (MSVC)
+  set(src_cli ${src_cli} examples/echo/getopt.c)
+  set(src_cli ${src_cli} examples/echo/getopt.h)
 endif()
+add_executable(echo-client ${src_cli}) 
+
+
+#//////////////////////////
+# link with libraries
+# lib_dep contains a cascade definition of all the libraries needed to link
+#//////////////////////////
+
+set(lib_dep ${lib_dep})
+set(lib_dep ${lib_dep} noise)
+
+#//////////////////////////
+# OpenSSL
+# libSSH builds on top of OpenSSL 
+#//////////////////////////
+
+if(USE_OPENSSL)
+  set(lib_dep ${lib_dep} ${OPENSSL_LIBRARIES})
+  if (MSVC)
+    set(lib_dep ${lib_dep} crypt32.lib)
+    set(lib_dep ${lib_dep} ws2_32.lib)
+    set(lib_dep ${lib_dep} wsock32.lib)
+  endif()
+endif()
+
+target_link_libraries(echo-server ${lib_dep})
+target_link_libraries(echo-client ${lib_dep})
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT echo-server)
