@@ -28,7 +28,8 @@ NoiseCipherState *noise_aesgcm_new_sodium(void);
 #endif
 #if USE_OPENSSL
 NoiseCipherState *noise_aesgcm_new_openssl(void);
-#else
+#endif
+#if !USE_LIBSODIUM && !USE_OPENSSL
 NoiseCipherState *noise_aesgcm_new_ref(void);
 #endif
 
@@ -47,7 +48,8 @@ NoiseCipherState *noise_aesgcm_new(void)
 #if USE_OPENSSL
     if (!state)
         state = noise_aesgcm_new_openssl();
-#else
+#endif
+#if !USE_LIBSODIUM && !USE_OPENSSL
     if (!state)
         state = noise_aesgcm_new_ref();
 #endif
