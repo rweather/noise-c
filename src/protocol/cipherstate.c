@@ -500,18 +500,16 @@ int noise_cipherstate_decrypt(NoiseCipherState *state, NoiseBuffer *buffer)
  * \brief Sets the nonce value for this cipherstate object.
  *
  * \param state The CipherState object.
- * \param nonce The new nonce value to set.  This must be greater than
- * or equal to the current nonce value in the state.
+ * \param nonce The new nonce value to set.
  *
  * \return NOISE_ERROR_NONE on success.
  * \return NOISE_ERROR_INVALID_PARAM if \a state is NULL.
  * \return NOISE_ERROR_INVALID_STATE if the key has not been set yet.
- * \return NOISE_ERROR_INVALID_NONCE if \a nonce is smaller than
- * the current value.
  *
- * \warning This function is intended for testing purposes only.  It is
- * dangerous to set the nonce back to a previously-used value so this
- * function will actively prevent that from happening.
+ * \warning It is the caller's responsibility to ensure that a nonce
+ * value is never reused with the same key.  This function permits
+ * setting arbitrary nonce values to support UDP and other unordered
+ * transport protocols.
  *
  * \sa noise_cipherstate_init_key()
  */
@@ -524,10 +522,6 @@ int noise_cipherstate_set_nonce(NoiseCipherState *state, uint64_t nonce)
     /* If the key hasn't been set yet, we cannot do this */
     if (!state->has_key)
         return NOISE_ERROR_INVALID_STATE;
-
-    /* Reject the value if the nonce would go backwards */
-    if (state->n > nonce)
-        return NOISE_ERROR_INVALID_NONCE;
 
     /* Set the nonce and return */
     state->n = nonce;

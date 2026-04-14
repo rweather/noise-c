@@ -129,8 +129,8 @@ static void check_cipher(int id, size_t key_len, size_t mac_len,
     compare(noise_cipherstate_decrypt_with_ad(state, a, ad_len, &mbuf),
             NOISE_ERROR_MAC_FAILURE);
 
-    /* Try to reset the nonce.  Cannot go backwards */
-    compare(noise_cipherstate_set_nonce(state, nonce), NOISE_ERROR_INVALID_NONCE);
+    /* Reset the nonce to an earlier value (now allowed for UDP support) */
+    compare(noise_cipherstate_set_nonce(state, nonce), NOISE_ERROR_NONE);
 
     /* Fast-forward the nonce to just before the rollover.  We will be able
        to encrypt one more block, and then the next request will be rejected */
